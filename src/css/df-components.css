@@ -447,6 +447,19 @@
   width: 100%;
   height: 100%;
 }
+:where([data-df="search-input-end-icon"]) {
+  pointer-events: none;
+  display: flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+:where([data-df="search-input-end-icon"] svg) {
+  width: 100%;
+  height: 100%;
+}
 :where([data-df="search-input-trailing"]) {
   position: absolute;
   top: 50%;
@@ -486,6 +499,14 @@
 [data-df="search-input"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
   padding-right: 4rem;
 }
+/* End-icon + clear needs the wider right pad even before custom trailing */
+[data-df="search-input"][data-has-end-icon][data-clearable][data-state="filled"] [data-df="input"].df-input {
+  padding-right: 4rem;
+}
+[data-df="search-input"][data-has-end-icon]:not([data-clearable]) [data-df="input"].df-input,
+[data-df="search-input"][data-has-end-icon][data-clearable][data-state="placeholder"] [data-df="input"].df-input {
+  padding-right: 2.25rem;
+}
 
 /* ——— Size: sm ——— */
 [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
@@ -496,6 +517,10 @@
 }
 [data-df="search-input"][data-size="sm"] [data-df="search-input-leading"] {
   left: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+[data-df="search-input"][data-size="sm"] [data-df="search-input-end-icon"] {
   width: 0.75rem;
   height: 0.75rem;
 }
@@ -536,6 +561,10 @@
 }
 [data-df="search-input"][data-size="lg"] [data-df="search-input-leading"] {
   left: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+}
+[data-df="search-input"][data-size="lg"] [data-df="search-input-end-icon"] {
   width: 1rem;
   height: 1rem;
 }
@@ -580,10 +609,12 @@
   outline: none;
 }
 
-:where([data-df="search-input"][data-state="placeholder"] [data-df="search-input-leading"]) {
+:where([data-df="search-input"][data-state="placeholder"] [data-df="search-input-leading"]),
+:where([data-df="search-input"][data-state="placeholder"] [data-df="search-input-end-icon"]) {
   color: var(--muted-foreground);
 }
-:where([data-df="search-input"][data-state="filled"] [data-df="search-input-leading"]) {
+:where([data-df="search-input"][data-state="filled"] [data-df="search-input-leading"]),
+:where([data-df="search-input"][data-state="filled"] [data-df="search-input-end-icon"]) {
   color: var(--foreground);
 }
 
@@ -611,6 +642,10 @@
   }
   [data-df="search-input"][data-size="md"] [data-df="search-input-leading"] {
     left: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+  }
+  [data-df="search-input"][data-size="md"] [data-df="search-input-end-icon"] {
     width: 1rem;
     height: 1rem;
   }

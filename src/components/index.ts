@@ -42,4 +42,8 @@ export { NumberSlider } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
 export { PanelSection } from "./df-panel-section"
 export { SearchInput, SearchBar } from "./df-search-input"
-export type { SearchInputProps, SearchInputSize } from "./df-search-input"
+export type {
+  SearchInputProps,
+  SearchInputSize,
+  SearchInputIconPosition,
+} from "./df-search-input"
