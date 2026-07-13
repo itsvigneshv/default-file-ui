@@ -1,10 +1,9 @@
 /**
- * Default File UI theme bible — Tailwind v4 default-parity scales, owned by DF.
+ * Default File UI theme bible — owned spacing, type, color, and effect scales.
  *
- * Parity source: Tailwind CSS v4 default `@theme` values.
  * Colors: semantic tokens + `--df-neutral-*` (compact/detailed via
- * `data-df-color-scale` on <html>). Compat `zinc-*` aliases map to the same
- * DF neutral ramp so tool chrome follows scale mode without JSX renames.
+ * `data-df-color-scale` on <html>). Compat `zinc-*` / `gray-*` aliases map to the
+ * same DF neutral ramp so tool chrome follows scale mode without JSX renames.
  */
 
 /** Compact-friendly + detailed steps used by utility color maps. */
@@ -13,12 +12,12 @@ export const DF_NEUTRAL_STEPS = [
   450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000,
 ]
 
-/** Classic Tailwind gray steps — also aliased as zinc-* → --df-neutral-*. */
-export const TW_NEUTRAL_STEPS = [
+/** Common gray step aliases (zinc-* / gray-* → --df-neutral-*). */
+export const COMPAT_NEUTRAL_STEPS = [
   50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
 ]
 
-/** Spacing scale (rem), Tailwind v4 defaults. */
+/** Spacing scale (rem). */
 export const SPACING = {
   0: "0",
   px: "1px",
@@ -156,7 +155,7 @@ export const BREAKPOINTS = {
   lg: "1024px",
   xl: "1280px",
   "2xl": "1536px",
-  /** Wider screen — freeform beyond Tailwind’s default desktop range. */
+  /** Wider screen — freeform desktop range. */
   "3xl": "1920px",
 }
 
@@ -173,7 +172,7 @@ export const SHADOW = {
   DEFAULT: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
 }
 
-/** Named shadows kept from pre-migration static map (Tailwind v3-style). */
+/** Named shadows kept from pre-migration static map. */
 export const SHADOW_COMPAT = {
   sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
   md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
@@ -244,7 +243,7 @@ export function buildColors() {
   }
 
   // Compat: zinc-* → same DF neutral tokens (follows compact/detailed).
-  for (const step of TW_NEUTRAL_STEPS) {
+  for (const step of COMPAT_NEUTRAL_STEPS) {
     COLORS[`zinc-${step}`] = `var(--df-neutral-${step})`
   }
   // Extra zinc aliases that appear in tooling
@@ -252,8 +251,8 @@ export function buildColors() {
   COLORS["zinc-850"] = "var(--df-neutral-850, var(--df-neutral-900))"
   COLORS["zinc-1000"] = "var(--df-neutral-1000)"
 
-  // gray-* also maps to DF neutrals (Tailwind gray ≈ zinc)
-  for (const step of TW_NEUTRAL_STEPS) {
+  // gray-* also maps to DF neutrals
+  for (const step of COMPAT_NEUTRAL_STEPS) {
     COLORS[`gray-${step}`] = `var(--df-neutral-${step})`
   }
 
@@ -262,7 +261,7 @@ export function buildColors() {
 
 export const COLORS = buildColors()
 
-/** Markers that are class names but not Tailwind utilities (DF / home chrome). */
+/** Markers that are class names but not spacing/color utilities (DF / home chrome). */
 export const NON_UTILITY_ALLOWLIST = new Set([
   "df-btn",
   "df-btn-default",
@@ -282,6 +281,10 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "df-input",
   "df-toggle-group",
   "df-toggle-item",
+  "df-toggle-item-outline",
+  "df-toggle-item-default",
+  "df-toggle-item-sm",
+  "df-toggle-item-lg",
   "df-toast",
   "df-toast-close",
   "df-toast-icon",
@@ -302,4 +305,12 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "group",
   "peer",
   "custom",
+  "dark",
+  // Variant prop values that the class scanner may pick up as tokens
+  "outline",
+  "default",
+  "secondary",
+  "ghost",
+  "destructive",
+  "link",
 ])

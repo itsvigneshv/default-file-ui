@@ -17,20 +17,20 @@ type SearchInputProps = Omit<
   className?: string
   inputClassName?: string
   /**
-   * Search / leading icon content. Defaults to Search.
+   * Search icon content. Defaults to Search.
    * Pass a custom node to replace, or `false` to hide the icon entirely.
    */
   leadingIcon?: React.ReactNode | false
   /**
-   * Where the search icon sits. `start` = left (default), `end` = right
-   * (alongside clear / trailing actions).
+   * Where the search icon sits. `start` = left (default), `end` = right.
+   * Same icon chrome — only the side changes.
    */
   iconPosition?: SearchInputIconPosition
   /** Trailing slot for custom icon buttons / actions. */
   trailing?: React.ReactNode
   /**
-   * When true, shows a clear (close) control while the field has a value.
-   * Works with controlled and uncontrolled usage.
+   * Shows a clear (close) control while the field has a value.
+   * Defaults to true. Pass `false` to hide it.
    */
   clearable?: boolean
   /** Called after the value is cleared (in addition to onChange). */
@@ -47,7 +47,7 @@ function SearchInput({
   leadingIcon,
   iconPosition = "start",
   trailing,
-  clearable = false,
+  clearable = true,
   onClear,
   variant = "default",
   size = "md",
@@ -71,9 +71,7 @@ function SearchInput({
   const showIcon = leadingIcon !== false
   const iconNode = leadingIcon ?? <Search aria-hidden />
   const showClear = clearable && filled && !disabled
-  const showStartIcon = showIcon && iconPosition === "start"
-  const showEndIcon = showIcon && iconPosition === "end"
-  const showTrailing = Boolean(trailing) || showClear || showEndIcon
+  const showTrailingActions = Boolean(trailing) || showClear
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setCurrent(event.target.value)
@@ -89,19 +87,10 @@ function SearchInput({
     } as React.ChangeEvent<HTMLInputElement>)
   }
 
-  const clearButton = showClear ? (
-    <button
-      type="button"
-      data-df="search-input-clear"
-      aria-label="Clear search"
-      onMouseDown={(event) => {
-        // Keep focus on the field; avoid blur-before-click races.
-        event.preventDefault()
-      }}
-      onClick={handleClear}
-    >
-      <X aria-hidden />
-    </button>
+  const searchIcon = showIcon ? (
+    <span data-df="search-input-icon" data-side={iconPosition} aria-hidden>
+      {iconNode}
+    </span>
   ) : null
 
   return (
@@ -113,15 +102,10 @@ function SearchInput({
       data-size={size}
       data-icon-position={iconPosition}
       data-clearable={clearable ? "" : undefined}
-      data-has-leading={showStartIcon ? "" : undefined}
-      data-has-trailing={showTrailing ? "" : undefined}
-      data-has-end-icon={showEndIcon ? "" : undefined}
+      data-has-icon={showIcon ? "" : undefined}
+      data-has-trailing={showTrailingActions ? "" : undefined}
     >
-      {showStartIcon ? (
-        <span data-df="search-input-leading" aria-hidden>
-          {iconNode}
-        </span>
-      ) : null}
+      {searchIcon}
 
       <Input
         disabled={disabled}
@@ -132,14 +116,21 @@ function SearchInput({
         {...props}
       />
 
-      {showTrailing ? (
+      {showTrailingActions ? (
         <div data-df="search-input-trailing">
-          {/* Clear sits inward; end search icon + custom trailing sit at the far end. */}
-          {clearButton}
-          {showEndIcon ? (
-            <span data-df="search-input-end-icon" aria-hidden>
-              {iconNode}
-            </span>
+          {showClear ? (
+            <button
+              type="button"
+              data-df="search-input-clear"
+              aria-label="Clear search"
+              onMouseDown={(event) => {
+                // Keep focus on the field; avoid blur-before-click races.
+                event.preventDefault()
+              }}
+              onClick={handleClear}
+            >
+              <X aria-hidden />
+            </button>
           ) : null}
           {trailing}
         </div>

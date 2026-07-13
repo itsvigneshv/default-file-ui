@@ -15,6 +15,14 @@ import { cn } from "../lib/utils"
 
 type ToastTone = "success" | "error" | "info" | "warning"
 
+type ToastPosition =
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right"
+
 type ToastItem = {
   id: string
   tone: ToastTone
@@ -24,6 +32,7 @@ type ToastItem = {
 type ToastListener = () => void
 
 let toasts: ToastItem[] = []
+let position: ToastPosition = "bottom-right"
 const listeners = new Set<ToastListener>()
 
 function emit() {
@@ -47,6 +56,14 @@ function getServerSnapshot(): ToastItem[] {
   return EMPTY_TOASTS
 }
 
+function getPositionSnapshot() {
+  return position
+}
+
+function getPositionServerSnapshot(): ToastPosition {
+  return "bottom-right"
+}
+
 function push(tone: ToastTone, message: string) {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
   toasts = [...toasts, { id, tone, message }]
@@ -57,6 +74,12 @@ function push(tone: ToastTone, message: string) {
 
 function dismiss(id: string) {
   toasts = toasts.filter((item) => item.id !== id)
+  emit()
+}
+
+function setToastPosition(next: ToastPosition) {
+  if (position === next) return
+  position = next
   emit()
 }
 
@@ -75,18 +98,43 @@ const ICONS: Record<ToastTone, React.ReactNode> = {
   warning: <TriangleAlert className="size-4 fill-current" />,
 }
 
-export function Toaster() {
+type ToasterProps = {
+  /** Screen corner or edge where toasts appear. Default: bottom-right. */
+  position?: ToastPosition
+  className?: string
+}
+
+export function Toaster({
+  position: positionProp,
+  className,
+}: ToasterProps = {}) {
   const mounted = useIsClient()
   const items = React.useSyncExternalStore(
     subscribe,
     getSnapshot,
     getServerSnapshot
   )
+  const currentPosition = React.useSyncExternalStore(
+    subscribe,
+    getPositionSnapshot,
+    getPositionServerSnapshot
+  )
+
+  React.useLayoutEffect(() => {
+    if (positionProp) setToastPosition(positionProp)
+  }, [positionProp])
 
   if (!mounted) return null
 
+  const resolved = positionProp ?? currentPosition
+
   return createPortal(
-    <div className="df-toaster" aria-live="polite" aria-relevant="additions">
+    <div
+      className={cn("df-toaster", className)}
+      data-position={resolved}
+      aria-live="polite"
+      aria-relevant="additions"
+    >
       {items.map((item) => (
         <div
           key={item.id}
@@ -113,3 +161,6 @@ export function Toaster() {
     document.body
   )
 }
+
+export { setToastPosition }
+export type { ToastPosition, ToasterProps, ToastTone }

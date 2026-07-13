@@ -34,7 +34,6 @@ for (const item of catalog.items) {
   })
 
   const payload = {
-    $schema: "https://ui.shadcn.com/schema/registry-item.json",
     name: item.name,
     type: item.type,
     title: item.title ?? item.name,

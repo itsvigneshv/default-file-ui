@@ -9,10 +9,12 @@ type ToggleVariant = "default" | "outline"
 type ToggleSize = "default" | "sm" | "lg"
 
 type ToggleGroupContextValue = {
-  variant?: ToggleVariant
-  size?: ToggleSize
-  spacing?: number
-  orientation?: "horizontal" | "vertical"
+  variant: ToggleVariant
+  size: ToggleSize
+  spacing: number
+  orientation: "horizontal" | "vertical"
+  multiple: boolean
+  disabled: boolean
   value: string[]
   onItemToggle: (itemValue: string) => void
 }
@@ -21,14 +23,26 @@ const ToggleGroupContext = React.createContext<ToggleGroupContextValue | null>(
   null
 )
 
-type ToggleGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> & {
+const sizeClass: Record<ToggleSize, string> = {
+  default: "df-toggle-item-default",
+  sm: "df-toggle-item-sm",
+  lg: "df-toggle-item-lg",
+}
+
+type ToggleGroupProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "onChange"
+> & {
   variant?: ToggleVariant
   size?: ToggleSize
   spacing?: number
   orientation?: "horizontal" | "vertical"
+  /** Allow more than one item pressed at a time. */
+  multiple?: boolean
   value?: string[]
   defaultValue?: string[]
   onValueChange?: (value: string[]) => void
+  disabled?: boolean
 }
 
 function ToggleGroup({
@@ -37,9 +51,11 @@ function ToggleGroup({
   size = "default",
   spacing = 2,
   orientation = "horizontal",
+  multiple = false,
   value,
   defaultValue = [],
   onValueChange,
+  disabled = false,
   children,
   ...props
 }: ToggleGroupProps) {
@@ -50,10 +66,20 @@ function ToggleGroup({
   })
 
   const onItemToggle = (itemValue: string) => {
-    // Single-select behavior matching app usage (style picker / family filter)
-    if (current.includes(itemValue) && current.length === 1) {
-      // Keep at least one selected for style picker; principles tool allows clearing via All
-      setCurrent([itemValue])
+    if (disabled) return
+
+    if (multiple) {
+      if (current.includes(itemValue)) {
+        setCurrent(current.filter((v) => v !== itemValue))
+      } else {
+        setCurrent([...current, itemValue])
+      }
+      return
+    }
+
+    // Single-select: press switches selection; press again clears.
+    if (current.includes(itemValue)) {
+      setCurrent([])
       return
     }
     setCurrent([itemValue])
@@ -66,17 +92,20 @@ function ToggleGroup({
         size,
         spacing,
         orientation,
+        multiple,
+        disabled,
         value: current,
         onItemToggle,
       }}
     >
       <div
-        role="group"
+        role={multiple ? "group" : "radiogroup"}
         data-df="toggle-group"
         data-variant={variant}
         data-size={size}
         data-spacing={spacing}
         data-orientation={orientation}
+        data-disabled={disabled ? "" : undefined}
         style={{ "--gap": spacing } as React.CSSProperties}
         className={cn("df-toggle-group", className)}
         {...props}
@@ -99,6 +128,9 @@ function ToggleGroupItem({
   value,
   variant,
   size,
+  disabled,
+  type = "button",
+  onClick,
   ...props
 }: ToggleGroupItemProps) {
   const context = React.useContext(ToggleGroupContext)
@@ -106,21 +138,36 @@ function ToggleGroupItem({
     throw new Error("ToggleGroupItem must be used within ToggleGroup")
   }
 
+  const itemVariant = context.variant || variant || "default"
+  const itemSize = context.size || size || "default"
   const pressed = context.value.includes(value)
+  const isDisabled = Boolean(disabled || context.disabled)
 
   return (
     <button
-      type="button"
-      role="radio"
+      type={type}
+      role={context.multiple ? "checkbox" : "radio"}
       aria-checked={pressed}
+      aria-pressed={pressed}
+      disabled={isDisabled}
       data-df="toggle-group-item"
-      data-variant={context.variant || variant || "default"}
-      data-size={context.size || size || "default"}
+      data-variant={itemVariant}
+      data-size={itemSize}
       data-spacing={context.spacing}
       data-state={pressed ? "on" : "off"}
-      className={cn("df-toggle-item", className)}
-      onClick={() => context.onItemToggle(value)}
+      className={cn(
+        "df-toggle-item",
+        itemVariant === "outline" && "df-toggle-item-outline",
+        sizeClass[itemSize],
+        className
+      )}
       {...props}
+      onClick={(event) => {
+        onClick?.(event)
+        if (!event.defaultPrevented && !isDisabled) {
+          context.onItemToggle(value)
+        }
+      }}
     >
       {children}
     </button>
@@ -128,3 +175,4 @@ function ToggleGroupItem({
 }
 
 export { ToggleGroup, ToggleGroupItem }
+export type { ToggleGroupProps, ToggleGroupItemProps, ToggleVariant, ToggleSize }

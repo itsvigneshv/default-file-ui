@@ -1,5 +1,4 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "default-file-ui",
   "homepage": "https://github.com/itsvigneshv/default-file-ui",
   "items": [
@@ -187,6 +186,26 @@
       "registryDependencies": ["foundation", "input"],
       "files": [
         { "path": "src/components/df-search-input.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-search-input.tsx" }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Tablist with pill and line variants for switching panels.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-tabs.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-tabs.tsx" }
+      ]
+    },
+    {
+      "name": "content-switcher",
+      "type": "registry:ui",
+      "title": "Content Switcher",
+      "description": "Segmented single-select control for filtering and view modes.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-content-switcher.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-content-switcher.tsx" }
       ]
     }
   ]

@@ -1,5 +1,4 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "panel-section",
   "type": "registry:ui",
   "title": "Panel Section",

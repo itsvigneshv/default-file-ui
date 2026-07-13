@@ -426,14 +426,25 @@
 :where([data-df="search-input"] [data-df="input"]) {
   min-width: 0;
   text-overflow: ellipsis;
+  font-family: inherit;
+  font-weight: 400;
+  color: var(--foreground);
+}
+:where([data-df="search-input"] [data-df="input"]::placeholder) {
+  color: var(--muted-foreground);
+  -webkit-text-fill-color: var(--muted-foreground);
+  font-family: inherit;
+  font-weight: 400;
+  font-size: inherit;
+  line-height: inherit;
+  opacity: 1;
 }
 
-/* Leading / trailing chrome */
-:where([data-df="search-input-leading"]) {
+/* Search icon — one chrome, flipped by data-side */
+:where([data-df="search-input-icon"]) {
   pointer-events: none;
   position: absolute;
   top: 50%;
-  left: 0.625rem;
   z-index: 1;
   display: flex;
   width: 0.875rem;
@@ -443,23 +454,21 @@
   transform: translateY(-50%);
   color: var(--muted-foreground);
 }
-:where([data-df="search-input-leading"] svg) {
+:where([data-df="search-input-icon"][data-side="start"]) {
+  left: 0.625rem;
+}
+:where([data-df="search-input-icon"][data-side="end"]) {
+  right: 0.625rem;
+}
+:where([data-df="search-input-icon"] svg) {
   width: 100%;
   height: 100%;
 }
-:where([data-df="search-input-end-icon"]) {
-  pointer-events: none;
-  display: flex;
-  width: 0.875rem;
-  height: 0.875rem;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted-foreground);
+:where([data-df="search-input"][data-state="filled"] [data-df="search-input-icon"]) {
+  color: var(--foreground);
 }
-:where([data-df="search-input-end-icon"] svg) {
-  width: 100%;
-  height: 100%;
-}
+
+/* Clear / custom trailing actions */
 :where([data-df="search-input-trailing"]) {
   position: absolute;
   top: 50%;
@@ -469,6 +478,10 @@
   align-items: center;
   gap: 0.125rem;
   transform: translateY(-50%);
+}
+/* When icon is on the end, clear sits inward of the icon */
+[data-df="search-input"][data-icon-position="end"][data-has-icon] [data-df="search-input-trailing"] {
+  right: 1.75rem;
 }
 :where([data-df="search-input-clear"]) {
   display: inline-flex;
@@ -489,23 +502,24 @@
   height: 0.875rem;
 }
 
-/* Default (md) padding + leading offset */
-[data-df="search-input"][data-has-leading] [data-df="input"].df-input {
+/* Default (md) padding — icon side mirrors start ↔ end */
+[data-df="search-input"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
   padding-left: 2rem;
 }
-[data-df="search-input"][data-has-trailing] [data-df="input"].df-input {
-  padding-right: 2.25rem;
+[data-df="search-input"][data-has-icon][data-icon-position="end"] [data-df="input"].df-input {
+  padding-right: 2rem;
 }
-[data-df="search-input"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
-  padding-right: 4rem;
+[data-df="search-input"][data-has-trailing][data-icon-position="start"] [data-df="input"].df-input {
+  padding-right: 2rem;
 }
-/* End-icon + clear needs the wider right pad even before custom trailing */
-[data-df="search-input"][data-has-end-icon][data-clearable][data-state="filled"] [data-df="input"].df-input {
-  padding-right: 4rem;
+[data-df="search-input"][data-has-trailing][data-icon-position="end"] [data-df="input"].df-input {
+  padding-right: 3.75rem;
 }
-[data-df="search-input"][data-has-end-icon]:not([data-clearable]) [data-df="input"].df-input,
-[data-df="search-input"][data-has-end-icon][data-clearable][data-state="placeholder"] [data-df="input"].df-input {
-  padding-right: 2.25rem;
+[data-df="search-input"][data-state="filled"][data-clearable][data-has-trailing][data-icon-position="start"] [data-df="input"].df-input {
+  padding-right: 2rem;
+}
+[data-df="search-input"][data-state="filled"][data-clearable][data-has-trailing][data-icon-position="end"] [data-df="input"].df-input {
+  padding-right: 3.75rem;
 }
 
 /* ——— Size: sm ——— */
@@ -515,20 +529,27 @@
   line-height: 1.25rem;
   padding-block: 0.125rem;
 }
-[data-df="search-input"][data-size="sm"] [data-df="search-input-leading"] {
+[data-df="search-input"][data-size="sm"] [data-df="search-input-icon"] {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+[data-df="search-input"][data-size="sm"] [data-df="search-input-icon"][data-side="start"] {
   left: 0.5rem;
-  width: 0.75rem;
-  height: 0.75rem;
 }
-[data-df="search-input"][data-size="sm"] [data-df="search-input-end-icon"] {
-  width: 0.75rem;
-  height: 0.75rem;
+[data-df="search-input"][data-size="sm"] [data-df="search-input-icon"][data-side="end"] {
+  right: 0.5rem;
 }
-[data-df="search-input"][data-size="sm"][data-has-leading] [data-df="input"].df-input {
+[data-df="search-input"][data-size="sm"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
   padding-left: 1.75rem;
+}
+[data-df="search-input"][data-size="sm"][data-has-icon][data-icon-position="end"] [data-df="input"].df-input {
+  padding-right: 1.75rem;
 }
 [data-df="search-input"][data-size="sm"] [data-df="search-input-trailing"] {
   right: 0.25rem;
+}
+[data-df="search-input"][data-size="sm"][data-icon-position="end"][data-has-icon] [data-df="search-input-trailing"] {
+  right: 1.5rem;
 }
 [data-df="search-input"][data-size="sm"] [data-df="search-input-clear"] {
   width: 1.25rem;
@@ -538,14 +559,14 @@
   width: 0.75rem;
   height: 0.75rem;
 }
-[data-df="search-input"][data-size="sm"][data-has-trailing] [data-df="input"].df-input {
+[data-df="search-input"][data-size="sm"][data-has-trailing][data-icon-position="start"] [data-df="input"].df-input {
   padding-right: 1.75rem;
 }
-[data-df="search-input"][data-size="sm"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
+[data-df="search-input"][data-size="sm"][data-has-trailing][data-icon-position="end"] [data-df="input"].df-input {
   padding-right: 3.25rem;
 }
 
-/* ——— Size: md (default, matches prior chrome) ——— */
+/* ——— Size: md (default) ——— */
 [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
   height: 2.25rem;
   font-size: 0.875rem;
@@ -559,20 +580,27 @@
   line-height: 1.375rem;
   padding-block: 0.375rem;
 }
-[data-df="search-input"][data-size="lg"] [data-df="search-input-leading"] {
+[data-df="search-input"][data-size="lg"] [data-df="search-input-icon"] {
+  width: 1rem;
+  height: 1rem;
+}
+[data-df="search-input"][data-size="lg"] [data-df="search-input-icon"][data-side="start"] {
   left: 0.75rem;
-  width: 1rem;
-  height: 1rem;
 }
-[data-df="search-input"][data-size="lg"] [data-df="search-input-end-icon"] {
-  width: 1rem;
-  height: 1rem;
+[data-df="search-input"][data-size="lg"] [data-df="search-input-icon"][data-side="end"] {
+  right: 0.75rem;
 }
-[data-df="search-input"][data-size="lg"][data-has-leading] [data-df="input"].df-input {
+[data-df="search-input"][data-size="lg"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
   padding-left: 2.5rem;
+}
+[data-df="search-input"][data-size="lg"][data-has-icon][data-icon-position="end"] [data-df="input"].df-input {
+  padding-right: 2.5rem;
 }
 [data-df="search-input"][data-size="lg"] [data-df="search-input-trailing"] {
   right: 0.5rem;
+}
+[data-df="search-input"][data-size="lg"][data-icon-position="end"][data-has-icon] [data-df="search-input-trailing"] {
+  right: 2rem;
 }
 [data-df="search-input"][data-size="lg"] [data-df="search-input-clear"] {
   width: 1.75rem;
@@ -582,10 +610,10 @@
   width: 1rem;
   height: 1rem;
 }
-[data-df="search-input"][data-size="lg"][data-has-trailing] [data-df="input"].df-input {
+[data-df="search-input"][data-size="lg"][data-has-trailing][data-icon-position="start"] [data-df="input"].df-input {
   padding-right: 2.5rem;
 }
-[data-df="search-input"][data-size="lg"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
+[data-df="search-input"][data-size="lg"][data-has-trailing][data-icon-position="end"] [data-df="input"].df-input {
   padding-right: 4.5rem;
 }
 
@@ -609,48 +637,51 @@
   outline: none;
 }
 
-:where([data-df="search-input"][data-state="placeholder"] [data-df="search-input-leading"]),
-:where([data-df="search-input"][data-state="placeholder"] [data-df="search-input-end-icon"]) {
-  color: var(--muted-foreground);
-}
-:where([data-df="search-input"][data-state="filled"] [data-df="search-input-leading"]),
-:where([data-df="search-input"][data-state="filled"] [data-df="search-input-end-icon"]) {
-  color: var(--foreground);
-}
-
-/* Mobile (< 640px): keep touch targets comfortable for sm/md */
+/* Mobile (< 640px): keep touch targets comfortable for sm */
 @media (max-width: 639px) {
   [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
     height: 2.25rem;
     font-size: 0.875rem;
   }
-  [data-df="search-input"][data-size="sm"] [data-df="search-input-leading"] {
+  [data-df="search-input"][data-size="sm"] [data-df="search-input-icon"] {
     width: 0.875rem;
     height: 0.875rem;
+  }
+  [data-df="search-input"][data-size="sm"] [data-df="search-input-icon"][data-side="start"] {
     left: 0.625rem;
   }
-  [data-df="search-input"][data-size="sm"][data-has-leading] [data-df="input"].df-input {
+  [data-df="search-input"][data-size="sm"] [data-df="search-input-icon"][data-side="end"] {
+    right: 0.625rem;
+  }
+  [data-df="search-input"][data-size="sm"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
     padding-left: 2rem;
+  }
+  [data-df="search-input"][data-size="sm"][data-has-icon][data-icon-position="end"] [data-df="input"].df-input {
+    padding-right: 2rem;
   }
 }
 
-/* Wider screen (≥ 1920px / 3xl): slightly more room for md/lg chrome */
+/* Wider screen (≥ 1920px / 3xl) */
 @media (min-width: 1920px) {
   [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
     height: 2.5rem;
     font-size: 0.9375rem;
   }
-  [data-df="search-input"][data-size="md"] [data-df="search-input-leading"] {
+  [data-df="search-input"][data-size="md"] [data-df="search-input-icon"] {
+    width: 1rem;
+    height: 1rem;
+  }
+  [data-df="search-input"][data-size="md"] [data-df="search-input-icon"][data-side="start"] {
     left: 0.75rem;
-    width: 1rem;
-    height: 1rem;
   }
-  [data-df="search-input"][data-size="md"] [data-df="search-input-end-icon"] {
-    width: 1rem;
-    height: 1rem;
+  [data-df="search-input"][data-size="md"] [data-df="search-input-icon"][data-side="end"] {
+    right: 0.75rem;
   }
-  [data-df="search-input"][data-size="md"][data-has-leading] [data-df="input"].df-input {
+  [data-df="search-input"][data-size="md"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
     padding-left: 2.5rem;
+  }
+  [data-df="search-input"][data-size="md"][data-has-icon][data-icon-position="end"] [data-df="input"].df-input {
+    padding-right: 2.5rem;
   }
   [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
     height: 2.75rem;
@@ -931,7 +962,7 @@
   border-top-width: 0;
 }
 
-/* Class-based toggle chrome — survives even if [data-df] :where rules are skipped */
+/* Class-based toggle chrome — reliable path (Button-style); :where rules above are fallbacks */
 .df-toggle-group {
   display: flex;
   width: fit-content;
@@ -954,28 +985,67 @@
   flex-shrink: 0;
   border-radius: var(--radius-4xl);
   font-size: 0.875rem;
+  line-height: 1.25rem;
   font-weight: 500;
   white-space: nowrap;
-  transition: color 150ms, background-color 150ms, border-color 150ms;
+  transition: color 150ms, background-color 150ms, border-color 150ms,
+    box-shadow 150ms;
   outline: none;
   cursor: pointer;
   background: transparent;
   border: 1px solid transparent;
   color: inherit;
+  user-select: none;
 }
-:where(.df-toggle-item:hover) {
+.df-toggle-item svg {
+  pointer-events: none;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+.df-toggle-item:hover:not(:disabled) {
   background-color: var(--muted);
   color: var(--foreground);
 }
-:where(.df-toggle-item[data-state="on"]),
-:where(.df-toggle-item[aria-checked="true"]) {
+.df-toggle-item:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
+  z-index: 10;
+}
+.df-toggle-item[data-state="on"],
+.df-toggle-item[aria-pressed="true"],
+.df-toggle-item[aria-checked="true"] {
   background-color: var(--muted);
   color: var(--foreground);
 }
-.df-toggle-item[data-variant="outline"] {
+.df-toggle-item:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.df-toggle-item-outline {
   border-color: var(--input);
 }
-/* Size defaults live only in :where([data-df]) so call-site h-9 / px-1.5 / min-w-0 win */
+.df-toggle-item-default {
+  height: 2.25rem;
+  min-width: 2.25rem;
+  padding-inline: 0.75rem;
+}
+.df-toggle-item-sm {
+  height: 2rem;
+  min-width: 2rem;
+  padding-inline: 0.75rem;
+  font-size: 0.8rem;
+}
+.df-toggle-item-sm svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+.df-toggle-item-lg {
+  height: 2.5rem;
+  min-width: 2.5rem;
+  padding-inline: 1rem;
+}
 .df-toggle-group[data-spacing="0"] .df-toggle-item {
   border-radius: 0;
   box-shadow: none;
@@ -1199,20 +1269,57 @@
 /* ——— Toast ——— */
 .df-toaster {
   position: fixed;
-  right: 1rem;
-  bottom: 1rem;
   z-index: 60;
   display: flex;
   width: min(22rem, calc(100vw - 2rem));
-  flex-direction: column;
   gap: 0.5rem;
   pointer-events: none;
+}
+
+.df-toaster[data-position="top-left"] {
+  top: 1rem;
+  left: 1rem;
+  flex-direction: column;
+}
+
+.df-toaster[data-position="top-center"] {
+  top: 1rem;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  flex-direction: column;
+}
+
+.df-toaster[data-position="top-right"] {
+  top: 1rem;
+  right: 1rem;
+  flex-direction: column;
+}
+
+.df-toaster[data-position="bottom-left"] {
+  bottom: 1rem;
+  left: 1rem;
+  flex-direction: column-reverse;
+}
+
+.df-toaster[data-position="bottom-center"] {
+  bottom: 1rem;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  flex-direction: column-reverse;
+}
+
+.df-toaster[data-position="bottom-right"] {
+  bottom: 1rem;
+  right: 1rem;
+  flex-direction: column-reverse;
 }
 
 .df-toast {
   pointer-events: auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.625rem;
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -1228,7 +1335,8 @@
 .df-toast-icon {
   display: inline-flex;
   flex-shrink: 0;
-  margin-top: 0.125rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .df-toast[data-tone="success"] .df-toast-icon {
@@ -1272,4 +1380,274 @@
   position: absolute;
   z-index: 50;
   isolation: isolate;
+}
+
+/* ——— Tabs ———
+ * pill  → header-style muted track + floating active chip (AppTopBarNav look)
+ * line  → underline indicators for docs / content chrome
+ */
+:where([data-df="tabs"]),
+.df-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+:where([data-df="tabs-list"]),
+.df-tabs-list {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+
+:where([data-df="tabs-list"][data-variant="pill"]),
+.df-tabs-list[data-variant="pill"] {
+  gap: 0;
+  padding: 0.125rem;
+  border-radius: 9999px;
+  background-color: color-mix(in oklch, var(--muted) 70%, transparent);
+}
+
+:where([data-df="tabs-list"][data-variant="line"]),
+.df-tabs-list[data-variant="line"] {
+  gap: 0;
+  width: fit-content;
+  border-bottom: 1px solid var(--border);
+}
+
+:where([data-df="tabs-trigger"]),
+.df-tabs-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    box-shadow 150ms ease,
+    border-color 150ms ease;
+}
+
+:where([data-df="tabs-trigger"]:disabled),
+.df-tabs-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-df="tabs-trigger"][data-variant="pill"]),
+.df-tabs-trigger[data-variant="pill"] {
+  border-radius: 9999px;
+}
+
+:where([data-df="tabs-trigger"][data-variant="pill"]:hover:not(:disabled)),
+.df-tabs-trigger[data-variant="pill"]:hover:not(:disabled) {
+  color: var(--foreground);
+}
+
+:where([data-df="tabs-trigger"][data-variant="pill"][data-state="active"]),
+.df-tabs-trigger[data-variant="pill"][data-state="active"] {
+  background-color: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+
+:where([data-df="tabs-trigger"][data-variant="line"]),
+.df-tabs-trigger[data-variant="line"] {
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+}
+
+:where([data-df="tabs-trigger"][data-variant="line"]:hover:not(:disabled)),
+.df-tabs-trigger[data-variant="line"]:hover:not(:disabled) {
+  color: var(--foreground);
+  border-bottom-color: var(--border);
+}
+
+:where([data-df="tabs-trigger"][data-variant="line"][data-state="active"]),
+.df-tabs-trigger[data-variant="line"][data-state="active"] {
+  color: var(--foreground);
+  border-bottom-color: var(--foreground);
+}
+
+:where([data-df="tabs-trigger"][data-size="sm"]),
+.df-tabs-trigger[data-size="sm"] {
+  height: 1.75rem;
+  padding-inline: 0.625rem;
+  font-size: 0.75rem;
+}
+
+:where([data-df="tabs-trigger"][data-size="default"]),
+.df-tabs-trigger[data-size="default"] {
+  height: 2rem;
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
+}
+
+:where([data-df="tabs-trigger"][data-size="lg"]),
+.df-tabs-trigger[data-size="lg"] {
+  height: 2.25rem;
+  padding-inline: 1rem;
+  font-size: 0.875rem;
+}
+
+:where([data-df="tabs-trigger"][data-variant="line"][data-size="sm"]),
+.df-tabs-trigger[data-variant="line"][data-size="sm"] {
+  height: auto;
+  padding: 0.5rem 0.75rem;
+}
+
+:where([data-df="tabs-trigger"][data-variant="line"][data-size="default"]),
+.df-tabs-trigger[data-variant="line"][data-size="default"] {
+  height: auto;
+  padding: 0.625rem 0.75rem;
+}
+
+:where([data-df="tabs-trigger"][data-variant="line"][data-size="lg"]),
+.df-tabs-trigger[data-variant="line"][data-size="lg"] {
+  height: auto;
+  padding: 0.75rem 1rem;
+}
+
+:where([data-df="tabs-content"]),
+.df-tabs-content {
+  outline: none;
+}
+
+:where([data-df="tabs-content"][hidden]),
+.df-tabs-content[hidden] {
+  display: none;
+}
+
+/* ——— Content Switcher ———
+ * Segmented single-select: bordered joined segments.
+ * (Soft pill tracks belong on Tabs, not here.)
+ */
+:where([data-df="content-switcher"]),
+.df-content-switcher {
+  display: inline-flex;
+  align-items: stretch;
+  width: fit-content;
+  flex-direction: row;
+  border-radius: var(--radius-4xl);
+}
+
+:where([data-df="content-switcher"][data-orientation="vertical"]),
+.df-content-switcher[data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+:where([data-df="content-switcher"][data-full-width]),
+.df-content-switcher[data-full-width] {
+  display: flex;
+  width: 100%;
+}
+
+:where([data-df="content-switcher-item"]),
+.df-content-switcher-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin: 0;
+  height: 2.25rem;
+  padding-inline: 0.75rem;
+  border: 1px solid var(--input);
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+:where([data-df="content-switcher-item"]:disabled),
+.df-content-switcher-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-df="content-switcher-item"][data-full-width]),
+.df-content-switcher-item[data-full-width] {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+:where([data-df="content-switcher"][data-orientation="horizontal"]
+  [data-df="content-switcher-item"]:first-child),
+.df-content-switcher[data-orientation="horizontal"]
+  .df-content-switcher-item:first-child {
+  border-top-left-radius: var(--radius-3xl);
+  border-bottom-left-radius: var(--radius-3xl);
+}
+
+:where([data-df="content-switcher"][data-orientation="horizontal"]
+  [data-df="content-switcher-item"]:last-child),
+.df-content-switcher[data-orientation="horizontal"]
+  .df-content-switcher-item:last-child {
+  border-top-right-radius: var(--radius-3xl);
+  border-bottom-right-radius: var(--radius-3xl);
+}
+
+:where([data-df="content-switcher"][data-orientation="horizontal"]
+  [data-df="content-switcher-item"]:not(:first-child)),
+.df-content-switcher[data-orientation="horizontal"]
+  .df-content-switcher-item:not(:first-child) {
+  border-left-width: 0;
+}
+
+:where([data-df="content-switcher"][data-orientation="vertical"]
+  [data-df="content-switcher-item"]:first-child),
+.df-content-switcher[data-orientation="vertical"]
+  .df-content-switcher-item:first-child {
+  border-top-left-radius: var(--radius-3xl);
+  border-top-right-radius: var(--radius-3xl);
+}
+
+:where([data-df="content-switcher"][data-orientation="vertical"]
+  [data-df="content-switcher-item"]:last-child),
+.df-content-switcher[data-orientation="vertical"]
+  .df-content-switcher-item:last-child {
+  border-bottom-left-radius: var(--radius-3xl);
+  border-bottom-right-radius: var(--radius-3xl);
+}
+
+:where([data-df="content-switcher"][data-orientation="vertical"]
+  [data-df="content-switcher-item"]:not(:first-child)),
+.df-content-switcher[data-orientation="vertical"]
+  .df-content-switcher-item:not(:first-child) {
+  border-top-width: 0;
+}
+
+:where([data-df="content-switcher-item"]:hover:not(:disabled)),
+.df-content-switcher-item:hover:not(:disabled) {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+:where([data-df="content-switcher-item"][data-state="on"]),
+.df-content-switcher-item[data-state="on"] {
+  background-color: var(--muted);
+  color: var(--foreground);
 }

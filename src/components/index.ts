@@ -14,6 +14,28 @@ export { Separator } from "./df-separator"
 export { Switch } from "./df-switch"
 export { Slider } from "./df-slider"
 export { ToggleGroup, ToggleGroupItem } from "./df-toggle-group"
+export {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "./df-tabs"
+export type {
+  TabsProps,
+  TabsListProps,
+  TabsTriggerProps,
+  TabsContentProps,
+  TabsVariant,
+  TabsSize,
+} from "./df-tabs"
+export {
+  ContentSwitcher,
+  ContentSwitcherItem,
+} from "./df-content-switcher"
+export type {
+  ContentSwitcherProps,
+  ContentSwitcherItemProps,
+} from "./df-content-switcher"
 export { ScrollArea, ScrollBar } from "./df-scroll-area"
 export {
   Popover,
@@ -36,7 +58,8 @@ export {
   SelectValue,
 } from "./df-select"
 export { ColorPicker } from "./df-color-picker"
-export { Toaster, toast } from "./df-toast"
+export { Toaster, toast, setToastPosition } from "./df-toast"
+export type { ToastPosition, ToasterProps, ToastTone } from "./df-toast"
 export { ControlRow } from "./df-control-row"
 export { NumberSlider } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
