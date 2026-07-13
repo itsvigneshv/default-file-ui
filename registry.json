@@ -143,19 +143,10 @@
       ]
     },
     {
-      "name": "control-row",
-      "type": "registry:ui",
-      "title": "Control Row",
-      "registryDependencies": ["foundation", "label"],
-      "files": [
-        { "path": "src/components/df-control-row.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-control-row.tsx" }
-      ]
-    },
-    {
       "name": "number-slider",
       "type": "registry:ui",
       "title": "Number Slider",
-      "registryDependencies": ["foundation", "control-row", "slider"],
+      "registryDependencies": ["foundation", "label", "slider"],
       "files": [
         { "path": "src/components/df-number-slider.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-number-slider.tsx" }
       ]

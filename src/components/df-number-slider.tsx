@@ -1,6 +1,6 @@
 "use client"
 
-import { ControlRow } from "./df-control-row"
+import { Label } from "./df-label"
 import { Slider } from "./df-slider"
 
 function NumberSlider({
@@ -20,7 +20,13 @@ function NumberSlider({
 }) {
   const digits = step >= 1 ? 0 : step >= 0.1 ? 1 : 2
   return (
-    <ControlRow label={label} valueLabel={value.toFixed(digits)}>
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <Label className="text-xs text-muted-foreground">{label}</Label>
+        <span className="font-mono text-[11px] text-muted-foreground">
+          {value.toFixed(digits)}
+        </span>
+      </div>
       <Slider
         min={min}
         max={max}
@@ -31,7 +37,7 @@ function NumberSlider({
           if (typeof v === "number") onChange(v)
         }}
       />
-    </ControlRow>
+    </div>
   )
 }
 

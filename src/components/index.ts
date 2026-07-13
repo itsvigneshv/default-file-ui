@@ -60,7 +60,6 @@ export {
 export { ColorPicker } from "./df-color-picker"
 export { Toaster, toast, setToastPosition } from "./df-toast"
 export type { ToastPosition, ToasterProps, ToastTone } from "./df-toast"
-export { ControlRow } from "./df-control-row"
 export { NumberSlider } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
 export { PanelSection } from "./df-panel-section"
