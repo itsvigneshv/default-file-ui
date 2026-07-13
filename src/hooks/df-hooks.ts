@@ -35,10 +35,16 @@ export function useIsClient() {
   )
 }
 
+/** Portaled pickers that can open inside another dismiss surface (e.g. popover). */
+export const DISMISS_NESTED_LAYER_SELECTORS = [
+  '[data-df="select-content"]',
+] as const
+
 export function useDismiss(
   open: boolean,
   onClose: () => void,
-  refs: Array<React.RefObject<HTMLElement | null>>
+  refs: Array<React.RefObject<HTMLElement | null>>,
+  options?: { excludeSelectors?: readonly string[] }
 ) {
   useEffect(() => {
     if (!open) return
@@ -48,9 +54,18 @@ export function useDismiss(
     }
 
     const onPointer = (event: MouseEvent | PointerEvent) => {
-      const target = event.target as Node
+      const target = event.target
+      if (!(target instanceof Node)) return
       const inside = refs.some((ref) => ref.current?.contains(target))
-      if (!inside) onClose()
+      if (inside) return
+      const el = target instanceof Element ? target : target.parentElement
+      if (
+        el &&
+        options?.excludeSelectors?.some((selector) => el.closest(selector))
+      ) {
+        return
+      }
+      onClose()
     }
 
     document.addEventListener("keydown", onKey)
@@ -59,7 +74,7 @@ export function useDismiss(
       document.removeEventListener("keydown", onKey)
       document.removeEventListener("pointerdown", onPointer)
     }
-  }, [open, onClose, refs])
+  }, [open, onClose, options?.excludeSelectors, refs])
 }
 
 type Side = "top" | "bottom" | "left" | "right"
@@ -96,51 +111,91 @@ export function useAnchoredPosition({
 
     const t = trigger.getBoundingClientRect()
     const c = content.getBoundingClientRect()
-    let top = 0
-    let left = 0
+    const pad = 8
+    const vw = window.innerWidth
+    const vh = window.innerHeight
 
+    let top = 0
     if (side === "bottom") top = t.bottom + sideOffset
     if (side === "top") top = t.top - c.height - sideOffset
-    if (side === "left") left = t.left - c.width - sideOffset
-    if (side === "right") left = t.right + sideOffset
-
-    if (side === "bottom" || side === "top") {
-      if (align === "start") left = t.left + alignOffset
-      if (align === "center") left = t.left + t.width / 2 - c.width / 2 + alignOffset
-      if (align === "end") left = t.right - c.width + alignOffset
-    } else {
+    if (side === "left" || side === "right") {
+      // Vertical alignment along a horizontal side.
       if (align === "start") top = t.top + alignOffset
-      if (align === "center") top = t.top + t.height / 2 - c.height / 2 + alignOffset
+      if (align === "center")
+        top = t.top + t.height / 2 - c.height / 2 + alignOffset
       if (align === "end") top = t.bottom - c.height + alignOffset
     }
 
-    const pad = 8
-    left = Math.min(Math.max(pad, left), window.innerWidth - c.width - pad)
-    top = Math.min(Math.max(pad, top), window.innerHeight - c.height - pad)
+    if (top < pad) top = pad
+    if (top + c.height > vh - pad) {
+      top = Math.max(pad, vh - c.height - pad)
+    }
 
-    setStyle({
+    const base: React.CSSProperties = {
       position: "fixed",
       top,
-      left,
-      width: "max-content",
       minWidth: t.width,
       zIndex: 50,
       visibility: "visible",
       ["--anchor-width" as string]: `${t.width}px`,
-    })
+    }
+
+    if (side === "left" || side === "right") {
+      let left =
+        side === "left" ? t.left - c.width - sideOffset : t.right + sideOffset
+      if (left < pad) left = pad
+      if (left + c.width > vw - pad) {
+        left = Math.max(pad, vw - c.width - pad)
+      }
+      setStyle({ ...base, left, right: "auto" })
+      return
+    }
+
+    // Top / bottom: pin with left or right so growing content keeps the
+    // aligned edge glued to the trigger (end → grows left, not past Export).
+    if (align === "end") {
+      let right = vw - t.right - alignOffset
+      const leftEdge = vw - right - c.width
+      if (leftEdge < pad) {
+        right = Math.max(pad, vw - c.width - pad)
+      }
+      setStyle({ ...base, right, left: "auto" })
+      return
+    }
+
+    let left =
+      align === "start"
+        ? t.left + alignOffset
+        : t.left + t.width / 2 - c.width / 2 + alignOffset
+    if (left < pad) left = pad
+    if (left + c.width > vw - pad) {
+      left = Math.max(pad, vw - c.width - pad)
+    }
+    setStyle({ ...base, left, right: "auto" })
   }, [align, alignOffset, contentRef, side, sideOffset, triggerRef])
 
   useEffect(() => {
     if (!open) return
     update()
+    const raf = window.requestAnimationFrame(() => update())
     const onScroll = () => update()
     window.addEventListener("resize", onScroll)
     window.addEventListener("scroll", onScroll, true)
+
+    const content = contentRef.current
+    const ro =
+      content && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => update())
+        : null
+    if (content && ro) ro.observe(content)
+
     return () => {
+      window.cancelAnimationFrame(raf)
       window.removeEventListener("resize", onScroll)
       window.removeEventListener("scroll", onScroll, true)
+      ro?.disconnect()
     }
-  }, [open, update])
+  }, [open, update, contentRef])
 
   return style
 }

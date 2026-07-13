@@ -4,6 +4,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 
 import {
+  DISMISS_NESTED_LAYER_SELECTORS,
   useAnchoredPosition,
   useControllableState,
   useDismiss,
@@ -119,7 +120,9 @@ function PopoverContent({
     alignOffset,
   })
 
-  useDismiss(open, () => setOpen(false), [triggerRef, contentRef])
+  useDismiss(open, () => setOpen(false), [triggerRef, contentRef], {
+    excludeSelectors: DISMISS_NESTED_LAYER_SELECTORS,
+  })
 
   const mounted = useIsClient()
 
