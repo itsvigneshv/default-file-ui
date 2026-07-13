@@ -1,5 +1,5 @@
 /**
- * Default File UI theme bible — owned spacing, type, color, and effect scales.
+ * Default File UI theme bible - owned spacing, type, color, and effect scales.
  *
  * Colors: semantic tokens + `--df-neutral-*` (compact/detailed via
  * `data-df-color-scale` on <html>). Compat `zinc-*` / `gray-*` aliases map to the
@@ -57,7 +57,7 @@ export const SPACING = {
 }
 
 /**
- * Radius — DF tokens (see df-tokens.css). Matches prior app radii, not raw TW.
+ * Radius - DF tokens (see df-tokens.css). Matches prior app radii, not raw TW.
  */
 export const RADIUS = {
   none: "0",
@@ -155,7 +155,7 @@ export const BREAKPOINTS = {
   lg: "1024px",
   xl: "1280px",
   "2xl": "1536px",
-  /** Wider screen — freeform desktop range. */
+  /** Wider screen - freeform desktop range. */
   "3xl": "1920px",
 }
 

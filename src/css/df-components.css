@@ -1,10 +1,10 @@
-/* Default File UI — component styles (data-variant / data-size)
+/* Default File UI - component styles (data-variant / data-size)
  *
- * Selectors use :where() so specificity stays 0 — call-site utility
+ * Selectors use :where() so specificity stays 0 - call-site utility
  * classes (e.g. pl-8, w-full, flex-1) can override these defaults.
  */
 
-/* ——— Button ——— */
+/* --- Button --- */
 :where([data-df="button"]) {
   display: inline-flex;
   flex-shrink: 0;
@@ -286,7 +286,7 @@
   padding-left: 0.75rem;
 }
 
-/* Leading / trailing slots — hold an icon or any node (badge, counter, close) */
+/* Leading / trailing slots - hold an icon or any node (badge, counter, close) */
 .df-btn-slot {
   display: inline-flex;
   align-items: center;
@@ -295,7 +295,7 @@
   flex-shrink: 0;
 }
 
-/* ——— Badge ——— */
+/* --- Badge --- */
 :where([data-df="badge"]) {
   display: inline-flex;
   height: 1.25rem;
@@ -346,7 +346,7 @@
   text-underline-offset: 4px;
 }
 
-/* ——— Input ——— */
+/* --- Input --- */
 :where([data-df="input"]) {
   height: 2.25rem;
   width: 100%;
@@ -426,7 +426,7 @@
   opacity: 0.5;
 }
 
-/* ——— Search input / search bar ——— */
+/* --- Search input / search bar --- */
 :where([data-df="search-input"]) {
   position: relative;
   width: 100%;
@@ -449,7 +449,7 @@
   opacity: 1;
 }
 
-/* Search icon — one chrome, flipped by data-side */
+/* Search icon - one chrome, flipped by data-side */
 :where([data-df="search-input-icon"]) {
   pointer-events: none;
   position: absolute;
@@ -511,7 +511,7 @@
   height: 0.875rem;
 }
 
-/* Default (md) padding — icon side mirrors start ↔ end */
+/* Default (md) padding - icon side mirrors start ↔ end */
 [data-df="search-input"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
   padding-left: 2rem;
 }
@@ -531,7 +531,7 @@
   padding-right: 3.75rem;
 }
 
-/* ——— Size: sm ——— */
+/* --- Size: sm --- */
 [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
   height: 2rem;
   font-size: 0.8125rem;
@@ -575,14 +575,14 @@
   padding-right: 3.25rem;
 }
 
-/* ——— Size: md (default) ——— */
+/* --- Size: md (default) --- */
 [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
   height: 2.25rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
 
-/* ——— Size: lg ——— */
+/* --- Size: lg --- */
 [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
   height: 2.5rem;
   font-size: 0.9375rem;
@@ -638,7 +638,7 @@
   border-color: var(--border);
 }
 
-/* Focus — plain border to foreground */
+/* Focus - plain border to foreground */
 [data-df="search-input"] [data-df="input"].df-input:focus,
 [data-df="search-input"] [data-df="input"].df-input:focus-visible {
   border-color: var(--foreground);
@@ -698,7 +698,7 @@
   }
 }
 
-/* ——— Label ——— */
+/* --- Label --- */
 :where([data-df="label"]) {
   display: flex;
   align-items: center;
@@ -709,7 +709,7 @@
   user-select: none;
 }
 
-/* ——— Separator ——— */
+/* --- Separator --- */
 :where([data-df="separator"]) {
   flex-shrink: 0;
   background-color: var(--border);
@@ -726,7 +726,7 @@
   align-self: stretch;
 }
 
-/* ——— Switch ——— */
+/* --- Switch --- */
 :where([data-df="switch"]) {
   position: relative;
   display: inline-flex;
@@ -801,7 +801,7 @@
   transform: translateX(0);
 }
 
-/* ——— Slider ——— */
+/* --- Slider --- */
 :where([data-df="slider"]) {
   display: flex;
   width: 100%;
@@ -850,7 +850,7 @@
   box-shadow: 0 0 0 4px color-mix(in oklch, var(--ring) 50%, transparent);
 }
 
-/* ——— Toggle / Toggle Group ——— */
+/* --- Toggle / Toggle Group --- */
 :where([data-df="toggle"]),
 :where([data-df="toggle-group-item"]) {
   display: inline-flex;
@@ -971,7 +971,7 @@
   border-top-width: 0;
 }
 
-/* Class-based toggle chrome — reliable path (Button-style); :where rules above are fallbacks */
+/* Class-based toggle chrome - reliable path (Button-style); :where rules above are fallbacks */
 .df-toggle-group {
   display: flex;
   width: fit-content;
@@ -1088,7 +1088,7 @@
   border-top-width: 0;
 }
 
-/* ——— Scroll Area ———
+/* --- Scroll Area ---
  * Overlay scrollbar (matches pre-migration dock panels):
  * reserve pr-2.5 on the viewport, hide native bars, paint a thin thumb.
  */
@@ -1102,7 +1102,7 @@
   height: 100%;
   border-radius: inherit;
   overflow: auto;
-  padding-right: 0.625rem; /* pr-2.5 — keeps content clear of the thumb */
+  padding-right: 0.625rem; /* pr-2.5 - keeps content clear of the thumb */
   outline: none;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/legacy Edge */
@@ -1151,7 +1151,7 @@
   cursor: grabbing;
 }
 
-/* ——— Popover ——— */
+/* --- Popover --- */
 :where([data-df="popover-content"]) {
   z-index: 50;
   display: flex;
@@ -1186,7 +1186,7 @@
   color: var(--muted-foreground);
 }
 
-/* ——— Select ——— */
+/* --- Select --- */
 :where([data-df="select-trigger"]) {
   display: flex;
   width: fit-content;
@@ -1275,7 +1275,7 @@
   justify-content: center;
 }
 
-/* ——— Toast ——— */
+/* --- Toast --- */
 .df-toaster {
   position: fixed;
   z-index: 60;
@@ -1407,14 +1407,14 @@
   color: var(--foreground);
 }
 
-/* ——— Floating layer positioning helpers ——— */
+/* --- Floating layer positioning helpers --- */
 :where([data-df="floating-positioner"]) {
   position: absolute;
   z-index: 50;
   isolation: isolate;
 }
 
-/* ——— Tabs ———
+/* --- Tabs ---
  * pill  → header-style muted track + floating active chip (AppTopBarNav look)
  * line  → underline indicators for docs / content chrome
  */
@@ -1441,7 +1441,7 @@
   background-color: color-mix(in oklch, var(--muted) 70%, transparent);
 }
 
-/* Sliding active indicator — animates between triggers on selection change */
+/* Sliding active indicator - animates between triggers on selection change */
 .df-tabs-indicator {
   position: absolute;
   left: 0;
@@ -1618,7 +1618,7 @@
   display: none;
 }
 
-/* ——— Content Switcher ———
+/* --- Content Switcher ---
  * Segmented single-select: bordered joined segments.
  * (Soft pill tracks belong on Tabs, not here.)
  */

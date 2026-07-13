@@ -1,9 +1,9 @@
-/* Default File UI — entry
+/* Default File UI - entry
  *
  * Import order: tokens → reset → animations → components → utilities.
  * Component [data-df] rules use :where() (spec 0); utility classes win.
  * Reset also uses :where() so element defaults cannot wipe component chrome.
- * Avoid @import layer() — Turbopack/Next can drop layered imports.
+ * Avoid @import layer() - Turbopack/Next can drop layered imports.
  */
 @import "./df-color-scales.css";
 @import "./df-tokens.css";

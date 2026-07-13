@@ -23,7 +23,7 @@ type SearchInputProps = Omit<
   leadingIcon?: React.ReactNode | false
   /**
    * Where the search icon sits. `start` = left (default), `end` = right.
-   * Same icon chrome — only the side changes.
+   * Same icon chrome; only the side changes.
    */
   iconPosition?: SearchInputIconPosition
   /** Trailing slot for custom icon buttons / actions. */
@@ -139,7 +139,7 @@ function SearchInput({
   )
 }
 
-/** Alias — same component; prefer this name for chrome / toolbars. */
+/** Alias for the same component; prefer this name for chrome / toolbars. */
 const SearchBar = SearchInput
 
 export { SearchInput, SearchBar }
