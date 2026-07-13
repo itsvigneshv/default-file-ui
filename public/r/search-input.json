@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "search-input",
+  "type": "registry:ui",
+  "title": "Search Input",
+  "description": "",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "foundation",
+    "input"
+  ],
+  "files": [
+    {
+      "path": "src/components/df-search-input.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Search } from \"lucide-react\"\n\nimport { Input } from \"./df-input\"\nimport { cn } from \"../lib/utils\"\n\nfunction SearchInput({\n  className,\n  inputClassName,\n  ...props\n}: Omit<React.ComponentProps<\"input\">, \"className\"> & {\n  className?: string\n  inputClassName?: string\n}) {\n  return (\n    <div className={cn(\"relative\", className)} data-df=\"search-input\">\n      <Search className=\"pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground\" />\n      <Input className={cn(\"pl-8\", inputClassName)} {...props} />\n    </div>\n  )\n}\n\nexport { SearchInput }\n",
+      "target": "default-file-ui/components/df-search-input.tsx"
+    }
+  ]
+}

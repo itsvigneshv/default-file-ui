@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "label",
+  "type": "registry:ui",
+  "title": "Label",
+  "description": "",
+  "dependencies": [],
+  "registryDependencies": [
+    "foundation"
+  ],
+  "files": [
+    {
+      "path": "src/components/df-label.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\"\r\n\r\nimport * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\nfunction Label({ className, ...props }: React.ComponentProps<\"label\">) {\r\n  return <label data-df=\"label\" className={cn(className)} {...props} />\r\n}\r\n\r\nexport { Label }\r\n",
+      "target": "default-file-ui/components/df-label.tsx"
+    }
+  ]
+}

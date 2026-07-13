@@ -1,0 +1,193 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "default-file-ui",
+  "homepage": "https://github.com/itsvigneshv/default-file-ui",
+  "items": [
+    {
+      "name": "foundation",
+      "type": "registry:style",
+      "title": "Foundation",
+      "description": "CSS layers, tokens, hooks, and cn utility. Install first.",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        { "path": "src/css/df-index.css", "type": "registry:file", "target": "default-file-ui/css/df-index.css" },
+        { "path": "src/css/df-color-scales.css", "type": "registry:file", "target": "default-file-ui/css/df-color-scales.css" },
+        { "path": "src/css/df-tokens.css", "type": "registry:file", "target": "default-file-ui/css/df-tokens.css" },
+        { "path": "src/css/df-reset.css", "type": "registry:file", "target": "default-file-ui/css/df-reset.css" },
+        { "path": "src/css/df-animations.css", "type": "registry:file", "target": "default-file-ui/css/df-animations.css" },
+        { "path": "src/css/df-components.css", "type": "registry:file", "target": "default-file-ui/css/df-components.css" },
+        { "path": "src/css/df-utilities.css", "type": "registry:file", "target": "default-file-ui/css/df-utilities.css" },
+        { "path": "src/lib/utils.ts", "type": "registry:lib", "target": "lib/utils.ts" },
+        { "path": "src/hooks/df-hooks.ts", "type": "registry:hook", "target": "default-file-ui/hooks/df-hooks.ts" },
+        { "path": "src/hooks/index.ts", "type": "registry:hook", "target": "default-file-ui/hooks/index.ts" }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Default File button with variants and sizes.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-button.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-button.tsx" }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-badge.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-badge.tsx" }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-input.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-input.tsx" }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-label.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-label.tsx" }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-separator.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-separator.tsx" }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-switch.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-switch.tsx" }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-slider.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-slider.tsx" }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-toggle-group.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-toggle-group.tsx" }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll Area",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-scroll-area.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-scroll-area.tsx" }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-popover.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-popover.tsx" }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-select.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-select.tsx" }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-toast.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-toast.tsx" }
+      ]
+    },
+    {
+      "name": "color-picker",
+      "type": "registry:ui",
+      "title": "Color Picker",
+      "registryDependencies": ["foundation", "input", "popover"],
+      "files": [
+        { "path": "src/components/df-color-picker.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-color-picker.tsx" }
+      ]
+    },
+    {
+      "name": "control-row",
+      "type": "registry:ui",
+      "title": "Control Row",
+      "registryDependencies": ["foundation", "label"],
+      "files": [
+        { "path": "src/components/df-control-row.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-control-row.tsx" }
+      ]
+    },
+    {
+      "name": "number-slider",
+      "type": "registry:ui",
+      "title": "Number Slider",
+      "registryDependencies": ["foundation", "control-row", "slider"],
+      "files": [
+        { "path": "src/components/df-number-slider.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-number-slider.tsx" }
+      ]
+    },
+    {
+      "name": "choice-chip",
+      "type": "registry:ui",
+      "title": "Choice Chip",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-choice-chip.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-choice-chip.tsx" }
+      ]
+    },
+    {
+      "name": "panel-section",
+      "type": "registry:ui",
+      "title": "Panel Section",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-panel-section.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-panel-section.tsx" }
+      ]
+    },
+    {
+      "name": "search-input",
+      "type": "registry:ui",
+      "title": "Search Input",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["foundation", "input"],
+      "files": [
+        { "path": "src/components/df-search-input.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-search-input.tsx" }
+      ]
+    }
+  ]
+}

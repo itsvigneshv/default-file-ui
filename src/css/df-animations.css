@@ -1,0 +1,175 @@
+/* Default File UI — animations */
+
+@keyframes df-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes df-enter {
+  from {
+    opacity: var(--df-enter-opacity, 1);
+    transform: translate3d(
+        var(--df-enter-translate-x, 0),
+        var(--df-enter-translate-y, 0),
+        0
+      )
+      scale(var(--df-enter-scale, 1));
+  }
+}
+
+@keyframes df-exit {
+  to {
+    opacity: var(--df-exit-opacity, 1);
+    transform: translate3d(
+        var(--df-exit-translate-x, 0),
+        var(--df-exit-translate-y, 0),
+        0
+      )
+      scale(var(--df-exit-scale, 1));
+  }
+}
+
+@keyframes home-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes home-shader-drift {
+  0% {
+    background-position: 0% 40%, 100% 60%, 50% 50%;
+  }
+  50% {
+    background-position: 80% 20%, 20% 80%, 40% 60%;
+  }
+  100% {
+    background-position: 0% 40%, 100% 60%, 50% 50%;
+  }
+}
+
+@keyframes home-mesh-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -3%, 0) scale(1.04);
+  }
+}
+
+@keyframes home-stage-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.home-reveal {
+  animation: home-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-grid-fade {
+  background-image:
+    linear-gradient(to right, oklch(0.8 0.01 260 / 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.8 0.01 260 / 0.18) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, black 0%, transparent 88%);
+}
+
+.home-section-tools {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    oklch(0.975 0.006 250 / 0.65) 18%,
+    oklch(0.97 0.008 90 / 0.5) 55%,
+    transparent 100%
+  );
+}
+
+.home-preview-frame {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.35),
+    0 0 0 1px oklch(0.85 0.01 260 / 0.35);
+}
+
+.home-preview-shader {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, oklch(0.78 0.14 40), transparent 55%),
+    radial-gradient(ellipse at 80% 20%, oklch(0.72 0.12 220), transparent 50%),
+    radial-gradient(ellipse at 50% 90%, oklch(0.7 0.1 320), transparent 55%),
+    linear-gradient(135deg, oklch(0.35 0.04 260), oklch(0.22 0.03 280));
+  background-size: 140% 140%, 140% 140%, 140% 140%, 100% 100%;
+  animation: home-shader-drift 12s ease-in-out infinite;
+}
+
+.home-preview-mesh {
+  background: oklch(0.96 0.01 90);
+}
+
+.home-preview-mesh::before,
+.home-preview-mesh::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: 9999px;
+  filter: blur(28px);
+  animation: home-mesh-float 9s ease-in-out infinite;
+}
+
+.home-preview-mesh::before {
+  background: radial-gradient(
+    circle,
+    oklch(0.82 0.08 30 / 0.7),
+    transparent 62%
+  );
+  left: -10%;
+  top: -15%;
+}
+
+.home-preview-mesh::after {
+  background: radial-gradient(
+    circle,
+    oklch(0.8 0.07 230 / 0.55),
+    transparent 60%
+  );
+  right: -15%;
+  bottom: -20%;
+  animation-delay: -3s;
+}
+
+.home-hero-stage {
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    0 32px 80px -36px oklch(0.2 0.03 260 / 0.55);
+}
+
+.home-stage-frame {
+  animation: home-stage-float 8s ease-in-out infinite;
+}
+
+.home-stage-frame:nth-child(2) {
+  animation-delay: -2.5s;
+}
+
+.home-stage-frame:nth-child(3) {
+  animation-delay: -4.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-reveal,
+  .home-preview-shader,
+  .home-preview-mesh::before,
+  .home-preview-mesh::after,
+  .home-stage-frame {
+    animation: none !important;
+  }
+}

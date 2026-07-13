@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "title": "Button",
+  "description": "Default File button with variants and sizes.",
+  "dependencies": [],
+  "registryDependencies": [
+    "foundation"
+  ],
+  "files": [
+    {
+      "path": "src/components/df-button.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\ntype ButtonVariant =\r\n  | \"default\"\r\n  | \"outline\"\r\n  | \"secondary\"\r\n  | \"ghost\"\r\n  | \"destructive\"\r\n  | \"link\"\r\ntype ButtonSize =\r\n  | \"default\"\r\n  | \"xs\"\r\n  | \"sm\"\r\n  | \"lg\"\r\n  | \"icon\"\r\n  | \"icon-xs\"\r\n  | \"icon-sm\"\r\n  | \"icon-lg\"\r\n\r\ntype ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {\r\n  variant?: ButtonVariant\r\n  size?: ButtonSize\r\n}\r\n\r\nconst sizeClass: Record<ButtonSize, string> = {\r\n  default: \"df-btn-default-size\",\r\n  xs: \"df-btn-xs\",\r\n  sm: \"df-btn-sm\",\r\n  lg: \"df-btn-lg\",\r\n  icon: \"df-btn-icon\",\r\n  \"icon-xs\": \"df-btn-icon-xs\",\r\n  \"icon-sm\": \"df-btn-icon-sm\",\r\n  \"icon-lg\": \"df-btn-icon-lg\",\r\n}\r\n\r\n/** Class helper for non-button hosts (e.g. Next.js Link) that need button chrome. */\r\nfunction dfButtonClass({\r\n  variant = \"default\",\r\n  size = \"default\",\r\n  className,\r\n}: {\r\n  variant?: ButtonVariant\r\n  size?: ButtonSize\r\n  className?: string\r\n} = {}) {\r\n  return cn(\"df-btn\", `df-btn-${variant}`, sizeClass[size], className)\r\n}\r\n\r\nfunction Button({\r\n  className,\r\n  variant = \"default\",\r\n  size = \"default\",\r\n  type = \"button\",\r\n  ...props\r\n}: ButtonProps) {\r\n  return (\r\n    <button\r\n      type={type}\r\n      data-df=\"button\"\r\n      data-variant={variant}\r\n      data-size={size}\r\n      className={dfButtonClass({ variant, size, className })}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nexport { Button, dfButtonClass }\r\nexport type { ButtonProps, ButtonVariant, ButtonSize }\r\n",
+      "target": "default-file-ui/components/df-button.tsx"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+/* Default File UI — design tokens
+ *
+ * Color ramps live in df-color-scales.css (compact | detailed).
+ * Semantic tokens below map onto --df-neutral-* / --df-brand-*.
+ */
+
+:root {
+  /* Active scale mode is set on <html data-df-color-scale="…">.
+     Default (no attribute / detailed) uses the fine ramp. */
+
+  /* ——— Semantic surface / content (neutral ramp) ——— */
+  --background: var(--df-neutral-0);
+  --foreground: var(--df-neutral-900);
+  --card: var(--df-neutral-0);
+  --card-foreground: var(--df-neutral-900);
+  --popover: var(--df-neutral-0);
+  --popover-foreground: var(--df-neutral-900);
+  --primary: var(--df-neutral-850, var(--df-neutral-900));
+  --primary-foreground: var(--df-neutral-0);
+  --secondary: var(--df-neutral-50);
+  --secondary-foreground: var(--df-neutral-850, var(--df-neutral-900));
+  --muted: var(--df-neutral-50);
+  --muted-foreground: var(--df-neutral-500);
+  --accent: var(--df-neutral-50);
+  --accent-foreground: var(--df-neutral-850, var(--df-neutral-900));
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--df-neutral-100);
+  --input: var(--df-neutral-100);
+  --ring: var(--df-neutral-400);
+
+  --chart-1: var(--df-neutral-200);
+  --chart-2: var(--df-neutral-500);
+  --chart-3: var(--df-neutral-600);
+  --chart-4: var(--df-neutral-700);
+  --chart-5: var(--df-neutral-800);
+
+  --radius: 0.625rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --sidebar: var(--df-neutral-20, var(--df-neutral-50));
+  --sidebar-foreground: var(--df-neutral-900);
+  --sidebar-primary: var(--df-neutral-850, var(--df-neutral-900));
+  --sidebar-primary-foreground: var(--df-neutral-0);
+  --sidebar-accent: var(--df-neutral-50);
+  --sidebar-accent-foreground: var(--df-neutral-850, var(--df-neutral-900));
+  --sidebar-border: var(--df-neutral-100);
+  --sidebar-ring: var(--df-neutral-400);
+}
+
+/* Compact mode: steps like 850 / 20 may be missing — fall back already in var().
+   Remap a few semantics to guaranteed compact stops. */
+[data-df-color-scale="compact"] {
+  --primary: var(--df-neutral-900);
+  --primary-foreground: var(--df-neutral-0);
+  --secondary-foreground: var(--df-neutral-900);
+  --accent-foreground: var(--df-neutral-900);
+  --sidebar: var(--df-neutral-50);
+  --sidebar-primary: var(--df-neutral-900);
+  --sidebar-accent-foreground: var(--df-neutral-900);
+}
+
+.dark {
+  --background: var(--df-neutral-950);
+  --foreground: var(--df-neutral-0);
+  --card: var(--df-neutral-900);
+  --card-foreground: var(--df-neutral-0);
+  --popover: var(--df-neutral-900);
+  --popover-foreground: var(--df-neutral-0);
+  --primary: var(--df-neutral-100);
+  --primary-foreground: var(--df-neutral-900);
+  --secondary: var(--df-neutral-800);
+  --secondary-foreground: var(--df-neutral-0);
+  --muted: var(--df-neutral-800);
+  --muted-foreground: var(--df-neutral-400);
+  --accent: var(--df-neutral-800);
+  --accent-foreground: var(--df-neutral-0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
+  --input: color-mix(in oklch, var(--df-neutral-0) 15%, transparent);
+  --ring: var(--df-neutral-500);
+  --chart-1: var(--df-neutral-200);
+  --chart-2: var(--df-neutral-500);
+  --chart-3: var(--df-neutral-600);
+  --chart-4: var(--df-neutral-700);
+  --chart-5: var(--df-neutral-800);
+  --sidebar: var(--df-neutral-900);
+  --sidebar-foreground: var(--df-neutral-0);
+  --sidebar-primary: var(--df-brand-500);
+  --sidebar-primary-foreground: var(--df-neutral-0);
+  --sidebar-accent: var(--df-neutral-800);
+  --sidebar-accent-foreground: var(--df-neutral-0);
+  --sidebar-border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
+  --sidebar-ring: var(--df-neutral-500);
+}

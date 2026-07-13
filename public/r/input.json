@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input",
+  "type": "registry:ui",
+  "title": "Input",
+  "description": "",
+  "dependencies": [],
+  "registryDependencies": [
+    "foundation"
+  ],
+  "files": [
+    {
+      "path": "src/components/df-input.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\nfunction Input({ className, type, ...props }: React.ComponentProps<\"input\">) {\r\n  return (\r\n    <input\r\n      type={type}\r\n      data-df=\"input\"\r\n      className={cn(\"df-input\", className)}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nexport { Input }\r\n",
+      "target": "default-file-ui/components/df-input.tsx"
+    }
+  ]
+}

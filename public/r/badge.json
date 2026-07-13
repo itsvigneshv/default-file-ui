@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge",
+  "type": "registry:ui",
+  "title": "Badge",
+  "description": "",
+  "dependencies": [],
+  "registryDependencies": [
+    "foundation"
+  ],
+  "files": [
+    {
+      "path": "src/components/df-badge.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\ntype BadgeVariant =\r\n  | \"default\"\r\n  | \"secondary\"\r\n  | \"destructive\"\r\n  | \"outline\"\r\n  | \"ghost\"\r\n  | \"link\"\r\n\r\ntype BadgeProps = React.HTMLAttributes<HTMLElement> & {\r\n  variant?: BadgeVariant\r\n  asChild?: boolean\r\n  render?: React.ReactElement<{ className?: string; children?: React.ReactNode }>\r\n}\r\n\r\nfunction Badge({\r\n  className,\r\n  variant = \"default\",\r\n  render,\r\n  children,\r\n  ...props\r\n}: BadgeProps) {\r\n  const classes = cn(className)\r\n\r\n  if (render) {\r\n    return React.cloneElement(render, {\r\n      ...props,\r\n      \"data-df\": \"badge\",\r\n      \"data-variant\": variant,\r\n      className: cn(classes, render.props.className),\r\n      children: children ?? render.props.children,\r\n    } as never)\r\n  }\r\n\r\n  return (\r\n    <span\r\n      data-df=\"badge\"\r\n      data-variant={variant}\r\n      className={classes}\r\n      {...props}\r\n    >\r\n      {children}\r\n    </span>\r\n  )\r\n}\r\n\r\nexport { Badge }\r\nexport type { BadgeProps, BadgeVariant }\r\n",
+      "target": "default-file-ui/components/df-badge.tsx"
+    }
+  ]
+}
