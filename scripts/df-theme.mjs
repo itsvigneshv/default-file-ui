@@ -156,6 +156,8 @@ export const BREAKPOINTS = {
   lg: "1024px",
   xl: "1280px",
   "2xl": "1536px",
+  /** Wider screen — freeform beyond Tailwind’s default desktop range. */
+  "3xl": "1920px",
 }
 
 export const SHADOW = {
@@ -299,4 +301,5 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "svg",
   "group",
   "peer",
+  "custom",
 ])

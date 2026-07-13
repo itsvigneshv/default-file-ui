@@ -25,13 +25,26 @@ import {
 
 const ROOT = path.resolve(import.meta.dirname, "..")
 const SRC = path.join(ROOT, "src")
-const OUT = path.join(ROOT, "src/css/df-utilities.css")
+const UI_SRC = path.join(ROOT, "node_modules/@default-file/ui/src")
+const OUT = path.join(ROOT, "node_modules/@default-file/ui/src/css/df-utilities.css")
 
 function walk(dir, files = []) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+  let entries
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true })
+  } catch {
+    return files
+  }
+  for (const entry of entries) {
     const p = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (entry.name === "node_modules" || entry.name === "css") continue
+      if (
+        entry.name === "node_modules" ||
+        entry.name === "css" ||
+        entry.name === "default-file-ui" ||
+        entry.name.startsWith("_compare")
+      )
+        continue
       walk(p, files)
     } else if (/\.(tsx|ts)$/.test(entry.name)) files.push(p)
   }
@@ -46,9 +59,10 @@ function addTokens(set, str) {
     if (token.startsWith("http")) continue
     if (token.includes("/legal") || token.includes("/tools") || token.includes("/api")) continue
     if (token.startsWith("@")) continue
-    // utility tokens typically contain hyphen, colon, bracket, or slash opacity
+    // utility tokens typically contain hyphen, colon, bracket, or slash opacity.
+    // Variant prefixes may start with a digit (e.g. 3xl: for wider screens).
     if (
-      /^(?:[a-z][a-z0-9-]*:)*-?(?:[a-z][a-z0-9-]*|[a-z]+-\[[^\]]+\])/.test(token) ||
+      /^(?:[a-z0-9][a-z0-9-]*:)*-?(?:[a-z][a-z0-9-]*|[a-z]+-\[[^\]]+\])/.test(token) ||
       token.includes("[") ||
       /\/\d+$/.test(token)
     ) {
@@ -160,13 +174,19 @@ function escapeClass(name) {
   return name.replace(/([^a-zA-Z0-9_-])/g, "\\$1")
 }
 
+/**
+ * Opacity modifiers resolve to opaque shades (100% alpha), not see-through fills.
+ * Semantic tokens (var(--…)) blend against --background so muted/50 looks like
+ * muted at 50% over the page surface, as a solid color. Absolute colors (black,
+ * white, hex) still mix with transparent for true overlays on arbitrary media.
+ */
 function colorValue(name, opacity) {
   const base = COLORS[name]
   if (!base) return null
   if (opacity == null) return base
   const pct = Number(opacity)
   if (base.startsWith("var(")) {
-    return `color-mix(in oklch, ${base} ${pct}%, transparent)`
+    return `color-mix(in oklch, ${base} ${pct}%, var(--background))`
   }
   return `color-mix(in srgb, ${base} ${pct}%, transparent)`
 }
@@ -280,9 +300,13 @@ function declsFor(utility) {
     "inset-x-0": { left: "0", right: "0" },
     "inset-y-0": { top: "0", bottom: "0" },
     "top-0": { top: "0" },
+    "top-1/2": { top: "50%" },
     "bottom-0": { bottom: "0" },
+    "bottom-1/2": { bottom: "50%" },
     "left-0": { left: "0" },
+    "left-1/2": { left: "50%" },
     "right-0": { right: "0" },
+    "right-1/2": { right: "50%" },
     "pointer-events-none": { "pointer-events": "none" },
     "pointer-events-auto": { "pointer-events": "auto" },
     "select-none": { "user-select": "none" },
@@ -567,6 +591,18 @@ function declsFor(utility) {
     const rest = m[1]
     if (["t", "b", "l", "r", "x", "y", "0", "2", "4", "8"].includes(rest))
       return null
+    const arb = rest.match(/^\[(.+)\]$/)
+    if (arb) {
+      const val = decodeArbitrary(arb[1])
+      // Lengths → border-width; colors → border-color
+      if (/^-?[\d.]+(?:px|rem|em|%)?$/i.test(val)) {
+        return add({
+          "border-width": /[a-z%]/i.test(val) ? val : `${val}px`,
+          "border-style": "solid",
+        })
+      }
+      return add({ "border-color": val })
+    }
     const c = parseColorToken(rest)
     if (c) return add({ "border-color": c })
   }
@@ -751,8 +787,12 @@ function declsFor(utility) {
     if (arb) v = decodeArbitrary(arb[1])
     if (v != null) {
       if (neg) v = `calc(${v} * -1)`
+      // Compose X/Y via CSS vars so both classes can apply on one element.
+      const varName = axis === "x" ? "--df-translate-x" : "--df-translate-y"
       return add({
-        transform: axis === "x" ? `translateX(${v})` : `translateY(${v})`,
+        [varName]: v,
+        transform:
+          "translate(var(--df-translate-x, 0), var(--df-translate-y, 0))",
       })
     }
   }
@@ -770,7 +810,7 @@ function splitVariants(token) {
 
   while (true) {
     const m = rest.match(
-      /^(dark|sm|md|lg|xl|2xl|hover|focus|focus-visible|active|disabled|motion-safe|motion-reduce|group-hover|group-focus-visible|peer-disabled|placeholder|file|data-open|data-closed|data-checked|data-unchecked|data-disabled|data-horizontal|data-vertical|data-placeholder|aria-invalid|aria-expanded|aria-pressed|aria-disabled|supports-backdrop-filter):(.+)$/
+      /^(dark|sm|md|lg|xl|2xl|3xl|hover|focus|focus-visible|active|disabled|motion-safe|motion-reduce|group-hover|group-focus-visible|peer-disabled|placeholder|file|data-open|data-closed|data-checked|data-unchecked|data-disabled|data-horizontal|data-vertical|data-placeholder|aria-invalid|aria-expanded|aria-pressed|aria-disabled|supports-backdrop-filter):(.+)$/
     )
     if (!m) break
     variants.push(m[1])
@@ -859,9 +899,13 @@ function formatRule(sel, decls) {
   return `${sel} {\n${body}\n}`
 }
 
-const files = walk(SRC).filter(
-  (f) => !f.includes(`${path.sep}default-file-ui${path.sep}css${path.sep}`)
-)
+const files = [
+  ...walk(SRC).filter(
+    (f) => !f.includes(`${path.sep}default-file-ui${path.sep}css${path.sep}`)
+  ),
+  // Kit components ship classNames the app never repeats — scan them too.
+  ...walk(UI_SRC).filter((f) => f.includes(`${path.sep}components${path.sep}`)),
+]
 const all = new Set()
 for (const file of files) {
   const src = fs.readFileSync(file, "utf8")

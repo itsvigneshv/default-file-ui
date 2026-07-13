@@ -57,15 +57,15 @@
   color: var(--primary-foreground);
 }
 :where([data-df="button"][data-variant="default"]:hover) {
-  background-color: color-mix(in oklch, var(--primary) 80%, transparent);
+  background-color: color-mix(in oklch, var(--primary) 80%, var(--background));
 }
 
 :where([data-df="button"][data-variant="outline"]) {
   border-color: var(--border);
-  background-color: color-mix(in oklch, var(--input) 30%, transparent);
+  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
 }
 :where([data-df="button"][data-variant="outline"]:hover) {
-  background-color: color-mix(in oklch, var(--input) 50%, transparent);
+  background-color: color-mix(in oklch, var(--input) 50%, var(--background));
   color: var(--foreground);
 }
 :where([data-df="button"][data-variant="outline"][aria-expanded="true"]) {
@@ -91,11 +91,11 @@
 }
 
 :where([data-df="button"][data-variant="destructive"]) {
-  background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+  background-color: color-mix(in oklch, var(--destructive) 10%, var(--background));
   color: var(--destructive);
 }
 :where([data-df="button"][data-variant="destructive"]:hover) {
-  background-color: color-mix(in oklch, var(--destructive) 20%, transparent);
+  background-color: color-mix(in oklch, var(--destructive) 20%, var(--background));
 }
 
 :where([data-df="button"][data-variant="link"]) {
@@ -197,14 +197,14 @@
   color: var(--primary-foreground);
 }
 .df-btn-default:hover {
-  background-color: color-mix(in oklch, var(--primary) 80%, transparent);
+  background-color: color-mix(in oklch, var(--primary) 80%, var(--background));
 }
 .df-btn-outline {
   border-color: var(--border);
-  background-color: color-mix(in oklch, var(--input) 30%, transparent);
+  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
 }
 .df-btn-outline:hover {
-  background-color: color-mix(in oklch, var(--input) 50%, transparent);
+  background-color: color-mix(in oklch, var(--input) 50%, var(--background));
   color: var(--foreground);
 }
 .df-btn-secondary {
@@ -225,7 +225,7 @@
   color: var(--foreground);
 }
 .df-btn-destructive {
-  background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+  background-color: color-mix(in oklch, var(--destructive) 10%, var(--background));
   color: var(--destructive);
 }
 .df-btn-link {
@@ -320,12 +320,12 @@
   color: var(--secondary-foreground);
 }
 :where([data-df="badge"][data-variant="destructive"]) {
-  background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+  background-color: color-mix(in oklch, var(--destructive) 10%, var(--background));
   color: var(--destructive);
 }
 :where([data-df="badge"][data-variant="outline"]) {
   border-color: var(--border);
-  background-color: color-mix(in oklch, var(--input) 30%, transparent);
+  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
   color: var(--foreground);
 }
 :where([data-df="badge"][data-variant="ghost"]:hover) {
@@ -344,7 +344,7 @@
   min-width: 0;
   border-radius: var(--radius-4xl);
   border: 1px solid var(--input);
-  background-color: color-mix(in oklch, var(--input) 30%, transparent);
+  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
   /* Longhands so pl-* / pr-* / px-* utilities override cleanly */
   padding-block: 0.25rem;
   padding-left: 0.75rem;
@@ -388,7 +388,7 @@
   min-width: 0;
   border-radius: var(--radius-4xl);
   border: 1px solid var(--input);
-  background-color: color-mix(in oklch, var(--input) 30%, transparent);
+  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
   /* Longhands so pl-* / pr-* / px-* utilities override cleanly */
   padding-block: 0.25rem;
   padding-left: 0.75rem;
@@ -415,6 +415,212 @@
   pointer-events: none;
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* ——— Search input / search bar ——— */
+:where([data-df="search-input"]) {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+:where([data-df="search-input"] [data-df="input"]) {
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+/* Leading / trailing chrome */
+:where([data-df="search-input-leading"]) {
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 0.625rem;
+  z-index: 1;
+  display: flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+}
+:where([data-df="search-input-leading"] svg) {
+  width: 100%;
+  height: 100%;
+}
+:where([data-df="search-input-trailing"]) {
+  position: absolute;
+  top: 50%;
+  right: 0.375rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  transform: translateY(-50%);
+}
+:where([data-df="search-input-clear"]) {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: var(--muted-foreground);
+  transition: color 150ms, background-color 150ms;
+}
+:where([data-df="search-input-clear"]:hover) {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+:where([data-df="search-input-clear"] svg) {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* Default (md) padding + leading offset */
+[data-df="search-input"][data-has-leading] [data-df="input"].df-input {
+  padding-left: 2rem;
+}
+[data-df="search-input"][data-has-trailing] [data-df="input"].df-input {
+  padding-right: 2.25rem;
+}
+[data-df="search-input"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
+  padding-right: 4rem;
+}
+
+/* ——— Size: sm ——— */
+[data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
+  height: 2rem;
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  padding-block: 0.125rem;
+}
+[data-df="search-input"][data-size="sm"] [data-df="search-input-leading"] {
+  left: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+[data-df="search-input"][data-size="sm"][data-has-leading] [data-df="input"].df-input {
+  padding-left: 1.75rem;
+}
+[data-df="search-input"][data-size="sm"] [data-df="search-input-trailing"] {
+  right: 0.25rem;
+}
+[data-df="search-input"][data-size="sm"] [data-df="search-input-clear"] {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+[data-df="search-input"][data-size="sm"] [data-df="search-input-clear"] svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+[data-df="search-input"][data-size="sm"][data-has-trailing] [data-df="input"].df-input {
+  padding-right: 1.75rem;
+}
+[data-df="search-input"][data-size="sm"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
+  padding-right: 3.25rem;
+}
+
+/* ——— Size: md (default, matches prior chrome) ——— */
+[data-df="search-input"][data-size="md"] [data-df="input"].df-input {
+  height: 2.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* ——— Size: lg ——— */
+[data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
+  height: 2.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+  padding-block: 0.375rem;
+}
+[data-df="search-input"][data-size="lg"] [data-df="search-input-leading"] {
+  left: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+}
+[data-df="search-input"][data-size="lg"][data-has-leading] [data-df="input"].df-input {
+  padding-left: 2.5rem;
+}
+[data-df="search-input"][data-size="lg"] [data-df="search-input-trailing"] {
+  right: 0.5rem;
+}
+[data-df="search-input"][data-size="lg"] [data-df="search-input-clear"] {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+[data-df="search-input"][data-size="lg"] [data-df="search-input-clear"] svg {
+  width: 1rem;
+  height: 1rem;
+}
+[data-df="search-input"][data-size="lg"][data-has-trailing] [data-df="input"].df-input {
+  padding-right: 2.5rem;
+}
+[data-df="search-input"][data-size="lg"][data-state="filled"][data-clearable][data-has-trailing] [data-df="input"].df-input {
+  padding-right: 4.5rem;
+}
+
+/* Pill variant */
+[data-df="search-input"][data-variant="pill"] [data-df="input"].df-input {
+  border-radius: 9999px;
+  border-color: color-mix(in oklch, var(--border) 70%, var(--background));
+  background-color: color-mix(in oklch, var(--muted) 50%, var(--background));
+  box-shadow: none;
+}
+[data-df="search-input"][data-state="filled"][data-variant="pill"] [data-df="input"].df-input {
+  background-color: color-mix(in oklch, var(--muted) 70%, var(--background));
+  border-color: var(--border);
+}
+
+/* Focus — plain border to foreground */
+[data-df="search-input"] [data-df="input"].df-input:focus,
+[data-df="search-input"] [data-df="input"].df-input:focus-visible {
+  border-color: var(--foreground);
+  box-shadow: none;
+  outline: none;
+}
+
+:where([data-df="search-input"][data-state="placeholder"] [data-df="search-input-leading"]) {
+  color: var(--muted-foreground);
+}
+:where([data-df="search-input"][data-state="filled"] [data-df="search-input-leading"]) {
+  color: var(--foreground);
+}
+
+/* Mobile (< 640px): keep touch targets comfortable for sm/md */
+@media (max-width: 639px) {
+  [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
+    height: 2.25rem;
+    font-size: 0.875rem;
+  }
+  [data-df="search-input"][data-size="sm"] [data-df="search-input-leading"] {
+    width: 0.875rem;
+    height: 0.875rem;
+    left: 0.625rem;
+  }
+  [data-df="search-input"][data-size="sm"][data-has-leading] [data-df="input"].df-input {
+    padding-left: 2rem;
+  }
+}
+
+/* Wider screen (≥ 1920px / 3xl): slightly more room for md/lg chrome */
+@media (min-width: 1920px) {
+  [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
+    height: 2.5rem;
+    font-size: 0.9375rem;
+  }
+  [data-df="search-input"][data-size="md"] [data-df="search-input-leading"] {
+    left: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+  }
+  [data-df="search-input"][data-size="md"][data-has-leading] [data-df="input"].df-input {
+    padding-left: 2.5rem;
+  }
+  [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
+    height: 2.75rem;
+    font-size: 1rem;
+  }
 }
 
 /* ——— Label ——— */
@@ -875,7 +1081,7 @@
   gap: 0.375rem;
   border-radius: var(--radius-4xl);
   border: 1px solid var(--input);
-  background-color: color-mix(in oklch, var(--input) 30%, transparent);
+  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   white-space: nowrap;
