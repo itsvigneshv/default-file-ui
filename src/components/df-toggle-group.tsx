@@ -7,6 +7,7 @@ import { cn } from "../lib/utils"
 
 type ToggleVariant = "default" | "outline"
 type ToggleSize = "default" | "sm" | "lg"
+type ToggleRadius = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full"
 
 type ToggleGroupContextValue = {
   variant: ToggleVariant
@@ -29,6 +30,17 @@ const sizeClass: Record<ToggleSize, string> = {
   lg: "df-toggle-item-lg",
 }
 
+const radiusVar: Record<ToggleRadius, string> = {
+  sm: "var(--radius-sm)",
+  md: "var(--radius-md)",
+  lg: "var(--radius-lg)",
+  xl: "var(--radius-xl)",
+  "2xl": "var(--radius-2xl)",
+  "3xl": "var(--radius-3xl)",
+  "4xl": "var(--radius-4xl)",
+  full: "9999px",
+}
+
 type ToggleGroupProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "defaultValue" | "onChange"
@@ -36,6 +48,8 @@ type ToggleGroupProps = Omit<
   variant?: ToggleVariant
   size?: ToggleSize
   spacing?: number
+  /** Corner rounding for items (and connected group edges). Defaults to the pill radius. */
+  radius?: ToggleRadius
   orientation?: "horizontal" | "vertical"
   /** Allow more than one item pressed at a time. */
   multiple?: boolean
@@ -50,6 +64,7 @@ function ToggleGroup({
   variant = "default",
   size = "default",
   spacing = 2,
+  radius,
   orientation = "horizontal",
   multiple = false,
   value,
@@ -104,9 +119,15 @@ function ToggleGroup({
         data-variant={variant}
         data-size={size}
         data-spacing={spacing}
+        data-radius={radius}
         data-orientation={orientation}
         data-disabled={disabled ? "" : undefined}
-        style={{ "--gap": spacing } as React.CSSProperties}
+        style={
+          {
+            "--gap": spacing,
+            ...(radius ? { "--df-toggle-radius": radiusVar[radius] } : {}),
+          } as React.CSSProperties
+        }
         className={cn("df-toggle-group", className)}
         {...props}
       >
@@ -175,4 +196,10 @@ function ToggleGroupItem({
 }
 
 export { ToggleGroup, ToggleGroupItem }
-export type { ToggleGroupProps, ToggleGroupItemProps, ToggleVariant, ToggleSize }
+export type {
+  ToggleGroupProps,
+  ToggleGroupItemProps,
+  ToggleVariant,
+  ToggleSize,
+  ToggleRadius,
+}

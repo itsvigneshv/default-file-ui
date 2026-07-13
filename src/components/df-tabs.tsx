@@ -75,11 +75,45 @@ function Tabs({
 
 type TabsListProps = React.HTMLAttributes<HTMLDivElement>
 
+type IndicatorRect = { left: number; top: number; width: number; height: number }
+
 function TabsList({ className, children, ...props }: TabsListProps) {
-  const { variant, size } = useTabsContext()
+  const { variant, size, value } = useTabsContext()
+  const listRef = React.useRef<HTMLDivElement>(null)
+  const [indicator, setIndicator] = React.useState<IndicatorRect | null>(null)
+
+  React.useLayoutEffect(() => {
+    const list = listRef.current
+    if (!list) return
+
+    const measure = () => {
+      const active = list.querySelector<HTMLElement>(
+        '[data-df="tabs-trigger"][data-state="active"]'
+      )
+      if (!active) {
+        setIndicator(null)
+        return
+      }
+      setIndicator({
+        left: active.offsetLeft,
+        top: active.offsetTop,
+        width: active.offsetWidth,
+        height: active.offsetHeight,
+      })
+    }
+
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(list)
+    list
+      .querySelectorAll('[data-df="tabs-trigger"]')
+      .forEach((trigger) => observer.observe(trigger))
+    return () => observer.disconnect()
+  }, [variant, size, value])
 
   return (
     <div
+      ref={listRef}
       role="tablist"
       data-df="tabs-list"
       data-variant={variant}
@@ -87,6 +121,26 @@ function TabsList({ className, children, ...props }: TabsListProps) {
       className={cn("df-tabs-list", className)}
       {...props}
     >
+      {indicator ? (
+        <span
+          aria-hidden
+          data-df="tabs-indicator"
+          data-variant={variant}
+          className="df-tabs-indicator"
+          style={
+            variant === "line"
+              ? {
+                  transform: `translateX(${indicator.left}px)`,
+                  width: indicator.width,
+                }
+              : {
+                  transform: `translate(${indicator.left}px, ${indicator.top}px)`,
+                  width: indicator.width,
+                  height: indicator.height,
+                }
+          }
+        />
+      ) : null}
       {children}
     </div>
   )

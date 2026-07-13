@@ -22,6 +22,10 @@ type ButtonSize =
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
   size?: ButtonSize
+  /** Slot before the label — an icon or any node (badge, counter, avatar…). */
+  leading?: React.ReactNode
+  /** Slot after the label — an icon or any node (badge, counter, close…). */
+  trailing?: React.ReactNode
 }
 
 const sizeClass: Record<ButtonSize, string> = {
@@ -53,6 +57,9 @@ function Button({
   variant = "default",
   size = "default",
   type = "button",
+  leading,
+  trailing,
+  children,
   ...props
 }: ButtonProps) {
   return (
@@ -63,7 +70,29 @@ function Button({
       data-size={size}
       className={dfButtonClass({ variant, size, className })}
       {...props}
-    />
+    >
+      {leading != null && (
+        <span
+          className="df-btn-slot"
+          data-df="button-slot"
+          data-slot="leading"
+          data-icon="inline-start"
+        >
+          {leading}
+        </span>
+      )}
+      {children}
+      {trailing != null && (
+        <span
+          className="df-btn-slot"
+          data-df="button-slot"
+          data-slot="trailing"
+          data-icon="inline-end"
+        >
+          {trailing}
+        </span>
+      )}
+    </button>
   )
 }
 
