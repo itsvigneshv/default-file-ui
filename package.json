@@ -20,7 +20,7 @@
   "exports": {
     "./css/*": "./src/css/*",
     "./components": "./src/components/index.ts",
-    "./components/*": "./src/components/*",
+    "./components/*": "./src/components/*.tsx",
     "./hooks": "./src/hooks/index.ts",
     "./utils": "./src/lib/utils.ts",
     "./package.json": "./package.json"
