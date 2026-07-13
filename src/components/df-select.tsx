@@ -47,12 +47,17 @@ function Select({
     onChange: onValueChange,
   })
   const [open, setOpen] = React.useState(false)
+  const [, setLabelsVersion] = React.useState(0)
   const triggerRef = React.useRef<HTMLElement | null>(null)
   const labels = React.useRef(new Map<string, React.ReactNode>())
 
   const registerLabel = React.useCallback(
     (itemValue: string, label: React.ReactNode) => {
+      if (labels.current.get(itemValue) === label) return
       labels.current.set(itemValue, label)
+      // SelectValue reads labels from a ref; bump so the trigger re-renders
+      // once items have registered (they may mount before the menu opens).
+      setLabelsVersion((n) => n + 1)
     },
     []
   )
@@ -147,14 +152,22 @@ function SelectContent({
   children,
   side = "bottom",
   sideOffset = 4,
-  align = "center",
+  align = "start",
   alignOffset = 0,
   alignItemWithTrigger = true,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
   side?: "top" | "bottom" | "left" | "right"
   sideOffset?: number
-  align?: "start" | "center" | "end"
+  /**
+   * Horizontal anchor when the menu opens below/above the trigger
+   * (vertical when side is left/right).
+   * - `start` — left edge (top when side is left/right)
+   * - `center` — centered on the trigger
+   * - `end` — right edge (bottom when side is left/right)
+   * - `auto` — content-aware: flip side and pick the align that fits
+   */
+  align?: "start" | "center" | "end" | "auto"
   alignOffset?: number
   alignItemWithTrigger?: boolean
 }) {
@@ -165,7 +178,7 @@ function SelectContent({
     triggerRef,
     contentRef,
     side,
-    align: alignItemWithTrigger ? "start" : align,
+    align,
     sideOffset,
     alignOffset,
   })
@@ -174,13 +187,24 @@ function SelectContent({
 
   const mounted = useIsClient()
 
-  if (!open || !mounted) return null
+  if (!mounted) return null
+
+  // Keep items mounted while closed so SelectValue can resolve labels
+  // (value → "This year") without waiting for the first open.
+  if (!open) {
+    return (
+      <div hidden aria-hidden>
+        {children}
+      </div>
+    )
+  }
 
   return createPortal(
     <div
       ref={contentRef}
       role="listbox"
       data-df="select-content"
+      data-align={align}
       data-align-trigger={alignItemWithTrigger}
       className={cn(className)}
       style={{

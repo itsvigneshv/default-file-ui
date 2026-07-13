@@ -36,6 +36,23 @@ export type {
   ContentSwitcherProps,
   ContentSwitcherItemProps,
 } from "./df-content-switcher"
+export {
+  FloatingControls,
+  FloatingControlsItem,
+  FloatingControlsDivider,
+  FloatingControlsSlot,
+} from "./df-floating-controls"
+export type {
+  FloatingControlsProps,
+  FloatingControlsItemProps,
+  FloatingControlsDividerProps,
+  FloatingControlsSlotProps,
+  FloatingControlsVariant,
+  FloatingControlsEntry,
+  FloatingControlsItemEntry,
+  FloatingControlsDividerEntry,
+  FloatingControlsSlotEntry,
+} from "./df-floating-controls"
 export { ScrollArea, ScrollBar } from "./df-scroll-area"
 export {
   Popover,
@@ -64,6 +81,7 @@ export {
   SelectValue,
 } from "./df-select"
 export { ColorPicker } from "./df-color-picker"
+export type { ColorPickerProps, ColorPickerTrailing } from "./df-color-picker"
 export { Toaster, toast, setToastPosition } from "./df-toast"
 export type { ToastPosition, ToasterProps, ToastTone } from "./df-toast"
 export { NumberSlider } from "./df-number-slider"

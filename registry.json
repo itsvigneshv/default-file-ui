@@ -208,6 +208,16 @@
       "files": [
         { "path": "src/components/df-content-switcher.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-content-switcher.tsx" }
       ]
+    },
+    {
+      "name": "floating-controls",
+      "type": "registry:ui",
+      "title": "Floating Controls",
+      "description": "Modular action bar with configurable slots and dividers for tool chrome.",
+      "registryDependencies": ["foundation", "separator"],
+      "files": [
+        { "path": "src/components/df-floating-controls.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-floating-controls.tsx" }
+      ]
     }
   ]
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
+import { X } from "lucide-react"
 
 import { Input } from "./df-input"
 import {
@@ -189,11 +190,46 @@ function ChannelField({
   )
 }
 
+type ColorPickerTrailing = "hex" | "clear"
+
 type ColorPickerProps = {
   value: string
   onChange: (hex: string) => void
   label?: string
   className?: string
+  /**
+   * Pill chrome beside the swatch.
+   * - `hex` — show the value; the whole pill opens the picker
+   * - `clear` — show an X; the pill (minus X) opens the picker
+   * Omit for a swatch-only trigger.
+   */
+  trailing?: ColorPickerTrailing
+  /** Called when the clear (X) control is pressed. Required when `trailing="clear"`. */
+  onClear?: () => void
+  clearLabel?: string
+}
+
+function SwatchDot({
+  value,
+  className,
+}: {
+  value: string
+  className?: string
+}) {
+  return (
+    <span
+      className={cn(
+        "relative block size-4 shrink-0 overflow-hidden rounded-full ring-1 ring-black/10",
+        className
+      )}
+      aria-hidden
+    >
+      <span
+        className="absolute inset-0 rounded-full"
+        style={{ backgroundColor: value }}
+      />
+    </span>
+  )
 }
 
 export function ColorPicker({
@@ -201,6 +237,9 @@ export function ColorPicker({
   onChange,
   label = "Pick color",
   className,
+  trailing,
+  onClear,
+  clearLabel = "Remove color",
 }: ColorPickerProps) {
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<ColorMode>("hex")
@@ -281,6 +320,263 @@ export function ColorPicker({
 
   const pureHue = hsvToHex({ h: hsv.h, s: 1, v: 1 })
 
+  const popover = (
+    <PopoverContent
+      align="start"
+      side="bottom"
+      sideOffset={8}
+      className="w-[300px] gap-3 overflow-visible rounded-xl p-3 shadow-xl"
+    >
+      {/* Photoshop-style field: large SB window + vertical hue strip */}
+      <div className="flex shrink-0 gap-2.5" style={{ height: 220 }}>
+        <div
+          ref={svRef}
+          className="relative min-w-0 flex-1 cursor-crosshair touch-none overflow-hidden rounded-lg ring-1 ring-black/10"
+          style={{
+            height: 220,
+            backgroundColor: pureHue,
+            backgroundImage: `
+                linear-gradient(to top, #000, transparent),
+                linear-gradient(to right, #fff, transparent)
+              `,
+          }}
+          onPointerDown={bindDrag(updateSvFromPointer)}
+        >
+          <span
+            className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.45)]"
+            style={{
+              left: `${hsv.s * 100}%`,
+              top: `${(1 - hsv.v) * 100}%`,
+              backgroundColor: hex,
+            }}
+          />
+        </div>
+
+        <div
+          ref={hueRef}
+          className="relative shrink-0 cursor-ns-resize touch-none overflow-hidden rounded-lg ring-1 ring-black/10"
+          style={{
+            width: 20,
+            height: 220,
+            backgroundImage:
+              "linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)",
+          }}
+          onPointerDown={bindDrag(updateHueFromPointer)}
+        >
+          <span
+            className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.45)]"
+            style={{
+              top: `${(hsv.h / 360) * 100}%`,
+              backgroundColor: pureHue,
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span
+          className="size-9 shrink-0 rounded-lg ring-1 ring-black/10"
+          style={{ backgroundColor: hex }}
+          aria-hidden
+        />
+        <div
+          className="grid flex-1 grid-cols-4 gap-0.5 rounded-lg bg-muted p-0.5"
+          role="tablist"
+          aria-label="Color input mode"
+        >
+          {MODES.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={mode === item.id}
+              className={cn(
+                "rounded-md px-1 py-1.5 text-[10px] font-medium transition-colors",
+                mode === item.id
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              onClick={() => setMode(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {mode === "hex" ? (
+        <label className="flex flex-col gap-1">
+          <span className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+            Hex
+          </span>
+          <Input
+            value={hexDraft}
+            spellCheck={false}
+            aria-label="Hex color"
+            className="h-8 font-mono text-xs"
+            onChange={(event) => {
+              const next = event.target.value
+              setHexDraft(next)
+              const normalized = normalizeHex(next)
+              if (!normalized) return
+              setHsv(hexToHsv(normalized))
+              onChange(normalized)
+            }}
+            onBlur={() => {
+              const normalized = normalizeHex(hexDraft)
+              if (normalized) {
+                setHexDraft(normalized.toLowerCase())
+                return
+              }
+              setHexDraft(hex.toLowerCase())
+            }}
+          />
+        </label>
+      ) : null}
+
+      {mode === "rgb" ? (
+        <div className="flex gap-1.5">
+          <ChannelField
+            label="R"
+            value={round(rgb.r)}
+            min={0}
+            max={255}
+            onChange={(r) => commitRgb({ ...rgb, r })}
+          />
+          <ChannelField
+            label="G"
+            value={round(rgb.g)}
+            min={0}
+            max={255}
+            onChange={(g) => commitRgb({ ...rgb, g })}
+          />
+          <ChannelField
+            label="B"
+            value={round(rgb.b)}
+            min={0}
+            max={255}
+            onChange={(b) => commitRgb({ ...rgb, b })}
+          />
+        </div>
+      ) : null}
+
+      {mode === "hsl" ? (
+        <div className="flex gap-1.5">
+          <ChannelField
+            label="H"
+            value={round(hsl.h)}
+            min={0}
+            max={360}
+            onChange={(h) => commitHsl({ ...hsl, h })}
+          />
+          <ChannelField
+            label="S"
+            value={round(hsl.s * 100)}
+            min={0}
+            max={100}
+            onChange={(s) => commitHsl({ ...hsl, s: s / 100 })}
+          />
+          <ChannelField
+            label="L"
+            value={round(hsl.l * 100)}
+            min={0}
+            max={100}
+            onChange={(l) => commitHsl({ ...hsl, l: l / 100 })}
+          />
+        </div>
+      ) : null}
+
+      {mode === "hsb" ? (
+        <div className="flex gap-1.5">
+          <ChannelField
+            label="H"
+            value={round(hsv.h)}
+            min={0}
+            max={360}
+            onChange={(h) => commitHsv({ ...hsv, h })}
+          />
+          <ChannelField
+            label="S"
+            value={round(hsv.s * 100)}
+            min={0}
+            max={100}
+            onChange={(s) => commitHsv({ ...hsv, s: s / 100 })}
+          />
+          <ChannelField
+            label="B"
+            value={round(hsv.v * 100)}
+            min={0}
+            max={100}
+            onChange={(v) => commitHsv({ ...hsv, v: v / 100 })}
+          />
+        </div>
+      ) : null}
+    </PopoverContent>
+  )
+
+  if (trailing === "hex") {
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger
+          render={
+            <button
+              type="button"
+              aria-label={label}
+              className={cn(
+                "inline-flex h-8 w-fit shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 pl-1.5 pr-2.5 text-left leading-none transition-colors hover:border-neutral-300",
+                className
+              )}
+            />
+          }
+        >
+          <SwatchDot value={value} />
+          <span className="text-[11px] font-semibold uppercase leading-none tabular-nums text-neutral-700">
+            {value}
+          </span>
+        </PopoverTrigger>
+        {popover}
+      </Popover>
+    )
+  }
+
+  if (trailing === "clear") {
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <div
+          className={cn(
+            "inline-flex h-8 w-fit shrink-0 items-center gap-1 rounded-full border border-neutral-200 bg-neutral-50 pl-1.5 pr-0.5",
+            className
+          )}
+        >
+          <PopoverTrigger
+            render={
+              <button
+                type="button"
+                aria-label={label}
+                className="inline-flex min-h-0 min-w-0 flex-1 cursor-pointer items-center rounded-full py-1 pr-0.5 text-left leading-none"
+              />
+            }
+          >
+            <SwatchDot value={value} />
+          </PopoverTrigger>
+          <button
+            type="button"
+            className="flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700"
+            aria-label={clearLabel}
+            onClick={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              onClear?.()
+            }}
+          >
+            <X className="size-3" aria-hidden />
+          </button>
+        </div>
+        {popover}
+      </Popover>
+    )
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
@@ -301,198 +597,9 @@ export function ColorPicker({
           aria-hidden
         />
       </PopoverTrigger>
-
-      <PopoverContent
-        align="start"
-        side="bottom"
-        sideOffset={8}
-        className="w-[300px] gap-3 overflow-visible rounded-xl p-3 shadow-xl"
-      >
-        {/* Photoshop-style field: large SB window + vertical hue strip */}
-        <div className="flex shrink-0 gap-2.5" style={{ height: 220 }}>
-          <div
-            ref={svRef}
-            className="relative min-w-0 flex-1 cursor-crosshair touch-none overflow-hidden rounded-lg ring-1 ring-black/10"
-            style={{
-              height: 220,
-              backgroundColor: pureHue,
-              backgroundImage: `
-                linear-gradient(to top, #000, transparent),
-                linear-gradient(to right, #fff, transparent)
-              `,
-            }}
-            onPointerDown={bindDrag(updateSvFromPointer)}
-          >
-            <span
-              className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.45)]"
-              style={{
-                left: `${hsv.s * 100}%`,
-                top: `${(1 - hsv.v) * 100}%`,
-                backgroundColor: hex,
-              }}
-            />
-          </div>
-
-          <div
-            ref={hueRef}
-            className="relative shrink-0 cursor-ns-resize touch-none overflow-hidden rounded-lg ring-1 ring-black/10"
-            style={{
-              width: 20,
-              height: 220,
-              backgroundImage:
-                "linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)",
-            }}
-            onPointerDown={bindDrag(updateHueFromPointer)}
-          >
-            <span
-              className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.45)]"
-              style={{
-                top: `${(hsv.h / 360) * 100}%`,
-                backgroundColor: pureHue,
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span
-            className="size-9 shrink-0 rounded-lg ring-1 ring-black/10"
-            style={{ backgroundColor: hex }}
-            aria-hidden
-          />
-          <div
-            className="grid flex-1 grid-cols-4 gap-0.5 rounded-lg bg-muted p-0.5"
-            role="tablist"
-            aria-label="Color input mode"
-          >
-            {MODES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                role="tab"
-                aria-selected={mode === item.id}
-                className={cn(
-                  "rounded-md px-1 py-1.5 text-[10px] font-medium transition-colors",
-                  mode === item.id
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-                onClick={() => setMode(item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {mode === "hex" ? (
-          <label className="flex flex-col gap-1">
-            <span className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
-              Hex
-            </span>
-            <Input
-              value={hexDraft}
-              spellCheck={false}
-              aria-label="Hex color"
-              className="h-8 font-mono text-xs"
-              onChange={(event) => {
-                const next = event.target.value
-                setHexDraft(next)
-                const normalized = normalizeHex(next)
-                if (!normalized) return
-                setHsv(hexToHsv(normalized))
-                onChange(normalized)
-              }}
-              onBlur={() => {
-                const normalized = normalizeHex(hexDraft)
-                if (normalized) {
-                  setHexDraft(normalized.toLowerCase())
-                  return
-                }
-                setHexDraft(hex.toLowerCase())
-              }}
-            />
-          </label>
-        ) : null}
-
-        {mode === "rgb" ? (
-          <div className="flex gap-1.5">
-            <ChannelField
-              label="R"
-              value={round(rgb.r)}
-              min={0}
-              max={255}
-              onChange={(r) => commitRgb({ ...rgb, r })}
-            />
-            <ChannelField
-              label="G"
-              value={round(rgb.g)}
-              min={0}
-              max={255}
-              onChange={(g) => commitRgb({ ...rgb, g })}
-            />
-            <ChannelField
-              label="B"
-              value={round(rgb.b)}
-              min={0}
-              max={255}
-              onChange={(b) => commitRgb({ ...rgb, b })}
-            />
-          </div>
-        ) : null}
-
-        {mode === "hsl" ? (
-          <div className="flex gap-1.5">
-            <ChannelField
-              label="H"
-              value={round(hsl.h)}
-              min={0}
-              max={360}
-              onChange={(h) => commitHsl({ ...hsl, h })}
-            />
-            <ChannelField
-              label="S"
-              value={round(hsl.s * 100)}
-              min={0}
-              max={100}
-              onChange={(s) => commitHsl({ ...hsl, s: s / 100 })}
-            />
-            <ChannelField
-              label="L"
-              value={round(hsl.l * 100)}
-              min={0}
-              max={100}
-              onChange={(l) => commitHsl({ ...hsl, l: l / 100 })}
-            />
-          </div>
-        ) : null}
-
-        {mode === "hsb" ? (
-          <div className="flex gap-1.5">
-            <ChannelField
-              label="H"
-              value={round(hsv.h)}
-              min={0}
-              max={360}
-              onChange={(h) => commitHsv({ ...hsv, h })}
-            />
-            <ChannelField
-              label="S"
-              value={round(hsv.s * 100)}
-              min={0}
-              max={100}
-              onChange={(s) => commitHsv({ ...hsv, s: s / 100 })}
-            />
-            <ChannelField
-              label="B"
-              value={round(hsv.v * 100)}
-              min={0}
-              max={100}
-              onChange={(v) => commitHsv({ ...hsv, v: v / 100 })}
-            />
-          </div>
-        ) : null}
-      </PopoverContent>
+      {popover}
     </Popover>
   )
 }
+
+export type { ColorPickerProps, ColorPickerTrailing }

@@ -78,7 +78,93 @@ export function useDismiss(
 }
 
 type Side = "top" | "bottom" | "left" | "right"
-type Align = "start" | "center" | "end"
+/** Fixed anchors, or `auto` to pick the fit that stays in view. */
+type Align = "start" | "center" | "end" | "auto"
+
+type ResolvedAlign = "start" | "center" | "end"
+
+function oppositeSide(side: Side): Side {
+  if (side === "top") return "bottom"
+  if (side === "bottom") return "top"
+  if (side === "left") return "right"
+  return "left"
+}
+
+function overflowX(left: number, width: number, vw: number, pad: number) {
+  return Math.max(0, pad - left) + Math.max(0, left + width - (vw - pad))
+}
+
+function overflowY(top: number, height: number, vh: number, pad: number) {
+  return Math.max(0, pad - top) + Math.max(0, top + height - (vh - pad))
+}
+
+function resolveSide(
+  preferred: Side,
+  t: DOMRect,
+  c: { width: number; height: number },
+  vw: number,
+  vh: number,
+  pad: number,
+  sideOffset: number,
+  contentAware: boolean
+): Side {
+  if (!contentAware) return preferred
+
+  const space = {
+    bottom: vh - pad - (t.bottom + sideOffset),
+    top: t.top - pad - sideOffset,
+    right: vw - pad - (t.right + sideOffset),
+    left: t.left - pad - sideOffset,
+  }
+
+  const needed =
+    preferred === "top" || preferred === "bottom" ? c.height : c.width
+  if (space[preferred] >= needed) return preferred
+
+  const flip = oppositeSide(preferred)
+  if (space[flip] > space[preferred]) return flip
+  return preferred
+}
+
+function pickCrossAlign(
+  preferred: Align,
+  t: DOMRect,
+  contentSize: number,
+  viewport: number,
+  pad: number,
+  axis: "x" | "y"
+): ResolvedAlign {
+  if (preferred !== "auto") return preferred
+
+  const candidates: Array<{ align: ResolvedAlign; origin: number }> =
+    axis === "x"
+      ? [
+          { align: "start", origin: t.left },
+          { align: "center", origin: t.left + t.width / 2 - contentSize / 2 },
+          { align: "end", origin: t.right - contentSize },
+        ]
+      : [
+          { align: "start", origin: t.top },
+          { align: "center", origin: t.top + t.height / 2 - contentSize / 2 },
+          { align: "end", origin: t.bottom - contentSize },
+        ]
+
+  let best: ResolvedAlign = "center"
+  let bestScore = Number.POSITIVE_INFINITY
+  for (const candidate of candidates) {
+    const score =
+      axis === "x"
+        ? overflowX(candidate.origin, contentSize, viewport, pad)
+        : overflowY(candidate.origin, contentSize, viewport, pad)
+    // Prefer center on ties so auto feels balanced when space allows.
+    const tieBreak = candidate.align === "center" ? -0.1 : 0
+    if (score + tieBreak < bestScore) {
+      best = candidate.align
+      bestScore = score + tieBreak
+    }
+  }
+  return best
+}
 
 export function useAnchoredPosition({
   open,
@@ -117,16 +203,32 @@ export function useAnchoredPosition({
     const pad = 8
     const vw = window.innerWidth
     const vh = window.innerHeight
+    const contentAware = align === "auto"
+
+    const resolvedSide = resolveSide(
+      side,
+      t,
+      c,
+      vw,
+      vh,
+      pad,
+      sideOffset,
+      contentAware
+    )
+
+    const resolvedAlign =
+      resolvedSide === "left" || resolvedSide === "right"
+        ? pickCrossAlign(align, t, c.height, vh, pad, "y")
+        : pickCrossAlign(align, t, c.width, vw, pad, "x")
 
     let top = 0
-    if (side === "bottom") top = t.bottom + sideOffset
-    if (side === "top") top = t.top - c.height - sideOffset
-    if (side === "left" || side === "right") {
-      // Vertical alignment along a horizontal side.
-      if (align === "start") top = t.top + alignOffset
-      if (align === "center")
+    if (resolvedSide === "bottom") top = t.bottom + sideOffset
+    if (resolvedSide === "top") top = t.top - c.height - sideOffset
+    if (resolvedSide === "left" || resolvedSide === "right") {
+      if (resolvedAlign === "start") top = t.top + alignOffset
+      if (resolvedAlign === "center")
         top = t.top + t.height / 2 - c.height / 2 + alignOffset
-      if (align === "end") top = t.bottom - c.height + alignOffset
+      if (resolvedAlign === "end") top = t.bottom - c.height + alignOffset
     }
 
     if (top < pad) top = pad
@@ -143,9 +245,11 @@ export function useAnchoredPosition({
       ["--anchor-width" as string]: `${t.width}px`,
     }
 
-    if (side === "left" || side === "right") {
+    if (resolvedSide === "left" || resolvedSide === "right") {
       let left =
-        side === "left" ? t.left - c.width - sideOffset : t.right + sideOffset
+        resolvedSide === "left"
+          ? t.left - c.width - sideOffset
+          : t.right + sideOffset
       if (left < pad) left = pad
       if (left + c.width > vw - pad) {
         left = Math.max(pad, vw - c.width - pad)
@@ -156,7 +260,7 @@ export function useAnchoredPosition({
 
     // Top / bottom: pin with left or right so growing content keeps the
     // aligned edge glued to the trigger (end → grows left, not past Export).
-    if (align === "end") {
+    if (resolvedAlign === "end") {
       let right = vw - t.right - alignOffset
       const leftEdge = vw - right - c.width
       if (leftEdge < pad) {
@@ -167,7 +271,7 @@ export function useAnchoredPosition({
     }
 
     let left =
-      align === "start"
+      resolvedAlign === "start"
         ? t.left + alignOffset
         : t.left + t.width / 2 - c.width / 2 + alignOffset
     if (left < pad) left = pad
@@ -210,3 +314,5 @@ export function useAnchoredPosition({
 
   return style
 }
+
+export type { Align, Side }
