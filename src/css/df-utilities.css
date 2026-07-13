@@ -791,6 +791,10 @@
   line-height: 1.625;
 }
 
+.left-1\/2 {
+  left: 50%;
+}
+
 .left-\[2\%\] {
   left: 2%;
 }
@@ -2362,7 +2366,7 @@
 }
 
 @media (min-width: 1920px) {
-.3xl\:max-w-2xl {
+.\33 xl\:max-w-2xl {
   max-width: 42rem;
 }
 }

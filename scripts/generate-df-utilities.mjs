@@ -170,8 +170,28 @@ function isGradientOrImage(value) {
   )
 }
 
+/**
+ * Escape a class name for use in a CSS selector.
+ * Leading digits must use hex escapes (e.g. 3xl → \33 xl) — CSS forbids
+ * identifiers that start with a digit. Always terminate the hex escape with a
+ * space so the next character is never consumed as part of the escape.
+ */
 function escapeClass(name) {
-  return name.replace(/([^a-zA-Z0-9_-])/g, "\\$1")
+  let out = ""
+  for (let i = 0; i < name.length; i++) {
+    const ch = name[i]
+    const code = ch.charCodeAt(0)
+    if (i === 0 && code >= 48 && code <= 57) {
+      out += `\\${code.toString(16)} `
+      continue
+    }
+    if (/[^a-zA-Z0-9_-]/.test(ch)) {
+      out += `\\${ch}`
+      continue
+    }
+    out += ch
+  }
+  return out
 }
 
 /**
