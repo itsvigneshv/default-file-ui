@@ -54,6 +54,7 @@ function rgbToHex(r: number, g: number, b: number) {
     Math.round(clamp(n, 0, 255))
       .toString(16)
       .padStart(2, "0")
+      .toUpperCase()
   return `#${to(r)}${to(g)}${to(b)}`
 }
 
@@ -244,14 +245,14 @@ export function ColorPicker({
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<ColorMode>("hex")
   const [hsv, setHsv] = useState(() => hexToHsv(value))
-  const [hexDraft, setHexDraft] = useState(value.toLowerCase())
+  const [hexDraft, setHexDraft] = useState(value.toUpperCase())
   const svRef = useRef<HTMLDivElement>(null)
   const hueRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (open) return
     setHsv(hexToHsv(value))
-    setHexDraft(value.toLowerCase())
+    setHexDraft(value.toUpperCase())
   }, [value, open])
 
   const rgb = useMemo(
@@ -272,7 +273,7 @@ export function ColorPicker({
     }
     setHsv(safe)
     const nextHex = hsvToHex(safe)
-    setHexDraft(nextHex.toLowerCase())
+    setHexDraft(nextHex)
     onChange(nextHex)
   }
 
@@ -327,7 +328,7 @@ export function ColorPicker({
       sideOffset={8}
       className="w-[300px] gap-3 overflow-visible rounded-xl p-3 shadow-xl"
     >
-      {/* Photoshop-style field: large SB window + vertical hue strip */}
+      {/* Saturation–brightness panel with vertical hue strip */}
       <div className="flex shrink-0 gap-2.5" style={{ height: 220 }}>
         <div
           ref={svRef}
@@ -413,9 +414,9 @@ export function ColorPicker({
             value={hexDraft}
             spellCheck={false}
             aria-label="Hex color"
-            className="h-8 font-mono text-xs"
+            className="h-8 font-mono text-xs uppercase"
             onChange={(event) => {
-              const next = event.target.value
+              const next = event.target.value.toUpperCase()
               setHexDraft(next)
               const normalized = normalizeHex(next)
               if (!normalized) return
@@ -425,10 +426,10 @@ export function ColorPicker({
             onBlur={() => {
               const normalized = normalizeHex(hexDraft)
               if (normalized) {
-                setHexDraft(normalized.toLowerCase())
+                setHexDraft(normalized)
                 return
               }
-              setHexDraft(hex.toLowerCase())
+              setHexDraft(hex)
             }}
           />
         </label>

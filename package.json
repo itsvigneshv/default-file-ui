@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Default File UI: owned design system for color scales, tokens, components, motion, and an installable copy-source registry.",
   "license": "MIT",
+  "author": "Vignesh V",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/itsvigneshv/default-file-ui.git"

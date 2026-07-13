@@ -69,8 +69,39 @@ export {
 } from "./df-tooltip"
 export type { TooltipVariant } from "./df-tooltip"
 export {
+  OptionList,
+  OptionListBody,
+  OptionListContent,
+  OptionListFooter,
+  OptionListGroup,
+  OptionListItem,
+  OptionListLabel,
+  OptionListScrollDownButton,
+  OptionListScrollUpButton,
+  OptionListSearch,
+  OptionListSeparator,
+  OptionListSubContent,
+  OptionListSubmenu,
+  OptionListTrigger,
+  useOptionListContext,
+} from "./df-option-list"
+export type {
+  OptionListContentProps,
+  OptionListItemLayout,
+  OptionListItemProps,
+  OptionListProps,
+  OptionListSearchProps,
+  OptionListSubContentProps,
+  OptionListSubmenuProps,
+  SelectionMode,
+} from "./df-option-list"
+export {
   Select,
   SelectContent,
+  SelectField,
+  SelectFieldHelp,
+  SelectFieldHint,
+  SelectFieldLabel,
   SelectGroup,
   SelectItem,
   SelectLabel,
@@ -79,7 +110,10 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  SelectValueBadge,
+  SelectValueSummary,
 } from "./df-select"
+export type { SelectSize, SelectValueRenderContext } from "./df-select"
 export { ColorPicker } from "./df-color-picker"
 export type { ColorPickerProps, ColorPickerTrailing } from "./df-color-picker"
 export { Toaster, toast, setToastPosition } from "./df-toast"

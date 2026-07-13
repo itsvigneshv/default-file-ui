@@ -1,8 +1,4 @@
-/* Default File UI - base reset
- *
- * Element defaults use :where() so specificity stays 0 and does not beat
- * component [data-df] rules or utility classes.
- */
+/* Default File UI — base reset */
 
 :where(*, *::before, *::after) {
   box-sizing: border-box;
@@ -29,7 +25,7 @@ body {
   max-width: 100%;
 }
 
-/* Canvas must not get max-width - WebGL backing-store width would shrink the stage */
+/* Canvas keeps its own width for WebGL backing stores */
 :where(canvas) {
   display: block;
 }

@@ -37,6 +37,7 @@ export function useIsClient() {
 
 /** Portaled pickers that can open inside another dismiss surface (e.g. popover). */
 export const DISMISS_NESTED_LAYER_SELECTORS = [
+  '[data-df="option-list-content"]',
   '[data-df="select-content"]',
 ] as const
 
@@ -175,6 +176,8 @@ export function useAnchoredPosition({
   sideOffset = 4,
   alignOffset = 0,
   matchTriggerWidth = true,
+  /** Flip to the opposite side when the preferred side does not fit. */
+  collisionAvoidance = false,
 }: {
   open: boolean
   triggerRef: React.RefObject<HTMLElement | null>
@@ -185,6 +188,7 @@ export function useAnchoredPosition({
   alignOffset?: number
   /** When false, content sizes to itself (tooltips). Default true for menus/popovers. */
   matchTriggerWidth?: boolean
+  collisionAvoidance?: boolean
 }) {
   const [style, setStyle] = useState<React.CSSProperties>({
     position: "fixed",
@@ -201,9 +205,11 @@ export function useAnchoredPosition({
     const t = trigger.getBoundingClientRect()
     const c = content.getBoundingClientRect()
     const pad = 8
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    const contentAware = align === "auto"
+    // clientWidth/Height match the fixed containing block; innerWidth includes
+    // the scrollbar and shifts `right`-based math off the trigger edge.
+    const vw = document.documentElement.clientWidth
+    const vh = document.documentElement.clientHeight
+    const contentAware = align === "auto" || collisionAvoidance
 
     const resolvedSide = resolveSide(
       side,
@@ -231,15 +237,35 @@ export function useAnchoredPosition({
       if (resolvedAlign === "end") top = t.bottom - c.height + alignOffset
     }
 
-    if (top < pad) top = pad
-    if (top + c.height > vh - pad) {
-      top = Math.max(pad, vh - c.height - pad)
+    // Keep panels from sliding over the trigger when the viewport is short.
+    // Prefer a max-height cap (menus scroll) over covering the control.
+    let maxHeight: number | undefined
+    if (resolvedSide === "bottom") {
+      const available = vh - pad - top
+      if (c.height > available) {
+        maxHeight = Math.max(96, available)
+      }
+    } else if (resolvedSide === "top") {
+      if (top < pad) {
+        maxHeight = Math.max(96, t.top - pad - sideOffset)
+        top = pad
+      }
+    } else {
+      if (top < pad) top = pad
+      if (top + c.height > vh - pad) {
+        top = Math.max(pad, vh - c.height - pad)
+      }
     }
 
     const base: React.CSSProperties = {
       position: "fixed",
       top,
-      ...(matchTriggerWidth ? { minWidth: t.width } : null),
+      // Always at least as wide as the trigger; exact match is opt-in.
+      minWidth: t.width,
+      ...(matchTriggerWidth
+        ? { width: t.width, maxWidth: t.width }
+        : null),
+      ...(maxHeight != null ? { maxHeight } : null),
       zIndex: 50,
       visibility: "visible",
       ["--anchor-width" as string]: `${t.width}px`,
@@ -258,8 +284,10 @@ export function useAnchoredPosition({
       return
     }
 
-    // Top / bottom: pin with left or right so growing content keeps the
-    // aligned edge glued to the trigger (end → grows left, not past Export).
+    // Top / bottom horizontal anchors.
+    // End uses CSS `right` so content grows left as it sizes, staying glued to
+    // the trigger's right edge. Must use clientWidth (not innerWidth) or a
+    // scrollbar shifts the menu left of the trigger.
     if (resolvedAlign === "end") {
       let right = vw - t.right - alignOffset
       const leftEdge = vw - right - c.width
@@ -274,14 +302,18 @@ export function useAnchoredPosition({
       resolvedAlign === "start"
         ? t.left + alignOffset
         : t.left + t.width / 2 - c.width / 2 + alignOffset
-    if (left < pad) left = pad
-    if (left + c.width > vw - pad) {
-      left = Math.max(pad, vw - c.width - pad)
+    // When matching trigger width, stay glued — do not slide for overflow.
+    if (!matchTriggerWidth) {
+      if (left < pad) left = pad
+      if (left + c.width > vw - pad) {
+        left = Math.max(pad, vw - c.width - pad)
+      }
     }
     setStyle({ ...base, left, right: "auto" })
   }, [
     align,
     alignOffset,
+    collisionAvoidance,
     contentRef,
     matchTriggerWidth,
     side,
@@ -298,11 +330,13 @@ export function useAnchoredPosition({
     window.addEventListener("scroll", onScroll, true)
 
     const content = contentRef.current
+    const trigger = triggerRef.current
     const ro =
-      content && typeof ResizeObserver !== "undefined"
+      typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(() => update())
         : null
     if (content && ro) ro.observe(content)
+    if (trigger && ro) ro.observe(trigger)
 
     return () => {
       window.cancelAnimationFrame(raf)
@@ -310,7 +344,7 @@ export function useAnchoredPosition({
       window.removeEventListener("scroll", onScroll, true)
       ro?.disconnect()
     }
-  }, [open, update, contentRef])
+  }, [contentRef, open, triggerRef, update])
 
   return style
 }

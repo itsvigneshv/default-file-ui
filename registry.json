@@ -124,11 +124,22 @@
       ]
     },
     {
+      "name": "option-list",
+      "type": "registry:ui",
+      "title": "Option List",
+      "description": "Open panel and option rows for pickers. Select composes this list.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["foundation", "search-input", "scroll-area"],
+      "files": [
+        { "path": "src/components/df-option-list.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-option-list.tsx" }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["foundation"],
+      "registryDependencies": ["foundation", "option-list", "label"],
       "files": [
         { "path": "src/components/df-select.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-select.tsx" }
       ]

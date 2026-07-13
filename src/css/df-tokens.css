@@ -1,13 +1,6 @@
-/* Default File UI - design tokens
- *
- * Color ramps live in df-color-scales.css (compact | detailed).
- * Semantic tokens below map onto --df-neutral-* / --df-brand-*.
- */
+/* Default File UI — design tokens */
 
 :root {
-  /* Active scale mode is set on <html data-df-color-scale="…">.
-     Default (no attribute / detailed) uses the fine ramp. */
-
   /* --- Semantic surface / content (neutral ramp) --- */
   --background: var(--df-neutral-0);
   --foreground: var(--df-neutral-900);
@@ -53,8 +46,7 @@
   --sidebar-ring: var(--df-neutral-400);
 }
 
-/* Compact mode: steps like 850 / 20 may be missing - fall back already in var().
-   Remap a few semantics to guaranteed compact stops. */
+/* Compact mode semantic remaps */
 [data-df-color-scale="compact"] {
   --primary: var(--df-neutral-900);
   --primary-foreground: var(--df-neutral-0);

@@ -19,7 +19,6 @@ function Separator({
       aria-orientation={decorative ? undefined : orientation}
       data-df="separator"
       data-orientation={orientation}
-      // Compat with pre-migration data-vertical:* utilities
       data-vertical={orientation === "vertical" ? "" : undefined}
       data-horizontal={orientation === "horizontal" ? "" : undefined}
       className={cn(className)}

@@ -1,9 +1,8 @@
 /**
- * Default File UI theme bible - owned spacing, type, color, and effect scales.
+ * Default File UI theme — spacing, type, color, and effect scales.
  *
- * Colors: semantic tokens + `--df-neutral-*` (compact/detailed via
- * `data-df-color-scale` on <html>). Compat `zinc-*` / `gray-*` aliases map to the
- * same DF neutral ramp so tool chrome follows scale mode without JSX renames.
+ * Colors: semantic tokens + `--df-neutral-*` via `data-df-color-scale` on <html>.
+ * `zinc-*` / `gray-*` aliases map to the DF neutral ramp.
  */
 
 /** Compact-friendly + detailed steps used by utility color maps. */
@@ -172,7 +171,7 @@ export const SHADOW = {
   DEFAULT: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
 }
 
-/** Named shadows kept from pre-migration static map. */
+/** Named shadow aliases. */
 export const SHADOW_COMPAT = {
   sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
   md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
