@@ -114,6 +114,16 @@
       ]
     },
     {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Compact pill and detailed rounded-square labels on hover and focus.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-tooltip.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-tooltip.tsx" }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",

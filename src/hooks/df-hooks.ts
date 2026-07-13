@@ -88,6 +88,7 @@ export function useAnchoredPosition({
   align = "center",
   sideOffset = 4,
   alignOffset = 0,
+  matchTriggerWidth = true,
 }: {
   open: boolean
   triggerRef: React.RefObject<HTMLElement | null>
@@ -96,6 +97,8 @@ export function useAnchoredPosition({
   align?: Align
   sideOffset?: number
   alignOffset?: number
+  /** When false, content sizes to itself (tooltips). Default true for menus/popovers. */
+  matchTriggerWidth?: boolean
 }) {
   const [style, setStyle] = useState<React.CSSProperties>({
     position: "fixed",
@@ -134,7 +137,7 @@ export function useAnchoredPosition({
     const base: React.CSSProperties = {
       position: "fixed",
       top,
-      minWidth: t.width,
+      ...(matchTriggerWidth ? { minWidth: t.width } : null),
       zIndex: 50,
       visibility: "visible",
       ["--anchor-width" as string]: `${t.width}px`,
@@ -172,7 +175,15 @@ export function useAnchoredPosition({
       left = Math.max(pad, vw - c.width - pad)
     }
     setStyle({ ...base, left, right: "auto" })
-  }, [align, alignOffset, contentRef, side, sideOffset, triggerRef])
+  }, [
+    align,
+    alignOffset,
+    contentRef,
+    matchTriggerWidth,
+    side,
+    sideOffset,
+    triggerRef,
+  ])
 
   useEffect(() => {
     if (!open) return

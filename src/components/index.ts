@@ -46,6 +46,12 @@ export {
   PopoverTrigger,
 } from "./df-popover"
 export {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./df-tooltip"
+export type { TooltipVariant } from "./df-tooltip"
+export {
   Select,
   SelectContent,
   SelectGroup,
