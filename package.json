@@ -12,7 +12,12 @@
   "sideEffects": [
     "**/*.css"
   ],
+  "bin": {
+    "default-file-ui": "./bin/default-file-ui.mjs",
+    "df-ui": "./bin/default-file-ui.mjs"
+  },
   "files": [
+    "bin",
     "src",
     "public/r",
     "registry.json",
@@ -30,7 +35,8 @@
     "df:colors": "node scripts/generate-df-color-scales.mjs",
     "df:utilities": "node scripts/generate-df-utilities.mjs",
     "df:tokens": "npm run df:colors && npm run df:utilities",
-    "df:registry": "node scripts/build-df-registry.mjs"
+    "df:registry": "node scripts/build-df-registry.mjs",
+    "df:cli": "node bin/default-file-ui.mjs"
   },
   "peerDependencies": {
     "lucide-react": ">=0.400.0",
