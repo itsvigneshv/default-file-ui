@@ -476,6 +476,60 @@
   height: 0.625rem;
 }
 
+/* --- Choice Chip --- */
+:where([data-df="choice-chip"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: none;
+  border-radius: 9999px;
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 150ms, background-color 150ms;
+}
+
+:where([data-df="choice-chip"]:hover) {
+  color: var(--foreground);
+}
+
+:where([data-df="choice-chip"][data-selected="true"]) {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+:where([data-df="choice-chip"][data-selected="true"]:hover) {
+  color: var(--primary-foreground);
+}
+
+:where([data-df="choice-chip"]:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-df="choice-chip"][data-size="sm"]) {
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  font-size: 0.6875rem;
+}
+
+:where([data-df="choice-chip"][data-size="md"]) {
+  height: 1.75rem;
+  padding: 0 0.625rem;
+  font-size: 0.75rem;
+}
+
+:where([data-df="choice-chip"][data-size="lg"]) {
+  height: 2.25rem;
+  padding: 0 0.875rem;
+  font-size: 0.875rem;
+}
+
 /* --- Input --- */
 :where([data-df="input"]) {
   height: 2.25rem;
@@ -1492,6 +1546,42 @@
   color: var(--muted-foreground);
 }
 
+/* --- Options Panel --- */
+:where([data-df="options-panel-content"]) {
+  z-index: 50;
+  display: flex;
+  width: fit-content;
+  max-width: calc(100vw - 2rem);
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  background-color: var(--popover);
+  padding: 0;
+  color: var(--popover-foreground);
+  box-shadow:
+    0 25px 50px -12px rgb(0 0 0 / 0.25),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+  outline: none;
+}
+
+:where([data-df="options-panel-content"][data-portal="false"]) {
+  isolation: isolate;
+  z-index: auto;
+}
+
+:where([data-df="options-panel-header"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+:where([data-df="options-panel-title"]) {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
 /* --- Option List --- */
 :where([data-df="option-list"]) {
   position: relative;
@@ -2307,8 +2397,74 @@
   position: relative;
   gap: 0;
   padding: 0.125rem;
-  border-radius: 9999px;
   background-color: color-mix(in oklch, var(--muted) 70%, transparent);
+}
+
+:where([data-df="tabs-list"][data-variant="segment"]),
+.df-tabs-list[data-variant="segment"] {
+  position: relative;
+  display: flex;
+  width: 100%;
+  gap: 0.125rem;
+  padding: 0.125rem;
+  background-color: var(--muted);
+}
+
+/* Shared radius tokens for pill / segment list, chip, and triggers */
+:where([data-df="tabs-list"][data-radius="none"]),
+.df-tabs-list[data-radius="none"],
+.df-tabs-indicator[data-radius="none"],
+:where([data-df="tabs-trigger"][data-radius="none"]),
+.df-tabs-trigger[data-radius="none"] {
+  border-radius: 0;
+}
+
+:where([data-df="tabs-list"][data-radius="sm"]),
+.df-tabs-list[data-radius="sm"],
+.df-tabs-indicator[data-radius="sm"],
+:where([data-df="tabs-trigger"][data-radius="sm"]),
+.df-tabs-trigger[data-radius="sm"] {
+  border-radius: var(--radius-sm);
+}
+
+:where([data-df="tabs-list"][data-radius="md"]),
+.df-tabs-list[data-radius="md"],
+.df-tabs-indicator[data-radius="md"],
+:where([data-df="tabs-trigger"][data-radius="md"]),
+.df-tabs-trigger[data-radius="md"] {
+  border-radius: var(--radius-md);
+}
+
+:where([data-df="tabs-list"][data-radius="lg"]),
+.df-tabs-list[data-radius="lg"],
+.df-tabs-indicator[data-radius="lg"],
+:where([data-df="tabs-trigger"][data-radius="lg"]),
+.df-tabs-trigger[data-radius="lg"] {
+  border-radius: var(--radius-lg);
+}
+
+:where([data-df="tabs-list"][data-radius="xl"]),
+.df-tabs-list[data-radius="xl"],
+.df-tabs-indicator[data-radius="xl"],
+:where([data-df="tabs-trigger"][data-radius="xl"]),
+.df-tabs-trigger[data-radius="xl"] {
+  border-radius: var(--radius-xl);
+}
+
+:where([data-df="tabs-list"][data-radius="2xl"]),
+.df-tabs-list[data-radius="2xl"],
+.df-tabs-indicator[data-radius="2xl"],
+:where([data-df="tabs-trigger"][data-radius="2xl"]),
+.df-tabs-trigger[data-radius="2xl"] {
+  border-radius: var(--radius-2xl);
+}
+
+:where([data-df="tabs-list"][data-radius="full"]),
+.df-tabs-list[data-radius="full"],
+.df-tabs-indicator[data-radius="full"],
+:where([data-df="tabs-trigger"][data-radius="full"]),
+.df-tabs-trigger[data-radius="full"] {
+  border-radius: 9999px;
 }
 
 /* Sliding active indicator */
@@ -2325,7 +2481,12 @@
 /* Pill: floating chip behind the active trigger */
 .df-tabs-indicator[data-variant="pill"] {
   z-index: 0;
-  border-radius: 9999px;
+  background-color: var(--background);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+/* Segment: compact rounded chip for dense mode switchers */
+.df-tabs-indicator[data-variant="segment"] {
+  z-index: 0;
   background-color: var(--background);
   box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
 }
@@ -2334,6 +2495,7 @@
   top: auto;
   bottom: -1px;
   height: 2px;
+  border-radius: 0;
   background-color: var(--foreground);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2379,11 +2541,49 @@
   cursor: not-allowed;
 }
 
+:where([data-df="tabs-trigger-leading"]),
+.df-tabs-trigger-leading,
+:where([data-df="tabs-trigger-trailing"]),
+.df-tabs-trigger-trailing {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+:where([data-df="tabs-trigger-leading"] svg),
+.df-tabs-trigger-leading svg,
+:where([data-df="tabs-trigger"] > svg),
+.df-tabs-trigger > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+:where([data-df="tabs-trigger"][data-size="sm"] [data-df="tabs-trigger-leading"] svg),
+:where([data-df="tabs-trigger"][data-size="sm"] > svg),
+.df-tabs-trigger[data-size="sm"] .df-tabs-trigger-leading svg,
+.df-tabs-trigger[data-size="sm"] > svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+:where([data-df="tabs-trigger"][data-size="lg"] [data-df="tabs-trigger-leading"] svg),
+:where([data-df="tabs-trigger"][data-size="lg"] > svg),
+.df-tabs-trigger[data-size="lg"] .df-tabs-trigger-leading svg,
+.df-tabs-trigger[data-size="lg"] > svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+:where([data-df="tabs-trigger-trailing"] [data-df="badge"]),
+.df-tabs-trigger-trailing [data-df="badge"] {
+  pointer-events: none;
+}
+
 :where([data-df="tabs-trigger"][data-variant="pill"]),
 .df-tabs-trigger[data-variant="pill"] {
   position: relative;
   z-index: 1;
-  border-radius: 9999px;
 }
 
 :where([data-df="tabs-trigger"][data-variant="pill"]:hover:not(:disabled)),
@@ -2393,6 +2593,24 @@
 
 :where([data-df="tabs-trigger"][data-variant="pill"][data-state="active"]),
 .df-tabs-trigger[data-variant="pill"][data-state="active"] {
+  color: var(--foreground);
+}
+
+:where([data-df="tabs-trigger"][data-variant="segment"]),
+.df-tabs-trigger[data-variant="segment"] {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+:where([data-df="tabs-trigger"][data-variant="segment"]:hover:not(:disabled)),
+.df-tabs-trigger[data-variant="segment"]:hover:not(:disabled) {
+  color: var(--foreground);
+}
+
+:where([data-df="tabs-trigger"][data-variant="segment"][data-state="active"]),
+.df-tabs-trigger[data-variant="segment"][data-state="active"] {
   color: var(--foreground);
 }
 
@@ -2423,6 +2641,15 @@
   font-size: 0.75rem;
 }
 
+:where([data-df="tabs-trigger"][data-variant="segment"][data-size="sm"]),
+.df-tabs-trigger[data-variant="segment"][data-size="sm"] {
+  height: auto;
+  min-height: 1.625rem;
+  padding-block: 0.375rem;
+  padding-inline: 0.25rem;
+  font-size: 0.625rem;
+}
+
 :where([data-df="tabs-trigger"][data-size="default"]),
 .df-tabs-trigger[data-size="default"] {
   height: 2rem;
@@ -2430,10 +2657,28 @@
   font-size: 0.875rem;
 }
 
+:where([data-df="tabs-trigger"][data-variant="segment"][data-size="default"]),
+.df-tabs-trigger[data-variant="segment"][data-size="default"] {
+  height: auto;
+  min-height: 1.875rem;
+  padding-block: 0.4375rem;
+  padding-inline: 0.5rem;
+  font-size: 0.75rem;
+}
+
 :where([data-df="tabs-trigger"][data-size="lg"]),
 .df-tabs-trigger[data-size="lg"] {
   height: 2.25rem;
   padding-inline: 1rem;
+  font-size: 0.875rem;
+}
+
+:where([data-df="tabs-trigger"][data-variant="segment"][data-size="lg"]),
+.df-tabs-trigger[data-variant="segment"][data-size="lg"] {
+  height: auto;
+  min-height: 2.25rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem;
   font-size: 0.875rem;
 }
 

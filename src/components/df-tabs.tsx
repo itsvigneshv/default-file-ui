@@ -5,14 +5,27 @@ import * as React from "react"
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
 
-type TabsVariant = "pill" | "line"
+type TabsVariant = "pill" | "line" | "segment"
 type TabsSize = "sm" | "default" | "lg"
+/** Corner radius for pill and segment tracks, indicators, and triggers. */
+type TabsRadius = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "full"
+
+function resolveTabsRadius(
+  variant: TabsVariant,
+  radius?: TabsRadius
+): TabsRadius {
+  if (radius != null) return radius
+  if (variant === "segment") return "lg"
+  if (variant === "pill") return "full"
+  return "none"
+}
 
 type TabsContextValue = {
   value: string
   setValue: (value: string) => void
   variant: TabsVariant
   size: TabsSize
+  radius: TabsRadius
   baseId: string
 }
 
@@ -30,6 +43,12 @@ type TabsProps = Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "on
   onValueChange?: (value: string) => void
   variant?: TabsVariant
   size?: TabsSize
+  /**
+   * Corner radius for the list track, sliding chip, and triggers.
+   * Applies to pill and segment. Defaults: pill `full`, segment `lg`.
+   * Line ignores radius.
+   */
+  radius?: TabsRadius
 }
 
 function Tabs({
@@ -39,6 +58,7 @@ function Tabs({
   onValueChange,
   variant = "pill",
   size = "default",
+  radius,
   children,
   ...props
 }: TabsProps) {
@@ -49,6 +69,7 @@ function Tabs({
   })
   const reactId = React.useId()
   const baseId = `df-tabs${reactId.replace(/:/g, "")}`
+  const resolvedRadius = resolveTabsRadius(variant, radius)
 
   return (
     <TabsContext.Provider
@@ -57,6 +78,7 @@ function Tabs({
         setValue: setCurrent,
         variant,
         size,
+        radius: resolvedRadius,
         baseId,
       }}
     >
@@ -64,6 +86,7 @@ function Tabs({
         data-df="tabs"
         data-variant={variant}
         data-size={size}
+        data-radius={resolvedRadius}
         className={cn("df-tabs", className)}
         {...props}
       >
@@ -78,7 +101,7 @@ type TabsListProps = React.HTMLAttributes<HTMLDivElement>
 type IndicatorRect = { left: number; top: number; width: number; height: number }
 
 function TabsList({ className, children, ...props }: TabsListProps) {
-  const { variant, size, value } = useTabsContext()
+  const { variant, size, radius, value } = useTabsContext()
   const listRef = React.useRef<HTMLDivElement>(null)
   const [indicator, setIndicator] = React.useState<IndicatorRect | null>(null)
 
@@ -109,7 +132,7 @@ function TabsList({ className, children, ...props }: TabsListProps) {
       .querySelectorAll('[data-df="tabs-trigger"]')
       .forEach((trigger) => observer.observe(trigger))
     return () => observer.disconnect()
-  }, [variant, size, value])
+  }, [variant, size, radius, value])
 
   return (
     <div
@@ -118,6 +141,7 @@ function TabsList({ className, children, ...props }: TabsListProps) {
       data-df="tabs-list"
       data-variant={variant}
       data-size={size}
+      data-radius={radius}
       className={cn("df-tabs-list", className)}
       {...props}
     >
@@ -126,6 +150,7 @@ function TabsList({ className, children, ...props }: TabsListProps) {
           aria-hidden
           data-df="tabs-indicator"
           data-variant={variant}
+          data-radius={radius}
           className="df-tabs-indicator"
           style={
             variant === "line"
@@ -148,17 +173,24 @@ function TabsList({ className, children, ...props }: TabsListProps) {
 
 type TabsTriggerProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   value: string
+  /** Icon or node before the label. */
+  leading?: React.ReactNode
+  /** Badge or node after the label (e.g. a count Badge). */
+  trailing?: React.ReactNode
 }
 
 function TabsTrigger({
   className,
   value,
   children,
+  leading,
+  trailing,
   disabled,
   type = "button",
   ...props
 }: TabsTriggerProps) {
-  const { value: current, setValue, variant, size, baseId } = useTabsContext()
+  const { value: current, setValue, variant, size, radius, baseId } =
+    useTabsContext()
   const selected = current === value
 
   return (
@@ -173,7 +205,10 @@ function TabsTrigger({
       data-df="tabs-trigger"
       data-variant={variant}
       data-size={size}
+      data-radius={radius}
       data-state={selected ? "active" : "inactive"}
+      data-leading={leading != null ? "true" : undefined}
+      data-trailing={trailing != null ? "true" : undefined}
       className={cn("df-tabs-trigger", className)}
       onClick={(event) => {
         props.onClick?.(event)
@@ -181,7 +216,20 @@ function TabsTrigger({
       }}
       {...props}
     >
+      {leading != null ? (
+        <span data-df="tabs-trigger-leading" className="df-tabs-trigger-leading">
+          {leading}
+        </span>
+      ) : null}
       {children}
+      {trailing != null ? (
+        <span
+          data-df="tabs-trigger-trailing"
+          className="df-tabs-trigger-trailing"
+        >
+          {trailing}
+        </span>
+      ) : null}
     </button>
   )
 }
@@ -228,4 +276,5 @@ export type {
   TabsContentProps,
   TabsVariant,
   TabsSize,
+  TabsRadius,
 }

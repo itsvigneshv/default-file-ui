@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "./df-popover"
+import { Tabs, TabsList, TabsTrigger } from "./df-tabs"
 import { cn } from "../lib/utils"
 
 type ColorMode = "hex" | "rgb" | "hsl" | "hsb"
@@ -380,29 +381,21 @@ export function ColorPicker({
           style={{ backgroundColor: hex }}
           aria-hidden
         />
-        <div
-          className="grid flex-1 grid-cols-4 gap-0.5 rounded-lg bg-muted p-0.5"
-          role="tablist"
-          aria-label="Color input mode"
+        <Tabs
+          value={mode}
+          onValueChange={(next) => setMode(next as ColorMode)}
+          variant="segment"
+          size="sm"
+          className="min-w-0 flex-1"
         >
-          {MODES.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={mode === item.id}
-              className={cn(
-                "rounded-md px-1 py-1.5 text-[10px] font-medium transition-colors",
-                mode === item.id
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              onClick={() => setMode(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
+          <TabsList aria-label="Color input mode">
+            {MODES.map((item) => (
+              <TabsTrigger key={item.id} value={item.id}>
+                {item.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {mode === "hex" ? (

@@ -158,7 +158,7 @@
       "name": "color-picker",
       "type": "registry:ui",
       "title": "Color Picker",
-      "registryDependencies": ["foundation", "input", "popover"],
+      "registryDependencies": ["foundation", "input", "popover", "tabs"],
       "files": [
         { "path": "src/components/df-color-picker.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-color-picker.tsx" }
       ]
@@ -191,6 +191,16 @@
       ]
     },
     {
+      "name": "options-panel",
+      "type": "registry:ui",
+      "title": "Options Panel",
+      "description": "Anchored panel chrome with titled header and open body/footer slots for tool options.",
+      "registryDependencies": ["foundation", "popover"],
+      "files": [
+        { "path": "src/components/df-options-panel.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-options-panel.tsx" }
+      ]
+    },
+    {
       "name": "search-input",
       "type": "registry:ui",
       "title": "Search Input",
@@ -204,7 +214,7 @@
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
-      "description": "Tablist with pill and line variants for switching panels.",
+      "description": "Tablist with pill, line, and segment variants for switching panels and modes.",
       "registryDependencies": ["foundation"],
       "files": [
         { "path": "src/components/df-tabs.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-tabs.tsx" }

@@ -100,6 +100,8 @@ function PopoverContent({
   alignOffset = 0,
   side = "bottom",
   sideOffset = 4,
+  matchTriggerWidth = false,
+  portal = true,
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
@@ -107,40 +109,56 @@ function PopoverContent({
   alignOffset?: number
   side?: "top" | "bottom" | "left" | "right"
   sideOffset?: number
+  /** Lock the panel to the trigger width. Off by default: the panel sizes to its own content (className width) while staying at least as wide as the trigger. */
+  matchTriggerWidth?: boolean
+  /** When false, render inline (docs demos). Default true portals to document.body. */
+  portal?: boolean
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const style = useAnchoredPosition({
-    open,
+    open: open && portal,
     triggerRef,
     contentRef,
     side,
     align,
     sideOffset,
     alignOffset,
+    matchTriggerWidth,
   })
 
-  useDismiss(open, () => setOpen(false), [triggerRef, contentRef], {
+  useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
     excludeSelectors: DISMISS_NESTED_LAYER_SELECTORS,
   })
 
   const mounted = useIsClient()
 
-  if (!open || !mounted) return null
+  if (!mounted) return null
+  if (!open) return null
 
-  return createPortal(
+  const panel = (
     <div
       ref={contentRef}
       data-df="popover-content"
       data-side={side}
+      data-portal={portal ? "true" : "false"}
       className={cn(className)}
-      style={style}
+      style={
+        portal
+          ? style
+          : {
+              position: "relative",
+            }
+      }
       {...props}
     >
       {children}
-    </div>,
-    document.body
+    </div>
   )
+
+  if (!portal) return panel
+
+  return createPortal(panel, document.body)
 }
 
 function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {

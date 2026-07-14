@@ -27,6 +27,7 @@ export type {
   TabsContentProps,
   TabsVariant,
   TabsSize,
+  TabsRadius,
 } from "./df-tabs"
 export {
   ContentSwitcher,
@@ -62,6 +63,16 @@ export {
   PopoverTitle,
   PopoverTrigger,
 } from "./df-popover"
+export {
+  OptionsPanel,
+  OptionsPanelBody,
+  OptionsPanelContent,
+  OptionsPanelFooter,
+  OptionsPanelHeader,
+  OptionsPanelTitle,
+  OptionsPanelTrigger,
+} from "./df-options-panel"
+export type { OptionsPanelContentProps } from "./df-options-panel"
 export {
   Tooltip,
   TooltipContent,
@@ -120,6 +131,7 @@ export { Toaster, toast, setToastPosition } from "./df-toast"
 export type { ToastPosition, ToasterProps, ToastTone } from "./df-toast"
 export { NumberSlider } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
+export type { ChoiceChipProps, ChoiceChipSize } from "./df-choice-chip"
 export { PanelSection } from "./df-panel-section"
 export { SearchInput, SearchBar } from "./df-search-input"
 export type {
