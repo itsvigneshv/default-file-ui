@@ -2782,6 +2782,20 @@
     box-shadow 150ms ease;
 }
 
+:where([data-df="content-switcher-item"][data-size="sm"]),
+.df-content-switcher-item[data-size="sm"] {
+  height: 2rem;
+  padding-inline: 0.625rem;
+  font-size: 0.8125rem;
+}
+
+:where([data-df="content-switcher-item"][data-size="xs"]),
+.df-content-switcher-item[data-size="xs"] {
+  height: 1.5rem;
+  padding-inline: 0.5rem;
+  font-size: 0.75rem;
+}
+
 :where([data-df="content-switcher-item"]:disabled),
 .df-content-switcher-item:disabled {
   opacity: 0.5;

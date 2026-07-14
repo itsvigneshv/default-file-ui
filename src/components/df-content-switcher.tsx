@@ -5,11 +5,15 @@ import * as React from "react"
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
 
+type ContentSwitcherSize = "default" | "sm" | "xs"
+
 type ContentSwitcherContextValue = {
   value: string
   setValue: (value: string) => void
   orientation: "horizontal" | "vertical"
   fullWidth: boolean
+  size: ContentSwitcherSize
+  deselectable: boolean
 }
 
 const ContentSwitcherContext =
@@ -35,6 +39,10 @@ type ContentSwitcherProps = Omit<
   orientation?: "horizontal" | "vertical"
   /** Stretch items to fill the track width. */
   fullWidth?: boolean
+  /** T-shirt size for segment height and type. */
+  size?: ContentSwitcherSize
+  /** Click the active item again to clear selection (value becomes ""). */
+  deselectable?: boolean
 }
 
 function ContentSwitcher({
@@ -44,6 +52,8 @@ function ContentSwitcher({
   onValueChange,
   orientation = "horizontal",
   fullWidth = false,
+  size = "default",
+  deselectable = false,
   children,
   ...props
 }: ContentSwitcherProps) {
@@ -60,6 +70,8 @@ function ContentSwitcher({
         setValue: setCurrent,
         orientation,
         fullWidth,
+        size,
+        deselectable,
       }}
     >
       <div
@@ -67,6 +79,8 @@ function ContentSwitcher({
         data-df="content-switcher"
         data-orientation={orientation}
         data-full-width={fullWidth ? "" : undefined}
+        data-size={size}
+        data-deselectable={deselectable ? "" : undefined}
         className={cn("df-content-switcher", className)}
         {...props}
       >
@@ -88,7 +102,8 @@ function ContentSwitcherItem({
   type = "button",
   ...props
 }: ContentSwitcherItemProps) {
-  const { value: current, setValue, fullWidth } = useContentSwitcherContext()
+  const { value: current, setValue, fullWidth, size, deselectable } =
+    useContentSwitcherContext()
   const selected = current === value
 
   return (
@@ -100,10 +115,16 @@ function ContentSwitcherItem({
       data-df="content-switcher-item"
       data-state={selected ? "on" : "off"}
       data-full-width={fullWidth ? "" : undefined}
+      data-size={size}
       className={cn("df-content-switcher-item", className)}
       onClick={(event) => {
         props.onClick?.(event)
-        if (!event.defaultPrevented && !disabled) setValue(value)
+        if (event.defaultPrevented || disabled) return
+        if (deselectable && selected) {
+          setValue("")
+          return
+        }
+        setValue(value)
       }}
       {...props}
     >
@@ -113,4 +134,8 @@ function ContentSwitcherItem({
 }
 
 export { ContentSwitcher, ContentSwitcherItem }
-export type { ContentSwitcherProps, ContentSwitcherItemProps }
+export type {
+  ContentSwitcherProps,
+  ContentSwitcherItemProps,
+  ContentSwitcherSize,
+}
