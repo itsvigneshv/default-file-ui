@@ -1,8 +1,19 @@
 import path from "node:path"
 
 import { applyKit } from "./apply.mjs"
-import { FRAMEWORKS, frameworkLabel, isFramework } from "./constants.mjs"
+import {
+  COLOR_SCALES,
+  DEFAULT_RADIUS,
+  FRAMEWORKS,
+  INSTALL_MODES,
+  frameworkLabel,
+  isColorScale,
+  isFramework,
+  isInstallMode,
+  isRadius,
+} from "./constants.mjs"
 import { detectFramework } from "./detect.mjs"
+import { buildDfConfig, writeDfConfig } from "./df-config.mjs"
 import { exists } from "./fs-utils.mjs"
 import { assertProjectName, scaffoldProject } from "./scaffold.mjs"
 
@@ -15,6 +26,22 @@ export async function initCommand(args) {
   if (options.help) {
     printInitHelp()
     return
+  }
+
+  if (options.colorScale && !isColorScale(options.colorScale)) {
+    throw new Error(
+      `Unknown --color-scale "${options.colorScale}". Use one of: ${COLOR_SCALES.join(", ")}`
+    )
+  }
+  if (options.installMode && !isInstallMode(options.installMode)) {
+    throw new Error(
+      `Unknown --install-mode "${options.installMode}". Use one of: ${INSTALL_MODES.join(", ")}`
+    )
+  }
+  if (options.radius && !isRadius(options.radius)) {
+    throw new Error(
+      `Invalid --radius "${options.radius}". Use a CSS length like 0, 0.375rem, or 12px.`
+    )
   }
 
   if (options.template) {
@@ -33,7 +60,8 @@ export async function initCommand(args) {
     assertProjectName(name)
     const parent = path.resolve(options.cwd)
     const projectDir = scaffoldProject(options.template, name, parent)
-    applyKit(projectDir, options.template)
+    const result = applyKit(projectDir, options.template, { radius: options.radius })
+    finalizeConfig(projectDir, options.template, options, result)
     console.log(`\nNext:\n  cd ${name}\n  npm run dev\n`)
     return
   }
@@ -57,18 +85,46 @@ export async function initCommand(args) {
   }
 
   console.log(`Detected ${frameworkLabel(framework)} in ${cwd}`)
-  applyKit(cwd, framework)
+  const result = applyKit(cwd, framework, { radius: options.radius })
+  finalizeConfig(cwd, framework, options, result)
+}
+
+/**
+ * Write df.json and report color-scale guidance.
+ * @param {string} cwd
+ * @param {import("./constants.mjs").Framework} framework
+ * @param {ReturnType<typeof parseInitArgs>} options
+ * @param {{ css: { path: string | null } }} result
+ */
+function finalizeConfig(cwd, framework, options, result) {
+  const colorScale = options.colorScale ?? "detailed"
+  const config = buildDfConfig(cwd, framework, {
+    installMode: options.installMode ?? "package",
+    colorScale,
+    radius: options.radius ?? DEFAULT_RADIUS,
+    css: result?.css?.path ? path.relative(cwd, result.css.path) : null,
+  })
+  const file = writeDfConfig(cwd, config)
+  console.log(`Wrote ${path.relative(cwd, file)} (project map for \`df-ui add\`).`)
+  if (colorScale !== "detailed") {
+    console.log(
+      `Note: set data-df-color-scale="${colorScale}" on your <html> element.`
+    )
+  }
 }
 
 /**
  * @param {string[]} args
  */
 function parseInitArgs(args) {
-  /** @type {{ template: string | null, framework: string | null, name: string | null, cwd: string, help: boolean }} */
+  /** @type {{ template: string | null, framework: string | null, name: string | null, colorScale: string | null, installMode: string | null, radius: string | null, cwd: string, help: boolean }} */
   const options = {
     template: null,
     framework: null,
     name: null,
+    colorScale: null,
+    installMode: null,
+    radius: null,
     cwd: process.cwd(),
     help: false,
   }
@@ -82,6 +138,12 @@ function parseInitArgs(args) {
       options.framework = args[++i] ?? null
     } else if (arg === "-n" || arg === "--name") {
       options.name = args[++i] ?? null
+    } else if (arg === "--color-scale") {
+      options.colorScale = args[++i] ?? null
+    } else if (arg === "--install-mode") {
+      options.installMode = args[++i] ?? null
+    } else if (arg === "--radius") {
+      options.radius = args[++i] ?? null
     } else if (arg === "--cwd") {
       options.cwd = args[++i] ?? process.cwd()
     } else if (arg.startsWith("-")) {
@@ -104,15 +166,25 @@ Usage:
   df-ui init --framework <framework>
 
 Scaffold a new app (-t), or configure Default File UI in the current project.
+Writes df.json (project map) so \`df-ui add\` knows where to copy items.
 
 Templates:
   ${FRAMEWORKS.filter((f) => f !== "laravel").join(", ")}
+
+Options:
+  -t, --template <fw>       Scaffold a new app for <fw>
+  -f, --framework <fw>      Force framework when configuring in place
+  -n, --name <dir>          Project directory name (with -t)
+      --color-scale <s>     ${COLOR_SCALES.join(" | ")} (default: detailed)
+      --install-mode <m>    ${INSTALL_MODES.join(" | ")} (default: package)
+      --radius <len>        Corner radius token, e.g. 0, 0.375rem, 1rem (default: ${DEFAULT_RADIUS})
 
 Laravel: create the Inertia + React app first, then run init in that folder.
 
 Examples:
   df-ui init -t next --name my-app
-  df-ui init -t vite
+  df-ui init -t vite --color-scale compact
+  df-ui init -t next --radius 1rem
   df-ui init --framework astro
 `)
 }

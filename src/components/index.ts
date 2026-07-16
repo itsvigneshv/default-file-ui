@@ -6,7 +6,12 @@ export type {
 } from "./df-button"
 
 export { Badge } from "./df-badge"
-export type { BadgeProps, BadgeVariant } from "./df-badge"
+export type {
+  BadgeProps,
+  BadgeRadius,
+  BadgeSize,
+  BadgeVariant,
+} from "./df-badge"
 
 export { Input } from "./df-input"
 export { Label } from "./df-label"
@@ -55,6 +60,14 @@ export type {
   FloatingControlsSlotEntry,
 } from "./df-floating-controls"
 export { ScrollArea, ScrollBar } from "./df-scroll-area"
+export type {
+  ScrollAreaProps,
+  ScrollAreaVariant,
+  ScrollAreaThumbShape,
+  ScrollAreaOrientation,
+  ScrollAreaSide,
+  ScrollAreaVisibility,
+} from "./df-scroll-area"
 export {
   Popover,
   PopoverContent,

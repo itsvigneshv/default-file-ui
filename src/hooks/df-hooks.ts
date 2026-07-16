@@ -41,11 +41,32 @@ export const DISMISS_NESTED_LAYER_SELECTORS = [
   '[data-df="select-content"]',
 ] as const
 
+function isInsideDismissSurface(
+  target: EventTarget | null,
+  refs: Array<React.RefObject<HTMLElement | null>>,
+  excludeSelectors?: readonly string[]
+) {
+  if (!(target instanceof Node)) return false
+  if (refs.some((ref) => ref.current?.contains(target))) return true
+  const el = target instanceof Element ? target : target.parentElement
+  if (
+    el &&
+    excludeSelectors?.some((selector) => el.closest(selector))
+  ) {
+    return true
+  }
+  return false
+}
+
 export function useDismiss(
   open: boolean,
   onClose: () => void,
   refs: Array<React.RefObject<HTMLElement | null>>,
-  options?: { excludeSelectors?: readonly string[] }
+  options?: {
+    excludeSelectors?: readonly string[]
+    /** Close on page scroll outside the surface. Default true. */
+    dismissOnScroll?: boolean
+  }
 ) {
   useEffect(() => {
     if (!open) return
@@ -55,15 +76,16 @@ export function useDismiss(
     }
 
     const onPointer = (event: MouseEvent | PointerEvent) => {
-      const target = event.target
-      if (!(target instanceof Node)) return
-      const inside = refs.some((ref) => ref.current?.contains(target))
-      if (inside) return
-      const el = target instanceof Element ? target : target.parentElement
-      if (
-        el &&
-        options?.excludeSelectors?.some((selector) => el.closest(selector))
-      ) {
+      if (isInsideDismissSurface(event.target, refs, options?.excludeSelectors)) {
+        return
+      }
+      onClose()
+    }
+
+    const dismissOnScroll = options?.dismissOnScroll ?? true
+    const onScroll = (event: Event) => {
+      if (!dismissOnScroll) return
+      if (isInsideDismissSurface(event.target, refs, options?.excludeSelectors)) {
         return
       }
       onClose()
@@ -71,11 +93,15 @@ export function useDismiss(
 
     document.addEventListener("keydown", onKey)
     document.addEventListener("pointerdown", onPointer)
+    if (dismissOnScroll) {
+      document.addEventListener("scroll", onScroll, true)
+    }
     return () => {
       document.removeEventListener("keydown", onKey)
       document.removeEventListener("pointerdown", onPointer)
+      document.removeEventListener("scroll", onScroll, true)
     }
-  }, [open, onClose, options?.excludeSelectors, refs])
+  }, [open, onClose, options?.dismissOnScroll, options?.excludeSelectors, refs])
 }
 
 type Side = "top" | "bottom" | "left" | "right"
@@ -227,30 +253,24 @@ export function useAnchoredPosition({
         ? pickCrossAlign(align, t, c.height, vh, pad, "y")
         : pickCrossAlign(align, t, c.width, vw, pad, "x")
 
-    let top = 0
-    if (resolvedSide === "bottom") top = t.bottom + sideOffset
-    if (resolvedSide === "top") top = t.top - c.height - sideOffset
-    if (resolvedSide === "left" || resolvedSide === "right") {
-      if (resolvedAlign === "start") top = t.top + alignOffset
-      if (resolvedAlign === "center")
-        top = t.top + t.height / 2 - c.height / 2 + alignOffset
-      if (resolvedAlign === "end") top = t.bottom - c.height + alignOffset
-    }
-
-    // Keep panels from sliding over the trigger when the viewport is short.
-    // Prefer a max-height cap (menus scroll) over covering the control.
+    // Cap height to available space (not measured content) to avoid resize loops.
     let maxHeight: number | undefined
+    let top: number | "auto" = 0
+    let bottom: number | "auto" = "auto"
+
     if (resolvedSide === "bottom") {
-      const available = vh - pad - top
-      if (c.height > available) {
-        maxHeight = Math.max(96, available)
-      }
+      top = t.bottom + sideOffset
+      maxHeight = Math.max(96, vh - pad - top)
     } else if (resolvedSide === "top") {
-      if (top < pad) {
-        maxHeight = Math.max(96, t.top - pad - sideOffset)
-        top = pad
-      }
+      // Anchor with `bottom` so height changes grow upward without overlapping the trigger.
+      bottom = vh - t.top + sideOffset
+      top = "auto"
+      maxHeight = Math.max(96, t.top - pad - sideOffset)
     } else {
+      if (resolvedAlign === "start") top = t.top + alignOffset
+      else if (resolvedAlign === "center")
+        top = t.top + t.height / 2 - c.height / 2 + alignOffset
+      else top = t.bottom - c.height + alignOffset
       if (top < pad) top = pad
       if (top + c.height > vh - pad) {
         top = Math.max(pad, vh - c.height - pad)
@@ -260,6 +280,7 @@ export function useAnchoredPosition({
     const base: React.CSSProperties = {
       position: "fixed",
       top,
+      bottom,
       // Always at least as wide as the trigger; exact match is opt-in.
       minWidth: t.width,
       ...(matchTriggerWidth
@@ -284,10 +305,7 @@ export function useAnchoredPosition({
       return
     }
 
-    // Top / bottom horizontal anchors.
-    // End uses CSS `right` so content grows left as it sizes, staying glued to
-    // the trigger's right edge. Must use clientWidth (not innerWidth) or a
-    // scrollbar shifts the menu left of the trigger.
+    // End uses CSS `right` so content grows left while staying on the trigger edge.
     if (resolvedAlign === "end") {
       let right = vw - t.right - alignOffset
       const leftEdge = vw - right - c.width
@@ -302,7 +320,6 @@ export function useAnchoredPosition({
       resolvedAlign === "start"
         ? t.left + alignOffset
         : t.left + t.width / 2 - c.width / 2 + alignOffset
-    // When matching trigger width, stay glued — do not slide for overflow.
     if (!matchTriggerWidth) {
       if (left < pad) left = pad
       if (left + c.width > vw - pad) {

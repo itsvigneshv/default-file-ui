@@ -12,11 +12,27 @@ npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next
 
 Templates: `next`, `vite`, `react-router`, `tanstack-start`, `astro`, `react`.
 
-Configure an existing React app:
+Configure an existing React app (also writes `df.json`, the project map):
 
 ```bash
 npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init
 ```
+
+Add components (copy-source) into your app, resolving dependencies:
+
+```bash
+npx --yes -p github:itsvigneshv/default-file-ui#main df-ui add button
+```
+
+Inspect the detected framework and `df.json`:
+
+```bash
+npx --yes -p github:itsvigneshv/default-file-ui#main df-ui info
+```
+
+Commands honor the active package manager. With pnpm, yarn, or bun use the
+matching runner (`pnpm dlx`, `yarn dlx`, `bunx`). Pass `--color-scale compact`
+to `init` to record a compact scale in `df.json`.
 
 ## Install (package)
 

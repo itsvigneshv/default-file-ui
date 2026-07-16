@@ -593,7 +593,7 @@ function OptionListBody({
         className={cn("min-h-0", className)}
         {...props}
       >
-        <ScrollArea style={{ maxHeight }}>
+        <ScrollArea visibility="always" style={{ maxHeight }}>
           {children}
         </ScrollArea>
       </div>
@@ -626,6 +626,8 @@ type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
   alignOffset?: number
   alignItemWithTrigger?: boolean
   portal?: boolean
+  /** Close when the page scrolls. Default true. */
+  dismissOnScroll?: boolean
   /** Show a search field above the options. */
   search?: boolean
   searchPlaceholder?: string
@@ -639,6 +641,21 @@ type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
   footer?: React.ReactNode
 }
 
+/** Detect nested OptionListSubmenu so those panels keep native (unclipped) overflow. */
+function containsSubmenu(node: React.ReactNode): boolean {
+  let found = false
+  React.Children.forEach(node, (child) => {
+    if (found || !React.isValidElement(child)) return
+    if (child.type === OptionListSubmenu) {
+      found = true
+      return
+    }
+    const nested = (child.props as { children?: React.ReactNode }).children
+    if (nested != null && containsSubmenu(nested)) found = true
+  })
+  return found
+}
+
 function OptionListContent({
   className,
   children,
@@ -648,13 +665,14 @@ function OptionListContent({
   alignOffset = 0,
   alignItemWithTrigger = false,
   portal = true,
+  dismissOnScroll = true,
   search = false,
   searchPlaceholder = "Search",
   searchValue,
   defaultSearchValue,
   onSearchChange,
-  scrollable = false,
-  scrollMaxHeight = "16rem",
+  scrollable,
+  scrollMaxHeight,
   footer,
   ...props
 }: OptionListContentProps) {
@@ -672,10 +690,20 @@ function OptionListContent({
     collisionAvoidance: true,
   })
 
-  useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef])
+  useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
+    excludeSelectors: DISMISS_NESTED_LAYER_SELECTORS,
+    dismissOnScroll,
+  })
 
   const mounted = useIsClient()
-  const stacked = search || scrollable || footer != null
+  // Submenu panels must keep overflow visible so flyouts aren't clipped; every
+  // other panel scrolls its options through the kit ScrollArea by default so we
+  // never fall back to the native browser scrollbar.
+  const hasSubmenu = React.useMemo(() => containsSubmenu(children), [children])
+  const wrapInScrollArea = scrollable ?? !hasSubmenu
+  const stacked = search || footer != null
+  const effectiveMaxHeight =
+    scrollMaxHeight ?? (stacked ? "16rem" : "min(60vh, 24rem)")
 
   if (!mounted) return null
 
@@ -688,7 +716,7 @@ function OptionListContent({
   }
 
   const body = (
-    <OptionListBody scrollable={scrollable} maxHeight={scrollMaxHeight}>
+    <OptionListBody scrollable={wrapInScrollArea} maxHeight={effectiveMaxHeight}>
       {children}
     </OptionListBody>
   )
@@ -702,6 +730,7 @@ function OptionListContent({
       data-align-trigger={alignItemWithTrigger ? "true" : "false"}
       data-portal={portal ? "true" : "false"}
       data-stacked={stacked ? "true" : undefined}
+      data-scroll={wrapInScrollArea ? "kit" : undefined}
       className={cn(className)}
       style={
         portal

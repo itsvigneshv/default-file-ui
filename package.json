@@ -34,9 +34,11 @@
   "scripts": {
     "df:colors": "node scripts/generate-df-color-scales.mjs",
     "df:utilities": "node scripts/generate-df-utilities.mjs",
-    "df:tokens": "npm run df:colors && npm run df:utilities",
+    "df:breakpoints": "node scripts/generate-df-breakpoints.mjs",
+    "df:tokens": "npm run df:colors && npm run df:utilities && npm run df:breakpoints",
     "df:registry": "node scripts/build-df-registry.mjs",
-    "df:cli": "node bin/default-file-ui.mjs"
+    "df:cli": "node bin/default-file-ui.mjs",
+    "prepublishOnly": "npm run df:tokens"
   },
   "peerDependencies": {
     "lucide-react": ">=0.400.0",

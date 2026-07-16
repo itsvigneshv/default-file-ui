@@ -43,10 +43,7 @@ type FloatingControlsEntry =
   | FloatingControlsSlotEntry
 
 type FloatingControlsProps = React.HTMLAttributes<HTMLDivElement> & {
-  /**
-   * `surface` — light bordered bar (headers, docs).
-   * `overlay` — glass bar for floating over dark canvases.
-   */
+  /** `surface` light bar, or `overlay` glass bar over dark canvases. */
   variant?: FloatingControlsVariant
   /**
    * Declarative slot list. Place `{ type: "divider" }` anywhere;
@@ -135,10 +132,7 @@ type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   leading?: React.ReactNode
   /** Slot after the label. */
   trailing?: React.ReactNode
-  /**
-   * `ghost` — transparent, inherits bar colour (default).
-   * `solid` — filled contrast chip for primary actions (e.g. Export on overlay).
-   */
+  /** `ghost` (default) or `solid` filled contrast chip. */
   tone?: "ghost" | "solid"
 }
 

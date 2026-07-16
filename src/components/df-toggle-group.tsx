@@ -7,7 +7,17 @@ import { cn } from "../lib/utils"
 
 type ToggleVariant = "default" | "outline"
 type ToggleSize = "default" | "sm" | "lg"
-type ToggleRadius = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full"
+type ToggleRadius =
+  | "xxs"
+  | "xs"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "3xl"
+  | "4xl"
+  | "full"
 
 type ToggleGroupContextValue = {
   variant: ToggleVariant
@@ -31,6 +41,8 @@ const sizeClass: Record<ToggleSize, string> = {
 }
 
 const radiusVar: Record<ToggleRadius, string> = {
+  xxs: "var(--radius-xxs)",
+  xs: "var(--radius-xs)",
   sm: "var(--radius-sm)",
   md: "var(--radius-md)",
   lg: "var(--radius-lg)",

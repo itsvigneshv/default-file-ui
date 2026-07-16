@@ -1,4 +1,4 @@
-/* Default File UI — base reset */
+/* Default File UI - base reset */
 
 :where(*, *::before, *::after) {
   box-sizing: border-box;

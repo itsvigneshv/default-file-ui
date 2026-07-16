@@ -18,7 +18,7 @@ const OPTIONS_PANEL_CONTENT_CLASS =
 
 /**
  * Anchored options panel chrome: trigger + titled header + scroll body + footer.
- * Body and footer are open slots — put any sections or actions inside.
+ * Body and footer are open slots for sections or actions.
  */
 function OptionsPanel(props: React.ComponentProps<typeof Popover>) {
   return <Popover {...props} />

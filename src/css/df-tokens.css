@@ -1,4 +1,4 @@
-/* Default File UI — design tokens */
+/* Default File UI - design tokens */
 
 :root {
   /* --- Semantic surface / content (neutral ramp) --- */
@@ -27,7 +27,16 @@
   --chart-4: var(--df-neutral-700);
   --chart-5: var(--df-neutral-800);
 
+  /*
+   * Spacing unit for gap / padding props on components.
+   * Design-scale keys map as: N × --spacing-unit (see SPACING in df-theme.mjs).
+   * `none` / 0 = 0; even integers run through 200; half-steps (0.5, 1.5…) stay valid.
+   */
+  --spacing-unit: 0.25rem;
+
   --radius: 0.625rem;
+  --radius-xxs: calc(var(--radius) * 0.2);
+  --radius-xs: calc(var(--radius) * 0.4);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -35,6 +44,135 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /*
+   * --- Primitive scales (raw values) ---
+   * Type, weight, elevation, blur, and motion primitives. Semantic tokens and
+   * components reference these; keep values in sync with df-theme.mjs scales.
+   */
+
+  /* Font size */
+  --df-text-9: 0.5625rem;
+  --df-text-2xs: 0.625rem;
+  --df-text-11: 0.6875rem;
+  --df-text-xs: 0.75rem;
+  --df-text-13: 0.8125rem;
+  --df-text-sm: 0.875rem;
+  --df-text-15: 0.9375rem;
+  --df-text-base: 1rem;
+  --df-text-lg: 1.125rem;
+  --df-text-xl: 1.25rem;
+  --df-text-2xl: 1.5rem;
+  --df-text-3xl: 1.875rem;
+  --df-text-4xl: 2.25rem;
+  --df-text-5xl: 3rem;
+  --df-text-6xl: 3.75rem;
+  --df-text-7xl: 4.5rem;
+  --df-text-8xl: 6rem;
+  --df-text-9xl: 8rem;
+
+  /* Font weight */
+  --df-font-weight-thin: 100;
+  --df-font-weight-extralight: 200;
+  --df-font-weight-light: 300;
+  --df-font-weight-normal: 400;
+  --df-font-weight-medium: 500;
+  --df-font-weight-semibold: 600;
+  --df-font-weight-bold: 700;
+  --df-font-weight-extrabold: 800;
+  --df-font-weight-black: 900;
+
+  /* Letter spacing */
+  --df-tracking-tighter: -0.05em;
+  --df-tracking-tight: -0.025em;
+  --df-tracking-normal: 0em;
+  --df-tracking-wide: 0.025em;
+  --df-tracking-wider: 0.05em;
+  --df-tracking-widest: 0.1em;
+
+  /* Line height - ratios */
+  --df-leading-none: 1;
+  --df-leading-tight: 1.25;
+  --df-leading-snug: 1.375;
+  --df-leading-normal: 1.5;
+  --df-leading-relaxed: 1.625;
+  --df-leading-loose: 2;
+  /* Line height - lengths */
+  --df-leading-3: 0.75rem;
+  --df-leading-4: 1rem;
+  --df-leading-5: 1.25rem;
+  --df-leading-6: 1.5rem;
+  --df-leading-7: 1.75rem;
+  --df-leading-8: 2rem;
+  --df-leading-9: 2.25rem;
+  --df-leading-10: 2.5rem;
+
+  /* Elevation (matches SHADOW scale) */
+  --df-shadow-2xs: 0 1px rgb(0 0 0 / 0.05);
+  --df-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --df-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --df-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --df-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --df-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --df-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Blur */
+  --df-blur-xs: 4px;
+  --df-blur-sm: 8px;
+  --df-blur-md: 12px;
+  --df-blur-lg: 16px;
+  --df-blur-xl: 24px;
+  --df-blur-2xl: 40px;
+  --df-blur-3xl: 64px;
+
+  /* Motion - duration */
+  --df-duration-fast: 90ms;
+  --df-duration-snappy: 100ms;
+  --df-duration-quick: 120ms;
+  --df-duration-base: 150ms;
+  --df-duration-moderate: 160ms;
+  --df-duration-slow: 180ms;
+  --df-duration-slower: 200ms;
+  --df-duration-slowest: 250ms;
+
+  /* Motion - easing */
+  --df-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --df-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /*
+   * --- Semantic tokens (intent) ---
+   */
+
+  /* Status */
+  --success: oklch(0.55 0.14 145);
+  --warning: oklch(0.7 0.14 75);
+
+  /* Focus rings */
+  --focus-ring: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
+  --focus-ring-lg: 0 0 0 4px color-mix(in oklch, var(--ring) 50%, transparent);
+  --focus-ring-error: 0 0 0 3px color-mix(in oklch, var(--destructive) 20%, transparent);
+
+  /* Elevation (layer intent) */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 10;
+  --z-overlay: 50;
+  --z-toast: 60;
+
+  /* Opacity (state intent) */
+  --opacity-disabled: 0.5;
+  --opacity-muted: 0.7;
+  --opacity-subtle: 0.75;
+
+  /* Overlay / content sizing (not part of the spacing rhythm) */
+  --df-popover-width: 18rem;
+  --df-tooltip-max-width: 16rem;
+  --df-tooltip-max-width-detailed: 18rem;
+  --df-menu-min-width: 9rem;
+  --df-menu-max-height: 24rem;
+  --df-submenu-min-width: 18rem;
+  --df-submenu-max-height: 28rem;
+  --df-toaster-width: 22rem;
 
   --sidebar: var(--df-neutral-20, var(--df-neutral-50));
   --sidebar-foreground: var(--df-neutral-900);

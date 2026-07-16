@@ -3,6 +3,7 @@ import path from "node:path"
 import {
   CSS_IMPORT,
   CSS_IMPORT_JS,
+  DEFAULT_RADIUS,
   PACKAGE_SPEC,
   frameworkLabel,
 } from "./constants.mjs"
@@ -19,7 +20,7 @@ import {
 /**
  * @param {string} cwd
  * @param {import("./constants.mjs").Framework} framework
- * @param {{ skipInstall?: boolean }} [options]
+ * @param {{ skipInstall?: boolean, radius?: string | null }} [options]
  */
 export function applyKit(cwd, framework, options = {}) {
   const pm = packageManager()
@@ -44,6 +45,15 @@ export function applyKit(cwd, framework, options = {}) {
 
   const css = ensureStylesheet(cwd, framework)
   const configNotes = []
+
+  if (options.radius && options.radius !== DEFAULT_RADIUS && css.path) {
+    const radiusResult = ensureRadiusOverride(css.path, options.radius)
+    if (radiusResult.changed) {
+      console.log(
+        `Radius: set --radius to ${options.radius} in ${path.relative(cwd, css.path)}`
+      )
+    }
+  }
 
   if (framework === "next") {
     const patched = ensureNextTranspile(cwd)
@@ -170,6 +180,39 @@ function stylesheetCandidates(framework) {
     default:
       return ["src/index.css", "src/app/globals.css"]
   }
+}
+
+/**
+ * Write (or update) a `--radius` override block in the app stylesheet.
+ * Idempotent via a marker comment so re-running init just updates the value.
+ * @param {string} cssPath
+ * @param {string} radius
+ */
+function ensureRadiusOverride(cssPath, radius) {
+  const marker = "/* df-ui:radius */"
+  const block = `${marker}\n:root {\n  --radius: ${radius};\n}`
+  const current = readText(cssPath)
+
+  if (current.includes(marker)) {
+    const next = current.replace(
+      new RegExp(`${escapeRegExp(marker)}\\s*:root\\s*\\{[^}]*\\}`),
+      block
+    )
+    if (next === current) return { path: cssPath, changed: false }
+    writeText(cssPath, next)
+    return { path: cssPath, changed: true }
+  }
+
+  const separator = current.endsWith("\n") ? "\n" : "\n\n"
+  writeText(cssPath, `${current}${separator}${block}\n`)
+  return { path: cssPath, changed: true }
+}
+
+/**
+ * @param {string} value
+ */
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
 /**

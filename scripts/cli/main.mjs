@@ -1,4 +1,6 @@
 import { FRAMEWORKS } from "./constants.mjs"
+import { addCommand } from "./add.mjs"
+import { infoCommand } from "./info.mjs"
 import { initCommand } from "./init.mjs"
 
 /**
@@ -14,6 +16,16 @@ export async function run(argv) {
 
   if (command === "init") {
     await initCommand(rest)
+    return
+  }
+
+  if (command === "add") {
+    await addCommand(rest)
+    return
+  }
+
+  if (command === "info") {
+    infoCommand(rest)
     return
   }
 
@@ -33,12 +45,15 @@ Usage:
   df-ui <command>
 
 Commands:
-  init         Scaffold (-t) or configure an existing React app
+  init         Scaffold (-t) or configure an existing React app; writes df.json
+  add          Copy registry items into your app (df-ui add button)
+  info         Print detected framework and df.json
   frameworks   List supported framework templates
 
 Examples:
   npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next
-  df-ui init
-  df-ui init --framework vite
+  df-ui init --framework vite --color-scale compact
+  df-ui add button select
+  df-ui info
 `)
 }

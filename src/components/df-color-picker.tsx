@@ -200,9 +200,7 @@ type ColorPickerProps = {
   label?: string
   className?: string
   /**
-   * Pill chrome beside the swatch.
-   * - `hex` — show the value; the whole pill opens the picker
-   * - `clear` — show an X; the pill (minus X) opens the picker
+   * Pill beside the swatch: `hex` shows the value, `clear` shows an X.
    * Omit for a swatch-only trigger.
    */
   trailing?: ColorPickerTrailing
@@ -329,7 +327,7 @@ export function ColorPicker({
       sideOffset={8}
       className="w-[300px] gap-3 overflow-visible rounded-xl p-3 shadow-xl"
     >
-      {/* Saturation–brightness panel with vertical hue strip */}
+      {/* Saturation/brightness panel with vertical hue strip */}
       <div className="flex shrink-0 gap-2.5" style={{ height: 220 }}>
         <div
           ref={svRef}

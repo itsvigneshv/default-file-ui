@@ -16,50 +16,51 @@ export const COMPAT_NEUTRAL_STEPS = [
   50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
 ]
 
-/** Spacing scale (rem). */
-export const SPACING = {
-  0: "0",
-  px: "1px",
-  0.5: "0.125rem",
-  1: "0.25rem",
-  1.5: "0.375rem",
-  2: "0.5rem",
-  2.5: "0.625rem",
-  3: "0.75rem",
-  3.5: "0.875rem",
-  4: "1rem",
-  5: "1.25rem",
-  6: "1.5rem",
-  7: "1.75rem",
-  8: "2rem",
-  9: "2.25rem",
-  10: "2.5rem",
-  11: "2.75rem",
-  12: "3rem",
-  14: "3.5rem",
-  16: "4rem",
-  20: "5rem",
-  24: "6rem",
-  28: "7rem",
-  32: "8rem",
-  36: "9rem",
-  40: "10rem",
-  44: "11rem",
-  48: "12rem",
-  52: "13rem",
-  56: "14rem",
-  60: "15rem",
-  64: "16rem",
-  72: "18rem",
-  80: "20rem",
-  96: "24rem",
+/**
+ * Spacing / padding / gap scale.
+ * One unit = `--spacing-unit` (0.25rem / 4px). Keys are design units:
+ * `gap-4` / `p-4` → calc(4 * var(--spacing-unit)). Values stay identical to the
+ * prior rem table when --spacing-unit is 0.25rem.
+ * Includes `none` (alias of 0), half-steps for tight chrome, and even integers
+ * from 0 through 200. Odd integers that already shipped (1, 3, 5, 7, 9, 11)
+ * stay for compatibility.
+ */
+function spacingToken(n) {
+  return `calc(${n} * var(--spacing-unit, 0.25rem))`
 }
+
+function buildSpacingScale() {
+  /** @type {Record<string | number, string>} */
+  const scale = {
+    none: "0",
+    0: "0",
+    px: "1px",
+    0.5: spacingToken(0.5),
+    1: spacingToken(1),
+    1.5: spacingToken(1.5),
+    2.5: spacingToken(2.5),
+    3: spacingToken(3),
+    3.5: spacingToken(3.5),
+    5: spacingToken(5),
+    7: spacingToken(7),
+    9: spacingToken(9),
+    11: spacingToken(11),
+  }
+  for (let n = 0; n <= 200; n += 2) {
+    scale[n] = n === 0 ? "0" : spacingToken(n)
+  }
+  return scale
+}
+
+export const SPACING = buildSpacingScale()
 
 /**
  * Radius - DF tokens (see df-tokens.css). Matches prior app radii, not raw TW.
  */
 export const RADIUS = {
   none: "0",
+  xxs: "var(--radius-xxs)",
+  xs: "var(--radius-xs)",
   sm: "var(--radius-sm)",
   md: "var(--radius-md)",
   lg: "var(--radius-lg)",
@@ -72,57 +73,57 @@ export const RADIUS = {
 
 /** Font size → [font-size, line-height] */
 export const FONT_SIZE = {
-  xs: ["0.75rem", "1rem"],
-  sm: ["0.875rem", "1.25rem"],
-  base: ["1rem", "1.5rem"],
-  lg: ["1.125rem", "1.75rem"],
-  xl: ["1.25rem", "1.75rem"],
-  "2xl": ["1.5rem", "2rem"],
-  "3xl": ["1.875rem", "2.25rem"],
-  "4xl": ["2.25rem", "2.5rem"],
-  "5xl": ["3rem", "1"],
-  "6xl": ["3.75rem", "1"],
-  "7xl": ["4.5rem", "1"],
-  "8xl": ["6rem", "1"],
-  "9xl": ["8rem", "1"],
+  xs: ["var(--df-text-xs)", "var(--df-leading-4)"],
+  sm: ["var(--df-text-sm)", "var(--df-leading-5)"],
+  base: ["var(--df-text-base)", "var(--df-leading-6)"],
+  lg: ["var(--df-text-lg)", "var(--df-leading-7)"],
+  xl: ["var(--df-text-xl)", "var(--df-leading-7)"],
+  "2xl": ["var(--df-text-2xl)", "var(--df-leading-8)"],
+  "3xl": ["var(--df-text-3xl)", "var(--df-leading-9)"],
+  "4xl": ["var(--df-text-4xl)", "var(--df-leading-10)"],
+  "5xl": ["var(--df-text-5xl)", "var(--df-leading-none)"],
+  "6xl": ["var(--df-text-6xl)", "var(--df-leading-none)"],
+  "7xl": ["var(--df-text-7xl)", "var(--df-leading-none)"],
+  "8xl": ["var(--df-text-8xl)", "var(--df-leading-none)"],
+  "9xl": ["var(--df-text-9xl)", "var(--df-leading-none)"],
 }
 
 export const FONT_WEIGHT = {
-  thin: "100",
-  extralight: "200",
-  light: "300",
-  normal: "400",
-  medium: "500",
-  semibold: "600",
-  bold: "700",
-  extrabold: "800",
-  black: "900",
+  thin: "var(--df-font-weight-thin)",
+  extralight: "var(--df-font-weight-extralight)",
+  light: "var(--df-font-weight-light)",
+  normal: "var(--df-font-weight-normal)",
+  medium: "var(--df-font-weight-medium)",
+  semibold: "var(--df-font-weight-semibold)",
+  bold: "var(--df-font-weight-bold)",
+  extrabold: "var(--df-font-weight-extrabold)",
+  black: "var(--df-font-weight-black)",
 }
 
 export const TRACKING = {
-  tighter: "-0.05em",
-  tight: "-0.025em",
-  normal: "0em",
-  wide: "0.025em",
-  wider: "0.05em",
-  widest: "0.1em",
+  tighter: "var(--df-tracking-tighter)",
+  tight: "var(--df-tracking-tight)",
+  normal: "var(--df-tracking-normal)",
+  wide: "var(--df-tracking-wide)",
+  wider: "var(--df-tracking-wider)",
+  widest: "var(--df-tracking-widest)",
 }
 
 export const LEADING = {
-  none: "1",
-  tight: "1.25",
-  snug: "1.375",
-  normal: "1.5",
-  relaxed: "1.625",
-  loose: "2",
-  3: "0.75rem",
-  4: "1rem",
-  5: "1.25rem",
-  6: "1.5rem",
-  7: "1.75rem",
-  8: "2rem",
-  9: "2.25rem",
-  10: "2.5rem",
+  none: "var(--df-leading-none)",
+  tight: "var(--df-leading-tight)",
+  snug: "var(--df-leading-snug)",
+  normal: "var(--df-leading-normal)",
+  relaxed: "var(--df-leading-relaxed)",
+  loose: "var(--df-leading-loose)",
+  3: "var(--df-leading-3)",
+  4: "var(--df-leading-4)",
+  5: "var(--df-leading-5)",
+  6: "var(--df-leading-6)",
+  7: "var(--df-leading-7)",
+  8: "var(--df-leading-8)",
+  9: "var(--df-leading-9)",
+  10: "var(--df-leading-10)",
 }
 
 export const MAX_W = {
@@ -159,37 +160,37 @@ export const BREAKPOINTS = {
 }
 
 export const SHADOW = {
-  "2xs": "0 1px rgb(0 0 0 / 0.05)",
-  xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-  sm: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-  md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-  lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-  xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-  "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+  "2xs": "var(--df-shadow-2xs)",
+  xs: "var(--df-shadow-xs)",
+  sm: "var(--df-shadow-sm)",
+  md: "var(--df-shadow-md)",
+  lg: "var(--df-shadow-lg)",
+  xl: "var(--df-shadow-xl)",
+  "2xl": "var(--df-shadow-2xl)",
   none: "none",
   // Compat aliases used in older call sites
-  DEFAULT: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  DEFAULT: "var(--df-shadow-sm)",
 }
 
 /** Named shadow aliases. */
 export const SHADOW_COMPAT = {
-  sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-  md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-  lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-  xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-  "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+  sm: "var(--df-shadow-xs)",
+  md: "var(--df-shadow-md)",
+  lg: "var(--df-shadow-lg)",
+  xl: "var(--df-shadow-xl)",
+  "2xl": "var(--df-shadow-2xl)",
   none: "none",
 }
 
 export const BLUR = {
   none: "0",
-  xs: "4px",
-  sm: "8px",
-  md: "12px",
-  lg: "16px",
-  xl: "24px",
-  "2xl": "40px",
-  "3xl": "64px",
+  xs: "var(--df-blur-xs)",
+  sm: "var(--df-blur-sm)",
+  md: "var(--df-blur-md)",
+  lg: "var(--df-blur-lg)",
+  xl: "var(--df-blur-xl)",
+  "2xl": "var(--df-blur-2xl)",
+  "3xl": "var(--df-blur-3xl)",
 }
 
 export const Z_INDEX = {
