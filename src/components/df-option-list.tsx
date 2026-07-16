@@ -722,7 +722,15 @@ function OptionListContent({
       ? "var(--df-menu-stacked-max-height)"
       : "min(60vh, var(--df-menu-max-height))")
 
-  if (!mounted) return null
+  // Keep a hidden item tree before the client portal is ready so option labels
+  // can register for SelectValue. Returning null here flashes the raw value id.
+  if (!mounted) {
+    return (
+      <div hidden aria-hidden data-df="option-list-label-registry">
+        {children}
+      </div>
+    )
+  }
 
   if (!open) {
     return (
@@ -880,7 +888,9 @@ function OptionListItem({
   const highlighted =
     (isSubmenuTrigger && submenu?.open) || dataHighlighted != null
 
-  React.useEffect(() => {
+  // Layout effect so the closed trigger can show the item label before paint,
+  // instead of briefly falling back to the raw value id.
+  React.useLayoutEffect(() => {
     registerLabel(value, children)
   }, [children, registerLabel, value])
 
