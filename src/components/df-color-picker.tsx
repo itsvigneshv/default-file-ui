@@ -173,7 +173,7 @@ function ChannelField({
 }) {
   return (
     <label className="flex min-w-0 flex-1 flex-col gap-1">
-      <span className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+      <span className="text-2xs font-medium tracking-label text-muted-foreground uppercase">
         {label}
       </span>
       <Input
@@ -325,16 +325,21 @@ export function ColorPicker({
       align="start"
       side="bottom"
       sideOffset={8}
-      className="w-[300px] gap-3 overflow-visible rounded-xl p-3 shadow-xl"
+      className="gap-3 overflow-visible rounded-xl p-3 shadow-xl"
+      style={{ width: "var(--df-color-picker-width)" }}
     >
       {/* Saturation/brightness panel with vertical hue strip */}
-      <div className="flex shrink-0 gap-2.5" style={{ height: 220 }}>
+      <div
+        className="flex shrink-0 gap-2.5"
+        style={{ height: "var(--df-color-picker-height)" }}
+      >
         <div
           ref={svRef}
-          className="relative min-w-0 flex-1 cursor-crosshair touch-none overflow-hidden rounded-lg ring-1 ring-black/10"
+          className="relative min-w-0 flex-1 cursor-crosshair touch-none overflow-hidden rounded-lg ring-1 ring-border"
           style={{
-            height: 220,
+            height: "var(--df-color-picker-height)",
             backgroundColor: pureHue,
+            // Domain gradients for the SV plane (not UI chrome).
             backgroundImage: `
                 linear-gradient(to top, #000, transparent),
                 linear-gradient(to right, #fff, transparent)
@@ -343,31 +348,34 @@ export function ColorPicker({
           onPointerDown={bindDrag(updateSvFromPointer)}
         >
           <span
-            className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.45)]"
+            className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
             style={{
               left: `${hsv.s * 100}%`,
               top: `${(1 - hsv.v) * 100}%`,
               backgroundColor: hex,
+              boxShadow: "var(--df-shadow-picker-thumb)",
             }}
           />
         </div>
 
         <div
           ref={hueRef}
-          className="relative shrink-0 cursor-ns-resize touch-none overflow-hidden rounded-lg ring-1 ring-black/10"
+          className="relative shrink-0 cursor-ns-resize touch-none overflow-hidden rounded-lg ring-1 ring-border"
           style={{
-            width: 20,
-            height: 220,
+            width: "calc(5 * var(--spacing-unit, 0.25rem))",
+            height: "var(--df-color-picker-height)",
+            // Domain spectrum strip for hue selection.
             backgroundImage:
               "linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)",
           }}
           onPointerDown={bindDrag(updateHueFromPointer)}
         >
           <span
-            className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.45)]"
+            className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
             style={{
               top: `${(hsv.h / 360) * 100}%`,
               backgroundColor: pureHue,
+              boxShadow: "var(--df-shadow-picker-thumb)",
             }}
           />
         </div>
@@ -398,7 +406,7 @@ export function ColorPicker({
 
       {mode === "hex" ? (
         <label className="flex flex-col gap-1">
-          <span className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+          <span className="text-2xs font-medium tracking-label text-muted-foreground uppercase">
             Hex
           </span>
           <Input
@@ -522,7 +530,7 @@ export function ColorPicker({
           }
         >
           <SwatchDot value={value} />
-          <span className="text-[11px] font-semibold uppercase leading-none tabular-nums text-neutral-700">
+          <span className="text-11 font-semibold uppercase leading-none tabular-nums text-neutral-700">
             {value}
           </span>
         </PopoverTrigger>

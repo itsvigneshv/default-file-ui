@@ -1,5 +1,5 @@
 /**
- * Default File UI theme — spacing, type, color, and effect scales.
+ * Default File UI theme: spacing, type, color, and effect scales.
  *
  * Colors: semantic tokens + unscoped `--df-neutral-*` aliases that follow
  * `data-df-color-scale` on <html>. Primitives always coexist as
@@ -36,7 +36,7 @@ function buildSpacingScale() {
   const scale = {
     none: "0",
     0: "0",
-    px: "1px",
+    px: "var(--spacing-px)",
     0.5: spacingToken(0.5),
     1: spacingToken(1),
     1.5: spacingToken(1.5),
@@ -70,12 +70,16 @@ export const RADIUS = {
   "2xl": "var(--radius-2xl)",
   "3xl": "var(--radius-3xl)",
   "4xl": "var(--radius-4xl)",
-  full: "9999px",
+  full: "var(--radius-full)",
 }
 
 /** Font size → [font-size, line-height] */
 export const FONT_SIZE = {
+  9: ["var(--df-text-9)", "var(--df-leading-3)"],
+  "2xs": ["var(--df-text-2xs)", "var(--df-leading-3)"],
+  11: ["var(--df-text-11)", "var(--df-leading-4)"],
   xs: ["var(--df-text-xs)", "var(--df-leading-4)"],
+  13: ["var(--df-text-13)", "var(--df-leading-4)"],
   sm: ["var(--df-text-sm)", "var(--df-leading-5)"],
   base: ["var(--df-text-base)", "var(--df-leading-6)"],
   lg: ["var(--df-text-lg)", "var(--df-leading-7)"],
@@ -105,9 +109,11 @@ export const FONT_WEIGHT = {
 export const TRACKING = {
   tighter: "var(--df-tracking-tighter)",
   tight: "var(--df-tracking-tight)",
+  snug: "var(--df-tracking-snug)",
   normal: "var(--df-tracking-normal)",
   wide: "var(--df-tracking-wide)",
   wider: "var(--df-tracking-wider)",
+  label: "var(--df-tracking-label)",
   widest: "var(--df-tracking-widest)",
 }
 
@@ -129,24 +135,24 @@ export const LEADING = {
 }
 
 export const MAX_W = {
-  "3xs": "16rem",
-  "2xs": "18rem",
-  xs: "20rem",
-  sm: "24rem",
-  md: "28rem",
-  lg: "32rem",
-  xl: "36rem",
-  "2xl": "42rem",
-  "3xl": "48rem",
-  "4xl": "56rem",
-  "5xl": "64rem",
-  "6xl": "72rem",
-  "7xl": "80rem",
+  "3xs": "var(--df-max-w-3xs)",
+  "2xs": "var(--df-max-w-2xs)",
+  xs: "var(--df-max-w-xs)",
+  sm: "var(--df-max-w-sm)",
+  md: "var(--df-max-w-md)",
+  lg: "var(--df-max-w-lg)",
+  xl: "var(--df-max-w-xl)",
+  "2xl": "var(--df-max-w-2xl)",
+  "3xl": "var(--df-max-w-3xl)",
+  "4xl": "var(--df-max-w-4xl)",
+  "5xl": "var(--df-max-w-5xl)",
+  "6xl": "var(--df-max-w-6xl)",
+  "7xl": "var(--df-max-w-7xl)",
   full: "100%",
   min: "min-content",
   max: "max-content",
   fit: "fit-content",
-  prose: "65ch",
+  prose: "var(--df-max-w-prose)",
   none: "none",
   screen: "100vw",
 }
@@ -196,19 +202,20 @@ export const BLUR = {
 }
 
 export const Z_INDEX = {
-  0: "0",
-  10: "10",
-  20: "20",
-  30: "30",
-  40: "40",
-  50: "50",
+  0: "var(--z-base)",
+  10: "var(--z-sticky)",
+  20: "var(--z-dock)",
+  30: "var(--z-nav)",
+  40: "var(--z-header)",
+  50: "var(--z-overlay)",
+  60: "var(--z-toast)",
   auto: "auto",
 }
 
 export const OPACITY = Object.fromEntries(
   [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100].map((n) => [
     String(n),
-    String(n / 100),
+    `var(--df-opacity-${n})`,
   ])
 )
 
@@ -233,8 +240,10 @@ export function buildColors() {
     border: "var(--border)",
     input: "var(--input)",
     ring: "var(--ring)",
-    white: "#fff",
-    black: "#000",
+    white: "var(--df-neutral-0)",
+    black: "var(--df-neutral-1000)",
+    "brand-ink": "var(--brand-ink)",
+    "brand-ink-foreground": "var(--brand-ink-foreground)",
     transparent: "transparent",
     current: "currentColor",
   }

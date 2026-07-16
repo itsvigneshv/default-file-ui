@@ -50,7 +50,7 @@ const radiusVar: Record<ToggleRadius, string> = {
   "2xl": "var(--radius-2xl)",
   "3xl": "var(--radius-3xl)",
   "4xl": "var(--radius-4xl)",
-  full: "9999px",
+  full: "var(--radius-full)",
 }
 
 type ToggleGroupProps = Omit<

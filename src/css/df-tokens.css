@@ -21,6 +21,10 @@
   --input: var(--df-neutral-100);
   --ring: var(--df-neutral-400);
 
+  /* Brand ink for marketing chrome, footer, and status surfaces */
+  --brand-ink: #0b1220;
+  --brand-ink-foreground: var(--df-neutral-0);
+
   --chart-1: var(--df-neutral-200);
   --chart-2: var(--df-neutral-500);
   --chart-3: var(--df-neutral-600);
@@ -34,6 +38,15 @@
    */
   --spacing-unit: 0.25rem;
 
+  /* Border width */
+  --border-width-hairline: 1px;
+  --border-width-thin: 1.5px;
+  --border-width-thick: 2px;
+  --outline-width: var(--border-width-thick);
+  --outline-offset: var(--border-width-hairline);
+  --df-underline-offset: 4px;
+
+  /* Radius */
   --radius: 0.625rem;
   --radius-xxs: calc(var(--radius) * 0.2);
   --radius-xs: calc(var(--radius) * 0.4);
@@ -44,6 +57,7 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-full: 9999px;
 
   /*
    * --- Primitive scales (raw values) ---
@@ -52,23 +66,23 @@
    */
 
   /* Font size */
-  --df-text-9: 0.5625rem;
-  --df-text-2xs: 0.625rem;
-  --df-text-11: 0.6875rem;
-  --df-text-xs: 0.75rem;
-  --df-text-13: 0.8125rem;
-  --df-text-sm: 0.875rem;
-  --df-text-base: 1rem;
-  --df-text-lg: 1.125rem;
-  --df-text-xl: 1.25rem;
-  --df-text-2xl: 1.5rem;
-  --df-text-3xl: 1.875rem;
-  --df-text-4xl: 2.25rem;
-  --df-text-5xl: 3rem;
-  --df-text-6xl: 3.75rem;
-  --df-text-7xl: 4.5rem;
-  --df-text-8xl: 6rem;
-  --df-text-9xl: 8rem;
+  --df-text-9: 0.5625rem; /* 9px */
+  --df-text-2xs: 0.625rem; /* 10px */
+  --df-text-11: 0.6875rem; /* 11px */
+  --df-text-xs: 0.75rem; /* 12px */
+  --df-text-13: 0.8125rem; /* 13px */
+  --df-text-sm: 0.875rem; /* 14px */
+  --df-text-base: 1rem; /* 16px */
+  --df-text-lg: 1.125rem; /* 18px */
+  --df-text-xl: 1.25rem; /* 20px */
+  --df-text-2xl: 1.5rem; /* 24px */
+  --df-text-3xl: 1.875rem; /* 30px */
+  --df-text-4xl: 2.25rem; /* 36px */
+  --df-text-5xl: 3rem; /* 48px */
+  --df-text-6xl: 3.75rem; /* 60px */
+  --df-text-7xl: 4.5rem; /* 72px */
+  --df-text-8xl: 6rem; /* 96px */
+  --df-text-9xl: 8rem; /* 128px */
 
   /* Font weight */
   --df-font-weight-thin: 100;
@@ -84,9 +98,11 @@
   /* Letter spacing */
   --df-tracking-tighter: -0.05em;
   --df-tracking-tight: -0.025em;
+  --df-tracking-snug: -0.01em;
   --df-tracking-normal: 0em;
   --df-tracking-wide: 0.025em;
   --df-tracking-wider: 0.05em;
+  --df-tracking-label: 0.08em;
   --df-tracking-widest: 0.1em;
 
   /* Line height - ratios */
@@ -116,6 +132,14 @@
   --df-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --df-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --df-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  /* Tooltip uses drop-shadow so the arrow silhouette is included */
+  --df-shadow-tooltip:
+    drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))
+    drop-shadow(0 2px 3px rgb(0 0 0 / 0.08));
+  --df-shadow-overlay: 0 10px 28px color-mix(in oklch, black 35%, transparent);
+  --df-shadow-tabs-indicator: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
+  --df-shadow-ring: 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+  --df-shadow-ring-subtle: 0 0 0 1px color-mix(in oklch, var(--foreground) 5%, transparent);
 
   /* Blur */
   --df-blur-xs: 4px;
@@ -125,6 +149,7 @@
   --df-blur-xl: 24px;
   --df-blur-2xl: 40px;
   --df-blur-3xl: 64px;
+  --df-blur-overlay: 20px;
 
   /* Motion - duration */
   --df-duration-fast: 90ms;
@@ -139,6 +164,170 @@
   /* Motion - easing */
   --df-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
   --df-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Motion - travel (enter/exit translate distances) */
+  --df-motion-travel-xs: 4px;
+  --df-motion-travel-sm: 6px;
+  --df-motion-travel-md: 8px;
+  --df-press-offset: 1px;
+  --df-tooltip-arrow-offset: 3.5px;
+  --df-tooltip-arrow-align-nudge: 4px;
+
+  /* Hairline spacing alias (1px) for SPACING.px utilities */
+  --spacing-px: var(--border-width-hairline);
+
+  /* Opacity scale (utility steps) */
+  --df-opacity-0: 0;
+  --df-opacity-5: 0.05;
+  --df-opacity-10: 0.1;
+  --df-opacity-15: 0.15;
+  --df-opacity-20: 0.2;
+  --df-opacity-25: 0.25;
+  --df-opacity-30: 0.3;
+  --df-opacity-40: 0.4;
+  --df-opacity-50: 0.5;
+  --df-opacity-60: 0.6;
+  --df-opacity-70: 0.7;
+  --df-opacity-75: 0.75;
+  --df-opacity-80: 0.8;
+  --df-opacity-90: 0.9;
+  --df-opacity-95: 0.95;
+  --df-opacity-100: 1;
+
+  /* Max width scale */
+  --df-max-w-3xs: 16rem;
+  --df-max-w-2xs: 18rem;
+  --df-max-w-xs: 20rem;
+  --df-max-w-sm: 24rem;
+  --df-max-w-md: 28rem;
+  --df-max-w-lg: 32rem;
+  --df-max-w-xl: 36rem;
+  --df-max-w-2xl: 42rem;
+  --df-max-w-3xl: 48rem;
+  --df-max-w-4xl: 56rem;
+  --df-max-w-5xl: 64rem;
+  --df-max-w-6xl: 72rem;
+  --df-max-w-7xl: 80rem;
+  --df-max-w-prose: 65ch;
+
+  /* Control sizes */
+  --df-switch-track-height: 18.4px;
+  --df-switch-track-width: 32px;
+  --df-switch-track-height-sm: 14px;
+  --df-switch-track-width-sm: 24px;
+  --df-scrollbar-thickness: 3px;
+  --df-tabs-indicator-thickness: var(--border-width-thick);
+  --df-color-picker-width: 300px;
+  --df-color-picker-height: 220px;
+  --df-options-panel-max-height: 520px;
+  --df-menu-stacked-max-height: 16rem;
+  --df-option-list-min-width: 12rem;
+  --df-shadow-picker-thumb: 0 0 0 1px rgb(0 0 0 / 0.45);
+  --df-shadow-dock-chip: 0 1px 2px rgb(0 0 0 / 0.04);
+  --df-shadow-stage: 0 0 0 1px rgb(0 0 0 / 0.4), 0 24px 80px rgb(0 0 0 / 0.45);
+  --df-shadow-fab: 0 8px 32px rgb(0 0 0 / 0.35);
+  --df-shadow-cta: 0 8px 28px -12px rgb(15 23 42 / 0.45);
+  --df-shadow-lift: 0 12px 32px -12px rgb(15 23 42 / 0.6);
+  --brand-ink-mid: #152238;
+  --brand-ink-lift: #1c3354;
+  --brand-ink-deep: #121a2c;
+
+  /* Marketing / home atmosphere */
+  --df-shadow-card-soft: 0 1px 0 oklch(0.92 0 0), 0 12px 32px -24px oklch(0.35 0.02 260 / 0.35);
+  --df-shadow-card-hover: 0 24px 48px -28px oklch(0.35 0.02 260 / 0.5);
+  --df-shadow-preview: 0 12px 28px -18px rgb(0 0 0 / 0.45);
+  --df-shadow-stage-sm: 0 16px 40px -16px oklch(0 0 0 / 0.5);
+  --df-shadow-stage-md: 0 24px 60px -20px oklch(0 0 0 / 0.55);
+  --df-shadow-stage-lg: 0 28px 70px -24px oklch(0 0 0 / 0.65);
+  --home-plane: oklch(0.97 0.005 260);
+  --home-hero-wash:
+    radial-gradient(ellipse at top, oklch(0.94 0.02 250) 0%, transparent 52%),
+    radial-gradient(ellipse at top right, oklch(0.95 0.03 50) 0%, transparent 42%),
+    linear-gradient(
+      180deg,
+      oklch(0.995 0.002 90) 0%,
+      oklch(0.985 0.004 240) 42%,
+      oklch(0.99 0.003 90) 72%,
+      oklch(1 0 0) 100%
+    );
+  --home-stage-dark:
+    linear-gradient(145deg, oklch(0.22 0.02 260) 0%, oklch(0.16 0.025 280) 55%, oklch(0.12 0.02 250) 100%);
+  --home-mesh-wash:
+    radial-gradient(circle at 30% 20%, oklch(0.93 0.02 250), transparent 55%),
+    radial-gradient(circle at 80% 70%, oklch(0.94 0.03 70), transparent 50%),
+    oklch(0.97 0.005 260);
+
+  /* Code / terminal syntax (docs chrome; light + dark always available) */
+  --code-light-bg: #f6f7f9;
+  --code-light-line: rgb(0 0 0 / 0.08);
+  --code-light-gutter: rgb(0 0 0 / 0.28);
+  --code-light-text: #1f2933;
+  --code-light-comment: #6b7280;
+  --code-light-string: #0f766e;
+  --code-light-keyword: #1d4ed8;
+  --code-light-tag: #b45309;
+  --code-light-punct: #64748b;
+  --code-light-muted: rgb(0 0 0 / 0.45);
+  --code-dark-bg: #0e1318;
+  --code-dark-line: rgb(255 255 255 / 0.08);
+  --code-dark-gutter: rgb(255 255 255 / 0.25);
+  --code-dark-text: #c8d1db;
+  --code-dark-comment: #6b7785;
+  --code-dark-string: #9dcea6;
+  --code-dark-keyword: #7eb6ff;
+  --code-dark-tag: #e3b57e;
+  --code-dark-punct: #8b95a1;
+  --code-dark-muted: rgb(255 255 255 / 0.45);
+  --code-bg: var(--code-light-bg);
+  --code-line: var(--code-light-line);
+  --code-gutter: var(--code-light-gutter);
+  --code-text: var(--code-light-text);
+  --code-comment: var(--code-light-comment);
+  --code-string: var(--code-light-string);
+  --code-keyword: var(--code-light-keyword);
+  --code-tag: var(--code-light-tag);
+  --code-punct: var(--code-light-punct);
+  --code-muted: var(--code-light-muted);
+  --code-traffic-close: #ff5f57;
+  --code-traffic-min: #febc2e;
+  --code-traffic-max: #28c840;
+
+  /* Extra tool / marketing elevation */
+  --df-shadow-panel: 0 12px 40px -20px rgb(0 0 0 / 0.45);
+  --df-shadow-panel-sm: 0 10px 32px -22px rgb(15 23 42 / 0.35);
+  --df-shadow-panel-md: 0 12px 36px -22px rgb(15 23 42 / 0.4);
+  --df-shadow-panel-lg: 0 12px 40px -24px rgb(15 23 42 / 0.35);
+  --df-shadow-chip-hover: 0 8px 20px -10px rgb(0 0 0 / 0.45);
+  --df-shadow-token-hover: 0 10px 24px -14px rgb(15 23 42 / 0.45);
+  --df-shadow-gallery-hover: 0 12px 40px -24px rgb(0 0 0 / 0.35);
+  --df-shadow-swatch-hover: 0 3px 14px -5px rgb(0 0 0 / 0.5);
+  --df-shadow-handle: 0 1px 3px rgb(0 0 0 / 0.25);
+  --df-shadow-node-ring: 0 0 0 1px rgb(0 0 0 / 0.45);
+  --df-shadow-swatch-focus:
+    0 0 0 2px var(--df-neutral-0), 0 0 0 4px var(--df-neutral-850, var(--df-neutral-900));
+  --home-preview-wash:
+    radial-gradient(ellipse at 20% 0%, var(--df-neutral-0), transparent 55%),
+    linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%);
+  --home-stage-glow: radial-gradient(ellipse at 70% 20%, oklch(1 0 0 / 0.12), transparent 45%);
+  --home-tile-a: radial-gradient(circle at 30% 30%, oklch(0.92 0.03 70), oklch(0.96 0.01 250));
+  --home-tile-b: radial-gradient(circle at 70% 40%, oklch(0.9 0.02 230), oklch(0.97 0.005 90));
+  --home-tile-c: radial-gradient(circle at 40% 60%, oklch(0.91 0.03 40), oklch(0.96 0.01 260));
+  --tools-preview-plane: #f4f6fa;
+  --tools-mesh-preview-wash:
+    radial-gradient(circle at 18% 28%, #fb7185 0%, transparent 42%),
+    radial-gradient(circle at 78% 22%, #38bdf8 0%, transparent 40%),
+    radial-gradient(circle at 55% 78%, #a78bfa 0%, transparent 45%),
+    radial-gradient(circle at 30% 70%, #fbbf24 0%, transparent 38%),
+    linear-gradient(160deg, #fff7ed 0%, #fce7f3 50%, #e0f2fe 100%);
+  --tools-principles-preview-wash:
+    radial-gradient(circle at 28% 22%, rgb(147 197 253 / 0.45), transparent 52%),
+    radial-gradient(circle at 82% 68%, rgb(253 186 116 / 0.4), transparent 48%);
+  --stage-void: #0b0c0f;
+  --stage-void-wash:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgb(255 255 255 / 0.04), transparent 70%),
+    radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0);
+  --stage-void-grid: auto, 22px 22px;
+  --df-leading-code: 1.7;
 
   /*
    * --- Semantic tokens (intent) ---
@@ -157,13 +346,31 @@
   --z-base: 0;
   --z-raised: 1;
   --z-sticky: 10;
+  --z-dock: 20;
+  --z-nav: 30;
+  --z-header: 40;
   --z-overlay: 50;
   --z-toast: 60;
 
   /* Opacity (state intent) */
-  --opacity-disabled: 0.5;
-  --opacity-muted: 0.7;
-  --opacity-subtle: 0.75;
+  --opacity-disabled: var(--df-opacity-50);
+  --opacity-muted: var(--df-opacity-70);
+  --opacity-subtle: var(--df-opacity-75);
+
+  /* Floating overlay recipe (dark glass chrome on canvases) */
+  --overlay-bg: color-mix(in oklch, black 50%, transparent);
+  --overlay-fg: color-mix(in oklch, white 88%, transparent);
+  --overlay-border: color-mix(in oklch, white 10%, transparent);
+  --overlay-shadow: var(--df-shadow-overlay);
+  --overlay-blur: var(--df-blur-overlay);
+  --overlay-item-fg: color-mix(in oklch, white 82%, transparent);
+  --overlay-item-fg-active: white;
+  --overlay-item-hover-bg: color-mix(in oklch, white 10%, transparent);
+  --overlay-item-on-bg: color-mix(in oklch, white 12%, transparent);
+  --overlay-solid-bg: white;
+  --overlay-solid-fg: oklch(0.2 0 0);
+  --overlay-solid-hover-bg: color-mix(in oklch, white 88%, oklch(0.85 0 0));
+  --overlay-divider: color-mix(in oklch, white 15%, transparent);
 
   /* Overlay / content sizing (not part of the spacing rhythm) */
   --df-popover-width: 18rem;
@@ -222,6 +429,18 @@
   --border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --input: color-mix(in oklch, var(--df-neutral-0) 15%, transparent);
   --ring: var(--df-neutral-500);
+  --brand-ink: var(--df-neutral-950);
+  --brand-ink-foreground: var(--df-neutral-0);
+  --code-bg: var(--code-dark-bg);
+  --code-line: var(--code-dark-line);
+  --code-gutter: var(--code-dark-gutter);
+  --code-text: var(--code-dark-text);
+  --code-comment: var(--code-dark-comment);
+  --code-string: var(--code-dark-string);
+  --code-keyword: var(--code-dark-keyword);
+  --code-tag: var(--code-dark-tag);
+  --code-punct: var(--code-dark-punct);
+  --code-muted: var(--code-dark-muted);
   --chart-1: var(--df-neutral-200);
   --chart-2: var(--df-neutral-500);
   --chart-3: var(--df-neutral-600);

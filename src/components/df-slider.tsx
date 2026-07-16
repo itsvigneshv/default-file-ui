@@ -82,7 +82,7 @@ function Slider({
           aria-valuenow={current}
           style={{
             position: "absolute",
-            left: `calc(${pct}% - 0.5rem)`,
+            left: `calc(${pct}% - 2 * var(--spacing-unit, 0.25rem))`,
           }}
           onKeyDown={(event) => {
             if (disabled) return

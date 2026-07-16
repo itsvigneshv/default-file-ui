@@ -78,6 +78,10 @@ Utility classes (`bg-neutral-500`, etc.) use the unscoped aliases, so they
 follow the host mode. Use the infix tokens when you need a specific palette
 regardless of mode.
 
+## Token layers
+
+Primitives live under `--df-*` (scales for color, type, space, radius, shadow, motion, opacity, z-index, control sizes). Semantic tokens (`--background`, `--border`, `--overlay-*`, `--brand-ink`, `--z-overlay`, …) name intent and point at primitives. Kit CSS and components resolve chrome through these vars only. Host apps may set inset contracts such as `--df-overlay-inset-top` and `--df-overlay-inset-bottom` so floating UI clears sticky chrome.
+
 ## License
 
 Licensed under the MIT license.

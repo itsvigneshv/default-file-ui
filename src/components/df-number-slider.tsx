@@ -23,7 +23,7 @@ function NumberSlider({
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
         <Label className="text-xs text-muted-foreground">{label}</Label>
-        <span className="font-mono text-[11px] text-muted-foreground">
+        <span className="font-mono text-11 text-muted-foreground">
           {value.toFixed(digits)}
         </span>
       </div>

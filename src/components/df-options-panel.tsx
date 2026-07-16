@@ -14,7 +14,7 @@ import { cn } from "../lib/utils"
 type OptionsPanelContentProps = React.ComponentProps<typeof PopoverContent>
 
 const OPTIONS_PANEL_CONTENT_CLASS =
-  "w-fit max-w-[calc(100vw-2rem)] gap-0 overflow-hidden rounded-2xl bg-popover p-0 text-popover-foreground shadow-xl"
+  "w-fit gap-0 overflow-hidden rounded-2xl bg-popover p-0 text-popover-foreground shadow-xl"
 
 /**
  * Anchored options panel chrome: trigger + titled header + scroll body + footer.
@@ -81,15 +81,20 @@ function OptionsPanelTitle({
 
 function OptionsPanelBody({
   className,
+  style,
   ...props
 }: React.ComponentProps<"div">) {
   return (
     <div
       data-df="options-panel-body"
       className={cn(
-        "flex w-max max-h-[min(60vh,520px)] flex-col gap-4 overflow-y-auto px-4 py-4",
+        "flex w-max flex-col gap-4 overflow-y-auto px-4 py-4",
         className
       )}
+      style={{
+        maxHeight: "min(60vh, var(--df-options-panel-max-height))",
+        ...style,
+      }}
       {...props}
     />
   )

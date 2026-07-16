@@ -13,7 +13,7 @@ function PanelSection({
 }) {
   return (
     <section className={cn("flex flex-col gap-2.5", className)} data-df="panel-section">
-      <p className="text-[11px] font-semibold tracking-wide text-muted-foreground">
+      <p className="text-11 font-semibold tracking-wide text-muted-foreground">
         {title}
       </p>
       {children}

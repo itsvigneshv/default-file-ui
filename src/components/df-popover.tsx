@@ -98,6 +98,7 @@ function PopoverTrigger({
 
 function PopoverContent({
   className,
+  style: styleProp,
   align = "center",
   alignOffset = 0,
   side = "bottom",
@@ -120,7 +121,7 @@ function PopoverContent({
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const style = useAnchoredPosition({
+  const anchoredStyle = useAnchoredPosition({
     open: open && portal,
     triggerRef,
     contentRef,
@@ -149,10 +150,8 @@ function PopoverContent({
       className={cn(className)}
       style={
         portal
-          ? style
-          : {
-              position: "relative",
-            }
+          ? { ...anchoredStyle, ...styleProp }
+          : { position: "relative", ...styleProp }
       }
       {...props}
     >

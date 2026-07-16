@@ -281,16 +281,17 @@ function OptionListSubContent({
                 ...style,
                 ...motionStyle,
                 width: "max-content",
-                maxWidth: "min(100vw - 1rem, 24rem)",
+                maxWidth:
+                  "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-max-w-sm))",
               }
             : {
                 ...motionStyle,
                 position: "absolute",
                 left: `calc(100% + ${sideOffset}px)`,
                 top: alignOffset,
-                zIndex: 60,
+                zIndex: "var(--z-toast)",
                 width: "max-content",
-                minWidth: "9rem",
+                minWidth: "var(--df-menu-min-width)",
               }
         }
         onMouseEnter={submenu.cancelClose}
@@ -587,7 +588,7 @@ function OptionListBody({
   className,
   children,
   scrollable = false,
-  maxHeight = "16rem",
+  maxHeight = "var(--df-menu-stacked-max-height)",
   ...props
 }: React.ComponentProps<"div"> & {
   scrollable?: boolean
@@ -716,7 +717,10 @@ function OptionListContent({
   const wrapInScrollArea = scrollable ?? !hasSubmenu
   const stacked = search || footer != null
   const effectiveMaxHeight =
-    scrollMaxHeight ?? (stacked ? "16rem" : "min(60vh, 24rem)")
+    scrollMaxHeight ??
+    (stacked
+      ? "var(--df-menu-stacked-max-height)"
+      : "min(60vh, var(--df-menu-max-height))")
 
   if (!mounted) return null
 
@@ -751,12 +755,19 @@ function OptionListContent({
               ...style,
               ...(alignItemWithTrigger
                 ? null
-                : { width: "max-content", maxWidth: "min(100vw - 1rem, 24rem)" }),
+                : {
+                    width: "max-content",
+                    maxWidth:
+                      "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-max-w-sm))",
+                  }),
             }
           : {
               position: "relative",
               width: alignItemWithTrigger ? "100%" : "max-content",
-              minWidth: stacked && !alignItemWithTrigger ? "18rem" : "12rem",
+              minWidth:
+                stacked && !alignItemWithTrigger
+                  ? "var(--df-submenu-min-width)"
+                  : "var(--df-option-list-min-width)",
             }
       }
       {...props}
