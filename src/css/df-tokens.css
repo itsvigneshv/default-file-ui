@@ -29,8 +29,8 @@
 
   /*
    * Spacing unit for gap / padding props on components.
-   * Design-scale keys map as: N × --spacing-unit (see SPACING in df-theme.mjs).
-   * `none` / 0 = 0; even integers run through 200; half-steps (0.5, 1.5…) stay valid.
+   * Design-scale keys map as: N x --spacing-unit (see SPACING in df-theme.mjs).
+   * `none` / 0 = 0; even integers run through 200; half-steps (0.5, 1.5, ...) stay valid.
    */
   --spacing-unit: 0.25rem;
 
@@ -58,7 +58,6 @@
   --df-text-xs: 0.75rem;
   --df-text-13: 0.8125rem;
   --df-text-sm: 0.875rem;
-  --df-text-15: 0.9375rem;
   --df-text-base: 1rem;
   --df-text-lg: 1.125rem;
   --df-text-xl: 1.25rem;
@@ -97,10 +96,12 @@
   --df-leading-normal: 1.5;
   --df-leading-relaxed: 1.625;
   --df-leading-loose: 2;
-  /* Line height - lengths */
+  /* Line height - lengths (N = N x 0.25rem; half-steps are optical values) */
   --df-leading-3: 0.75rem;
   --df-leading-4: 1rem;
+  --df-leading-4-5: 1.125rem; /* 18px */
   --df-leading-5: 1.25rem;
+  --df-leading-5-25: 1.3125rem; /* 21px */
   --df-leading-6: 1.5rem;
   --df-leading-7: 1.75rem;
   --df-leading-8: 2rem;
@@ -173,6 +174,13 @@
   --df-submenu-min-width: 18rem;
   --df-submenu-max-height: 28rem;
   --df-toaster-width: 22rem;
+
+  /*
+   * Host overlay collision insets (optional).
+   * Set on :root to reserve space for fixed chrome such as a sticky header.
+   * Consumed by useAnchoredPosition as --df-overlay-inset-top / bottom.
+   * Example: --df-overlay-inset-top: 3.5rem;
+   */
 
   --sidebar: var(--df-neutral-20, var(--df-neutral-50));
   --sidebar-foreground: var(--df-neutral-900);

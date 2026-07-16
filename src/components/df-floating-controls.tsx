@@ -128,7 +128,7 @@ function FloatingControls({
 }
 
 type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** Slot before the label (icon, badge, …). */
+  /** Slot before the label (icon, badge, ...). */
   leading?: React.ReactNode
   /** Slot after the label. */
   trailing?: React.ReactNode
@@ -179,10 +179,7 @@ function FloatingControlsItem({
 }
 
 type FloatingControlsDividerProps = React.HTMLAttributes<HTMLDivElement> & {
-  /**
-   * Optional custom divider. When omitted, renders the default vertical rule.
-   * Pass any node to swap the separator for another component.
-   */
+  /** Custom divider node. When omitted, renders the default vertical rule. */
   children?: React.ReactNode
 }
 

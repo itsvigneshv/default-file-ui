@@ -1,8 +1,10 @@
 /**
  * Default File UI theme — spacing, type, color, and effect scales.
  *
- * Colors: semantic tokens + `--df-neutral-*` via `data-df-color-scale` on <html>.
- * `zinc-*` / `gray-*` aliases map to the DF neutral ramp.
+ * Colors: semantic tokens + unscoped `--df-neutral-*` aliases that follow
+ * `data-df-color-scale` on <html>. Primitives always coexist as
+ * `--df-neutral-detailed-*` and `--df-neutral-compact-*`.
+ * `zinc-*` / `gray-*` map to the unscoped DF neutral aliases.
  */
 
 /** Compact-friendly + detailed steps used by utility color maps. */

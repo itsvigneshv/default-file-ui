@@ -108,7 +108,7 @@ function finalizeConfig(cwd, framework, options, result) {
   console.log(`Wrote ${path.relative(cwd, file)} (project map for \`df-ui add\`).`)
   if (colorScale !== "detailed") {
     console.log(
-      `Note: set data-df-color-scale="${colorScale}" on your <html> element.`
+      `Note: set data-df-color-scale="${colorScale}" on your <html> element so unscoped --df-*-{step} aliases follow compact. Both --df-*-detailed-* and --df-*-compact-* are always defined.`
     )
   }
 }

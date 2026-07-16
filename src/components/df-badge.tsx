@@ -36,7 +36,7 @@ type BadgeProps = React.HTMLAttributes<HTMLElement> & {
    * Renders on md, lg, and xl hosts. Prefer this over nesting a second Badge.
    */
   count?: number | string
-  asChild?: boolean
+  /** Compose onto an existing element instead of rendering a span. */
   render?: React.ReactElement<{ className?: string; children?: React.ReactNode }>
 }
 

@@ -64,10 +64,19 @@ Install path for catalog tools that support GitHub registries:
 
 ## Color scale modes
 
-Set on `<html>`:
+Primitive scales always define both palettes with an infix density marker:
 
-- `data-df-color-scale="detailed"` (default): fine neutral steps
-- `data-df-color-scale="compact"`: usual anchors
+- `--df-neutral-detailed-500`
+- `--df-neutral-compact-500`
+
+Unscoped aliases (`--df-neutral-500`) follow the mode on `<html>`:
+
+- `data-df-color-scale="detailed"` (default): aliases point at detailed
+- `data-df-color-scale="compact"`: aliases point at compact
+
+Utility classes (`bg-neutral-500`, etc.) use the unscoped aliases, so they
+follow the host mode. Use the infix tokens when you need a specific palette
+regardless of mode.
 
 ## License
 

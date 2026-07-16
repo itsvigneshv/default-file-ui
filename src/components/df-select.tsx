@@ -277,7 +277,7 @@ function SelectValue({
   )
 }
 
-/** Plain multi-select summary: “2 selected” plus optional supporting text. */
+/** Plain multi-select summary: "2 selected" plus optional supporting text. */
 function SelectValueSummary({
   className,
   count,

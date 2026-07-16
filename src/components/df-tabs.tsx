@@ -14,8 +14,8 @@ type TabsLineSide = "top" | "bottom" | "left" | "right"
 type TabsRadius = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "full"
 /**
  * Design-scale spacing unit for gap props.
- * Maps to the shared SPACING scale: `none` / 0 = 0, N = N × 0.25rem.
- * Even integers run through 200; half-steps (0.5, 1.5…) are valid too.
+ * Maps to SPACING: `none` / 0 = 0, N = N x 0.25rem.
+ * Even integers run through 200; half-steps (0.5, 1.5, ...) are valid too.
  */
 type TabsSpacing = number | "none"
 
@@ -26,7 +26,7 @@ function resolveTabsRadius(
 ): TabsRadius {
   if (radius != null) return radius
   if (variant === "segment") return "lg"
-  // A fully-round track reads as a capsule blob when stacked; soften it.
+  // Vertical pills use 2xl so a full-radius track does not read as a capsule.
   if (variant === "pill") return orientation === "vertical" ? "2xl" : "full"
   return "none"
 }
@@ -79,34 +79,29 @@ type TabsProps = Omit<
   variant?: TabsVariant
   size?: TabsSize
   /**
-   * Layout axis.
-   * - `horizontal`: triggers sit in a row; the panel stacks below (default).
-   * - `vertical`: triggers stack in a column; the panel sits alongside. The
-   *   line indicator moves to the trailing edge and arrow-key nav uses Up/Down.
+   * Layout axis. `horizontal` (default) places triggers in a row with the
+   * panel below. `vertical` stacks triggers beside the panel.
    */
   orientation?: TabsOrientation
   /**
-   * Edge the line variant's divider and active indicator sit on.
-   * Horizontal accepts `top` / `bottom` (default `bottom`); vertical accepts
-   * `left` / `right` (default `right`). Use `left` when the list sits to the
-   * right of its content, so the line faces the panel. Other variants ignore it.
+   * Edge for the line variant divider and indicator.
+   * Horizontal: `top` or `bottom` (default `bottom`).
+   * Vertical: `left` or `right` (default `right`). Other variants ignore it.
    */
   lineSide?: TabsLineSide
   /**
-   * Corner radius for the list track, sliding chip, and triggers.
-   * Applies to pill and segment. Defaults: pill `full` (`2xl` when vertical),
-   * segment `lg`. Line ignores radius.
+   * Corner radius for pill and segment tracks, chips, and triggers.
+   * Defaults: pill `full` (`2xl` when vertical), segment `lg`. Line ignores it.
    */
   radius?: TabsRadius
   /**
-   * Gap inside each trigger between leading icon, label, and trailing badge.
-   * Design-scale units (`none` / 0…200, half-steps allowed). Default `1.5`
-   * (0.375rem). Uses `--spacing-unit`.
+   * Gap inside each trigger between icon, label, and badge.
+   * Design-scale units (`none` / 0 to 200, half-steps allowed). Default `1.5`.
    */
   gap?: TabsSpacing
   /**
-   * Gap between triggers in the list. Design-scale units. Defaults: `0` for
-   * pill and line, `0.5` for segment. Uses `--spacing-unit`.
+   * Gap between triggers. Design-scale units.
+   * Defaults: `0` for pill and line, `0.5` for segment.
    */
   spacing?: TabsSpacing
 }

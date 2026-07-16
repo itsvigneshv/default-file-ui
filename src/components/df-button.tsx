@@ -22,9 +22,9 @@ type ButtonSize =
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
   size?: ButtonSize
-  /** Slot before the label: an icon or any node (badge, counter, avatar…). */
+  /** Slot before the label: an icon or any node (badge, counter, avatar, ...). */
   leading?: React.ReactNode
-  /** Slot after the label: an icon or any node (badge, counter, close…). */
+  /** Slot after the label: an icon or any node (badge, counter, close, ...). */
   trailing?: React.ReactNode
 }
 

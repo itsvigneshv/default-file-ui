@@ -32,6 +32,10 @@ function useTooltipContext() {
   return ctx
 }
 
+/**
+ * Hover or focus tooltip. Portals content to `document.body` and dismisses on
+ * Escape, pointer leave, blur, or page scroll.
+ */
 function Tooltip({
   open,
   defaultOpen = false,
@@ -43,8 +47,12 @@ function Tooltip({
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  /** Hover/focus open delay in ms. */
+  /** Delay in ms before the tooltip opens on hover or focus. */
   delayDuration?: number
+  /**
+   * Visual density. `compact` is a short single-line tip; `detailed` supports
+   * title and body copy (see `TooltipContent` `wrap`).
+   */
   variant?: TooltipVariant
   children: React.ReactNode
 }) {
@@ -99,6 +107,14 @@ function Tooltip({
     return () => document.removeEventListener("keydown", onKey)
   }, [isOpen, hideImmediate])
 
+  // Close on scroll; position stays frozen for the exit animation.
+  React.useEffect(() => {
+    if (!isOpen) return
+    const onScroll = () => hideImmediate()
+    window.addEventListener("scroll", onScroll, true)
+    return () => window.removeEventListener("scroll", onScroll, true)
+  }, [isOpen, hideImmediate])
+
   return (
     <TooltipContext.Provider
       value={{
@@ -122,6 +138,7 @@ function TooltipTrigger({
   className,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  /** Compose onto an existing element instead of rendering a button. */
   render?: React.ReactElement
 }) {
   const { open, show, hide, triggerRef, contentId } = useTooltipContext()
@@ -181,19 +198,24 @@ function TooltipContent({
   wrap = false,
   arrow = true,
   children,
+  onAnimationEnd,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
+  /** Cross-axis alignment relative to the trigger. */
   align?: TooltipAlign
   alignOffset?: number
+  /** Preferred side of the trigger. Flips when space is tight. */
   side?: TooltipSide
   sideOffset?: number
-  /** Detailed only: keep one line, or wrap within max-width. */
+  /** Detailed only: wrap within max-width instead of a single line. */
   wrap?: boolean
-  /** Show the pointing arrow. Defaults to true. */
+  /** Show the pointing arrow. Default true. */
   arrow?: boolean
 }) {
   const { open, triggerRef, contentId, variant } = useTooltipContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
+  const [present, setPresent] = React.useState(open)
+  // Track position only while open so coords freeze during the exit animation.
   const style = useAnchoredPosition({
     open,
     triggerRef,
@@ -203,12 +225,26 @@ function TooltipContent({
     sideOffset,
     alignOffset,
     matchTriggerWidth: false,
+    collisionAvoidance: true,
+    followScroll: false,
   })
+
+  React.useEffect(() => {
+    if (open) {
+      setPresent(true)
+      return
+    }
+    if (!present) return
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (reduced) setPresent(false)
+  }, [open, present])
 
   const mounted = useIsClient()
   const wrapMode = variant === "detailed" && wrap
 
-  if (!open || !mounted) return null
+  if (!present || !mounted) return null
 
   return createPortal(
     <div
@@ -219,10 +255,16 @@ function TooltipContent({
       data-variant={variant}
       data-side={side}
       data-align={align}
+      data-state={open ? "open" : "closed"}
       data-arrow={arrow ? "true" : "false"}
       data-wrap={variant === "detailed" ? (wrapMode ? "true" : "false") : undefined}
       className={cn(className)}
       style={style}
+      onAnimationEnd={(event) => {
+        onAnimationEnd?.(event)
+        if (event.target !== event.currentTarget) return
+        if (!open) setPresent(false)
+      }}
       {...props}
     >
       <div data-df="tooltip-label">{children}</div>

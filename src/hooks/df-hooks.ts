@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
+/**
+ * Controlled or uncontrolled state with a shared setter.
+ * Pass `value` to control; omit it to manage state internally from `defaultValue`.
+ */
 export function useControllableState<T>({
   value,
   defaultValue,
@@ -26,7 +30,7 @@ export function useControllableState<T>({
   return [current, setValue] as const
 }
 
-/** Client-only gate without setState-in-effect (portal / document access). */
+/** True after hydration. Safe gate for portals and `document` access. */
 export function useIsClient() {
   return useSyncExternalStore(
     () => () => {},
@@ -35,7 +39,10 @@ export function useIsClient() {
   )
 }
 
-/** Portaled pickers that can open inside another dismiss surface (e.g. popover). */
+/**
+ * Selectors for nested portaled layers (option lists, select menus).
+ * Dismiss handlers treat clicks inside these as inside the parent surface.
+ */
 export const DISMISS_NESTED_LAYER_SELECTORS = [
   '[data-df="option-list-content"]',
   '[data-df="select-content"]',
@@ -58,13 +65,17 @@ function isInsideDismissSurface(
   return false
 }
 
+/**
+ * Close a surface on Escape, outside pointer down, or (optionally) page scroll.
+ * Clicks inside `refs` or matching `excludeSelectors` do not dismiss.
+ */
 export function useDismiss(
   open: boolean,
   onClose: () => void,
   refs: Array<React.RefObject<HTMLElement | null>>,
   options?: {
     excludeSelectors?: readonly string[]
-    /** Close on page scroll outside the surface. Default true. */
+    /** Close when the page scrolls outside the surface. Default true. */
     dismissOnScroll?: boolean
   }
 ) {
@@ -131,17 +142,17 @@ function resolveSide(
   c: { width: number; height: number },
   vw: number,
   vh: number,
-  pad: number,
+  pads: { top: number; bottom: number; x: number },
   sideOffset: number,
   contentAware: boolean
 ): Side {
   if (!contentAware) return preferred
 
   const space = {
-    bottom: vh - pad - (t.bottom + sideOffset),
-    top: t.top - pad - sideOffset,
-    right: vw - pad - (t.right + sideOffset),
-    left: t.left - pad - sideOffset,
+    bottom: vh - pads.bottom - (t.bottom + sideOffset),
+    top: t.top - pads.top - sideOffset,
+    right: vw - pads.x - (t.right + sideOffset),
+    left: t.left - pads.x - sideOffset,
   }
 
   const needed =
@@ -193,6 +204,29 @@ function pickCrossAlign(
   return best
 }
 
+/**
+ * Resolve a root CSS length (`px` or `rem`) to pixels.
+ * Host apps can set `--df-overlay-inset-top` / `--df-overlay-inset-bottom`
+ * to reserve space for fixed chrome. Returns 0 when unset.
+ */
+function readOverlayInset(name: string): number {
+  if (typeof window === "undefined") return 0
+  const root = document.documentElement
+  const raw = getComputedStyle(root).getPropertyValue(name).trim()
+  if (!raw) return 0
+  const num = Number.parseFloat(raw)
+  if (Number.isNaN(num)) return 0
+  if (raw.endsWith("rem")) {
+    const rootPx = Number.parseFloat(getComputedStyle(root).fontSize) || 16
+    return num * rootPx
+  }
+  return num
+}
+
+/**
+ * Fixed positioning relative to a trigger. Optionally flips when space is
+ * tight, matches trigger width, and respects host overlay inset CSS variables.
+ */
 export function useAnchoredPosition({
   open,
   triggerRef,
@@ -204,6 +238,11 @@ export function useAnchoredPosition({
   matchTriggerWidth = true,
   /** Flip to the opposite side when the preferred side does not fit. */
   collisionAvoidance = false,
+  /**
+   * Reposition while the page scrolls. Set false when the overlay dismisses
+   * on scroll so the last position freezes for the exit animation.
+   */
+  followScroll = true,
 }: {
   open: boolean
   triggerRef: React.RefObject<HTMLElement | null>
@@ -212,9 +251,10 @@ export function useAnchoredPosition({
   align?: Align
   sideOffset?: number
   alignOffset?: number
-  /** When false, content sizes to itself (tooltips). Default true for menus/popovers. */
+  /** Match the trigger width. When false, the overlay sizes to its content. */
   matchTriggerWidth?: boolean
   collisionAvoidance?: boolean
+  followScroll?: boolean
 }) {
   const [style, setStyle] = useState<React.CSSProperties>({
     position: "fixed",
@@ -231,8 +271,10 @@ export function useAnchoredPosition({
     const t = trigger.getBoundingClientRect()
     const c = content.getBoundingClientRect()
     const pad = 8
-    // clientWidth/Height match the fixed containing block; innerWidth includes
-    // the scrollbar and shifts `right`-based math off the trigger edge.
+    // Host chrome insets (sticky header/footer). Zero when unset.
+    const padTop = pad + readOverlayInset("--df-overlay-inset-top")
+    const padBottom = pad + readOverlayInset("--df-overlay-inset-bottom")
+    // Prefer clientWidth/Height over innerWidth so scrollbar width does not skew right-edge math.
     const vw = document.documentElement.clientWidth
     const vh = document.documentElement.clientHeight
     const contentAware = align === "auto" || collisionAvoidance
@@ -243,7 +285,7 @@ export function useAnchoredPosition({
       c,
       vw,
       vh,
-      pad,
+      { top: padTop, bottom: padBottom, x: pad },
       sideOffset,
       contentAware
     )
@@ -260,20 +302,20 @@ export function useAnchoredPosition({
 
     if (resolvedSide === "bottom") {
       top = t.bottom + sideOffset
-      maxHeight = Math.max(96, vh - pad - top)
+      maxHeight = Math.max(96, vh - padBottom - top)
     } else if (resolvedSide === "top") {
       // Anchor with `bottom` so height changes grow upward without overlapping the trigger.
       bottom = vh - t.top + sideOffset
       top = "auto"
-      maxHeight = Math.max(96, t.top - pad - sideOffset)
+      maxHeight = Math.max(96, t.top - padTop - sideOffset)
     } else {
       if (resolvedAlign === "start") top = t.top + alignOffset
       else if (resolvedAlign === "center")
         top = t.top + t.height / 2 - c.height / 2 + alignOffset
       else top = t.bottom - c.height + alignOffset
-      if (top < pad) top = pad
-      if (top + c.height > vh - pad) {
-        top = Math.max(pad, vh - c.height - pad)
+      if (top < padTop) top = padTop
+      if (top + c.height > vh - padBottom) {
+        top = Math.max(padTop, vh - c.height - padBottom)
       }
     }
 
@@ -281,10 +323,8 @@ export function useAnchoredPosition({
       position: "fixed",
       top,
       bottom,
-      // Always at least as wide as the trigger; exact match is opt-in.
-      minWidth: t.width,
       ...(matchTriggerWidth
-        ? { width: t.width, maxWidth: t.width }
+        ? { width: t.width, minWidth: t.width, maxWidth: t.width }
         : null),
       ...(maxHeight != null ? { maxHeight } : null),
       zIndex: 50,
@@ -342,9 +382,10 @@ export function useAnchoredPosition({
     if (!open) return
     update()
     const raf = window.requestAnimationFrame(() => update())
+    const onResize = () => update()
     const onScroll = () => update()
-    window.addEventListener("resize", onScroll)
-    window.addEventListener("scroll", onScroll, true)
+    window.addEventListener("resize", onResize)
+    if (followScroll) window.addEventListener("scroll", onScroll, true)
 
     const content = contentRef.current
     const trigger = triggerRef.current
@@ -357,11 +398,11 @@ export function useAnchoredPosition({
 
     return () => {
       window.cancelAnimationFrame(raf)
-      window.removeEventListener("resize", onScroll)
-      window.removeEventListener("scroll", onScroll, true)
+      window.removeEventListener("resize", onResize)
+      if (followScroll) window.removeEventListener("scroll", onScroll, true)
       ro?.disconnect()
     }
-  }, [contentRef, open, triggerRef, update])
+  }, [contentRef, followScroll, open, triggerRef, update])
 
   return style
 }

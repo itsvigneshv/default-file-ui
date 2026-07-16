@@ -220,6 +220,7 @@ function OptionListSubContent({
   }
 
   const contentRef = React.useRef<HTMLDivElement | null>(null)
+  // Keep mounted through the exit animation when `open` becomes false.
   const [present, setPresent] = React.useState(open)
   const style = useAnchoredPosition({
     open: present && portal,
@@ -320,12 +321,15 @@ type OptionListProps = {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  /** When false, choosing a row keeps the panel open. Defaults false in multiple mode. */
+  /**
+   * Close the panel when a row is chosen.
+   * Default true in single mode; false in multiple mode.
+   */
   closeOnSelect?: boolean
   /**
-   * Default motion for all nested OptionListSubmenu panels.
+   * Default motion for nested OptionListSubmenu panels.
    * When false, nested menus open and close instantly.
-   * Individual Submenu / SubContent `animated` props override this.
+   * Individual Submenu or SubContent `animated` props override this.
    */
   submenuAnimated?: boolean
   /** Default open animation duration in ms for nested submenus. */
@@ -335,6 +339,10 @@ type OptionListProps = {
   children: React.ReactNode
 }
 
+/**
+ * Anchored option list for menus and selects.
+ * Supports single or multiple selection, nested submenus, search, and scroll.
+ */
 function OptionList({
   selectionMode = "single",
   value,
@@ -620,11 +628,18 @@ function OptionListFooter({
 }
 
 type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
+  /** Preferred side of the trigger. Flips when space is tight. */
   side?: "top" | "bottom" | "left" | "right"
   sideOffset?: number
+  /**
+   * Cross-axis alignment. `auto` picks the least-clipped option among
+   * start, center, and end.
+   */
   align?: "start" | "center" | "end" | "auto"
   alignOffset?: number
+  /** Match the panel width to the trigger. Default false. */
   alignItemWithTrigger?: boolean
+  /** Portal to `document.body`. Set false to render inline. */
   portal?: boolean
   /** Close when the page scrolls. Default true. */
   dismissOnScroll?: boolean
@@ -634,14 +649,14 @@ type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
   searchValue?: string
   defaultSearchValue?: string
   onSearchChange?: (value: string) => void
-  /** Wrap options in a scroll area. */
+  /** Wrap options in a scroll area. Default true when no nested submenu. */
   scrollable?: boolean
   scrollMaxHeight?: string | number
-  /** Footer actions (e.g. Reset / Select all). */
+  /** Footer actions such as Reset or Select all. */
   footer?: React.ReactNode
 }
 
-/** Detect nested OptionListSubmenu so those panels keep native (unclipped) overflow. */
+/** True when children include an OptionListSubmenu (needs unclipped overflow). */
 function containsSubmenu(node: React.ReactNode): boolean {
   let found = false
   React.Children.forEach(node, (child) => {
@@ -696,9 +711,7 @@ function OptionListContent({
   })
 
   const mounted = useIsClient()
-  // Submenu panels must keep overflow visible so flyouts aren't clipped; every
-  // other panel scrolls its options through the kit ScrollArea by default so we
-  // never fall back to the native browser scrollbar.
+  // Nested submenus need overflow visible; other panels use ScrollArea by default.
   const hasSubmenu = React.useMemo(() => containsSubmenu(children), [children])
   const wrapInScrollArea = scrollable ?? !hasSubmenu
   const stacked = search || footer != null
