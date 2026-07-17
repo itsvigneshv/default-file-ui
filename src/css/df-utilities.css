@@ -200,10 +200,6 @@
   background-color: color-mix(in oklch, var(--muted) 30%, var(--background));
 }
 
-.bg-muted\/35 {
-  background-color: color-mix(in oklch, var(--muted) 35%, var(--background));
-}
-
 .bg-muted\/40 {
   background-color: color-mix(in oklch, var(--muted) 40%, var(--background));
 }
@@ -1202,10 +1198,6 @@
 
 .max-h-\[calc\(100vh_-_6rem\)\] {
   max-height: calc(100vh - 6rem);
-}
-
-.max-h-\[min\(42vh\,420px\)\] {
-  max-height: min(42vh,420px);
 }
 
 .max-h-full {

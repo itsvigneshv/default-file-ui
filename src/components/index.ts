@@ -78,6 +78,8 @@ export type {
   OverlayHintVariant,
   OverlayHintRadius,
   OverlayHintScheme,
+  OverlayHintClickTarget,
+  OverlayHintSize,
 } from "./df-overlay-hint"
 export { ScrollArea, ScrollBar } from "./df-scroll-area"
 export type {

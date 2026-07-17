@@ -3531,6 +3531,31 @@
   font-weight: var(--df-font-weight-normal);
 }
 
+/* Compact marquee for tight marketing chrome (home hero, etc.). */
+:where([data-df="overlay-hint"][data-variant="marquee"][data-size="sm"]),
+.df-overlay-hint[data-variant="marquee"][data-size="sm"] {
+  gap: calc(1.5 * var(--spacing-unit, 0.25rem));
+  padding: calc(1 * var(--spacing-unit, 0.25rem))
+    calc(1 * var(--spacing-unit, 0.25rem))
+    calc(1 * var(--spacing-unit, 0.25rem))
+    calc(2.5 * var(--spacing-unit, 0.25rem));
+  font-size: var(--df-text-11);
+}
+
+:where([data-df="overlay-hint"][data-variant="marquee"][data-size="sm"] .df-overlay-hint-action),
+.df-overlay-hint[data-variant="marquee"][data-size="sm"] .df-overlay-hint-action {
+  width: calc(5.5 * var(--spacing-unit, 0.25rem));
+  height: calc(5.5 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="overlay-hint"][data-variant="marquee"][data-size="sm"] .df-overlay-hint-action svg),
+.df-overlay-hint[data-variant="marquee"][data-size="sm"]
+  .df-overlay-hint-action
+  svg {
+  width: calc(2.75 * var(--spacing-unit, 0.25rem));
+  height: calc(2.75 * var(--spacing-unit, 0.25rem));
+}
+
 :where(.dark [data-df="overlay-hint"][data-variant="marquee"]),
 :where(.dark[data-df="overlay-hint"][data-variant="marquee"]),
 :where([data-df="overlay-hint"][data-variant="marquee"][data-scheme="dark"]),

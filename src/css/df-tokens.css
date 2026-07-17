@@ -87,7 +87,7 @@
   --df-text-display: clamp(4.5rem, 12vw, 9rem);
 
   /* Font families */
-  --df-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --df-font-mono: var(--font-mono), ui-monospace, monospace;
   --df-font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* Font weight */

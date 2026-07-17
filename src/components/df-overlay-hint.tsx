@@ -26,6 +26,9 @@ type OverlayHintScheme = "light" | "dark"
  */
 type OverlayHintClickTarget = "chip" | "action"
 
+/** Density for `marquee`. `sm` is a shorter chip for tight marketing chrome. */
+type OverlayHintSize = "sm" | "md"
+
 /** Default middle-dot used between `parts` when `separator` is omitted. */
 const OVERLAY_HINT_SEPARATOR = "·"
 
@@ -65,6 +68,11 @@ type OverlayHintProps = React.HTMLAttributes<HTMLElement> & {
    * `action` limits clicks to the trailing control. Default `chip`.
    */
   clickTarget?: OverlayHintClickTarget
+  /**
+   * Marquee density. `sm` reduces padding, type, and the trailing control.
+   * Default `md`. Ignored on non-marquee variants.
+   */
+  size?: OverlayHintSize
   /**
    * Icon for the trailing marquee control.
    * Renders as a kit icon-only Button (`size="icon-xs"`, `variant="secondary"`).
@@ -251,6 +259,7 @@ function OverlayHint({
   speed = 18,
   marqueeWidth,
   clickTarget = "chip",
+  size = "md",
   action,
   actionLabel,
   onAction,
@@ -365,6 +374,7 @@ function OverlayHint({
     "data-radius": radius,
     "data-scheme": isMarquee ? scheme : undefined,
     "data-click-target": isMarquee ? clickTarget : undefined,
+    "data-size": isMarquee ? size : undefined,
   }
 
   if (chipClickable && actionHref != null) {
@@ -421,4 +431,5 @@ export type {
   OverlayHintRadius,
   OverlayHintScheme,
   OverlayHintClickTarget,
+  OverlayHintSize,
 }
