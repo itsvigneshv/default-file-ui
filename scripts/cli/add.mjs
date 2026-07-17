@@ -6,9 +6,6 @@ import { exists, readText, writeText } from "./fs-utils.mjs"
 
 const LOCAL_PKG = "node_modules/@default-file/ui"
 
-/**
- * @param {string[]} args
- */
 export async function addCommand(args) {
   const options = parseAddArgs(args)
 
@@ -24,7 +21,6 @@ export async function addCommand(args) {
   const registry = await loadRegistry(cwd)
   const resolved = resolveItems(registry, options.items)
 
-  /** @type {Set<string>} */
   const npmDeps = new Set()
   let written = 0
 
@@ -55,21 +51,11 @@ export async function addCommand(args) {
   )
 }
 
-/**
- * Mirror the kit's src tree under <baseDir>/default-file-ui so relative imports
- * (../lib/utils, ../hooks) keep resolving after copy.
- * @param {string} cwd
- * @param {string} baseDir
- * @param {string} sourcePath
- */
 function destinationFor(cwd, baseDir, sourcePath) {
   const relative = sourcePath.replace(/^src\//, "")
   return path.join(cwd, baseDir, "default-file-ui", relative)
 }
 
-/**
- * @param {string} cwd
- */
 async function loadRegistry(cwd) {
   const local = path.join(cwd, LOCAL_PKG, "registry.json")
   if (exists(local)) return JSON.parse(readText(local))
@@ -80,10 +66,6 @@ async function loadRegistry(cwd) {
   return res.json()
 }
 
-/**
- * @param {string} cwd
- * @param {string} relPath
- */
 async function readSource(cwd, relPath) {
   const local = path.join(cwd, LOCAL_PKG, relPath)
   if (exists(local)) return readText(local)
@@ -94,19 +76,10 @@ async function readSource(cwd, relPath) {
   return res.text()
 }
 
-/**
- * Resolve requested items plus their registry dependencies (foundation first).
- * @param {{ items: Array<{ name: string, files?: unknown[], dependencies?: string[], registryDependencies?: string[] }> }} registry
- * @param {string[]} names
- */
 function resolveItems(registry, names) {
   const byName = new Map(registry.items.map((item) => [item.name, item]))
-  /** @type {Map<string, typeof registry.items[number]>} */
   const out = new Map()
 
-  /**
-   * @param {string} name
-   */
   function visit(name) {
     if (out.has(name)) return
     const item = byName.get(name)
@@ -118,17 +91,12 @@ function resolveItems(registry, names) {
     out.set(name, item)
   }
 
-  // Always ensure foundation is present for copy-source usage.
   if (byName.has("foundation")) visit("foundation")
   for (const name of names) visit(name)
   return [...out.values()]
 }
 
-/**
- * @param {string[]} args
- */
 function parseAddArgs(args) {
-  /** @type {{ items: string[], cwd: string, dir: string | null, help: boolean }} */
   const options = { items: [], cwd: process.cwd(), dir: null, help: false }
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]

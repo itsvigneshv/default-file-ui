@@ -3,6 +3,10 @@
 import * as React from "react"
 
 import { useControllableState } from "../hooks"
+import {
+  dfCornerShapeStyle,
+  type DfCornerShape,
+} from "../lib/corner-shape"
 import { cn } from "../lib/utils"
 
 type ToggleVariant = "default" | "outline"
@@ -60,10 +64,9 @@ type ToggleGroupProps = Omit<
   variant?: ToggleVariant
   size?: ToggleSize
   spacing?: number
-  /** Corner rounding for items (and connected group edges). Defaults to the pill radius. */
   radius?: ToggleRadius
+  cornerShape?: DfCornerShape
   orientation?: "horizontal" | "vertical"
-  /** Allow more than one item pressed at a time. */
   multiple?: boolean
   value?: string[]
   defaultValue?: string[]
@@ -73,10 +76,12 @@ type ToggleGroupProps = Omit<
 
 function ToggleGroup({
   className,
+  style,
   variant = "default",
   size = "default",
   spacing = 2,
   radius,
+  cornerShape,
   orientation = "horizontal",
   multiple = false,
   value,
@@ -104,7 +109,6 @@ function ToggleGroup({
       return
     }
 
-    // Single-select: press switches selection; press again clears.
     if (current.includes(itemValue)) {
       setCurrent([])
       return
@@ -132,12 +136,15 @@ function ToggleGroup({
         data-size={size}
         data-spacing={spacing}
         data-radius={radius}
+        data-corner-shape={cornerShape}
         data-orientation={orientation}
         data-disabled={disabled ? "" : undefined}
         style={
           {
             "--gap": spacing,
             ...(radius ? { "--df-toggle-radius": radiusVar[radius] } : {}),
+            ...dfCornerShapeStyle(cornerShape),
+            ...style,
           } as React.CSSProperties
         }
         className={cn("df-toggle-group", className)}
@@ -214,4 +221,5 @@ export type {
   ToggleVariant,
   ToggleSize,
   ToggleRadius,
+  DfCornerShape,
 }

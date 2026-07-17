@@ -26,14 +26,8 @@ type ButtonSize =
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
   size?: ButtonSize
-  /**
-   * Link variant only. When true (default), show underline on hover.
-   * Set false to keep the label plain on hover.
-   */
   underline?: boolean
-  /** Content before the label. Accepts an icon or any node such as a badge or counter. */
   leading?: React.ReactNode
-  /** Content after the label. Accepts an icon or any node such as a badge or counter. */
   trailing?: React.ReactNode
 }
 
@@ -52,7 +46,6 @@ const sizeClass: Record<ButtonSize, string> = {
   "icon-2xl": "df-btn-icon-2xl",
 }
 
-/** Builds button classes for non button hosts such as Next.js Link. */
 function dfButtonClass({
   variant = "default",
   size = "default",

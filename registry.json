@@ -249,6 +249,26 @@
       "files": [
         { "path": "src/components/df-overlay-hint.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-overlay-hint.tsx" }
       ]
+    },
+    {
+      "name": "spectrum-text",
+      "type": "registry:ui",
+      "title": "Spectrum Text",
+      "description": "Inline text with a shifting multi-stop SVG gradient fill. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-spectrum-text.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-spectrum-text.tsx" }
+      ]
+    },
+    {
+      "name": "border-glow",
+      "type": "registry:ui",
+      "title": "Border Glow",
+      "description": "Card chrome with a pointer-directed border, optional soft bloom, and a hairline trace mode.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-border-glow.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-border-glow.tsx" }
+      ]
     }
   ]
 }

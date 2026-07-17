@@ -1,5 +1,9 @@
 import * as React from "react"
 
+import {
+  dfCornerShapeStyle,
+  type DfCornerShape,
+} from "../lib/corner-shape"
 import { cn } from "../lib/utils"
 
 type BadgeVariant =
@@ -12,7 +16,6 @@ type BadgeVariant =
 
 type BadgeSize = "xs" | "sm" | "md" | "lg" | "xl"
 
-/** Corner radius. Defaults to `4xl` (soft pill). */
 type BadgeRadius =
   | "none"
   | "xxs"
@@ -29,18 +32,16 @@ type BadgeRadius =
 type BadgeProps = React.HTMLAttributes<HTMLElement> & {
   variant?: BadgeVariant
   size?: BadgeSize
-  /** Corner radius. Defaults to `4xl`. */
   radius?: BadgeRadius
-  /**
-   * Trailing count chip. Accepts any numeric value (1 to 4+ digits).
-   * Renders on md, lg, and xl hosts. Prefer this over nesting a second Badge.
-   */
+  cornerShape?: DfCornerShape
   count?: number | string
-  /** Compose onto an existing element instead of rendering a span. */
-  render?: React.ReactElement<{ className?: string; children?: React.ReactNode }>
+  render?: React.ReactElement<{
+    className?: string
+    children?: React.ReactNode
+    style?: React.CSSProperties
+  }>
 }
 
-/** Counter chip uses the opposite of the host primary fill for contrast. */
 function resolveCounterVariant(variant: BadgeVariant): BadgeVariant {
   return variant === "default" ? "secondary" : "default"
 }
@@ -48,9 +49,11 @@ function resolveCounterVariant(variant: BadgeVariant): BadgeVariant {
 const Badge = React.forwardRef<HTMLElement, BadgeProps>(function Badge(
   {
     className,
+    style,
     variant = "default",
     size = "md",
     radius = "4xl",
+    cornerShape,
     count,
     render,
     children,
@@ -59,6 +62,12 @@ const Badge = React.forwardRef<HTMLElement, BadgeProps>(function Badge(
   ref
 ) {
   const classes = cn(className)
+  const cornerStyle = dfCornerShapeStyle(cornerShape)
+  const mergedStyle = (
+    cornerStyle || style
+      ? { ...cornerStyle, ...style }
+      : undefined
+  ) as React.CSSProperties | undefined
   const hasCount = count != null && count !== ""
   const content =
     children != null || hasCount ? (
@@ -86,6 +95,8 @@ const Badge = React.forwardRef<HTMLElement, BadgeProps>(function Badge(
       "data-variant": variant,
       "data-size": size,
       "data-radius": radius,
+      "data-corner-shape": cornerShape,
+      style: { ...cornerStyle, ...render.props.style, ...style },
       className: cn(classes, render.props.className),
       children: content ?? render.props.children,
     } as never)
@@ -98,7 +109,9 @@ const Badge = React.forwardRef<HTMLElement, BadgeProps>(function Badge(
       data-variant={variant}
       data-size={size}
       data-radius={radius}
+      data-corner-shape={cornerShape}
       className={classes}
+      style={mergedStyle}
       {...props}
     >
       {content}
@@ -107,4 +120,10 @@ const Badge = React.forwardRef<HTMLElement, BadgeProps>(function Badge(
 })
 
 export { Badge }
-export type { BadgeProps, BadgeRadius, BadgeSize, BadgeVariant }
+export type {
+  BadgeProps,
+  BadgeRadius,
+  BadgeSize,
+  BadgeVariant,
+  DfCornerShape,
+}

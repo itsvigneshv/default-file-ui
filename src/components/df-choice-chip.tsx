@@ -9,7 +9,6 @@ type ChoiceChipProps = Omit<
   "size"
 > & {
   selected?: boolean
-  /** T-shirt size. Default `md`. */
   size?: ChoiceChipSize
 }
 

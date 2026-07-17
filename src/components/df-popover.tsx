@@ -26,7 +26,6 @@ function usePopoverContext() {
   return ctx
 }
 
-/** Click-triggered popover panel. Portals to `document.body` by default. */
 function Popover({
   open,
   defaultOpen = false,
@@ -58,7 +57,6 @@ function PopoverTrigger({
   className,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** Compose onto an existing element instead of rendering a button. */
   render?: React.ReactElement
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()
@@ -108,15 +106,11 @@ function PopoverContent({
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  /** Cross-axis alignment relative to the trigger. */
   align?: "start" | "center" | "end"
   alignOffset?: number
-  /** Preferred side of the trigger. */
   side?: "top" | "bottom" | "left" | "right"
   sideOffset?: number
-  /** Match the trigger width. Default false; the panel uses `--df-popover-width`. */
   matchTriggerWidth?: boolean
-  /** Portal to `document.body`. Set false to render inline (docs demos). */
   portal?: boolean
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()

@@ -3,9 +3,6 @@ import { addCommand } from "./add.mjs"
 import { infoCommand } from "./info.mjs"
 import { initCommand } from "./init.mjs"
 
-/**
- * @param {string[]} argv
- */
 export async function run(argv) {
   const [command, ...rest] = argv
 

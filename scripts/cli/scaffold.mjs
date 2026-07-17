@@ -3,11 +3,6 @@ import path from "node:path"
 import { frameworkLabel } from "./constants.mjs"
 import { exists, packageManager, runCommand } from "./fs-utils.mjs"
 
-/**
- * @param {import("./constants.mjs").Framework} framework
- * @param {string} name
- * @param {string} parentDir
- */
 export function scaffoldProject(framework, name, parentDir) {
   if (framework === "laravel") {
     throw new Error(
@@ -100,10 +95,6 @@ export function scaffoldProject(framework, name, parentDir) {
   return target
 }
 
-/**
- * @param {string} pm
- * @param {string} cwd
- */
 function installRoot(pm, cwd) {
   if (!exists(path.join(cwd, "package.json"))) return
   if (pm === "pnpm") runCommand("pnpm", ["install"], { cwd })
@@ -112,9 +103,6 @@ function installRoot(pm, cwd) {
   else runCommand("npm", ["install"], { cwd })
 }
 
-/**
- * @param {string} name
- */
 export function assertProjectName(name) {
   if (!/^[a-zA-Z0-9._-]+$/.test(name)) {
     throw new Error(

@@ -10,7 +10,6 @@ type FloatingControlsVariant = "surface" | "overlay"
 type FloatingControlsItemEntry = {
   type?: "item"
   key?: string
-  /** Button label. Prefer this for text actions; falls back to `children`. */
   label?: React.ReactNode
   children?: React.ReactNode
   leading?: React.ReactNode
@@ -25,7 +24,6 @@ type FloatingControlsItemEntry = {
 type FloatingControlsDividerEntry = {
   type: "divider"
   key?: string
-  /** Swap in a custom divider node. Defaults to the kit vertical rule. */
   children?: React.ReactNode
   className?: string
 }
@@ -43,13 +41,7 @@ type FloatingControlsEntry =
   | FloatingControlsSlotEntry
 
 type FloatingControlsProps = React.HTMLAttributes<HTMLDivElement> & {
-  /** `surface` light bar, or `overlay` glass bar over dark canvases. */
   variant?: FloatingControlsVariant
-  /**
-   * Declarative slot list. Place `{ type: "divider" }` anywhere;
-   * use `{ type: "slot", children }` for custom nodes (menus, switchers).
-   * Ignored when `children` are provided.
-   */
   items?: FloatingControlsEntry[]
 }
 
@@ -128,11 +120,8 @@ function FloatingControls({
 }
 
 type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** Slot before the label (icon, badge, ...). */
   leading?: React.ReactNode
-  /** Slot after the label. */
   trailing?: React.ReactNode
-  /** `ghost` (default) or `solid` filled contrast chip. */
   tone?: "ghost" | "solid"
 }
 
@@ -179,7 +168,6 @@ function FloatingControlsItem({
 }
 
 type FloatingControlsDividerProps = React.HTMLAttributes<HTMLDivElement> & {
-  /** Custom divider node. When omitted, renders the default vertical rule. */
   children?: React.ReactNode
 }
 
@@ -213,7 +201,6 @@ function FloatingControlsDivider({
 
 type FloatingControlsSlotProps = React.HTMLAttributes<HTMLDivElement>
 
-/** Host for arbitrary controls (export menus, switchers, custom actions). */
 function FloatingControlsSlot({
   className,
   children,

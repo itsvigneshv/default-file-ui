@@ -102,7 +102,6 @@ const ICONS: Record<ToastTone, React.ReactNode> = {
 }
 
 type ToasterProps = {
-  /** Screen corner or edge where toasts appear. Default: bottom-right. */
   position?: ToastPosition
   className?: string
 }

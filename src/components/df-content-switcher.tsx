@@ -37,11 +37,8 @@ type ContentSwitcherProps = Omit<
   defaultValue?: string
   onValueChange?: (value: string) => void
   orientation?: "horizontal" | "vertical"
-  /** Stretch items to fill the track width. */
   fullWidth?: boolean
-  /** T-shirt size for segment height and type. */
   size?: ContentSwitcherSize
-  /** Click the active item again to clear selection (value becomes ""). */
   deselectable?: boolean
 }
 

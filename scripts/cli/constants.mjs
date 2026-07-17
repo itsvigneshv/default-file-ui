@@ -1,6 +1,4 @@
-/** @typedef {"next" | "vite" | "react-router" | "tanstack-start" | "astro" | "laravel" | "react"} Framework */
 
-/** @type {Framework[]} */
 export const FRAMEWORKS = [
   "next",
   "vite",
@@ -15,56 +13,50 @@ export const PACKAGE_SPEC = "github:itsvigneshv/default-file-ui#main"
 export const CSS_IMPORT = `@import "@default-file/ui/css/df-index.css";`
 export const CSS_IMPORT_JS = `import "@default-file/ui/css/df-index.css"`
 
-/** Project map written by init and read by add. */
 export const DF_JSON = "df.json"
 
-/** Raw source base for pulling registry items when the package is not installed. */
 export const RAW_BASE =
   "https://raw.githubusercontent.com/itsvigneshv/default-file-ui/main"
 
-/** @typedef {"detailed" | "compact"} ColorScale */
-/** @type {ColorScale[]} */
 export const COLOR_SCALES = ["detailed", "compact"]
 
-/** @typedef {"package" | "registry"} InstallMode */
-/** @type {InstallMode[]} */
 export const INSTALL_MODES = ["package", "registry"]
 
-/** Default corner radius token (matches df-tokens.css `--radius`). */
 export const DEFAULT_RADIUS = "0.625rem"
 
-/**
- * @param {string} value
- */
+/** Corner curve presets. Maps to `--df-corner-shape-*` in df-tokens.css. */
+export const CORNER_SHAPES = ["round", "smooth"]
+
+/** Classic circular arcs. Matches kit `--df-corner-shape` default. */
+export const DEFAULT_CORNER_SHAPE = "round"
+
 export function isColorScale(value) {
-  return COLOR_SCALES.includes(/** @type {ColorScale} */ (value))
+  return COLOR_SCALES.includes( (value))
 }
 
-/**
- * @param {string} value
- */
 export function isInstallMode(value) {
-  return INSTALL_MODES.includes(/** @type {InstallMode} */ (value))
+  return INSTALL_MODES.includes( (value))
 }
 
-/**
- * A CSS length usable for --radius: a rem/em/px value, or bare `0`.
- * @param {string} value
- */
 export function isRadius(value) {
   return /^(0|\d*\.?\d+(rem|em|px))$/.test(String(value).trim())
 }
 
-/**
- * @param {Framework} framework
- */
-export function isFramework(framework) {
-  return FRAMEWORKS.includes(/** @type {Framework} */ (framework))
+export function isCornerShape(value) {
+  return CORNER_SHAPES.includes(String(value))
 }
 
-/**
- * @param {Framework} framework
- */
+/** CSS value written into the host stylesheet for `--df-corner-shape`. */
+export function cornerShapeCssValue(shape) {
+  return shape === "smooth"
+    ? "var(--df-corner-shape-smooth)"
+    : "var(--df-corner-shape-round)"
+}
+
+export function isFramework(framework) {
+  return FRAMEWORKS.includes( (framework))
+}
+
 export function frameworkLabel(framework) {
   switch (framework) {
     case "next":

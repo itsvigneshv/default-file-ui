@@ -1,128 +1,48 @@
 import * as React from "react"
 
 import { Button, dfButtonClass } from "./df-button"
+import {
+  dfCornerShapeStyle,
+  type DfCornerShape,
+} from "../lib/corner-shape"
 import { cn } from "../lib/utils"
 
-/**
- * `default` frosted glass that follows light and dark surfaces.
- * `muted` solid muted surface chip (separate from frosted glass).
- * `marquee` scrolling label with an optional trailing icon action button.
- */
 type OverlayHintVariant = "default" | "muted" | "marquee"
 
-/**
- * Corner radius. Three steps that read clearly apart.
- * `none` square, `md` soft, `full` pill. Defaults to `md`.
- */
 type OverlayHintRadius = "none" | "md" | "full"
 
-/** Explicit surface for the marquee variant. Omit to follow a `.dark` ancestor. */
 type OverlayHintScheme = "light" | "dark"
 
-/**
- * Where clicks land on `marquee`.
- * `action` only the trailing control is interactive.
- * `chip` the whole hint is the hit target; the trailing icon is decorative.
- */
 type OverlayHintClickTarget = "chip" | "action"
 
-/** Density for `marquee`. `sm` is a shorter chip for tight marketing chrome. */
 type OverlayHintSize = "sm" | "md"
 
-/** Default middle-dot used between `parts` when `separator` is omitted. */
 const OVERLAY_HINT_SEPARATOR = "·"
 
 const MARQUEE_ACTION_SIZE = "icon-xs" as const
 const MARQUEE_ACTION_VARIANT = "secondary" as const
 
 type OverlayHintProps = React.HTMLAttributes<HTMLElement> & {
-  /**
-   * `default` frosted glass that adapts under a `.dark` surface.
-   * `muted` solid surface chip.
-   * `marquee` scrolling label with an optional trailing icon action.
-   */
   variant?: OverlayHintVariant
-  /**
-   * Corner radius: `none`, `md`, or `full`.
-   * Applies to the hint chip. Defaults to `md`. Maps to `--overlay-hint-radius`.
-   */
   radius?: OverlayHintRadius
-  /**
-   * Explicit light or dark recipe for `marquee`.
-   * When omitted, marquee follows a `.dark` ancestor like `default`.
-   */
+  cornerShape?: DfCornerShape
   scheme?: OverlayHintScheme
-  /**
-   * Marquee loop duration in seconds. Faster when smaller. Default 18.
-   * Maps to `--overlay-hint-marquee-duration`.
-   */
   speed?: number
-  /**
-   * Visible marquee viewport width. Any CSS length or token, e.g. `10rem`,
-   * `14rem`, or `var(--overlay-hint-marquee-width)`. Default theme value is `12rem`.
-   * Sets `--overlay-hint-marquee-width`.
-   */
   marqueeWidth?: string
-  /**
-   * Marquee hit target. `chip` makes the whole hint clickable.
-   * `action` limits clicks to the trailing control. Default `chip`.
-   */
   clickTarget?: OverlayHintClickTarget
-  /**
-   * Marquee density. `sm` reduces padding, type, and the trailing control.
-   * Default `md`. Ignored on non-marquee variants.
-   */
   size?: OverlayHintSize
-  /**
-   * Icon for the trailing marquee control.
-   * Renders as a kit icon-only Button (`size="icon-xs"`, `variant="secondary"`).
-   */
   action?: React.ReactNode
-  /** Accessible name for the interactive control (chip or action). */
   actionLabel?: string
-  /** Click handler when the interactive control renders as a button. */
   onAction?: React.MouseEventHandler<HTMLElement>
-  /** When set, the interactive control renders as a link. */
   actionHref?: string
-  /**
-   * Background color. Accepts any CSS color, including tokens
-   * such as `var(--df-neutral-900)`. Sets `--overlay-hint-bg`.
-   */
   background?: string
-  /**
-   * Border color. Accepts any CSS color, including tokens
-   * such as `var(--border)`. Sets `--overlay-hint-border`.
-   */
   borderColor?: string
-  /**
-   * Label color. Accepts any CSS color, including tokens
-   * such as `var(--muted-foreground)`. Sets `--overlay-hint-fg`.
-   */
   foreground?: string
-  /**
-   * Box shadow. Accepts any CSS shadow, including tokens
-   * such as `var(--overlay-shadow)`. Sets `--overlay-hint-shadow`.
-   */
   shadow?: string
-  /**
-   * Backdrop blur length. Accepts any CSS length, including tokens
-   * such as `var(--overlay-blur)`. Sets `--overlay-hint-blur`.
-   */
   blur?: string
-  /** Slot before the label: typically a small icon or swatch. */
   leading?: React.ReactNode
-  /** Slot after the label: typically a small icon. Ignored when `action` is set. */
   trailing?: React.ReactNode
-  /**
-   * Label segments rendered with `separator` between them.
-   * Prefer this for multi-part hints like "Live preview · Autosaved".
-   * When set, `children` is ignored.
-   */
   parts?: React.ReactNode[]
-  /**
-   * Node between `parts`. Defaults to a middle dot.
-   * Pass an icon, glyph, or custom divider. Set `null` to omit.
-   */
   separator?: React.ReactNode
 }
 
@@ -244,17 +164,12 @@ function MarqueeActionControl({
   )
 }
 
-/**
- * Instruction or status pill for tool chrome.
- * Default frosted glass follows a `.dark` ancestor for dark surfaces.
- * Marquee scrolls the label and can show a trailing kit icon-only Button.
- * Chrome resolves through `--overlay-hint-*` tokens.
- */
 function OverlayHint({
   className,
   style,
   variant = "default",
   radius = "md",
+  cornerShape,
   scheme,
   speed = 18,
   marqueeWidth,
@@ -302,6 +217,7 @@ function OverlayHint({
     ...(isMarquee && marqueeWidth != null
       ? { "--overlay-hint-marquee-width": marqueeWidth }
       : null),
+    ...dfCornerShapeStyle(cornerShape),
     ...style,
   } as React.CSSProperties
 
@@ -372,6 +288,7 @@ function OverlayHint({
     "data-df": "overlay-hint" as const,
     "data-variant": variant,
     "data-radius": radius,
+    "data-corner-shape": cornerShape,
     "data-scheme": isMarquee ? scheme : undefined,
     "data-click-target": isMarquee ? clickTarget : undefined,
     "data-size": isMarquee ? size : undefined,
@@ -432,4 +349,5 @@ export type {
   OverlayHintScheme,
   OverlayHintClickTarget,
   OverlayHintSize,
+  DfCornerShape,
 }

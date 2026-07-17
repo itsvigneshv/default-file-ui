@@ -16,10 +16,6 @@ type OptionsPanelContentProps = React.ComponentProps<typeof PopoverContent>
 const OPTIONS_PANEL_CONTENT_CLASS =
   "w-fit gap-0 overflow-hidden rounded-2xl bg-popover p-0 text-popover-foreground shadow-xl"
 
-/**
- * Anchored options panel chrome: trigger + titled header + scroll body + footer.
- * Body and footer are open slots for sections or actions.
- */
 function OptionsPanel(props: React.ComponentProps<typeof Popover>) {
   return <Popover {...props} />
 }

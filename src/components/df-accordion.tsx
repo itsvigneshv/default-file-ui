@@ -7,7 +7,6 @@ import { cn } from "../lib/utils"
 
 type AccordionProps = {
   type?: "single"
-  /** Controlled open value (item id), or null when all closed. */
   value?: string | null
   defaultValue?: string | null
   onValueChange?: (value: string | null) => void
@@ -82,7 +81,6 @@ function useItemValue() {
 type AccordionTriggerProps = {
   className?: string
   children: React.ReactNode
-  /** Optional trailing meta (date, etc.) rendered before the chevron. */
   meta?: React.ReactNode
 }
 

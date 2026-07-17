@@ -16,28 +16,12 @@ type SearchInputProps = Omit<
 > & {
   className?: string
   inputClassName?: string
-  /**
-   * Search icon content. Defaults to Search.
-   * Pass a custom node to replace, or `false` to hide the icon entirely.
-   */
   leadingIcon?: React.ReactNode | false
-  /**
-   * Where the search icon sits. `start` = left (default), `end` = right.
-   * Same icon chrome; only the side changes.
-   */
   iconPosition?: SearchInputIconPosition
-  /** Trailing slot for custom icon buttons / actions. */
   trailing?: React.ReactNode
-  /**
-   * Shows a clear (close) control while the field has a value.
-   * Defaults to true. Pass `false` to hide it.
-   */
   clearable?: boolean
-  /** Called after the value is cleared (in addition to onChange). */
   onClear?: () => void
-  /** Visual shape. `pill` is suited to app chrome / top bars. */
   variant?: "default" | "pill"
-  /** T-shirt size. Default `md`. */
   size?: SearchInputSize
 }
 
@@ -124,7 +108,6 @@ function SearchInput({
               data-df="search-input-clear"
               aria-label="Clear search"
               onMouseDown={(event) => {
-                // Keep focus on the field; avoid blur-before-click races.
                 event.preventDefault()
               }}
               onClick={handleClear}
@@ -139,7 +122,6 @@ function SearchInput({
   )
 }
 
-/** Alias for the same component; prefer this name for chrome / toolbars. */
 const SearchBar = SearchInput
 
 export { SearchInput, SearchBar }

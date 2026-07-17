@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/**
- * Generates curated Default File UI utilities from className tokens in src/.
- *
- * Theme tables live in df-theme.mjs (DF spacing, color, and type scales).
- * Colors resolve through --df-neutral-* so compact/detailed scale modes apply.
- */
 import fs from "node:fs"
 import path from "node:path"
 
@@ -59,8 +53,6 @@ function addTokens(set, str) {
     if (token.startsWith("http")) continue
     if (token.includes("/legal") || token.includes("/tools") || token.includes("/api")) continue
     if (token.startsWith("@")) continue
-    // utility tokens typically contain hyphen, colon, bracket, or slash opacity.
-    // Variant prefixes may start with a digit (e.g. 3xl: for wider screens).
     if (
       /^(?:[a-z0-9][a-z0-9-]*:)*-?(?:[a-z][a-z0-9-]*|[a-z]+-\[[^\]]+\])/.test(token) ||
       token.includes("[") ||
@@ -71,7 +63,6 @@ function addTokens(set, str) {
   }
 }
 
-/** Balanced-paren scan so nested oklch(...) inside cn(...) does not truncate. */
 function extractCallBodies(source, name) {
   const bodies = []
   const re = new RegExp(`\\b${name}\\(`, "g")
@@ -91,7 +82,6 @@ function extractCallBodies(source, name) {
 }
 
 function addStringLiterals(set, body) {
-  // Only top-level string literals in the call (skip nested fn args like size: "lg").
   let depth = 0
   let i = 0
   while (i < body.length) {
@@ -116,7 +106,6 @@ function addStringLiterals(set, body) {
           j += 2
           continue
         }
-        // Bail on template interpolations
         if (quote === "`" && body[j] === "$" && body[j + 1] === "{") {
           value = null
           break
@@ -135,18 +124,12 @@ function addStringLiterals(set, body) {
 function extractClasses(source) {
   const classes = new Set()
 
-  // className="..."
   for (const m of source.matchAll(/className\s*=\s*"([^"]*)"/g)) addTokens(classes, m[1])
-  // className='...'
   for (const m of source.matchAll(/className\s*=\s*'([^']*)'/g)) addTokens(classes, m[1])
-  // className={`...`}
   for (const m of source.matchAll(/className\s*=\s*\{`([^`]*)`\}/g)) addTokens(classes, m[1])
-  // cn(...) - full call bodies (handles nested parens / ternaries)
   for (const body of extractCallBodies(source, "cn")) addStringLiterals(classes, body)
-  // dfButtonClass(...) call sites
   for (const body of extractCallBodies(source, "dfButtonClass"))
     addStringLiterals(classes, body)
-  // viewportClassName / expandedClass / etc.
   for (const m of source.matchAll(/(?:^|[\s,{])(?:\w*)[Cc]lass(?:Name)?\s*=\s*"([^"]*)"/g))
     addTokens(classes, m[1])
   for (const m of source.matchAll(/(?:^|[\s,{])(?:\w*)[Cc]lass(?:Name)?\s*=\s*'([^']*)'/g))
@@ -155,7 +138,6 @@ function extractClasses(source) {
   return classes
 }
 
-/** Arbitrary-value decode: `_` → space, `\_` → literal `_`. */
 function decodeArbitrary(value) {
   return value.replace(/\\_|_/g, (m) => (m === "\\_" ? "_" : " "))
 }
@@ -170,12 +152,6 @@ function isGradientOrImage(value) {
   )
 }
 
-/**
- * Escape a class name for use in a CSS selector.
- * Leading digits must use hex escapes (e.g. 3xl → \33 xl) - CSS forbids
- * identifiers that start with a digit. Always terminate the hex escape with a
- * space so the next character is never consumed as part of the escape.
- */
 function escapeClass(name) {
   let out = ""
   for (let i = 0; i < name.length; i++) {
@@ -194,14 +170,6 @@ function escapeClass(name) {
   return out
 }
 
-/**
- * Opacity modifiers for semantic tokens (muted/50, card/95, …) resolve to opaque
- * shades blended against --background. Absolute overlays (white, black, hex)
- * mix with transparent so they stay see-through on dark stages and media.
- *
- * white/black are aliased to var(--df-neutral-*), so name must be checked; a
- * bare startsWith("var(") test would wrongly tint them against the page surface.
- */
 const OVERLAY_COLOR_NAMES = new Set(["white", "black"])
 
 function colorValue(name, opacity) {
@@ -219,9 +187,7 @@ function parseColorToken(rest) {
   const arb = rest.match(/^\[(.+)\](?:\/(\d+))?$/)
   if (arb) {
     const val = decodeArbitrary(arb[1])
-    // Gradients / images are not colors - leave for bg-/text- handlers.
     if (isGradientOrImage(val)) return null
-    // CSS lengths are font-size (text-[11px]), not colors.
     if (/^-?[\d.]+(?:px|rem|em|%|ch|ex|vh|vw|dvh|svh|lvh|cqw|cqh|lh)?$/i.test(val))
       return null
     if (arb[2]) return `color-mix(in srgb, ${val} ${arb[2]}%, transparent)`
@@ -467,7 +433,6 @@ function declsFor(utility) {
     "will-change-contents": { "will-change": "contents" },
   }
 
-  // Theme-driven font weight / tracking / leading / shadow / blur
   for (const [k, v] of Object.entries(FONT_WEIGHT)) {
     staticMap[`font-${k}`] = { "font-weight": v }
   }
@@ -576,7 +541,6 @@ function declsFor(utility) {
     const arb = rest.match(/^\[(.+)\]$/)
     if (arb) {
       const val = decodeArbitrary(arb[1])
-      // text-[11px] → font-size; text-[#fff] → color
       if (
         val.startsWith("#") ||
         val.startsWith("oklch") ||
@@ -601,7 +565,6 @@ function declsFor(utility) {
     if (arb) {
       const val = decodeArbitrary(arb[1])
       if (isGradientOrImage(val)) {
-        // Use `background` so multi-layer gradients + solid fallbacks work.
         return add({ background: val })
       }
       return add({ "background-color": val })
@@ -618,7 +581,6 @@ function declsFor(utility) {
     const arb = rest.match(/^\[(.+)\]$/)
     if (arb) {
       const val = decodeArbitrary(arb[1])
-      // Lengths → border-width; colors → border-color
       if (/^-?[\d.]+(?:px|rem|em|%)?$/i.test(val)) {
         return add({
           "border-width": /[a-z%]/i.test(val) ? val : `${val}px`,
@@ -818,7 +780,6 @@ function declsFor(utility) {
     if (arb) v = decodeArbitrary(arb[1])
     if (v != null) {
       if (neg) v = `calc(${v} * -1)`
-      // Compose X/Y via CSS vars so both classes can apply on one element.
       const varName = axis === "x" ? "--df-translate-x" : "--df-translate-y"
       return add({
         [varName]: v,
@@ -828,7 +789,6 @@ function declsFor(utility) {
     }
   }
 
-  // writing-mode arbitrary
   m = u.match(/^\[writing-mode:(.+)\]$/)
   if (m) return add({ "writing-mode": decodeArbitrary(m[1]) })
 
@@ -934,7 +894,6 @@ const files = [
   ...walk(SRC).filter(
     (f) => !f.includes(`${path.sep}default-file-ui${path.sep}css${path.sep}`)
   ),
-  // Kit components ship classNames the app never repeats - scan them too.
   ...walk(UI_SRC).filter((f) => f.includes(`${path.sep}components${path.sep}`)),
 ]
 const all = new Set()
@@ -982,13 +941,11 @@ const EXTRA = [
   "p-2",
   "text-sm",
   "font-medium",
-  // Home tool-card heights live in a ternary outside cn() in page.tsx
   "min-h-[14rem]",
   "sm:min-h-[16rem]",
   "cursor-grab",
   "cursor-grabbing",
   "object-cover",
-  // Dock panel widths are passed via expandedClass= (not className=)
   "xl:w-[252px]",
   "xl:min-w-[252px]",
   "xl:max-w-[252px]",
@@ -1041,10 +998,7 @@ for (const token of [...all].sort()) {
   }
 }
 
-let css = `/* Generated by scripts/generate-df-utilities.mjs - curated Default File UI utilities */\n`
-css += `/* Theme: scripts/df-theme.mjs (DF tokens / --df-neutral-*) */\n\n`
-css += baseRules.join("\n\n") + "\n"
-// Ascending breakpoint order so larger screens override smaller ones
+let css = baseRules.join("\n\n") + "\n"
 const mediaEntries = [...mediaRules.entries()].sort((a, b) => {
   const px = (q) => {
     const m = q.match(/min-width:\s*(\d+)px/)
@@ -1056,7 +1010,6 @@ for (const [query, rules] of mediaEntries) {
   css += `\n@media ${query} {\n${rules.join("\n\n")}\n}\n`
 }
 
-// --- Invariants (fail the build if grammar/cascade regresses) ---
 const invariantErrors = []
 
 const text11 = declsFor("text-[11px]")
@@ -1106,7 +1059,6 @@ const realUnresolved = unresolved.filter((token) => {
 })
 
 if (realUnresolved.length) {
-  css += `\n/* Unresolved (${realUnresolved.length}): ${realUnresolved.join(", ")} */\n`
   invariantErrors.push(
     `Unresolved utility classes (${realUnresolved.length}): ${realUnresolved.slice(0, 20).join(", ")}${realUnresolved.length > 20 ? "…" : ""}`
   )

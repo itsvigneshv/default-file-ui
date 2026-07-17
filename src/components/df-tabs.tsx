@@ -3,20 +3,17 @@
 import * as React from "react"
 
 import { useControllableState } from "../hooks"
+import {
+  dfCornerShapeStyle,
+  type DfCornerShape,
+} from "../lib/corner-shape"
 import { cn } from "../lib/utils"
 
 type TabsVariant = "pill" | "line" | "segment"
 type TabsSize = "sm" | "default" | "lg"
 type TabsOrientation = "horizontal" | "vertical"
-/** Edge the line variant's divider and active indicator sit on. */
 type TabsLineSide = "top" | "bottom" | "left" | "right"
-/** Corner radius for pill and segment tracks, indicators, and triggers. */
 type TabsRadius = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "full"
-/**
- * Design-scale spacing unit for gap props.
- * Maps to SPACING: `none` / 0 = 0, N = N x 0.25rem.
- * Even integers run through 200; half-steps (0.5, 1.5, ...) are valid too.
- */
 type TabsSpacing = number | "none"
 
 function resolveTabsRadius(
@@ -26,7 +23,6 @@ function resolveTabsRadius(
 ): TabsRadius {
   if (radius != null) return radius
   if (variant === "segment") return "lg"
-  // Vertical pills use 2xl so a full-radius track does not read as a capsule.
   if (variant === "pill") return orientation === "vertical" ? "2xl" : "full"
   return "none"
 }
@@ -78,31 +74,11 @@ type TabsProps = Omit<
   onValueChange?: (value: string) => void
   variant?: TabsVariant
   size?: TabsSize
-  /**
-   * Layout axis. `horizontal` (default) places triggers in a row with the
-   * panel below. `vertical` stacks triggers beside the panel.
-   */
   orientation?: TabsOrientation
-  /**
-   * Edge for the line variant divider and indicator.
-   * Horizontal: `top` or `bottom` (default `bottom`).
-   * Vertical: `left` or `right` (default `right`). Other variants ignore it.
-   */
   lineSide?: TabsLineSide
-  /**
-   * Corner radius for pill and segment tracks, chips, and triggers.
-   * Defaults: pill `full` (`2xl` when vertical), segment `lg`. Line ignores it.
-   */
   radius?: TabsRadius
-  /**
-   * Gap inside each trigger between icon, label, and badge.
-   * Design-scale units (`none` / 0 to 200, half-steps allowed). Default `1.5`.
-   */
+  cornerShape?: DfCornerShape
   gap?: TabsSpacing
-  /**
-   * Gap between triggers. Design-scale units.
-   * Defaults: `0` for pill and line, `0.5` for segment.
-   */
   spacing?: TabsSpacing
 }
 
@@ -117,6 +93,7 @@ function Tabs({
   orientation = "horizontal",
   lineSide,
   radius,
+  cornerShape,
   gap,
   spacing,
   children,
@@ -160,6 +137,7 @@ function Tabs({
         data-orientation={orientation}
         data-line-side={resolvedLineSide}
         data-radius={resolvedRadius}
+        data-corner-shape={cornerShape}
         data-gap={resolvedGap}
         data-spacing={resolvedSpacing}
         style={
@@ -167,6 +145,7 @@ function Tabs({
             "--df-tabs-gap": resolvedGap,
             "--df-tabs-spacing": resolvedSpacing,
             "--df-tabs-panel-gap": panelGap,
+            ...dfCornerShapeStyle(cornerShape),
             ...style,
           } as React.CSSProperties
         }
@@ -299,9 +278,7 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
 
 type TabsTriggerProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   value: string
-  /** Icon or node before the label. */
   leading?: React.ReactNode
-  /** Badge or node after the label (e.g. a count Badge). */
   trailing?: React.ReactNode
 }
 
@@ -372,7 +349,6 @@ function TabsTrigger({
 
 type TabsContentProps = React.HTMLAttributes<HTMLDivElement> & {
   value: string
-  /** Keep content mounted when inactive. Default false. */
   forceMount?: boolean
 }
 
@@ -416,4 +392,5 @@ export type {
   TabsLineSide,
   TabsRadius,
   TabsSpacing,
+  DfCornerShape,
 }

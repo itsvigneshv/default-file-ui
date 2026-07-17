@@ -1,38 +1,18 @@
-/**
- * Default File UI theme: spacing, type, color, and effect scales.
- *
- * Colors: semantic tokens + unscoped `--df-neutral-*` aliases that follow
- * `data-df-color-scale` on <html>. Primitives always coexist as
- * `--df-neutral-detailed-*` and `--df-neutral-compact-*`.
- * `zinc-*` / `gray-*` map to the unscoped DF neutral aliases.
- */
 
-/** Compact-friendly + detailed steps used by utility color maps. */
 export const DF_NEUTRAL_STEPS = [
   0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400,
   450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000,
 ]
 
-/** Common gray step aliases (zinc-* / gray-* → --df-neutral-*). */
 export const COMPAT_NEUTRAL_STEPS = [
   50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
 ]
 
-/**
- * Spacing / padding / gap scale.
- * One unit = `--spacing-unit` (0.25rem / 4px). Keys are design units:
- * `gap-4` / `p-4` → calc(4 * var(--spacing-unit)). Values stay identical to the
- * prior rem table when --spacing-unit is 0.25rem.
- * Includes `none` (alias of 0), half-steps for tight chrome, and even integers
- * from 0 through 200. Odd integers that already shipped (1, 3, 5, 7, 9, 11)
- * stay for compatibility.
- */
 function spacingToken(n) {
   return `calc(${n} * var(--spacing-unit, 0.25rem))`
 }
 
 function buildSpacingScale() {
-  /** @type {Record<string | number, string>} */
   const scale = {
     none: "0",
     0: "0",
@@ -56,9 +36,6 @@ function buildSpacingScale() {
 
 export const SPACING = buildSpacingScale()
 
-/**
- * Radius - DF tokens (see df-tokens.css). Matches prior app radii, not raw TW.
- */
 export const RADIUS = {
   none: "0",
   xxs: "var(--radius-xxs)",
@@ -73,7 +50,11 @@ export const RADIUS = {
   full: "var(--radius-full)",
 }
 
-/** Font size → [font-size, line-height] */
+export const CORNER_SHAPE = {
+  round: "var(--df-corner-shape-round)",
+  smooth: "var(--df-corner-shape-smooth)",
+}
+
 export const FONT_SIZE = {
   9: ["var(--df-text-9)", "var(--df-leading-3)"],
   "2xs": ["var(--df-text-2xs)", "var(--df-leading-3)"],
@@ -165,7 +146,6 @@ export const BREAKPOINTS = {
   lg: "1024px",
   xl: "1280px",
   "2xl": "1536px",
-  /** Wider screen - freeform desktop range. */
   "3xl": "1920px",
 }
 
@@ -178,11 +158,9 @@ export const SHADOW = {
   xl: "var(--df-shadow-xl)",
   "2xl": "var(--df-shadow-2xl)",
   none: "none",
-  // Compat aliases used in older call sites
   DEFAULT: "var(--df-shadow-sm)",
 }
 
-/** Named shadow aliases. */
 export const SHADOW_COMPAT = {
   sm: "var(--df-shadow-xs)",
   md: "var(--df-shadow-md)",
@@ -221,7 +199,6 @@ export const OPACITY = Object.fromEntries(
   ])
 )
 
-/** Semantic + literal colors used by utilities. */
 export function buildColors() {
   const COLORS = {
     background: "var(--background)",
@@ -250,21 +227,17 @@ export function buildColors() {
     current: "currentColor",
   }
 
-  // Full DF neutral ramp (compact missing steps fall back in CSS via var()).
   for (const step of DF_NEUTRAL_STEPS) {
     COLORS[`neutral-${step}`] = `var(--df-neutral-${step})`
   }
 
-  // Compat: zinc-* → same DF neutral tokens (follows compact/detailed).
   for (const step of COMPAT_NEUTRAL_STEPS) {
     COLORS[`zinc-${step}`] = `var(--df-neutral-${step})`
   }
-  // Extra zinc aliases that appear in tooling
   COLORS["zinc-0"] = "var(--df-neutral-0)"
   COLORS["zinc-850"] = "var(--df-neutral-850, var(--df-neutral-900))"
   COLORS["zinc-1000"] = "var(--df-neutral-1000)"
 
-  // gray-* also maps to DF neutrals
   for (const step of COMPAT_NEUTRAL_STEPS) {
     COLORS[`gray-${step}`] = `var(--df-neutral-${step})`
   }
@@ -274,7 +247,6 @@ export function buildColors() {
 
 export const COLORS = buildColors()
 
-/** Markers that are class names but not spacing/color utilities (DF / home chrome). */
 export const NON_UTILITY_ALLOWLIST = new Set([
   "df-btn",
   "df-btn-default",
@@ -309,6 +281,7 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "df-toaster",
   "home-grid-fade",
   "home-hero-stage",
+  "home-hero-collage-gap",
   "home-preview-frame",
   "home-preview-mesh",
   "home-preview-principles",
@@ -323,10 +296,8 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "peer",
   "custom",
   "dark",
-  // Scroll-reveal / auto-tab state hooks (styled in df-animations.css)
   "is-inview",
   "is-active",
-  // Variant prop values that the class scanner may pick up as tokens
   "outline",
   "default",
   "secondary",

@@ -75,17 +75,9 @@ type OptionListSubmenuProps = {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  /**
-   * When true, the child panel fades/slides open and closed.
-   * When false, open and close are instant (no motion).
-   * Falls back to OptionList `submenuAnimated` (default true).
-   */
   animated?: boolean
-  /** Open animation duration in milliseconds. Falls back to OptionList `submenuOpenDuration`. */
   openDuration?: number
-  /** Close animation duration in milliseconds. Falls back to OptionList `submenuCloseDuration`. */
   closeDuration?: number
-  /** Delay before the submenu closes after pointer leaves. */
   closeDelay?: number
   children: React.ReactNode
 }
@@ -182,14 +174,8 @@ type OptionListSubContentProps = React.HTMLAttributes<HTMLDivElement> & {
   align?: "start" | "center" | "end" | "auto"
   alignOffset?: number
   portal?: boolean
-  /**
-   * Override motion for this panel only.
-   * When false, this panel appears and disappears instantly.
-   */
   animated?: boolean
-  /** Override open duration (ms) for this panel only. */
   openDuration?: number
-  /** Override close duration (ms) for this panel only. */
   closeDuration?: number
 }
 
@@ -220,7 +206,6 @@ function OptionListSubContent({
   }
 
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  // Keep mounted through the exit animation when `open` becomes false.
   const [present, setPresent] = React.useState(open)
   const style = useAnchoredPosition({
     open: present && portal,
@@ -322,28 +307,13 @@ type OptionListProps = {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  /**
-   * Close the panel when a row is chosen.
-   * Default true in single mode; false in multiple mode.
-   */
   closeOnSelect?: boolean
-  /**
-   * Default motion for nested OptionListSubmenu panels.
-   * When false, nested menus open and close instantly.
-   * Individual Submenu or SubContent `animated` props override this.
-   */
   submenuAnimated?: boolean
-  /** Default open animation duration in ms for nested submenus. */
   submenuOpenDuration?: number
-  /** Default close animation duration in ms for nested submenus. */
   submenuCloseDuration?: number
   children: React.ReactNode
 }
 
-/**
- * Anchored option list for menus and selects.
- * Supports single or multiple selection, nested submenus, search, and scroll.
- */
 function OptionList({
   selectionMode = "single",
   value,
@@ -458,7 +428,6 @@ function OptionListTrigger({
   onKeyDown,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** Host element to clone trigger behavior onto (for example Badge). */
   render?: React.ReactElement
 }) {
   const { open, setOpen, triggerRef } = useOptionListContext()
@@ -489,7 +458,6 @@ function OptionListTrigger({
   }
 
   if (render) {
-    // Do not pass data-df: hosts like Badge own their data-df for styling.
     return React.cloneElement(render, {
       ...props,
       ref: triggerRef as React.Ref<HTMLElement>,
@@ -629,35 +597,23 @@ function OptionListFooter({
 }
 
 type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
-  /** Preferred side of the trigger. Flips when space is tight. */
   side?: "top" | "bottom" | "left" | "right"
   sideOffset?: number
-  /**
-   * Cross-axis alignment. `auto` picks the least-clipped option among
-   * start, center, and end.
-   */
   align?: "start" | "center" | "end" | "auto"
   alignOffset?: number
-  /** Match the panel width to the trigger. Default false. */
   alignItemWithTrigger?: boolean
-  /** Portal to `document.body`. Set false to render inline. */
   portal?: boolean
-  /** Close when the page scrolls. Default true. */
   dismissOnScroll?: boolean
-  /** Show a search field above the options. */
   search?: boolean
   searchPlaceholder?: string
   searchValue?: string
   defaultSearchValue?: string
   onSearchChange?: (value: string) => void
-  /** Wrap options in a scroll area. Default true when no nested submenu. */
   scrollable?: boolean
   scrollMaxHeight?: string | number
-  /** Footer actions such as Reset or Select all. */
   footer?: React.ReactNode
 }
 
-/** True when children include an OptionListSubmenu (needs unclipped overflow). */
 function containsSubmenu(node: React.ReactNode): boolean {
   let found = false
   React.Children.forEach(node, (child) => {
@@ -712,7 +668,6 @@ function OptionListContent({
   })
 
   const mounted = useIsClient()
-  // Nested submenus need overflow visible; other panels use ScrollArea by default.
   const hasSubmenu = React.useMemo(() => containsSubmenu(children), [children])
   const wrapInScrollArea = scrollable ?? !hasSubmenu
   const stacked = search || footer != null
@@ -722,8 +677,6 @@ function OptionListContent({
       ? "var(--df-menu-stacked-max-height)"
       : "min(60vh, var(--df-menu-max-height))")
 
-  // Keep a hidden item tree before the client portal is ready so option labels
-  // can register for SelectValue. Returning null here flashes the raw value id.
   if (!mounted) {
     return (
       <div hidden aria-hidden data-df="option-list-label-registry">
@@ -818,22 +771,10 @@ type OptionListItemLayout = "inline" | "stacked"
 type OptionListItemProps = React.HTMLAttributes<HTMLDivElement> & {
   value: string
   disabled?: boolean
-  /** Leading control or icon. Use `"checkbox"` for multi-select rows. */
   leading?: OptionListItemLeading
-  /**
-   * Supporting copy for the row.
-   * - `layout="inline"` (default): sits beside the label
-   * - `layout="stacked"`: description under the heading
-   */
   secondary?: React.ReactNode
-  /** How `secondary` sits relative to the main label. */
   layout?: OptionListItemLayout
-  /** Slot after the label: badge, counter, or any node. */
   trailing?: React.ReactNode
-  /**
-   * Trailing selected check. Defaults to false when `leading="checkbox"`
-   * or when `trailing` is set; otherwise true for single-select checkmarks.
-   */
   indicator?: boolean
 }
 
@@ -888,8 +829,6 @@ function OptionListItem({
   const highlighted =
     (isSubmenuTrigger && submenu?.open) || dataHighlighted != null
 
-  // Layout effect so the closed trigger can show the item label before paint,
-  // instead of briefly falling back to the raw value id.
   React.useLayoutEffect(() => {
     registerLabel(value, children)
   }, [children, registerLabel, value])

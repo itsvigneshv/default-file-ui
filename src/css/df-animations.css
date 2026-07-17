@@ -1,5 +1,3 @@
-/* Default File UI - animations */
-
 @keyframes df-spin {
   to {
     transform: rotate(360deg);
@@ -33,7 +31,7 @@
 @keyframes home-reveal {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(var(--df-motion-travel-xl));
   }
   to {
     opacity: 1;
@@ -69,7 +67,7 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(calc(-1 * var(--df-motion-travel-sm)));
   }
 }
 
@@ -78,7 +76,7 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(calc(-100% - var(--df-marquee-gap)));
   }
 }
 
@@ -91,18 +89,35 @@
   }
 }
 
-.home-reveal {
-  animation: home-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+@keyframes df-spectrum-text {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 100%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-/* Scroll-triggered reveal (paired with RevealOnScroll) */
+.home-reveal {
+  animation: home-reveal var(--df-duration-reveal) var(--df-ease-decelerate) both;
+}
+
 .df-reveal {
   opacity: 0;
-  transform: translateY(var(--df-reveal-y, 24px));
+  transform: translateY(var(--df-reveal-y, var(--df-motion-travel-3xl)));
   transition:
-    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
-    color 1s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity var(--df-duration-reveal-long) var(--df-ease-decelerate),
+    transform var(--df-duration-reveal-long) var(--df-ease-decelerate),
+    color var(--df-duration-reveal-long) var(--df-ease-decelerate);
   transition-delay: var(--df-reveal-delay, 0ms);
   will-change: opacity, transform;
 }
@@ -113,14 +128,13 @@
 }
 
 .df-reveal-y-48 {
-  --df-reveal-y: 48px;
+  --df-reveal-y: var(--df-motion-travel-4xl);
 }
 
 .df-reveal-y-72 {
-  --df-reveal-y: 72px;
+  --df-reveal-y: var(--df-motion-travel-5xl);
 }
 
-/* Intro statements: color emphasis instead of travel */
 .df-reveal-emphasis {
   color: color-mix(in oklch, var(--foreground) 25%, transparent);
   opacity: 1;
@@ -133,40 +147,37 @@
 
 .home-grid-fade {
   background-image:
-    linear-gradient(to right, oklch(0.8 0.01 260 / 0.18) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.8 0.01 260 / 0.18) 1px, transparent 1px);
-  background-size: 48px 48px;
+    linear-gradient(
+      to right,
+      var(--home-grid-line) var(--border-width-hairline),
+      transparent var(--border-width-hairline)
+    ),
+    linear-gradient(
+      to bottom,
+      var(--home-grid-line) var(--border-width-hairline),
+      transparent var(--border-width-hairline)
+    );
+  background-size: var(--home-grid-size);
   mask-image: linear-gradient(180deg, black 0%, transparent 88%);
 }
 
 .home-section-tools {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    oklch(0.975 0.006 250 / 0.65) 18%,
-    oklch(0.97 0.008 90 / 0.5) 55%,
-    transparent 100%
-  );
+  background: var(--home-section-tools-wash);
 }
 
 .home-preview-frame {
-  box-shadow:
-    inset 0 1px 0 oklch(1 0 0 / 0.35),
-    0 0 0 1px oklch(0.85 0.01 260 / 0.35);
+  box-shadow: var(--home-preview-frame-shadow);
 }
 
 .home-preview-shader {
-  background-image:
-    radial-gradient(ellipse at 20% 30%, oklch(0.78 0.14 40), transparent 55%),
-    radial-gradient(ellipse at 80% 20%, oklch(0.72 0.12 220), transparent 50%),
-    radial-gradient(ellipse at 50% 90%, oklch(0.7 0.1 320), transparent 55%),
-    linear-gradient(135deg, oklch(0.35 0.04 260), oklch(0.22 0.03 280));
+  background-image: var(--home-preview-shader-image);
   background-size: 140% 140%, 140% 140%, 140% 140%, 100% 100%;
-  animation: home-shader-drift 12s ease-in-out infinite;
+  animation: home-shader-drift var(--home-shader-drift-duration) ease-in-out
+    infinite;
 }
 
 .home-preview-mesh {
-  background: oklch(0.96 0.01 90);
+  background: var(--home-preview-mesh-bg);
 }
 
 .home-preview-mesh::before,
@@ -174,40 +185,76 @@
   content: "";
   position: absolute;
   inset: -20%;
-  border-radius: 9999px;
-  filter: blur(28px);
-  animation: home-mesh-float 9s ease-in-out infinite;
+  border-radius: var(--radius-full);
+  filter: blur(var(--df-blur-mesh));
+  animation: home-mesh-float var(--home-mesh-float-duration) ease-in-out infinite;
 }
 
 .home-preview-mesh::before {
-  background: radial-gradient(
-    circle,
-    oklch(0.82 0.08 30 / 0.7),
-    transparent 62%
-  );
+  background: var(--home-preview-mesh-blob-a);
   left: -10%;
   top: -15%;
 }
 
 .home-preview-mesh::after {
-  background: radial-gradient(
-    circle,
-    oklch(0.8 0.07 230 / 0.55),
-    transparent 60%
-  );
+  background: var(--home-preview-mesh-blob-b);
   right: -15%;
   bottom: -20%;
   animation-delay: -3s;
 }
 
 .home-hero-stage {
+  box-shadow: var(--home-hero-stage-shadow);
+}
+
+.home-hero-collage-gap {
+  margin-top: var(--home-hero-collage-gap);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --home-hero-collage-gap: calc(32 * var(--spacing-unit, 0.25rem));
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --home-hero-collage-gap: calc(36 * var(--spacing-unit, 0.25rem));
+  }
+}
+
+.home-hero-collage-stage {
+  --home-hero-collage-stage-ring: color-mix(
+    in oklch,
+    var(--border) 70%,
+    transparent
+  );
+  background: var(--muted);
   box-shadow:
-    0 0 0 1px oklch(1 0 0 / 0.08),
-    0 32px 80px -36px oklch(0.2 0.03 260 / 0.55);
+    0 0 0 var(--border-width-hairline) var(--home-hero-collage-stage-ring),
+    var(--home-hero-collage-stage-elevation);
+}
+
+.home-hero-card {
+  background: var(--card);
+  box-shadow: var(--home-hero-card-shadow);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.home-hero-card__float {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.home-hero-card-label {
+  background: color-mix(in oklch, var(--background) 72%, transparent);
+  box-shadow: var(--home-hero-card-label-shadow);
 }
 
 .home-stage-frame {
-  animation: home-stage-float 8s ease-in-out infinite;
+  animation: home-stage-float var(--home-stage-float-duration) ease-in-out
+    infinite;
 }
 
 .home-stage-frame:nth-child(2) {
@@ -218,8 +265,8 @@
   animation-delay: -4.5s;
 }
 
-/* Infinite horizontal marquee */
 .df-marquee {
+  --df-marquee-gap: calc(3 * var(--spacing-unit, 0.25rem));
   overflow: hidden;
   mask-image: linear-gradient(
     90deg,
@@ -232,15 +279,23 @@
 
 .df-marquee-track {
   display: flex;
-  width: max-content;
+  gap: var(--df-marquee-gap);
+}
+
+.df-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--df-marquee-gap);
+  min-width: 100%;
   animation: df-marquee var(--df-marquee-duration, 30s) linear infinite;
 }
 
-.df-marquee:hover .df-marquee-track {
+.df-marquee:hover .df-marquee-group {
   animation-play-state: paused;
 }
 
-/* Auto-tab progress fill */
 .df-tab-progress {
   transform: scaleX(0);
   transform-origin: left center;
@@ -250,11 +305,10 @@
   animation: df-tab-progress var(--df-tab-duration, 6s) linear forwards;
 }
 
-/* Accordion body open/close */
 .df-accordion-panel {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: grid-template-rows var(--df-duration-panel) var(--df-ease-decelerate);
 }
 
 .df-accordion-panel[data-open="true"] {
@@ -266,20 +320,19 @@
 }
 
 .df-accordion-chevron {
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform var(--df-duration-panel) var(--df-ease-decelerate);
 }
 
 .df-accordion-chevron[data-open="true"] {
   transform: rotate(180deg);
 }
 
-/* Auto-tabs panel crossfade */
 .df-auto-tab-panel {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(var(--df-motion-travel-lg));
   transition:
-    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity var(--df-duration-panel-soft) var(--df-ease-decelerate),
+    transform var(--df-duration-panel-soft) var(--df-ease-decelerate);
   pointer-events: none;
 }
 
@@ -295,8 +348,9 @@
   .home-preview-mesh::before,
   .home-preview-mesh::after,
   .home-stage-frame,
-  .df-marquee-track,
-  .df-tab-progress.is-active {
+  .df-marquee-group,
+  .df-tab-progress.is-active,
+  .df-spectrum-text-fill {
     animation: none !important;
   }
 

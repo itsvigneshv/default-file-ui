@@ -199,12 +199,7 @@ type ColorPickerProps = {
   onChange: (hex: string) => void
   label?: string
   className?: string
-  /**
-   * Pill beside the swatch: `hex` shows the value, `clear` shows an X.
-   * Omit for a swatch-only trigger.
-   */
   trailing?: ColorPickerTrailing
-  /** Called when the clear (X) control is pressed. Required when `trailing="clear"`. */
   onClear?: () => void
   clearLabel?: string
 }
@@ -328,7 +323,6 @@ export function ColorPicker({
       className="gap-3 overflow-visible rounded-xl p-3 shadow-xl"
       style={{ width: "var(--df-color-picker-width)" }}
     >
-      {/* Saturation/brightness panel with vertical hue strip */}
       <div
         className="flex shrink-0 gap-2.5"
         style={{ height: "var(--df-color-picker-height)" }}
@@ -339,7 +333,6 @@ export function ColorPicker({
           style={{
             height: "var(--df-color-picker-height)",
             backgroundColor: pureHue,
-            // Domain gradients for the SV plane (not UI chrome).
             backgroundImage: `
                 linear-gradient(to top, #000, transparent),
                 linear-gradient(to right, #fff, transparent)
@@ -364,7 +357,6 @@ export function ColorPicker({
           style={{
             width: "calc(5 * var(--spacing-unit, 0.25rem))",
             height: "var(--df-color-picker-height)",
-            // Domain spectrum strip for hue selection.
             backgroundImage:
               "linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)",
           }}

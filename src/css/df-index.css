@@ -1,6 +1,3 @@
-/* Default File UI - entry
- * Import order: tokens → reset → animations → components → utilities.
- */
 @import "./df-color-scales.css";
 @import "./df-tokens.css";
 @import "./df-reset.css";

@@ -2,10 +2,6 @@ import path from "node:path"
 
 import { exists, findFirst, readText } from "./fs-utils.mjs"
 
-/**
- * @param {string} cwd
- * @returns {import("./constants.mjs").Framework | null}
- */
 export function detectFramework(cwd) {
   if (findFirst(cwd, ["next.config.ts", "next.config.mjs", "next.config.js", "next.config.cjs"])) {
     return "next"
@@ -37,10 +33,6 @@ export function detectFramework(cwd) {
   return null
 }
 
-/**
- * @param {string} cwd
- * @param {string} name
- */
 function packageDependsOn(cwd, name) {
   const pkgPath = path.join(cwd, "package.json")
   if (!exists(pkgPath)) return false
@@ -56,9 +48,6 @@ function packageDependsOn(cwd, name) {
   }
 }
 
-/**
- * @param {string} cwd
- */
 export function readPackageJson(cwd) {
   const pkgPath = path.join(cwd, "package.json")
   if (!exists(pkgPath)) return null

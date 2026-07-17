@@ -9,28 +9,23 @@ type ScrollAreaThumbShape = "rounded" | "flat"
 type ScrollAreaOrientation = "vertical" | "horizontal" | "both"
 type ScrollAreaSide = "left" | "right" | "top" | "bottom"
 type ScrollAreaVisibility = "hover" | "always"
+type ScrollAreaSpace = "auto" | "none"
 
 type ScrollAreaProps = React.ComponentProps<"div"> & {
-  /** Classes on the scrollable viewport. */
   viewportClassName?: string
-  /** `default` inset thumb, or `edge` thin flush accent. */
   variant?: ScrollAreaVariant
-  /** `rounded` pill ends (default) or `flat` square ends. */
   thumbShape?: ScrollAreaThumbShape
-  /** `vertical` (default), `horizontal`, or `both`. */
   orientation?: ScrollAreaOrientation
-  /** Edge for the thumb: `left`/`right` (vertical) or `top`/`bottom` (horizontal). */
   side?: ScrollAreaSide
-  /** `hover` (default) or `always` when content overflows. */
   visibility?: ScrollAreaVisibility
-  /** Thumb thickness in pixels. Overrides the variant default. */
+  /** Reserve track inset. `auto` only when that axis overflows; `none` never. */
+  space?: ScrollAreaSpace
   width?: number
 }
 
 type ThumbState = { size: number; offset: number; visible: boolean }
 const HIDDEN_THUMB: ThumbState = { size: 0, offset: 0, visible: false }
 
-/** Track content-box size (client size minus padding). */
 function trackContentSize(
   track: HTMLElement | null,
   axis: "x" | "y"
@@ -60,6 +55,7 @@ function ScrollArea({
   orientation = "vertical",
   side,
   visibility = "hover",
+  space = "auto",
   width,
   ...props
 }: ScrollAreaProps) {
@@ -79,6 +75,10 @@ function ScrollArea({
   const minThumb = variant === "edge" ? 20 : 24
   const verticalSide = side === "left" ? "left" : "right"
   const horizontalSide = side === "top" ? "top" : "bottom"
+  // Keep inset on default+hover so the wider bar can fade in without shifting content.
+  // Edge thumbs are thin enough for space="none" overlay.
+  const resolvedSpace =
+    variant === "default" && visibility === "hover" ? "auto" : space
 
   const syncThumb = React.useCallback(() => {
     const el = viewportRef.current
@@ -192,6 +192,9 @@ function ScrollArea({
       data-thumb-shape={thumbShape}
       data-orientation={orientation}
       data-visibility={visibility}
+      data-space={resolvedSpace}
+      data-overflow-y={trackVertical && vThumb.visible ? "" : undefined}
+      data-overflow-x={trackHorizontal && hThumb.visible ? "" : undefined}
       data-vertical-side={verticalSide}
       data-horizontal-side={horizontalSide}
       className={cn("relative", className)}
@@ -304,4 +307,5 @@ export type {
   ScrollAreaOrientation,
   ScrollAreaSide,
   ScrollAreaVisibility,
+  ScrollAreaSpace,
 }

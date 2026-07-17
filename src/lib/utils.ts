@@ -20,7 +20,6 @@ function toClass(value: ClassValue): string {
   return ""
 }
 
-/** Compose class names for Default File UI. */
 export function cn(...inputs: ClassValue[]) {
   return inputs.map(toClass).filter(Boolean).join(" ").replace(/\s+/g, " ").trim()
 }

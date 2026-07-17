@@ -1,7 +1,4 @@
-/* Default File UI - design tokens */
-
 :root {
-  /* --- Semantic surface / content (neutral ramp) --- */
   --background: var(--df-neutral-0);
   --foreground: var(--df-neutral-900);
   --card: var(--df-neutral-0);
@@ -21,7 +18,6 @@
   --input: var(--df-neutral-100);
   --ring: var(--df-neutral-400);
 
-  /* Brand ink for marketing chrome, footer, and status surfaces */
   --brand-ink: #0b1220;
   --brand-ink-foreground: var(--df-neutral-0);
 
@@ -31,14 +27,8 @@
   --chart-4: var(--df-neutral-700);
   --chart-5: var(--df-neutral-800);
 
-  /*
-   * Spacing unit for gap / padding props on components.
-   * Design-scale keys map as: N x --spacing-unit (see SPACING in df-theme.mjs).
-   * `none` / 0 = 0; even integers run through 200; half-steps (0.5, 1.5, ...) stay valid.
-   */
   --spacing-unit: 0.25rem;
 
-  /* Border width */
   --border-width-hairline: 1px;
   --border-width-thin: 1.5px;
   --border-width-thick: 2px;
@@ -46,7 +36,6 @@
   --outline-offset: var(--border-width-hairline);
   --df-underline-offset: 4px;
 
-  /* Radius */
   --radius: 0.625rem;
   --radius-xxs: calc(var(--radius) * 0.2);
   --radius-xs: calc(var(--radius) * 0.4);
@@ -59,38 +48,33 @@
   --radius-4xl: calc(var(--radius) * 2.6);
   --radius-full: 9999px;
 
-  /*
-   * --- Primitive scales (raw values) ---
-   * Type, weight, elevation, blur, and motion primitives. Semantic tokens and
-   * components reference these; keep values in sync with df-theme.mjs scales.
-   */
+  --df-corner-shape-round: round;
+  --df-corner-shape-smooth: squircle;
+  --df-corner-shape: var(--df-corner-shape-round);
 
-  /* Font size */
-  --df-text-9: 0.5625rem; /* 9px */
-  --df-text-2xs: 0.625rem; /* 10px */
-  --df-text-11: 0.6875rem; /* 11px */
-  --df-text-xs: 0.75rem; /* 12px */
-  --df-text-13: 0.8125rem; /* 13px */
-  --df-text-sm: 0.875rem; /* 14px */
-  --df-text-base: 1rem; /* 16px */
-  --df-text-lg: 1.125rem; /* 18px */
-  --df-text-xl: 1.25rem; /* 20px */
-  --df-text-2xl: 1.5rem; /* 24px */
-  --df-text-3xl: 1.875rem; /* 30px */
-  --df-text-4xl: 2.25rem; /* 36px */
-  --df-text-5xl: 3rem; /* 48px */
-  --df-text-6xl: 3.75rem; /* 60px */
-  --df-text-7xl: 4.5rem; /* 72px */
-  --df-text-8xl: 6rem; /* 96px */
-  --df-text-9xl: 8rem; /* 128px */
-  /* Marketing display numerals (stats) */
+  --df-text-9: 0.5625rem;
+  --df-text-2xs: 0.625rem;
+  --df-text-11: 0.6875rem;
+  --df-text-xs: 0.75rem;
+  --df-text-13: 0.8125rem;
+  --df-text-sm: 0.875rem;
+  --df-text-base: 1rem;
+  --df-text-lg: 1.125rem;
+  --df-text-xl: 1.25rem;
+  --df-text-2xl: 1.5rem;
+  --df-text-3xl: 1.875rem;
+  --df-text-4xl: 2.25rem;
+  --df-text-5xl: 3rem;
+  --df-text-6xl: 3.75rem;
+  --df-text-7xl: 4.5rem;
+  --df-text-8xl: 6rem;
+  --df-text-9xl: 8rem;
   --df-text-display: clamp(4.5rem, 12vw, 9rem);
+  --df-text-relative-sm: 0.85em;
 
-  /* Font families */
   --df-font-mono: var(--font-mono), ui-monospace, monospace;
   --df-font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 
-  /* Font weight */
   --df-font-weight-thin: 100;
   --df-font-weight-extralight: 200;
   --df-font-weight-light: 300;
@@ -101,7 +85,6 @@
   --df-font-weight-extrabold: 800;
   --df-font-weight-black: 900;
 
-  /* Letter spacing */
   --df-tracking-display: -0.11em;
   --df-tracking-tighter: -0.05em;
   --df-tracking-tight: -0.025em;
@@ -112,26 +95,23 @@
   --df-tracking-label: 0.08em;
   --df-tracking-widest: 0.1em;
 
-  /* Line height - ratios */
   --df-leading-none: 1;
   --df-leading-tight: 1.25;
   --df-leading-snug: 1.375;
   --df-leading-normal: 1.5;
   --df-leading-relaxed: 1.625;
   --df-leading-loose: 2;
-  /* Line height - lengths (N = N x 0.25rem; half-steps are optical values) */
   --df-leading-3: 0.75rem;
   --df-leading-4: 1rem;
-  --df-leading-4-5: 1.125rem; /* 18px */
+  --df-leading-4-5: 1.125rem;
   --df-leading-5: 1.25rem;
-  --df-leading-5-25: 1.3125rem; /* 21px */
+  --df-leading-5-25: 1.3125rem;
   --df-leading-6: 1.5rem;
   --df-leading-7: 1.75rem;
   --df-leading-8: 2rem;
   --df-leading-9: 2.25rem;
   --df-leading-10: 2.5rem;
 
-  /* Elevation (matches SHADOW scale) */
   --df-shadow-2xs: 0 1px rgb(0 0 0 / 0.05);
   --df-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --df-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -139,7 +119,6 @@
   --df-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --df-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --df-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  /* Tooltip uses drop-shadow so the arrow silhouette is included */
   --df-shadow-tooltip:
     drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))
     drop-shadow(0 2px 3px rgb(0 0 0 / 0.08));
@@ -148,17 +127,17 @@
   --df-shadow-ring: 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
   --df-shadow-ring-subtle: 0 0 0 1px color-mix(in oklch, var(--foreground) 5%, transparent);
 
-  /* Blur */
+  --df-blur-2xs: 2px;
   --df-blur-xs: 4px;
   --df-blur-sm: 8px;
   --df-blur-md: 12px;
   --df-blur-lg: 16px;
   --df-blur-xl: 24px;
+  --df-blur-mesh: 28px;
   --df-blur-2xl: 40px;
   --df-blur-3xl: 64px;
   --df-blur-overlay: 20px;
 
-  /* Motion - duration */
   --df-duration-fast: 90ms;
   --df-duration-snappy: 100ms;
   --df-duration-quick: 120ms;
@@ -166,24 +145,35 @@
   --df-duration-moderate: 160ms;
   --df-duration-slow: 180ms;
   --df-duration-slower: 200ms;
+  --df-duration-theme: 240ms;
   --df-duration-slowest: 250ms;
+  --df-duration-pop: 260ms;
+  --df-duration-panel: 400ms;
+  --df-duration-panel-soft: 450ms;
+  --df-duration-reveal: 700ms;
+  --df-duration-reveal-long: 1000ms;
+  --df-duration-linger: 750ms;
 
-  /* Motion - easing */
   --df-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
   --df-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --df-ease-decelerate: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Motion - travel (enter/exit translate distances) */
   --df-motion-travel-xs: 4px;
   --df-motion-travel-sm: 6px;
   --df-motion-travel-md: 8px;
+  --df-motion-travel-lg: 12px;
+  --df-motion-travel-xl: 14px;
+  --df-motion-travel-2xl: 16px;
+  --df-motion-travel-3xl: 24px;
+  --df-motion-travel-4xl: 48px;
+  --df-motion-travel-5xl: 72px;
+  --df-motion-travel-float: 10px;
   --df-press-offset: 1px;
   --df-tooltip-arrow-offset: 3.5px;
   --df-tooltip-arrow-align-nudge: 4px;
 
-  /* Hairline spacing alias (1px) for SPACING.px utilities */
   --spacing-px: var(--border-width-hairline);
 
-  /* Opacity scale (utility steps) */
   --df-opacity-0: 0;
   --df-opacity-5: 0.05;
   --df-opacity-10: 0.1;
@@ -191,17 +181,19 @@
   --df-opacity-20: 0.2;
   --df-opacity-25: 0.25;
   --df-opacity-30: 0.3;
+  --df-opacity-32: 0.32;
   --df-opacity-40: 0.4;
+  --df-opacity-45: 0.45;
   --df-opacity-50: 0.5;
   --df-opacity-60: 0.6;
   --df-opacity-70: 0.7;
   --df-opacity-75: 0.75;
   --df-opacity-80: 0.8;
+  --df-opacity-85: 0.85;
   --df-opacity-90: 0.9;
   --df-opacity-95: 0.95;
   --df-opacity-100: 1;
 
-  /* Max width scale */
   --df-max-w-3xs: 16rem;
   --df-max-w-2xs: 18rem;
   --df-max-w-xs: 20rem;
@@ -217,7 +209,6 @@
   --df-max-w-7xl: 80rem;
   --df-max-w-prose: 65ch;
 
-  /* Control sizes */
   --df-switch-track-height: 18.4px;
   --df-switch-track-width: 32px;
   --df-switch-track-height-sm: 14px;
@@ -239,7 +230,6 @@
   --brand-ink-lift: #1c3354;
   --brand-ink-deep: #121a2c;
 
-  /* Marketing / home atmosphere */
   --df-shadow-card-soft: 0 1px 0 oklch(0.92 0 0), 0 12px 32px -24px oklch(0.35 0.02 260 / 0.35);
   --df-shadow-card-hover: 0 24px 48px -28px oklch(0.35 0.02 260 / 0.5);
   --df-shadow-preview: 0 12px 28px -18px rgb(0 0 0 / 0.45);
@@ -247,6 +237,52 @@
   --df-shadow-stage-md: 0 24px 60px -20px oklch(0 0 0 / 0.55);
   --df-shadow-stage-lg: 0 28px 70px -24px oklch(0 0 0 / 0.65);
   --home-plane: oklch(0.97 0.005 260);
+  /* Matches public/UX Principle.png stage fill (sampled #fefaf6). */
+  --home-tool-preview-ux-principles: #fefaf6;
+  /* Matches public/ux-process.png stage fill (sampled #fdf6f1). */
+  --home-tool-preview-ux-process: #fdf6f1;
+  /* Matches public/shader-gradient.png stage fill (sampled #fcf6f2). */
+  --home-tool-preview-shader-gradient: #fcf6f2;
+  /* Matches public/mesh-gradient.png stage fill (sampled #fcf5f0). */
+  --home-tool-preview-mesh-gradient: #fcf5f0;
+  /* Matches public/color-lab.png stage fill (sampled #fcf5f0). */
+  --home-tool-preview-color-lab: #fcf5f0;
+  /* Matches public/desing-extractor.png stage fill (sampled #fef7f2). */
+  --home-tool-preview-design-extractor: #fef7f2;
+  --home-showcase-radius: calc(var(--radius) * 3.4);
+  --home-hero-collage-gap: calc(28 * var(--spacing-unit, 0.25rem));
+  --home-hero-stage-perspective: 87.5rem;
+  --df-border-glow-bg: var(--df-neutral-920);
+  --df-border-glow-stroke: color-mix(
+    in oklch,
+    var(--df-neutral-0) 15%,
+    transparent
+  );
+  --df-border-glow-radius: var(--radius-4xl);
+  --df-border-glow-edge-sensitivity: 0;
+  --df-border-glow-glow-radius: 15px;
+  --df-border-glow-outline-offset: calc(0.5 * var(--spacing-unit, 0.25rem));
+  --df-border-glow-outline-width: var(--border-width-hairline);
+  --df-border-glow-trace-follow: 0.5;
+  --df-border-glow-trace-reveal: 0.7;
+  --df-border-glow-trace-fade: 0.75;
+  --df-border-glow-cone-spread: 5;
+  --df-border-glow-glow-intensity: 0.8;
+  --df-border-glow-fill-opacity: 0.5;
+  --df-border-glow-ink-base: var(--df-neutral-100);
+  --df-border-glow-light-ink-base: var(--df-orange-340);
+  --df-border-glow-color-1: var(--df-orange-80);
+  --df-border-glow-color-2: var(--df-orange-180);
+  --df-border-glow-color-3: var(--df-blue-320);
+  --df-border-glow-light-bg: var(--df-neutral-0);
+  --df-border-glow-light-stroke: color-mix(
+    in oklch,
+    var(--df-neutral-1000) 8%,
+    transparent
+  );
+  --df-border-glow-light-color-1: var(--df-orange-80);
+  --df-border-glow-light-color-2: var(--df-orange-420);
+  --df-border-glow-light-color-3: var(--code-dark-keyword);
   --home-hero-wash:
     radial-gradient(ellipse at top, oklch(0.94 0.02 250) 0%, transparent 52%),
     radial-gradient(ellipse at top right, oklch(0.95 0.03 50) 0%, transparent 42%),
@@ -264,7 +300,6 @@
     radial-gradient(circle at 80% 70%, oklch(0.94 0.03 70), transparent 50%),
     oklch(0.97 0.005 260);
 
-  /* Code / terminal syntax (docs chrome; light + dark always available) */
   --code-light-bg: #f6f7f9;
   --code-light-line: rgb(0 0 0 / 0.08);
   --code-light-gutter: rgb(0 0 0 / 0.28);
@@ -299,7 +334,6 @@
   --code-traffic-min: #febc2e;
   --code-traffic-max: #28c840;
 
-  /* Extra tool / marketing elevation */
   --df-shadow-panel: 0 12px 40px -20px rgb(0 0 0 / 0.45);
   --df-shadow-panel-sm: 0 10px 32px -22px rgb(15 23 42 / 0.35);
   --df-shadow-panel-md: 0 12px 36px -22px rgb(15 23 42 / 0.4);
@@ -312,6 +346,89 @@
   --df-shadow-node-ring: 0 0 0 1px rgb(0 0 0 / 0.45);
   --df-shadow-swatch-focus:
     0 0 0 2px var(--df-neutral-0), 0 0 0 4px var(--df-neutral-850, var(--df-neutral-900));
+  --df-shadow-swatch-inset: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --df-contrast-fail-bg: rgb(220 38 38 / 0.12);
+  --df-contrast-fail-fg: #b91c1c;
+  --df-contrast-pass-bg: rgb(0 0 0 / 0.06);
+  --df-contrast-fail-inset: inset 0 0 0 1px rgb(15 23 42 / 0.06);
+  --df-contrast-hatch:
+    linear-gradient(
+      135deg,
+      rgb(15 23 42 / 0.045) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgb(15 23 42 / 0.045) 50%,
+      rgb(15 23 42 / 0.045) 75%,
+      transparent 75%
+    );
+  --df-contrast-hatch-size: 6px 6px;
+  --df-chip-on-dark: rgb(0 0 0 / 0.25);
+  --df-chip-on-light: rgb(255 255 255 / 0.55);
+  --df-chip-action-on-dark: rgb(255 255 255 / 0.16);
+  --df-chip-action-on-light: rgb(0 0 0 / 0.08);
+  --df-chip-badge-on-dark: rgb(255 255 255 / 0.85);
+  --df-chip-badge-on-photo: rgb(0 0 0 / 0.55);
+  --df-overlay-border-soft: rgb(255 255 255 / 0.12);
+  --df-image-scrim-keep: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.72) 0%,
+    rgb(0 0 0 / 0.2) 45%,
+    transparent 70%
+  );
+  --df-image-scrim-metrics: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.78),
+    rgb(0 0 0 / 0.12) 55%,
+    transparent
+  );
+  --df-border-glow-transparent-edge: linear-gradient(rgb(255 255 255 / 0%) 0% 100%);
+  --df-border-glow-bloom-r-1: 1px;
+  --df-border-glow-bloom-r-2: 3px;
+  --df-border-glow-bloom-r-3: 6px;
+  --df-border-glow-bloom-r-4: 15px;
+  --df-border-glow-bloom-r-5: 25px;
+  --df-border-glow-bloom-r-6: 50px;
+  --df-border-glow-bloom-spread: 2px;
+  --home-grid-line: oklch(0.8 0.01 260 / 0.18);
+  --home-grid-size: 48px 48px;
+  --home-section-tools-wash: linear-gradient(
+    180deg,
+    transparent 0%,
+    oklch(0.975 0.006 250 / 0.65) 18%,
+    oklch(0.97 0.008 90 / 0.5) 55%,
+    transparent 100%
+  );
+  --home-preview-frame-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.35),
+    0 0 0 1px oklch(0.85 0.01 260 / 0.35);
+  --home-preview-shader-image:
+    radial-gradient(ellipse at 20% 30%, oklch(0.78 0.14 40), transparent 55%),
+    radial-gradient(ellipse at 80% 20%, oklch(0.72 0.12 220), transparent 50%),
+    radial-gradient(ellipse at 50% 90%, oklch(0.7 0.1 320), transparent 55%),
+    linear-gradient(135deg, oklch(0.35 0.04 260), oklch(0.22 0.03 280));
+  --home-preview-mesh-bg: oklch(0.96 0.01 90);
+  --home-preview-mesh-blob-a: radial-gradient(
+    circle,
+    oklch(0.82 0.08 30 / 0.7),
+    transparent 62%
+  );
+  --home-preview-mesh-blob-b: radial-gradient(
+    circle,
+    oklch(0.8 0.07 230 / 0.55),
+    transparent 60%
+  );
+  --home-hero-stage-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    0 32px 80px -36px oklch(0.2 0.03 260 / 0.55);
+  --home-hero-collage-stage-elevation: 0 40px 90px -40px oklch(0.35 0.04 250 / 0.28);
+  --home-hero-card-shadow:
+    0 1px 0 oklch(1 0 0 / 0.7) inset,
+    0 22px 48px -24px oklch(0.28 0.03 260 / 0.32),
+    0 10px 20px -12px oklch(0.32 0.02 260 / 0.16);
+  --home-hero-card-label-shadow: 0 6px 18px -10px oklch(0.3 0.02 260 / 0.35);
+  --home-shader-drift-duration: 12s;
+  --home-mesh-float-duration: 9s;
+  --home-stage-float-duration: 8s;
   --home-preview-wash:
     radial-gradient(ellipse at 20% 0%, var(--df-neutral-0), transparent 55%),
     linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%);
@@ -334,22 +451,31 @@
     radial-gradient(ellipse 80% 60% at 50% 40%, rgb(255 255 255 / 0.04), transparent 70%),
     radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0);
   --stage-void-grid: auto, 22px 22px;
+  --stage-surface-dot: radial-gradient(
+    circle at 1px 1px,
+    rgb(15 23 42 / 0.14) 1px,
+    transparent 0
+  );
+  --stage-surface-grid: 22px 22px;
+  --stage-canvas-dot: radial-gradient(
+    circle at 1px 1px,
+    rgb(255 255 255 / 0.09) 1px,
+    transparent 0
+  );
+  --stage-canvas-grid: 20px 20px;
+  --df-dock-width-sm: 252px;
+  --df-dock-width-md: 280px;
+  --df-dock-width-lg: 300px;
+  --df-dock-width-xl: 420px;
   --df-leading-code: 1.7;
 
-  /*
-   * --- Semantic tokens (intent) ---
-   */
-
-  /* Status */
   --success: oklch(0.55 0.14 145);
   --warning: oklch(0.7 0.14 75);
 
-  /* Focus rings */
   --focus-ring: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
   --focus-ring-lg: 0 0 0 4px color-mix(in oklch, var(--ring) 50%, transparent);
   --focus-ring-error: 0 0 0 3px color-mix(in oklch, var(--destructive) 20%, transparent);
 
-  /* Elevation (layer intent) */
   --z-base: 0;
   --z-raised: 1;
   --z-sticky: 10;
@@ -359,12 +485,10 @@
   --z-overlay: 50;
   --z-toast: 60;
 
-  /* Opacity (state intent) */
   --opacity-disabled: var(--df-opacity-50);
   --opacity-muted: var(--df-opacity-70);
   --opacity-subtle: var(--df-opacity-75);
 
-  /* Floating overlay recipe (dark glass chrome on canvases) */
   --overlay-bg: color-mix(in oklch, black 50%, transparent);
   --overlay-fg: color-mix(in oklch, white 88%, transparent);
   --overlay-border: color-mix(in oklch, white 10%, transparent);
@@ -379,12 +503,6 @@
   --overlay-solid-hover-bg: color-mix(in oklch, white 88%, oklch(0.85 0 0));
   --overlay-divider: color-mix(in oklch, white 15%, transparent);
 
-  /*
-   * Overlay Hint chrome. Override on :root or per instance via
-   * --overlay-hint-bg / border / fg / radius (or the variant defaults below).
-   * default: frosted glass (light surface + .dark surface). muted: solid chip.
-   * marquee: scrolling label with a trailing icon action (light + dark).
-   */
   --overlay-hint-radius: var(--radius-md);
   --overlay-hint-default-bg: color-mix(in oklch, white 78%, transparent);
   --overlay-hint-default-border: color-mix(in oklch, black 10%, transparent);
@@ -420,10 +538,29 @@
   --overlay-hint-marquee-width: 12rem;
   --overlay-hint-marquee-duration: 18s;
   --overlay-hint-marquee-gap: calc(4 * var(--spacing-unit, 0.25rem));
-  /* Soft edge fade depth for scrolling label (left and right). */
   --overlay-hint-marquee-fade: 0.75rem;
+  /*
+   * Mask stops (alpha), not paint colors: opaque = visible, clear = hidden.
+   * Used by fade-edge masks such as Overlay Hint marquee.
+   */
+  --df-mask-opaque: #000;
+  --df-mask-clear: transparent;
+  --overlay-hint-marquee-mask: linear-gradient(
+    90deg,
+    var(--df-mask-clear) 0,
+    var(--df-mask-opaque) var(--overlay-hint-marquee-fade),
+    var(--df-mask-opaque) calc(100% - var(--overlay-hint-marquee-fade)),
+    var(--df-mask-clear) 100%
+  );
 
-  /* Overlay / content sizing (not part of the spacing rhythm) */
+  --spectrum-text-color-1: var(--df-rose-470);
+  --spectrum-text-color-2: var(--df-violet-670);
+  --spectrum-text-color-3: var(--df-blue-530);
+  --spectrum-text-color-4: var(--df-azure-330);
+  --spectrum-text-duration: 10s;
+  --spectrum-text-ease: ease-in-out;
+  --spectrum-text-background-size: 200% auto;
+
   --df-popover-width: 18rem;
   --df-tooltip-max-width: 16rem;
   --df-tooltip-max-width-detailed: 18rem;
@@ -432,13 +569,6 @@
   --df-submenu-min-width: 18rem;
   --df-submenu-max-height: 28rem;
   --df-toaster-width: 22rem;
-
-  /*
-   * Host overlay collision insets (optional).
-   * Set on :root to reserve space for fixed chrome such as a sticky header.
-   * Consumed by useAnchoredPosition as --df-overlay-inset-top / bottom.
-   * Example: --df-overlay-inset-top: 3.5rem;
-   */
 
   --sidebar: var(--df-neutral-20, var(--df-neutral-50));
   --sidebar-foreground: var(--df-neutral-900);
@@ -450,7 +580,6 @@
   --sidebar-ring: var(--df-neutral-400);
 }
 
-/* Compact mode semantic remaps */
 [data-df-color-scale="compact"] {
   --primary: var(--df-neutral-900);
   --primary-foreground: var(--df-neutral-0);
@@ -466,6 +595,17 @@
   --foreground: var(--df-neutral-0);
   --card: var(--df-neutral-900);
   --card-foreground: var(--df-neutral-0);
+  --df-border-glow-stroke: color-mix(
+    in oklch,
+    var(--df-neutral-0) 12%,
+    transparent
+  );
+  --df-border-glow-light-bg: var(--df-neutral-50);
+  --df-border-glow-light-stroke: color-mix(
+    in oklch,
+    var(--df-neutral-1000) 6%,
+    transparent
+  );
   --popover: var(--df-neutral-900);
   --popover-foreground: var(--df-neutral-0);
   --primary: var(--df-neutral-100);

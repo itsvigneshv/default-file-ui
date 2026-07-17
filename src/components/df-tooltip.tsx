@@ -32,10 +32,6 @@ function useTooltipContext() {
   return ctx
 }
 
-/**
- * Hover or focus tooltip. Portals content to `document.body` and dismisses on
- * Escape, pointer leave, blur, or page scroll.
- */
 function Tooltip({
   open,
   defaultOpen = false,
@@ -47,12 +43,7 @@ function Tooltip({
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  /** Delay in ms before the tooltip opens on hover or focus. */
   delayDuration?: number
-  /**
-   * Visual density. `compact` is a short single-line tip; `detailed` supports
-   * title and body copy (see `TooltipContent` `wrap`).
-   */
   variant?: TooltipVariant
   children: React.ReactNode
 }) {
@@ -107,7 +98,6 @@ function Tooltip({
     return () => document.removeEventListener("keydown", onKey)
   }, [isOpen, hideImmediate])
 
-  // Close on scroll; position stays frozen for the exit animation.
   React.useEffect(() => {
     if (!isOpen) return
     const onScroll = () => hideImmediate()
@@ -138,7 +128,6 @@ function TooltipTrigger({
   className,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** Compose onto an existing element instead of rendering a button. */
   render?: React.ReactElement
 }) {
   const { open, show, hide, triggerRef, contentId } = useTooltipContext()
@@ -201,21 +190,16 @@ function TooltipContent({
   onAnimationEnd,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  /** Cross-axis alignment relative to the trigger. */
   align?: TooltipAlign
   alignOffset?: number
-  /** Preferred side of the trigger. Flips when space is tight. */
   side?: TooltipSide
   sideOffset?: number
-  /** Detailed only: wrap within max-width instead of a single line. */
   wrap?: boolean
-  /** Show the pointing arrow. Default true. */
   arrow?: boolean
 }) {
   const { open, triggerRef, contentId, variant } = useTooltipContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const [present, setPresent] = React.useState(open)
-  // Track position only while open so coords freeze during the exit animation.
   const style = useAnchoredPosition({
     open,
     triggerRef,

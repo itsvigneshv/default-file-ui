@@ -1,8 +1,38 @@
-/* Default File UI - component styles (data-variant / data-size).
- * Selectors use :where() so call-site classes can override defaults.
- */
+:where([data-corner-shape="round"]) {
+  --df-corner-shape: var(--df-corner-shape-round);
+}
 
-/* --- Button --- */
+:where([data-corner-shape="smooth"]) {
+  --df-corner-shape: var(--df-corner-shape-smooth);
+}
+
+.corner-round {
+  --df-corner-shape: var(--df-corner-shape-round);
+}
+
+.corner-smooth {
+  --df-corner-shape: var(--df-corner-shape-smooth);
+}
+
+@supports (corner-shape: squircle) {
+  :where([data-df]),
+  :where([data-df])::before,
+  :where([data-df])::after,
+  :where([data-df] *),
+  :where([data-df] *)::before,
+  :where([data-df] *)::after,
+  :where(.df-btn),
+  :where(.df-input),
+  :where(.df-toast),
+  :where(.df-toggle-item),
+  :where(.df-overlay-hint),
+  :where(.corner-round),
+  :where(.corner-smooth),
+  :where([class*="rounded-"]) {
+    corner-shape: var(--df-corner-shape);
+  }
+}
+
 :where([data-df="button"]) {
   display: inline-flex;
   flex-shrink: 0;
@@ -107,10 +137,6 @@
   text-decoration: none;
 }
 
-/*
- * Text button padding. Default is 8px block and 16px inline (1:2).
- * Scale: xs 4/10, sm 6/12, default 8/16, lg 10/20, xl 12/24, 2xl 14/28.
- */
 :where([data-df="button"][data-size="default"]) {
   padding-block: calc(2 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
@@ -177,7 +203,6 @@
   padding: 0;
 }
 
-/* Icon slot inset: one spacing step tighter than the size inline padding. */
 :where([data-df="button"]:has([data-icon="inline-end"])) {
   padding-right: calc(3 * var(--spacing-unit, 0.25rem));
 }
@@ -215,7 +240,6 @@
   padding-left: calc(6 * var(--spacing-unit, 0.25rem));
 }
 
-/* Class based button styles for Link and dfButtonClass() hosts. */
 .df-btn {
   display: inline-flex;
   flex-shrink: 0;
@@ -223,6 +247,7 @@
   justify-content: center;
   gap: calc(1.5 * var(--spacing-unit, 0.25rem));
   border-radius: var(--radius-4xl);
+  corner-shape: var(--df-corner-shape);
   border: var(--border-width-hairline) solid transparent;
   background-clip: padding-box;
   font-size: var(--df-text-sm);
@@ -265,7 +290,6 @@
   background-color: var(--secondary);
   color: var(--secondary-foreground);
 }
-/* Ghost hover uses :where so overlays can override. */
 :where(.df-btn-ghost:hover) {
   background-color: var(--muted);
   color: var(--foreground);
@@ -292,7 +316,6 @@
 .df-btn-link[data-underline="none"]:hover {
   text-decoration: none;
 }
-/* Text button padding scale: xs 4/10, sm 6/12, default 8/16, lg 10/20, xl 12/24, 2xl 14/28. */
 .df-btn-default-size {
   padding-block: calc(2 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
@@ -351,7 +374,6 @@
   padding: 0;
 }
 
-/* Icon inset for Link and dfButtonClass hosts. */
 .df-btn:has([data-icon="inline-end"]) {
   padding-right: calc(3 * var(--spacing-unit, 0.25rem));
 }
@@ -389,7 +411,6 @@
   padding-left: calc(6 * var(--spacing-unit, 0.25rem));
 }
 
-/* Leading and trailing slots for an icon or any node (badge, counter, close). */
 .df-btn-slot {
   display: inline-flex;
   align-items: center;
@@ -398,7 +419,6 @@
   flex-shrink: 0;
 }
 
-/* --- Badge --- */
 :where([data-df="badge"]) {
   display: inline-flex;
   width: fit-content;
@@ -410,6 +430,7 @@
   border: var(--border-width-hairline) solid transparent;
   font-weight: var(--df-font-weight-medium);
   white-space: nowrap;
+  line-height: var(--df-leading-none);
   transition: color var(--df-duration-base), background-color var(--df-duration-base), border-color var(--df-duration-base);
 }
 
@@ -452,7 +473,7 @@
   appearance: none;
   margin: 0;
   font: inherit;
-  line-height: inherit;
+  line-height: var(--df-leading-none);
   cursor: pointer;
   text-align: inherit;
 }
@@ -543,7 +564,6 @@
   text-underline-offset: var(--df-underline-offset);
 }
 
-/* Dismiss / close control inside a badge */
 :where([data-df="badge"] > button) {
   display: inline-flex;
   align-items: center;
@@ -566,11 +586,6 @@
   outline-offset: var(--outline-offset);
 }
 
-/*
- * Nested counter chip: only sized for md / lg / xl hosts.
- * xs / sm leave too little height for a readable inner badge.
- * Width grows with the value (1-4+ digits); min-width keeps single digits round.
- */
 :where([data-df="badge"][data-size="md"] > [data-df="badge"]),
 :where([data-df="badge"][data-size="lg"] > [data-df="badge"]),
 :where([data-df="badge"][data-size="xl"] > [data-df="badge"]) {
@@ -619,7 +634,6 @@
   height: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
-/* --- Choice Chip --- */
 :where([data-df="choice-chip"]) {
   display: inline-flex;
   align-items: center;
@@ -673,7 +687,6 @@
   font-size: var(--df-text-sm);
 }
 
-/* --- Input --- */
 :where([data-df="input"]) {
   height: calc(9 * var(--spacing-unit, 0.25rem));
   width: 100%;
@@ -681,7 +694,6 @@
   border-radius: var(--radius-4xl);
   border: var(--border-width-hairline) solid var(--input);
   background-color: color-mix(in oklch, var(--input) 30%, var(--background));
-  /* Padding longhands for side overrides */
   padding-block: calc(1 * var(--spacing-unit, 0.25rem));
   padding-left: calc(3 * var(--spacing-unit, 0.25rem));
   padding-right: calc(3 * var(--spacing-unit, 0.25rem));
@@ -723,9 +735,9 @@
   width: 100%;
   min-width: 0;
   border-radius: var(--radius-4xl);
+  corner-shape: var(--df-corner-shape);
   border: var(--border-width-hairline) solid var(--input);
   background-color: color-mix(in oklch, var(--input) 30%, var(--background));
-  /* Padding longhands for side overrides */
   padding-block: calc(1 * var(--spacing-unit, 0.25rem));
   padding-left: calc(3 * var(--spacing-unit, 0.25rem));
   padding-right: calc(3 * var(--spacing-unit, 0.25rem));
@@ -753,7 +765,6 @@
   opacity: var(--opacity-disabled);
 }
 
-/* --- Search input / search bar --- */
 :where([data-df="search-input"]) {
   position: relative;
   width: 100%;
@@ -776,7 +787,6 @@
   opacity: 1;
 }
 
-/* Search icon - one chrome, flipped by data-side */
 :where([data-df="search-input-icon"]) {
   pointer-events: none;
   position: absolute;
@@ -804,7 +814,6 @@
   color: var(--foreground);
 }
 
-/* Clear / custom trailing actions */
 :where([data-df="search-input-trailing"]) {
   position: absolute;
   top: 50%;
@@ -815,7 +824,6 @@
   gap: calc(0.5 * var(--spacing-unit, 0.25rem));
   transform: translateY(-50%);
 }
-/* When icon is on the end, clear sits inward of the icon */
 [data-df="search-input"][data-icon-position="end"][data-has-icon] [data-df="search-input-trailing"] {
   right: calc(7 * var(--spacing-unit, 0.25rem));
 }
@@ -838,7 +846,6 @@
   height: calc(3.5 * var(--spacing-unit, 0.25rem));
 }
 
-/* Default (md) padding; icon side mirrors start to end */
 [data-df="search-input"][data-has-icon][data-icon-position="start"] [data-df="input"].df-input {
   padding-left: calc(8 * var(--spacing-unit, 0.25rem));
 }
@@ -858,7 +865,6 @@
   padding-right: calc(15 * var(--spacing-unit, 0.25rem));
 }
 
-/* --- Size: sm --- */
 [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
   height: calc(8 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-13);
@@ -902,14 +908,12 @@
   padding-right: calc(13 * var(--spacing-unit, 0.25rem));
 }
 
-/* --- Size: md (default) --- */
 [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
   height: calc(9 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
   line-height: var(--df-leading-5);
 }
 
-/* --- Size: lg --- */
 [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
   height: calc(10 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-base);
@@ -953,7 +957,6 @@
   padding-right: calc(18 * var(--spacing-unit, 0.25rem));
 }
 
-/* Pill variant */
 [data-df="search-input"][data-variant="pill"] [data-df="input"].df-input {
   border-radius: var(--radius-full);
   border-color: color-mix(in oklch, var(--border) 70%, var(--background));
@@ -965,7 +968,6 @@
   border-color: var(--border);
 }
 
-/* Focus - plain border to foreground */
 [data-df="search-input"] [data-df="input"].df-input:focus,
 [data-df="search-input"] [data-df="input"].df-input:focus-visible {
   border-color: var(--foreground);
@@ -973,7 +975,6 @@
   outline: none;
 }
 
-/* Mobile (< 640px) */
 @media (max-width: 639px) { /* df-bp:max-sm */
   [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
     height: calc(9 * var(--spacing-unit, 0.25rem));
@@ -997,8 +998,7 @@
   }
 }
 
-/* Wider screen (min-width 1920px / 3xl) */
-@media (min-width: 1920px) { /* df-bp:3xl */
+@media (min-width: 1920px) { /* df-bp:3xl */ 
   [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
     height: calc(10 * var(--spacing-unit, 0.25rem));
     font-size: var(--df-text-base);
@@ -1025,7 +1025,6 @@
   }
 }
 
-/* --- Label --- */
 :where([data-df="label"]) {
   display: flex;
   align-items: center;
@@ -1036,7 +1035,6 @@
   user-select: none;
 }
 
-/* --- Separator --- */
 :where([data-df="separator"]) {
   flex-shrink: 0;
   background-color: var(--border);
@@ -1053,7 +1051,6 @@
   align-self: stretch;
 }
 
-/* --- Switch --- */
 :where([data-df="switch"]) {
   position: relative;
   display: inline-flex;
@@ -1128,7 +1125,6 @@
   transform: translateX(0);
 }
 
-/* --- Slider --- */
 :where([data-df="slider"]) {
   display: flex;
   width: 100%;
@@ -1156,6 +1152,7 @@
   background-color: var(--primary);
   height: 100%;
   border-radius: inherit;
+  corner-shape: inherit;
 }
 
 :where([data-df="slider-thumb"]) {
@@ -1177,7 +1174,6 @@
   box-shadow: var(--focus-ring-lg);
 }
 
-/* --- Toggle / Toggle Group --- */
 :where([data-df="toggle"]),
 :where([data-df="toggle-group-item"]) {
   display: inline-flex;
@@ -1298,7 +1294,6 @@
   border-top-width: 0;
 }
 
-/* Class-based toggle chrome */
 .df-toggle-group {
   display: flex;
   width: fit-content;
@@ -1415,7 +1410,6 @@
   border-top-width: 0;
 }
 
-/* --- Scroll Area --- */
 :where([data-df="scroll-area"]) {
   position: relative;
   overflow: hidden;
@@ -1425,20 +1419,19 @@
   width: 100%;
   height: 100%;
   border-radius: inherit;
+  corner-shape: inherit;
   overflow: auto;
-  padding-right: calc(2.5 * var(--spacing-unit, 0.25rem));
   outline: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-/* Reserve space for the thumb on the axis it tracks */
-:where([data-df="scroll-area"][data-orientation="horizontal"] [data-df="scroll-area-viewport"]) {
-  padding-right: 0;
-  padding-bottom: calc(2.5 * var(--spacing-unit, 0.25rem));
+/* Reserve track inset only when space=auto and that axis overflows. */
+:where([data-df="scroll-area"][data-space="auto"][data-overflow-y] [data-df="scroll-area-viewport"]) {
+  padding-right: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
-:where([data-df="scroll-area"][data-orientation="both"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-overflow-x] [data-df="scroll-area-viewport"]) {
   padding-bottom: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
@@ -1485,8 +1478,7 @@
   cursor: grabbing;
 }
 
-/* Edge variant: thin accent flush with the trailing edge (sidebars / dividers) */
-:where([data-df="scroll-area"][data-variant="edge"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-variant="edge"][data-overflow-y] [data-df="scroll-area-viewport"]) {
   padding-right: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
@@ -1503,7 +1495,6 @@
   background-color: color-mix(in oklch, var(--foreground) 28%, transparent);
 }
 
-/* Thumb corner shape (applies to any variant) */
 :where([data-df="scroll-area"][data-thumb-shape="rounded"] [data-df="scroll-area-thumb"]),
 :where([data-df="scroll-area-thumb"][data-thumb-shape="rounded"]) {
   border-radius: var(--radius-full);
@@ -1514,7 +1505,6 @@
   border-radius: 0;
 }
 
-/* Horizontal thumb: run the pill along the bottom edge, not down it */
 :where([data-df="scroll-area-scrollbar"][data-orientation="horizontal"] [data-df="scroll-area-thumb"]) {
   width: 100%;
   height: 100%;
@@ -1522,14 +1512,13 @@
   min-width: calc(6 * var(--spacing-unit, 0.25rem));
 }
 
-/* Edge variant on the horizontal axis: thin accent flush with the bottom */
 :where([data-df="scroll-area"][data-variant="edge"] [data-df="scroll-area-scrollbar"][data-orientation="horizontal"]),
 :where([data-df="scroll-area-scrollbar"][data-variant="edge"][data-orientation="horizontal"]) {
   width: auto;
   height: var(--df-scrollbar-thickness);
 }
 
-:where([data-df="scroll-area"][data-variant="edge"][data-orientation="horizontal"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-variant="edge"][data-overflow-x] [data-df="scroll-area-viewport"]) {
   padding-bottom: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
@@ -1537,39 +1526,36 @@
   min-width: calc(5 * var(--spacing-unit, 0.25rem));
 }
 
-/* Scrollbar side: flip the vertical thumb to the leading (left) edge */
 :where([data-df="scroll-area-scrollbar"][data-orientation="vertical"][data-side="left"]) {
   right: auto;
   left: 0;
 }
 
-:where([data-df="scroll-area"][data-vertical-side="left"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-vertical-side="left"][data-overflow-y] [data-df="scroll-area-viewport"]) {
   padding-right: 0;
   padding-left: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
-:where([data-df="scroll-area"][data-variant="edge"][data-vertical-side="left"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-variant="edge"][data-vertical-side="left"][data-overflow-y] [data-df="scroll-area-viewport"]) {
   padding-right: 0;
   padding-left: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
-/* Scrollbar side: flip the horizontal thumb to the top edge */
 :where([data-df="scroll-area-scrollbar"][data-orientation="horizontal"][data-side="top"]) {
   bottom: auto;
   top: 0;
 }
 
-:where([data-df="scroll-area"][data-horizontal-side="top"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-horizontal-side="top"][data-overflow-x] [data-df="scroll-area-viewport"]) {
   padding-bottom: 0;
   padding-top: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
-:where([data-df="scroll-area"][data-variant="edge"][data-horizontal-side="top"] [data-df="scroll-area-viewport"]) {
+:where([data-df="scroll-area"][data-space="auto"][data-variant="edge"][data-horizontal-side="top"][data-overflow-x] [data-df="scroll-area-viewport"]) {
   padding-bottom: 0;
   padding-top: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
-/* --- Tooltip --- */
 :where([data-df="tooltip-content"]) {
   --df-enter-opacity: 0;
   --df-enter-scale: 0.96;
@@ -1586,7 +1572,6 @@
   border: var(--border-width-hairline) solid color-mix(in oklch, var(--foreground) 10%, transparent);
   background-color: var(--popover);
   color: var(--popover-foreground);
-  /* Prefer drop-shadow so the arrow silhouette is included */
   filter: var(--df-shadow-tooltip);
   outline: none;
   transform-origin: center;
@@ -1684,7 +1669,6 @@
   color: color-mix(in oklch, var(--popover-foreground) 78%, transparent);
 }
 
-/* Arrow tip */
 :where([data-df="tooltip-arrow"]) {
   position: absolute;
   width: calc(2 * var(--spacing-unit, 0.25rem));
@@ -1693,7 +1677,6 @@
   transform: rotate(45deg);
 }
 
-/* Side: which edge hosts the arrow */
 :where([data-df="tooltip-content"][data-side="top"] [data-df="tooltip-arrow"]) {
   bottom: calc(-1 * var(--df-tooltip-arrow-offset));
   border-right: var(--border-width-hairline) solid color-mix(in oklch, var(--foreground) 10%, transparent);
@@ -1718,7 +1701,6 @@
   border-bottom: var(--border-width-hairline) solid color-mix(in oklch, var(--foreground) 10%, transparent);
 }
 
-/* Align: where along the edge the arrow sits */
 :where([data-df="tooltip-content"][data-side="top"][data-align="center"] [data-df="tooltip-arrow"]),
 :where([data-df="tooltip-content"][data-side="bottom"][data-align="center"] [data-df="tooltip-arrow"]) {
   left: 50%;
@@ -1761,7 +1743,6 @@
   }
 }
 
-/* --- Popover --- */
 :where([data-df="popover-content"]) {
   z-index: var(--z-overlay);
   display: flex;
@@ -1793,7 +1774,6 @@
   color: var(--muted-foreground);
 }
 
-/* --- Options Panel --- */
 :where([data-df="options-panel-content"]) {
   z-index: var(--z-overlay);
   display: flex;
@@ -1827,7 +1807,6 @@
   letter-spacing: var(--df-tracking-snug);
 }
 
-/* --- Option List --- */
 :where([data-df="option-list"]) {
   position: relative;
   display: inline-flex;
@@ -1837,7 +1816,6 @@
   align-items: stretch;
 }
 
-/* --- Select --- */
 :where([data-df="select-trigger"]) {
   display: flex;
   width: fit-content;
@@ -1903,7 +1881,6 @@
   height: calc(4.5 * var(--spacing-unit, 0.25rem));
 }
 
-/* Multi-select trigger: grow with wrapped value chips */
 :where([data-df="select-trigger"][data-selection-mode="multiple"]) {
   height: auto;
   min-height: calc(9 * var(--spacing-unit, 0.25rem));
@@ -1924,7 +1901,6 @@
   align-self: flex-start;
 }
 
-/* Field chrome: label above, hint below */
 :where([data-df="select-field"]) {
   display: flex;
   width: fit-content;
@@ -2158,8 +2134,6 @@
   }
 }
 
-/* Portaled panels float above sticky chrome; inline panels (docs demos)
-   must stay in normal stacking so they scroll behind the header. */
 :where([data-df="option-list-content"][data-portal="true"]),
 :where([data-df="select-content"][data-portal="true"]) {
   z-index: var(--z-overlay);
@@ -2282,7 +2256,6 @@
   min-width: 0;
 }
 
-/* Kit ScrollArea panels: pad vertically so the thumb clears the corner radius. */
 :where([data-df="option-list-content"][data-scroll="kit"]:not([data-stacked="true"])) {
   overflow: hidden;
   max-height: none;
@@ -2327,7 +2300,6 @@
   padding: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
-/* Extra right padding only while the vertical scrollbar is visible. */
 :where([data-df="option-list-body"][data-scrollable] [data-df="scroll-area"]:has([data-df="scroll-area-scrollbar"][data-orientation="vertical"][aria-hidden="false"]) [data-df="scroll-area-viewport"]) {
   padding-right: calc(5 * var(--spacing-unit, 0.25rem));
 }
@@ -2459,7 +2431,6 @@
   background: var(--primary);
 }
 
-/* Hover + keyboard highlight */
 :where([data-df="option-list-item"]:hover:not([data-disabled])),
 :where([data-df="option-list-item"][data-highlighted]:not([data-disabled])),
 :where([data-df="option-list-item"]:focus-visible:not([data-disabled])),
@@ -2470,13 +2441,11 @@
   color: var(--accent-foreground);
 }
 
-/* Pressed */
 :where([data-df="option-list-item"]:active:not([data-disabled])),
 :where([data-df="select-item"]:active:not([data-disabled])) {
   background-color: color-mix(in oklch, var(--accent) 85%, var(--foreground));
 }
 
-/* Selected / active choice */
 :where([data-df="option-list-item"][data-state="selected"]:not([data-disabled])),
 :where([data-df="option-list-item"][aria-selected="true"]:not([data-disabled])),
 :where([data-df="select-item"][data-state="selected"]:not([data-disabled])),
@@ -2509,7 +2478,6 @@
   justify-content: center;
 }
 
-/* --- Toast --- */
 .df-toaster {
   position: fixed;
   z-index: var(--z-toast);
@@ -2639,14 +2607,12 @@
   color: var(--foreground);
 }
 
-/* --- Floating layer positioning helpers --- */
 :where([data-df="floating-positioner"]) {
   position: absolute;
   z-index: var(--z-overlay);
   isolation: isolate;
 }
 
-/* --- Tabs --- */
 :where([data-df="tabs"]),
 .df-tabs {
   display: flex;
@@ -2678,7 +2644,6 @@
   background-color: var(--muted);
 }
 
-/* Shared radius tokens for pill / segment list, chip, and triggers */
 :where([data-df="tabs-list"][data-radius="none"]),
 .df-tabs-list[data-radius="none"],
 .df-tabs-indicator[data-radius="none"],
@@ -2735,7 +2700,6 @@
   border-radius: var(--radius-full);
 }
 
-/* Sliding active indicator */
 .df-tabs-indicator {
   position: absolute;
   left: 0;
@@ -2746,19 +2710,16 @@
     width var(--df-duration-slowest) var(--df-ease-standard),
     height var(--df-duration-slowest) var(--df-ease-standard);
 }
-/* Pill: floating chip behind the active trigger */
 .df-tabs-indicator[data-variant="pill"] {
   z-index: var(--z-base);
   background-color: var(--background);
   box-shadow: var(--df-shadow-tabs-indicator);
 }
-/* Segment: compact rounded chip for dense mode switchers */
 .df-tabs-indicator[data-variant="segment"] {
   z-index: var(--z-base);
   background-color: var(--background);
   box-shadow: var(--df-shadow-tabs-indicator);
 }
-/* Line: sliding underline pinned to the bottom edge */
 .df-tabs-indicator[data-variant="line"] {
   top: auto;
   bottom: calc(-1 * var(--border-width-hairline));
@@ -3000,8 +2961,6 @@
   display: none;
 }
 
-/* --- Tabs: vertical orientation --- */
-/* Root lays the list beside the panel */
 :where([data-df="tabs"][data-orientation="vertical"]),
 .df-tabs[data-orientation="vertical"] {
   flex-direction: row;
@@ -3014,7 +2973,6 @@
   min-width: 0;
 }
 
-/* List stacks its triggers in a column */
 :where([data-df="tabs-list"][data-orientation="vertical"]),
 .df-tabs-list[data-orientation="vertical"] {
   flex-direction: column;
@@ -3022,7 +2980,6 @@
   width: fit-content;
 }
 
-/* Triggers span the list width; nav-style variants align to the start */
 :where([data-df="tabs-trigger"][data-orientation="vertical"]),
 .df-tabs-trigger[data-orientation="vertical"] {
   width: 100%;
@@ -3036,7 +2993,6 @@
   justify-content: flex-start;
 }
 
-/* Line variant: move the divider and underline to the trailing (right) edge */
 :where([data-df="tabs-list"][data-variant="line"][data-orientation="vertical"]),
 .df-tabs-list[data-variant="line"][data-orientation="vertical"] {
   border-bottom: none;
@@ -3071,14 +3027,11 @@
   height: auto;
 }
 
-/* Segment variant: keep the track sized to its content when stacked */
 :where([data-df="tabs-list"][data-variant="segment"][data-orientation="vertical"]),
 .df-tabs-list[data-variant="segment"][data-orientation="vertical"] {
   width: fit-content;
 }
 
-/* --- Tabs: line side --- */
-/* Horizontal, top: flip the divider and underline above the triggers */
 :where([data-df="tabs-list"][data-variant="line"][data-line-side="top"]),
 .df-tabs-list[data-variant="line"][data-line-side="top"] {
   border-bottom: none;
@@ -3108,7 +3061,6 @@
   bottom: auto;
 }
 
-/* Vertical, left: face the line toward content sitting on the list's left */
 :where([data-df="tabs-list"][data-variant="line"][data-orientation="vertical"][data-line-side="left"]),
 .df-tabs-list[data-variant="line"][data-orientation="vertical"][data-line-side="left"] {
   border-right: none;
@@ -3138,7 +3090,6 @@
   left: calc(-1 * var(--border-width-hairline));
 }
 
-/* --- Content Switcher --- */
 :where([data-df="content-switcher"]),
 .df-content-switcher {
   display: inline-flex;
@@ -3271,7 +3222,6 @@
   color: var(--foreground);
 }
 
-/* --- Floating Controls --- */
 :where([data-df="floating-controls"]),
 .df-floating-controls {
   display: inline-flex;
@@ -3454,7 +3404,6 @@
   min-width: 0;
 }
 
-/* --- Overlay Hint --- */
 :where([data-df="overlay-hint"]),
 .df-overlay-hint {
   --overlay-hint-bg: var(--overlay-hint-default-bg);
@@ -3493,7 +3442,6 @@
   --overlay-hint-blur: var(--overlay-hint-default-blur);
 }
 
-/* Dark surface: same frosted glass recipe, inverted for dark canvases. */
 :where(.dark [data-df="overlay-hint"][data-variant="default"]),
 :where(.dark[data-df="overlay-hint"][data-variant="default"]),
 .dark .df-overlay-hint[data-variant="default"],
@@ -3531,7 +3479,6 @@
   font-weight: var(--df-font-weight-normal);
 }
 
-/* Compact marquee for tight marketing chrome (home hero, etc.). */
 :where([data-df="overlay-hint"][data-variant="marquee"][data-size="sm"]),
 .df-overlay-hint[data-variant="marquee"][data-size="sm"] {
   gap: calc(1.5 * var(--spacing-unit, 0.25rem));
@@ -3578,11 +3525,6 @@
   --overlay-hint-blur: var(--overlay-hint-marquee-blur);
 }
 
-/*
- * Seamless marquee: two identical segments sit in a row. Each segment
- * animates by its own -100% width. When copy A exits left, copy B is
- * exactly where A started, so the infinite reset is invisible.
- */
 @keyframes df-overlay-hint-marquee-segment {
   from {
     transform: translate3d(0, 0, 0);
@@ -3603,21 +3545,8 @@
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
-  /* Soft fade at both ends so scrolling text dissolves into the chip. */
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 var(--overlay-hint-marquee-fade),
-    #000 calc(100% - var(--overlay-hint-marquee-fade)),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 var(--overlay-hint-marquee-fade),
-    #000 calc(100% - var(--overlay-hint-marquee-fade)),
-    transparent 100%
-  );
+  -webkit-mask-image: var(--overlay-hint-marquee-mask);
+  mask-image: var(--overlay-hint-marquee-mask);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
@@ -3631,10 +3560,8 @@
   text-align: inherit;
   appearance: none;
   -webkit-appearance: none;
-  /* Keep chip radius when the host is a button or link. */
   border-radius: var(--overlay-hint-radius);
   color: var(--overlay-hint-fg);
-  /* Preserve marquee type; do not reset with font: inherit. */
   font-family: var(--df-font-mono);
   font-size: var(--df-text-xs);
   font-weight: var(--df-font-weight-normal);
@@ -3654,7 +3581,6 @@
   flex-shrink: 0;
   align-items: center;
   white-space: nowrap;
-  /* Spacing lives inside each copy so -100% travel stays seamless. */
   padding-inline-end: var(--overlay-hint-marquee-gap);
   will-change: transform;
   backface-visibility: hidden;
@@ -3670,7 +3596,6 @@
   white-space: nowrap;
 }
 
-/* Marquee trailing control is a kit icon-only Button; this class is layout only. */
 .df-overlay-hint-action {
   flex-shrink: 0;
 }
@@ -3731,4 +3656,467 @@
 .df-overlay-hint-slot svg {
   width: calc(3.5 * var(--spacing-unit, 0.25rem));
   height: calc(3.5 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="spectrum-text"]),
+.df-spectrum-text {
+  position: relative;
+  display: inline-block;
+}
+
+:where([data-df="spectrum-text"] .df-spectrum-text-sr),
+.df-spectrum-text-sr {
+  position: absolute;
+  width: var(--border-width-hairline);
+  height: var(--border-width-hairline);
+  padding: 0;
+  margin: calc(var(--border-width-hairline) * -1);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+:where([data-df="spectrum-text"] .df-spectrum-text-fill),
+.df-spectrum-text-fill {
+  position: relative;
+  display: inline-block;
+  background-size: var(--spectrum-text-background-size);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation-name: df-spectrum-text;
+  animation-duration: var(--spectrum-text-duration);
+  animation-timing-function: var(--spectrum-text-ease);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-df="spectrum-text"] .df-spectrum-text-fill),
+  .df-spectrum-text-fill {
+    background-position: 50% 50%;
+  }
+}
+
+.df-border-glow {
+  --df-border-glow-edge: 0;
+  --df-border-glow-angle: 45deg;
+  --df-border-glow-edge-sensitivity-local: var(
+    --df-border-glow-edge-sensitivity,
+    30
+  );
+  --df-border-glow-color-sensitivity: calc(
+    var(--df-border-glow-edge-sensitivity-local) + 20
+  );
+  --df-border-glow-radius-used: var(
+    --df-border-glow-radius-local,
+    var(--df-border-glow-radius, var(--radius-4xl))
+  );
+  --df-border-glow-glow-pad: var(
+    --df-border-glow-glow-radius-local,
+    var(--df-border-glow-glow-radius, 2.5rem)
+  );
+  --df-border-glow-cone: var(
+    --df-border-glow-cone-spread-local,
+    var(--df-border-glow-cone-spread, 25)
+  );
+  --df-border-glow-fill: var(
+    --df-border-glow-fill-opacity-local,
+    var(--df-border-glow-fill-opacity, 0.5)
+  );
+  --df-border-glow-face: var(
+    --df-border-glow-bg-local,
+    var(--df-border-glow-bg, var(--stage-void))
+  );
+  --df-border-glow-stroke-used: var(--df-border-glow-stroke);
+
+  position: relative;
+  display: grid;
+  isolation: isolate;
+  overflow: visible;
+  border-radius: var(--df-border-glow-radius-used);
+  corner-shape: var(--df-corner-shape);
+  border: var(--border-width-hairline) solid var(--df-border-glow-stroke-used);
+  background: var(--df-border-glow-face);
+  background-clip: padding-box;
+  box-shadow: var(--df-shadow-stage-sm);
+  transform: translate3d(0, 0, 0.01px);
+}
+
+.df-border-glow[data-variant="light"] {
+  --df-border-glow-face: var(
+    --df-border-glow-bg-local,
+    var(--df-border-glow-light-bg, var(--df-neutral-0))
+  );
+  --df-border-glow-stroke-used: var(--df-border-glow-light-stroke);
+  --foreground: var(--df-neutral-900);
+  --muted-foreground: var(--df-neutral-500);
+  --card-foreground: var(--df-neutral-900);
+  color: var(--foreground);
+  box-shadow: var(--df-shadow-panel-sm);
+}
+
+.df-border-glow[data-bloom="false"]::before,
+.df-border-glow[data-bloom="false"]::after {
+  display: none;
+}
+
+.df-border-glow::before,
+.df-border-glow::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: inherit;
+  corner-shape: inherit;
+  pointer-events: none;
+  transition: opacity var(--df-duration-slowest) ease-out;
+}
+
+.df-border-glow > .df-border-glow-edge-light {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  corner-shape: inherit;
+  transition: opacity var(--df-duration-slowest) ease-out;
+}
+
+.df-border-glow:not(:hover):not(.is-sweeping)::before,
+.df-border-glow:not(:hover):not(.is-sweeping)::after,
+.df-border-glow:not(:hover):not(.is-sweeping) > .df-border-glow-edge-light {
+  opacity: 0;
+  transition: opacity var(--df-duration-linger) ease-in-out;
+}
+
+.df-border-glow::before {
+  inset: calc(-1 * var(--border-width-hairline));
+  border: var(--border-width-hairline) solid transparent;
+  background:
+    linear-gradient(var(--df-border-glow-face) 0 100%) padding-box,
+    var(--df-border-glow-transparent-edge) border-box,
+    var(--df-border-glow-g1) border-box,
+    var(--df-border-glow-g2) border-box,
+    var(--df-border-glow-g3) border-box,
+    var(--df-border-glow-g4) border-box,
+    var(--df-border-glow-g5) border-box,
+    var(--df-border-glow-g6) border-box,
+    var(--df-border-glow-g7) border-box,
+    var(--df-border-glow-g-base) border-box;
+  opacity: calc(
+    (var(--df-border-glow-edge) - var(--df-border-glow-color-sensitivity)) /
+      (100 - var(--df-border-glow-color-sensitivity))
+  );
+  mask-image: conic-gradient(
+    from var(--df-border-glow-angle) at center,
+    black calc(var(--df-border-glow-cone) * 1%),
+    transparent calc((var(--df-border-glow-cone) + 15) * 1%),
+    transparent calc((100 - var(--df-border-glow-cone) - 15) * 1%),
+    black calc((100 - var(--df-border-glow-cone)) * 1%)
+  );
+  -webkit-mask-image: conic-gradient(
+    from var(--df-border-glow-angle) at center,
+    black calc(var(--df-border-glow-cone) * 1%),
+    transparent calc((var(--df-border-glow-cone) + 15) * 1%),
+    transparent calc((100 - var(--df-border-glow-cone) - 15) * 1%),
+    black calc((100 - var(--df-border-glow-cone)) * 1%)
+  );
+}
+
+.df-border-glow::after {
+  inset: 0;
+  border: none;
+  background:
+    var(--df-border-glow-g1),
+    var(--df-border-glow-g2),
+    var(--df-border-glow-g3),
+    var(--df-border-glow-g4),
+    var(--df-border-glow-g5),
+    var(--df-border-glow-g6),
+    var(--df-border-glow-g7),
+    var(--df-border-glow-g-base);
+  opacity: calc(
+    var(--df-border-glow-fill) *
+      (var(--df-border-glow-edge) - var(--df-border-glow-color-sensitivity)) /
+      (100 - var(--df-border-glow-color-sensitivity))
+  );
+  mix-blend-mode: soft-light;
+  mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(
+      from var(--df-border-glow-angle) at center,
+      transparent 5%,
+      black 15%,
+      black 85%,
+      transparent 95%
+    );
+  -webkit-mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(
+      from var(--df-border-glow-angle) at center,
+      transparent 5%,
+      black 15%,
+      black 85%,
+      transparent 95%
+    );
+  mask-composite: subtract, add, add, add, add, add;
+  -webkit-mask-composite: source-out, source-over, source-over, source-over,
+    source-over, source-over;
+}
+
+.df-border-glow > .df-border-glow-edge-light {
+  inset: calc(var(--df-border-glow-glow-pad) * -1);
+  z-index: 1;
+  pointer-events: none;
+  opacity: calc(
+    (var(--df-border-glow-edge) - var(--df-border-glow-edge-sensitivity-local)) /
+      (100 - var(--df-border-glow-edge-sensitivity-local))
+  );
+  mix-blend-mode: plus-lighter;
+  mask-image: conic-gradient(
+    from var(--df-border-glow-angle) at center,
+    black 2.5%,
+    transparent 10%,
+    transparent 90%,
+    black 97.5%
+  );
+  -webkit-mask-image: conic-gradient(
+    from var(--df-border-glow-angle) at center,
+    black 2.5%,
+    transparent 10%,
+    transparent 90%,
+    black 97.5%
+  );
+}
+
+.df-border-glow > .df-border-glow-edge-light::before {
+  content: "";
+  position: absolute;
+  inset: var(--df-border-glow-glow-pad);
+  border-radius: inherit;
+  corner-shape: inherit;
+  box-shadow:
+    inset 0 0 var(--df-border-glow-bloom-r-1) 0 var(--df-border-glow-ink-60),
+    inset 0 0 var(--df-border-glow-bloom-r-2) 0 var(--df-border-glow-ink-50),
+    inset 0 0 var(--df-border-glow-bloom-r-3) 0 var(--df-border-glow-ink-40),
+    inset 0 0 var(--df-border-glow-bloom-r-4) 0 var(--df-border-glow-ink-30),
+    inset 0 0 var(--df-border-glow-bloom-r-5) var(--df-border-glow-bloom-spread)
+      var(--df-border-glow-ink-20),
+    inset 0 0 var(--df-border-glow-bloom-r-6) var(--df-border-glow-bloom-spread)
+      var(--df-border-glow-ink-10),
+    0 0 var(--df-border-glow-bloom-r-1) 0 var(--df-border-glow-ink-60),
+    0 0 var(--df-border-glow-bloom-r-2) 0 var(--df-border-glow-ink-50),
+    0 0 var(--df-border-glow-bloom-r-3) 0 var(--df-border-glow-ink-40),
+    0 0 var(--df-border-glow-bloom-r-4) 0 var(--df-border-glow-ink-30),
+    0 0 var(--df-border-glow-bloom-r-5) var(--df-border-glow-bloom-spread)
+      var(--df-border-glow-ink-20),
+    0 0 var(--df-border-glow-bloom-r-6) var(--df-border-glow-bloom-spread)
+      var(--df-border-glow-ink-10);
+}
+
+.df-border-glow[data-bloom="false"] > .df-border-glow-edge-light {
+  --df-border-glow-outline-outset: var(
+    --df-border-glow-outline-offset,
+    calc(0.5 * var(--spacing-unit, 0.25rem))
+  );
+  inset: calc(var(--df-border-glow-outline-outset) * -1);
+  border-radius: calc(
+    var(--df-border-glow-radius-used) + var(--df-border-glow-outline-outset)
+  );
+  z-index: 2;
+  mix-blend-mode: normal;
+  mask-image: conic-gradient(
+    from var(--df-border-glow-angle) at center,
+    black calc(var(--df-border-glow-cone) * 1%),
+    transparent calc((var(--df-border-glow-cone) + 15) * 1%),
+    transparent calc((100 - var(--df-border-glow-cone) - 15) * 1%),
+    black calc((100 - var(--df-border-glow-cone)) * 1%)
+  );
+  -webkit-mask-image: conic-gradient(
+    from var(--df-border-glow-angle) at center,
+    black calc(var(--df-border-glow-cone) * 1%),
+    transparent calc((var(--df-border-glow-cone) + 15) * 1%),
+    transparent calc((100 - var(--df-border-glow-cone) - 15) * 1%),
+    black calc((100 - var(--df-border-glow-cone)) * 1%)
+  );
+}
+
+.df-border-glow[data-bloom="false"] > .df-border-glow-edge-light::before {
+  inset: 0;
+  border: var(--df-border-glow-outline-width, var(--border-width-hairline))
+    solid transparent;
+  background:
+    linear-gradient(transparent 0 100%) padding-box,
+    var(--df-border-glow-g1) border-box,
+    var(--df-border-glow-g2) border-box,
+    var(--df-border-glow-g3) border-box,
+    var(--df-border-glow-g4) border-box,
+    var(--df-border-glow-g5) border-box,
+    var(--df-border-glow-g6) border-box,
+    var(--df-border-glow-g7) border-box,
+    var(--df-border-glow-g-base) border-box;
+  box-shadow: none;
+}
+
+.df-border-glow[data-trace="true"] > .df-border-glow-edge-light {
+  --df-border-glow-outline-outset: var(
+    --df-border-glow-outline-offset,
+    calc(0.5 * var(--spacing-unit, 0.25rem))
+  );
+  inset: calc(var(--df-border-glow-outline-outset) * -1);
+  border-radius: calc(
+    var(--df-border-glow-radius-used) + var(--df-border-glow-outline-outset)
+  );
+  z-index: 2;
+  mix-blend-mode: normal;
+  mask-image: none;
+  -webkit-mask-image: none;
+  opacity: var(--df-border-glow-trace, 0);
+  transition: none;
+}
+
+.df-border-glow[data-trace="true"]:not(:hover):not(.is-sweeping)
+  > .df-border-glow-edge-light {
+  opacity: var(--df-border-glow-trace, 0);
+  transition: none;
+}
+
+.df-border-glow[data-trace="true"] > .df-border-glow-edge-light::before {
+  --df-border-glow-trace-fade-used: var(--df-border-glow-trace-fade, 0.75);
+  --df-border-glow-trace-core: calc(
+    var(--df-border-glow-trace-arc, 0deg) *
+      (1 - var(--df-border-glow-trace-fade-used) * 0.55)
+  );
+  --df-border-glow-trace-fade-span: calc(
+    var(--df-border-glow-trace-arc, 0deg) - var(--df-border-glow-trace-core)
+  );
+
+  inset: 0;
+  border: none;
+  padding: var(--df-border-glow-outline-width, var(--border-width-hairline));
+  background: conic-gradient(
+    from var(--df-border-glow-angle) at 50% 50%,
+    var(--df-border-glow-trace-ink-1, var(--df-border-glow-trace-ink)) 0deg,
+    var(--df-border-glow-trace-ink-2, var(--df-border-glow-trace-ink))
+      calc(var(--df-border-glow-trace-core) * 0.4),
+    var(--df-border-glow-trace-ink-3, var(--df-border-glow-trace-ink))
+      calc(var(--df-border-glow-trace-core) * 0.75),
+    var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+      var(--df-border-glow-trace-core),
+    color-mix(
+        in oklch,
+        var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+          70%,
+        transparent
+      )
+      calc(
+        var(--df-border-glow-trace-core) +
+          var(--df-border-glow-trace-fade-span) * 0.35
+      ),
+    color-mix(
+        in oklch,
+        var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+          35%,
+        transparent
+      )
+      calc(
+        var(--df-border-glow-trace-core) +
+          var(--df-border-glow-trace-fade-span) * 0.62
+      ),
+    color-mix(
+        in oklch,
+        var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+          12%,
+        transparent
+      )
+      calc(
+        var(--df-border-glow-trace-core) +
+          var(--df-border-glow-trace-fade-span) * 0.86
+      ),
+    transparent var(--df-border-glow-trace-arc, 0deg),
+    transparent calc(360deg - var(--df-border-glow-trace-arc, 0deg)),
+    color-mix(
+        in oklch,
+        var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+          12%,
+        transparent
+      )
+      calc(
+        360deg -
+          (
+            var(--df-border-glow-trace-core) +
+              var(--df-border-glow-trace-fade-span) * 0.86
+          )
+      ),
+    color-mix(
+        in oklch,
+        var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+          35%,
+        transparent
+      )
+      calc(
+        360deg -
+          (
+            var(--df-border-glow-trace-core) +
+              var(--df-border-glow-trace-fade-span) * 0.62
+          )
+      ),
+    color-mix(
+        in oklch,
+        var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+          70%,
+        transparent
+      )
+      calc(
+        360deg -
+          (
+            var(--df-border-glow-trace-core) +
+              var(--df-border-glow-trace-fade-span) * 0.35
+          )
+      ),
+    var(--df-border-glow-trace-ink-4, var(--df-border-glow-trace-ink))
+      calc(360deg - var(--df-border-glow-trace-core)),
+    var(--df-border-glow-trace-ink-3, var(--df-border-glow-trace-ink))
+      calc(360deg - var(--df-border-glow-trace-core) * 0.75),
+    var(--df-border-glow-trace-ink-2, var(--df-border-glow-trace-ink))
+      calc(360deg - var(--df-border-glow-trace-core) * 0.4),
+    var(--df-border-glow-trace-ink-1, var(--df-border-glow-trace-ink)) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(var(--df-neutral-1000) 0 0) content-box,
+    linear-gradient(var(--df-neutral-1000) 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(var(--df-neutral-1000) 0 0) content-box,
+    linear-gradient(var(--df-neutral-1000) 0 0);
+  mask-composite: exclude;
+  box-shadow: none;
+}
+
+.df-border-glow-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  border-radius: inherit;
+  corner-shape: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .df-border-glow::before,
+  .df-border-glow::after,
+  .df-border-glow > .df-border-glow-edge-light {
+    transition: none;
+  }
 }

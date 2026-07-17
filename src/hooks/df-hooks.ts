@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
-/**
- * Controlled or uncontrolled state with a shared setter.
- * Pass `value` to control; omit it to manage state internally from `defaultValue`.
- */
 export function useControllableState<T>({
   value,
   defaultValue,
@@ -30,7 +26,6 @@ export function useControllableState<T>({
   return [current, setValue] as const
 }
 
-/** True after hydration. Safe gate for portals and `document` access. */
 export function useIsClient() {
   return useSyncExternalStore(
     () => () => {},
@@ -39,10 +34,6 @@ export function useIsClient() {
   )
 }
 
-/**
- * Selectors for nested portaled layers (option lists, select menus).
- * Dismiss handlers treat clicks inside these as inside the parent surface.
- */
 export const DISMISS_NESTED_LAYER_SELECTORS = [
   '[data-df="option-list-content"]',
   '[data-df="select-content"]',
@@ -65,17 +56,12 @@ function isInsideDismissSurface(
   return false
 }
 
-/**
- * Close a surface on Escape, outside pointer down, or (optionally) page scroll.
- * Clicks inside `refs` or matching `excludeSelectors` do not dismiss.
- */
 export function useDismiss(
   open: boolean,
   onClose: () => void,
   refs: Array<React.RefObject<HTMLElement | null>>,
   options?: {
     excludeSelectors?: readonly string[]
-    /** Close when the page scrolls outside the surface. Default true. */
     dismissOnScroll?: boolean
   }
 ) {
@@ -116,7 +102,6 @@ export function useDismiss(
 }
 
 type Side = "top" | "bottom" | "left" | "right"
-/** Fixed anchors, or `auto` to pick the fit that stays in view. */
 type Align = "start" | "center" | "end" | "auto"
 
 type ResolvedAlign = "start" | "center" | "end"
@@ -194,7 +179,6 @@ function pickCrossAlign(
       axis === "x"
         ? overflowX(candidate.origin, contentSize, viewport, pad)
         : overflowY(candidate.origin, contentSize, viewport, pad)
-    // Prefer center on ties so auto feels balanced when space allows.
     const tieBreak = candidate.align === "center" ? -0.1 : 0
     if (score + tieBreak < bestScore) {
       best = candidate.align
@@ -204,11 +188,6 @@ function pickCrossAlign(
   return best
 }
 
-/**
- * Resolve a root CSS length (`px` or `rem`) to pixels.
- * Host apps can set `--df-overlay-inset-top` / `--df-overlay-inset-bottom`
- * to reserve space for fixed chrome. Returns 0 when unset.
- */
 function readOverlayInset(name: string): number {
   if (typeof window === "undefined") return 0
   const root = document.documentElement
@@ -223,10 +202,6 @@ function readOverlayInset(name: string): number {
   return num
 }
 
-/**
- * Fixed positioning relative to a trigger. Optionally flips when space is
- * tight, matches trigger width, and respects host overlay inset CSS variables.
- */
 export function useAnchoredPosition({
   open,
   triggerRef,
@@ -236,12 +211,7 @@ export function useAnchoredPosition({
   sideOffset = 4,
   alignOffset = 0,
   matchTriggerWidth = true,
-  /** Flip to the opposite side when the preferred side does not fit. */
   collisionAvoidance = false,
-  /**
-   * Reposition while the page scrolls. Set false when the overlay dismisses
-   * on scroll so the last position freezes for the exit animation.
-   */
   followScroll = true,
 }: {
   open: boolean
@@ -251,7 +221,6 @@ export function useAnchoredPosition({
   align?: Align
   sideOffset?: number
   alignOffset?: number
-  /** Match the trigger width. When false, the overlay sizes to its content. */
   matchTriggerWidth?: boolean
   collisionAvoidance?: boolean
   followScroll?: boolean
@@ -271,10 +240,8 @@ export function useAnchoredPosition({
     const t = trigger.getBoundingClientRect()
     const c = content.getBoundingClientRect()
     const pad = 8
-    // Host chrome insets (sticky header/footer). Zero when unset.
     const padTop = pad + readOverlayInset("--df-overlay-inset-top")
     const padBottom = pad + readOverlayInset("--df-overlay-inset-bottom")
-    // Prefer clientWidth/Height over innerWidth so scrollbar width does not skew right-edge math.
     const vw = document.documentElement.clientWidth
     const vh = document.documentElement.clientHeight
     const contentAware = align === "auto" || collisionAvoidance
@@ -295,7 +262,6 @@ export function useAnchoredPosition({
         ? pickCrossAlign(align, t, c.height, vh, pad, "y")
         : pickCrossAlign(align, t, c.width, vw, pad, "x")
 
-    // Cap height to available space (not measured content) to avoid resize loops.
     let maxHeight: number | undefined
     let top: number | "auto" = 0
     let bottom: number | "auto" = "auto"
@@ -304,7 +270,6 @@ export function useAnchoredPosition({
       top = t.bottom + sideOffset
       maxHeight = Math.max(96, vh - padBottom - top)
     } else if (resolvedSide === "top") {
-      // Anchor with `bottom` so height changes grow upward without overlapping the trigger.
       bottom = vh - t.top + sideOffset
       top = "auto"
       maxHeight = Math.max(96, t.top - padTop - sideOffset)
@@ -345,7 +310,6 @@ export function useAnchoredPosition({
       return
     }
 
-    // End uses CSS `right` so content grows left while staying on the trigger edge.
     if (resolvedAlign === "end") {
       let right = vw - t.right - alignOffset
       const leftEdge = vw - right - c.width

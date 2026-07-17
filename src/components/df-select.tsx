@@ -102,7 +102,6 @@ function SelectDisabledSync({ disabled }: { disabled: boolean }) {
   return null
 }
 
-/** Layout shell: optional label above, control(s), optional hint below. */
 function SelectField({
   className,
   children,
@@ -114,13 +113,9 @@ function SelectField({
   hintId,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  /** When set, renders a label row above the control. Omit to hide the label. */
   label?: React.ReactNode
-  /** Shows the required mark on the prop-driven label. */
   required?: boolean
-  /** Help control after the prop-driven label (icon, tooltip trigger, etc.). */
   help?: React.ReactNode
-  /** When set, renders hint text below the control. Omit to hide the hint. */
   hint?: React.ReactNode
   htmlFor?: string
   hintId?: string
@@ -161,7 +156,6 @@ function SelectFieldLabel({
   ...props
 }: React.ComponentProps<typeof Label> & {
   required?: boolean
-  /** Optional help control after the label (icon, tooltip trigger, etc.). */
   help?: React.ReactNode
 }) {
   return (
@@ -193,7 +187,6 @@ function SelectFieldLabel({
   )
 }
 
-/** Circle help control for the label row; wrap with Tooltip when needed. */
 function SelectFieldHelp({
   className,
   label = "More information",
@@ -277,7 +270,6 @@ function SelectValue({
   )
 }
 
-/** Plain multi-select summary: "2 selected" plus optional supporting text. */
 function SelectValueSummary({
   className,
   count,
@@ -301,7 +293,6 @@ function SelectValueSummary({
   )
 }
 
-/** Removable chip for a selected value (e.g. a user name). */
 function SelectValueBadge({
   className,
   value,
@@ -353,7 +344,6 @@ function SelectValueBadge({
   )
 }
 
-/** Combobox host for the visible control. */
 function SelectTrigger({
   className,
   size = "md",
@@ -363,7 +353,6 @@ function SelectTrigger({
   onKeyDown,
   ...props
 }: Omit<React.HTMLAttributes<HTMLDivElement>, "disabled"> & {
-  /** T-shirt sizes. `"default"` is accepted as an alias for `"md"`. */
   size?: SelectSize | "default"
   disabled?: boolean
 }) {

@@ -3,11 +3,14 @@ import path from "node:path"
 import { applyKit } from "./apply.mjs"
 import {
   COLOR_SCALES,
+  CORNER_SHAPES,
+  DEFAULT_CORNER_SHAPE,
   DEFAULT_RADIUS,
   FRAMEWORKS,
   INSTALL_MODES,
   frameworkLabel,
   isColorScale,
+  isCornerShape,
   isFramework,
   isInstallMode,
   isRadius,
@@ -17,9 +20,6 @@ import { buildDfConfig, writeDfConfig } from "./df-config.mjs"
 import { exists } from "./fs-utils.mjs"
 import { assertProjectName, scaffoldProject } from "./scaffold.mjs"
 
-/**
- * @param {string[]} args
- */
 export async function initCommand(args) {
   const options = parseInitArgs(args)
 
@@ -43,6 +43,11 @@ export async function initCommand(args) {
       `Invalid --radius "${options.radius}". Use a CSS length like 0, 0.375rem, or 12px.`
     )
   }
+  if (options.cornerShape && !isCornerShape(options.cornerShape)) {
+    throw new Error(
+      `Unknown --corner-shape "${options.cornerShape}". Use one of: ${CORNER_SHAPES.join(", ")}`
+    )
+  }
 
   if (options.template) {
     if (!isFramework(options.template)) {
@@ -60,7 +65,10 @@ export async function initCommand(args) {
     assertProjectName(name)
     const parent = path.resolve(options.cwd)
     const projectDir = scaffoldProject(options.template, name, parent)
-    const result = applyKit(projectDir, options.template, { radius: options.radius })
+    const result = applyKit(projectDir, options.template, {
+      radius: options.radius,
+      cornerShape: options.cornerShape,
+    })
     finalizeConfig(projectDir, options.template, options, result)
     console.log(`\nNext:\n  cd ${name}\n  npm run dev\n`)
     return
@@ -85,39 +93,35 @@ export async function initCommand(args) {
   }
 
   console.log(`Detected ${frameworkLabel(framework)} in ${cwd}`)
-  const result = applyKit(cwd, framework, { radius: options.radius })
+  const result = applyKit(cwd, framework, {
+    radius: options.radius,
+    cornerShape: options.cornerShape,
+  })
   finalizeConfig(cwd, framework, options, result)
 }
 
-/**
- * Write df.json and report color-scale guidance.
- * @param {string} cwd
- * @param {import("./constants.mjs").Framework} framework
- * @param {ReturnType<typeof parseInitArgs>} options
- * @param {{ css: { path: string | null } }} result
- */
 function finalizeConfig(cwd, framework, options, result) {
   const colorScale = options.colorScale ?? "detailed"
   const config = buildDfConfig(cwd, framework, {
     installMode: options.installMode ?? "package",
     colorScale,
     radius: options.radius ?? DEFAULT_RADIUS,
+    cornerShape: options.cornerShape ?? DEFAULT_CORNER_SHAPE,
     css: result?.css?.path ? path.relative(cwd, result.css.path) : null,
   })
   const file = writeDfConfig(cwd, config)
   console.log(`Wrote ${path.relative(cwd, file)} (project map for \`df-ui add\`).`)
   if (colorScale !== "detailed") {
     console.log(
-      `Note: set data-df-color-scale="${colorScale}" on your <html> element so unscoped --df-*-{step} aliases follow compact. Both --df-*-detailed-* and --df-*-compact-* are always defined.`
+      `Set data-df-color-scale="${colorScale}" on <html> so unscoped --df-*-{step} aliases follow compact.`
+    )
+    console.log(
+      `Both --df-*-detailed-* and --df-*-compact-* remain defined.`
     )
   }
 }
 
-/**
- * @param {string[]} args
- */
 function parseInitArgs(args) {
-  /** @type {{ template: string | null, framework: string | null, name: string | null, colorScale: string | null, installMode: string | null, radius: string | null, cwd: string, help: boolean }} */
   const options = {
     template: null,
     framework: null,
@@ -125,6 +129,7 @@ function parseInitArgs(args) {
     colorScale: null,
     installMode: null,
     radius: null,
+    cornerShape: null,
     cwd: process.cwd(),
     help: false,
   }
@@ -144,6 +149,8 @@ function parseInitArgs(args) {
       options.installMode = args[++i] ?? null
     } else if (arg === "--radius") {
       options.radius = args[++i] ?? null
+    } else if (arg === "--corner-shape") {
+      options.cornerShape = args[++i] ?? null
     } else if (arg === "--cwd") {
       options.cwd = args[++i] ?? process.cwd()
     } else if (arg.startsWith("-")) {
@@ -178,6 +185,7 @@ Options:
       --color-scale <s>     ${COLOR_SCALES.join(" | ")} (default: detailed)
       --install-mode <m>    ${INSTALL_MODES.join(" | ")} (default: package)
       --radius <len>        Corner radius token, e.g. 0, 0.375rem, 1rem (default: ${DEFAULT_RADIUS})
+      --corner-shape <s>    ${CORNER_SHAPES.join(" | ")} (default: ${DEFAULT_CORNER_SHAPE})
 
 Laravel: create the Inertia + React app first, then run init in that folder.
 
@@ -185,6 +193,7 @@ Examples:
   df-ui init -t next --name my-app
   df-ui init -t vite --color-scale compact
   df-ui init -t next --radius 1rem
+  df-ui init -t next --corner-shape smooth
   df-ui init --framework astro
 `)
 }

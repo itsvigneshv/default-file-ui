@@ -12,6 +12,8 @@ export type {
   BadgeSize,
   BadgeVariant,
 } from "./df-badge"
+export type { DfCornerShape } from "../lib/corner-shape"
+export { DF_CORNER_SHAPE_VAR, dfCornerShapeStyle } from "../lib/corner-shape"
 
 export {
   Accordion,
@@ -81,6 +83,13 @@ export type {
   OverlayHintClickTarget,
   OverlayHintSize,
 } from "./df-overlay-hint"
+export {
+  SpectrumText,
+  DEFAULT_SPECTRUM_COLORS,
+  DEFAULT_SPECTRUM_STOPS,
+  buildSpectrumFillSvg,
+} from "./df-spectrum-text"
+export type { SpectrumTextProps, SpectrumGradientStop } from "./df-spectrum-text"
 export { ScrollArea, ScrollBar } from "./df-scroll-area"
 export type {
   ScrollAreaProps,
@@ -89,6 +98,7 @@ export type {
   ScrollAreaOrientation,
   ScrollAreaSide,
   ScrollAreaVisibility,
+  ScrollAreaSpace,
 } from "./df-scroll-area"
 export {
   Popover,
@@ -174,3 +184,5 @@ export type {
   SearchInputSize,
   SearchInputIconPosition,
 } from "./df-search-input"
+export { BorderGlow } from "./df-border-glow"
+export type { BorderGlowProps, BorderGlowVariant } from "./df-border-glow"

@@ -3,8 +3,10 @@ import path from "node:path"
 import {
   CSS_IMPORT,
   CSS_IMPORT_JS,
+  DEFAULT_CORNER_SHAPE,
   DEFAULT_RADIUS,
   PACKAGE_SPEC,
+  cornerShapeCssValue,
   frameworkLabel,
 } from "./constants.mjs"
 import { readPackageJson } from "./detect.mjs"
@@ -17,11 +19,6 @@ import {
   writeText,
 } from "./fs-utils.mjs"
 
-/**
- * @param {string} cwd
- * @param {import("./constants.mjs").Framework} framework
- * @param {{ skipInstall?: boolean, radius?: string | null }} [options]
- */
 export function applyKit(cwd, framework, options = {}) {
   const pm = packageManager()
   const pkg = readPackageJson(cwd)
@@ -29,7 +26,6 @@ export function applyKit(cwd, framework, options = {}) {
     throw new Error(`No package.json found in ${cwd}`)
   }
 
-  /** @type {string[]} */
   const toInstall = []
   if (!hasDep(pkg, "@default-file/ui")) toInstall.push(PACKAGE_SPEC)
   if (!hasDep(pkg, "lucide-react")) toInstall.push("lucide-react")
@@ -51,6 +47,19 @@ export function applyKit(cwd, framework, options = {}) {
     if (radiusResult.changed) {
       console.log(
         `Radius: set --radius to ${options.radius} in ${path.relative(cwd, css.path)}`
+      )
+    }
+  }
+
+  if (
+    options.cornerShape &&
+    options.cornerShape !== DEFAULT_CORNER_SHAPE &&
+    css.path
+  ) {
+    const cornerResult = ensureCornerShapeOverride(css.path, options.cornerShape)
+    if (cornerResult.changed) {
+      console.log(
+        `Corner shape: set --df-corner-shape to ${options.cornerShape} in ${path.relative(cwd, css.path)}`
       )
     }
   }
@@ -91,26 +100,18 @@ export function applyKit(cwd, framework, options = {}) {
         : `Stylesheet: already imported in ${path.relative(cwd, css.path)}`
     )
   }
-  for (const note of configNotes) console.log(`Note: ${note}`)
+  for (const note of configNotes) console.log(note)
   console.log(`\nTry:\n  import { Button } from "@default-file/ui/components/df-button"\n`)
 
   return { css, configNotes }
 }
 
-/**
- * @param {Record<string, unknown>} pkg
- * @param {string} name
- */
 function hasDep(pkg, name) {
-  const deps = /** @type {Record<string, string> | undefined} */ (pkg.dependencies)
-  const dev = /** @type {Record<string, string> | undefined} */ (pkg.devDependencies)
+  const deps = pkg.dependencies
+  const dev = pkg.devDependencies
   return Boolean(deps?.[name] || dev?.[name])
 }
 
-/**
- * @param {string} cwd
- * @param {import("./constants.mjs").Framework} framework
- */
 function ensureStylesheet(cwd, framework) {
   const candidates = stylesheetCandidates(framework)
   const existing = findFirst(cwd, candidates)
@@ -118,7 +119,6 @@ function ensureStylesheet(cwd, framework) {
     return ensureCssImport(existing, CSS_IMPORT)
   }
 
-  // Astro layouts often use a JS/TS import instead of a CSS entry.
   if (framework === "astro") {
     const layout = findFirst(cwd, [
       "src/layouts/Layout.astro",
@@ -139,9 +139,6 @@ function ensureStylesheet(cwd, framework) {
   return { path: fallback, changed: true }
 }
 
-/**
- * @param {import("./constants.mjs").Framework} framework
- */
 function stylesheetCandidates(framework) {
   switch (framework) {
     case "next":
@@ -182,15 +179,20 @@ function stylesheetCandidates(framework) {
   }
 }
 
-/**
- * Write (or update) a `--radius` override block in the app stylesheet.
- * Idempotent via a marker comment so re-running init just updates the value.
- * @param {string} cssPath
- * @param {string} radius
- */
 function ensureRadiusOverride(cssPath, radius) {
   const marker = "/* df-ui:radius */"
   const block = `${marker}\n:root {\n  --radius: ${radius};\n}`
+  return ensureMarkedRootBlock(cssPath, marker, block)
+}
+
+function ensureCornerShapeOverride(cssPath, cornerShape) {
+  const marker = "/* df-ui:corner-shape */"
+  const value = cornerShapeCssValue(cornerShape)
+  const block = `${marker}\n:root {\n  --df-corner-shape: ${value};\n}`
+  return ensureMarkedRootBlock(cssPath, marker, block)
+}
+
+function ensureMarkedRootBlock(cssPath, marker, block) {
   const current = readText(cssPath)
 
   if (current.includes(marker)) {
@@ -208,16 +210,10 @@ function ensureRadiusOverride(cssPath, radius) {
   return { path: cssPath, changed: true }
 }
 
-/**
- * @param {string} value
- */
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-/**
- * @param {string} layoutPath
- */
 function ensureAstroLayoutImport(layoutPath) {
   const current = readText(layoutPath)
   if (current.includes("@default-file/ui/css/df-index.css")) {
@@ -239,9 +235,6 @@ function ensureAstroLayoutImport(layoutPath) {
   return { path: layoutPath, changed: true }
 }
 
-/**
- * @param {string} cwd
- */
 function ensureNextTranspile(cwd) {
   const configPath = findFirst(cwd, [
     "next.config.ts",
@@ -268,7 +261,6 @@ function ensureNextTranspile(cwd) {
     return { path: configPath, changed: true }
   }
 
-  // Insert into a `const nextConfig = { ... }` object when possible.
   if (/const\s+nextConfig\s*=\s*\{/.test(source)) {
     const next = source.replace(
       /const\s+nextConfig\s*=\s*\{/,

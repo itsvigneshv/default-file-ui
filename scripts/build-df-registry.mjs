@@ -1,8 +1,4 @@
 #!/usr/bin/env node
-/**
- * Builds schema-compatible registry item JSON under public/r/.
- * Catalog: registry.json at repo root (GitHub registry).
- */
 import fs from "node:fs"
 import path from "node:path"
 

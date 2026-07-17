@@ -1,6 +1,6 @@
 # Default File UI
 
-Owned design system for Default File. Color scales, tokens, components, and motion. Open source. Open code. Use this to build on Default File UI in your own projects.
+Owned design system for Default File: color scales, tokens, components, and motion. Use it in your own projects.
 
 ## Quick start (CLI)
 
@@ -58,7 +58,7 @@ import { Button } from "@default-file/ui/components/df-button"
 
 Root `registry.json` lists installable items. Built payloads live under `public/r/` after `npm run df:registry`.
 
-Install path for catalog tools that support GitHub registries:
+Install path for registry consumers that accept a GitHub source:
 
 `itsvigneshv/default-file-ui/<item>`
 
