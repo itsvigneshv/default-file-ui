@@ -239,6 +239,16 @@
       "files": [
         { "path": "src/components/df-floating-controls.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-floating-controls.tsx" }
       ]
+    },
+    {
+      "name": "overlay-hint",
+      "type": "registry:ui",
+      "title": "Overlay Hint",
+      "description": "Tokenized instruction pill with default frosted glass (light and dark surfaces) and a muted chip, plus configurable radius, chrome, and separator.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-overlay-hint.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-overlay-hint.tsx" }
+      ]
     }
   ]
 }

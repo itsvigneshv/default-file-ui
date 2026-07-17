@@ -14,17 +14,26 @@ type ButtonSize =
   | "xs"
   | "sm"
   | "lg"
+  | "xl"
+  | "2xl"
   | "icon"
   | "icon-xs"
   | "icon-sm"
   | "icon-lg"
+  | "icon-xl"
+  | "icon-2xl"
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
   size?: ButtonSize
-  /** Slot before the label: an icon or any node (badge, counter, avatar, ...). */
+  /**
+   * Link variant only. When true (default), show underline on hover.
+   * Set false to keep the label plain on hover.
+   */
+  underline?: boolean
+  /** Content before the label. Accepts an icon or any node such as a badge or counter. */
   leading?: React.ReactNode
-  /** Slot after the label: an icon or any node (badge, counter, close, ...). */
+  /** Content after the label. Accepts an icon or any node such as a badge or counter. */
   trailing?: React.ReactNode
 }
 
@@ -33,13 +42,17 @@ const sizeClass: Record<ButtonSize, string> = {
   xs: "df-btn-xs",
   sm: "df-btn-sm",
   lg: "df-btn-lg",
+  xl: "df-btn-xl",
+  "2xl": "df-btn-2xl",
   icon: "df-btn-icon",
   "icon-xs": "df-btn-icon-xs",
   "icon-sm": "df-btn-icon-sm",
   "icon-lg": "df-btn-icon-lg",
+  "icon-xl": "df-btn-icon-xl",
+  "icon-2xl": "df-btn-icon-2xl",
 }
 
-/** Class helper for non-button hosts (e.g. Next.js Link) that need button chrome. */
+/** Builds button classes for non button hosts such as Next.js Link. */
 function dfButtonClass({
   variant = "default",
   size = "default",
@@ -56,6 +69,7 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  underline = true,
   type = "button",
   leading,
   trailing,
@@ -68,6 +82,9 @@ function Button({
       data-df="button"
       data-variant={variant}
       data-size={size}
+      data-underline={
+        variant === "link" ? (underline ? "hover" : "none") : undefined
+      }
       className={dfButtonClass({ variant, size, className })}
       {...props}
     >

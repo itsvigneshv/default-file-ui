@@ -100,17 +100,24 @@
   color: var(--primary);
   text-underline-offset: var(--df-underline-offset);
 }
-:where([data-df="button"][data-variant="link"]:hover) {
+:where([data-df="button"][data-variant="link"][data-underline="hover"]:hover) {
   text-decoration: underline;
 }
+:where([data-df="button"][data-variant="link"][data-underline="none"]:hover) {
+  text-decoration: none;
+}
 
+/*
+ * Text button padding. Default is 8px block and 16px inline (1:2).
+ * Scale: xs 4/10, sm 6/12, default 8/16, lg 10/20, xl 12/24, 2xl 14/28.
+ */
 :where([data-df="button"][data-size="default"]) {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
-  padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(2 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="xs"]) {
-  height: calc(6 * var(--spacing-unit, 0.25rem));
   gap: calc(1 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(1 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
@@ -119,13 +126,21 @@
   height: calc(3 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="sm"]) {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
   gap: calc(1 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="lg"]) {
-  height: calc(10 * var(--spacing-unit, 0.25rem));
-  padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(2.5 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(5 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="xl"]) {
+  padding-block: calc(3 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(6 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="2xl"]) {
+  padding-block: calc(3.5 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(7 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="icon"]) {
   width: calc(9 * var(--spacing-unit, 0.25rem));
@@ -133,8 +148,8 @@
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-xs"]) {
-  width: calc(6 * var(--spacing-unit, 0.25rem));
-  height: calc(6 * var(--spacing-unit, 0.25rem));
+  width: calc(7 * var(--spacing-unit, 0.25rem));
+  height: calc(7 * var(--spacing-unit, 0.25rem));
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-xs"] svg) {
@@ -151,15 +166,56 @@
   height: calc(10 * var(--spacing-unit, 0.25rem));
   padding: 0;
 }
+:where([data-df="button"][data-size="icon-xl"]) {
+  width: calc(11 * var(--spacing-unit, 0.25rem));
+  height: calc(11 * var(--spacing-unit, 0.25rem));
+  padding: 0;
+}
+:where([data-df="button"][data-size="icon-2xl"]) {
+  width: calc(12 * var(--spacing-unit, 0.25rem));
+  height: calc(12 * var(--spacing-unit, 0.25rem));
+  padding: 0;
+}
 
+/* Icon slot inset: one spacing step tighter than the size inline padding. */
 :where([data-df="button"]:has([data-icon="inline-end"])) {
-  padding-right: calc(2.5 * var(--spacing-unit, 0.25rem));
+  padding-right: calc(3 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"]:has([data-icon="inline-start"])) {
+  padding-left: calc(3 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="xs"]:has([data-icon="inline-end"])) {
+  padding-right: calc(2 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="xs"]:has([data-icon="inline-start"])) {
+  padding-left: calc(2 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="sm"]:has([data-icon="inline-end"])) {
+  padding-right: calc(2.5 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="sm"]:has([data-icon="inline-start"])) {
   padding-left: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
+:where([data-df="button"][data-size="lg"]:has([data-icon="inline-end"])) {
+  padding-right: calc(4 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="lg"]:has([data-icon="inline-start"])) {
+  padding-left: calc(4 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="xl"]:has([data-icon="inline-end"])) {
+  padding-right: calc(5 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="xl"]:has([data-icon="inline-start"])) {
+  padding-left: calc(5 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="2xl"]:has([data-icon="inline-end"])) {
+  padding-right: calc(6 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-size="2xl"]:has([data-icon="inline-start"])) {
+  padding-left: calc(6 * var(--spacing-unit, 0.25rem));
+}
 
-/* Class-based button look for Link / dfButtonClass() call sites */
+/* Class based button styles for Link and dfButtonClass() hosts. */
 .df-btn {
   display: inline-flex;
   flex-shrink: 0;
@@ -209,7 +265,7 @@
   background-color: var(--secondary);
   color: var(--secondary-foreground);
 }
-/* Ghost hover stays :where so overlays can win */
+/* Ghost hover uses :where so overlays can override. */
 :where(.df-btn-ghost:hover) {
   background-color: var(--muted);
   color: var(--foreground);
@@ -230,24 +286,39 @@
   color: var(--primary);
   text-underline-offset: var(--df-underline-offset);
 }
+.df-btn-link[data-underline="hover"]:hover {
+  text-decoration: underline;
+}
+.df-btn-link[data-underline="none"]:hover {
+  text-decoration: none;
+}
+/* Text button padding scale: xs 4/10, sm 6/12, default 8/16, lg 10/20, xl 12/24, 2xl 14/28. */
 .df-btn-default-size {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
-  padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(2 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-xs {
-  height: calc(6 * var(--spacing-unit, 0.25rem));
   gap: calc(1 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(1 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
 .df-btn-sm {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
   gap: calc(1 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-lg {
-  height: calc(10 * var(--spacing-unit, 0.25rem));
-  padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
+  padding-block: calc(2.5 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(5 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-xl {
+  padding-block: calc(3 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(6 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-2xl {
+  padding-block: calc(3.5 * var(--spacing-unit, 0.25rem));
+  padding-inline: calc(7 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-icon {
   width: calc(9 * var(--spacing-unit, 0.25rem));
@@ -255,8 +326,8 @@
   padding: 0;
 }
 .df-btn-icon-xs {
-  width: calc(6 * var(--spacing-unit, 0.25rem));
-  height: calc(6 * var(--spacing-unit, 0.25rem));
+  width: calc(7 * var(--spacing-unit, 0.25rem));
+  height: calc(7 * var(--spacing-unit, 0.25rem));
   padding: 0;
 }
 .df-btn-icon-sm {
@@ -269,22 +340,56 @@
   height: calc(10 * var(--spacing-unit, 0.25rem));
   padding: 0;
 }
+.df-btn-icon-xl {
+  width: calc(11 * var(--spacing-unit, 0.25rem));
+  height: calc(11 * var(--spacing-unit, 0.25rem));
+  padding: 0;
+}
+.df-btn-icon-2xl {
+  width: calc(12 * var(--spacing-unit, 0.25rem));
+  height: calc(12 * var(--spacing-unit, 0.25rem));
+  padding: 0;
+}
 
-/* Icon inset for Link / dfButtonClass hosts */
+/* Icon inset for Link and dfButtonClass hosts. */
 .df-btn:has([data-icon="inline-end"]) {
-  padding-right: calc(2.5 * var(--spacing-unit, 0.25rem));
+  padding-right: calc(3 * var(--spacing-unit, 0.25rem));
 }
 .df-btn:has([data-icon="inline-start"]) {
+  padding-left: calc(3 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-xs:has([data-icon="inline-end"]) {
+  padding-right: calc(2 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-xs:has([data-icon="inline-start"]) {
+  padding-left: calc(2 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-sm:has([data-icon="inline-end"]) {
+  padding-right: calc(2.5 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-sm:has([data-icon="inline-start"]) {
   padding-left: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-lg:has([data-icon="inline-end"]) {
-  padding-right: calc(3 * var(--spacing-unit, 0.25rem));
+  padding-right: calc(4 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-lg:has([data-icon="inline-start"]) {
-  padding-left: calc(3 * var(--spacing-unit, 0.25rem));
+  padding-left: calc(4 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-xl:has([data-icon="inline-end"]) {
+  padding-right: calc(5 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-xl:has([data-icon="inline-start"]) {
+  padding-left: calc(5 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-2xl:has([data-icon="inline-end"]) {
+  padding-right: calc(6 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-2xl:has([data-icon="inline-start"]) {
+  padding-left: calc(6 * var(--spacing-unit, 0.25rem));
 }
 
-/* Leading / trailing slots - hold an icon or any node (badge, counter, close) */
+/* Leading and trailing slots for an icon or any node (badge, counter, close). */
 .df-btn-slot {
   display: inline-flex;
   align-items: center;
@@ -3347,4 +3452,258 @@
   align-items: center;
   flex-shrink: 0;
   min-width: 0;
+}
+
+/* --- Overlay Hint --- */
+:where([data-df="overlay-hint"]),
+.df-overlay-hint {
+  --overlay-hint-bg: var(--overlay-hint-default-bg);
+  --overlay-hint-border: var(--overlay-hint-default-border);
+  --overlay-hint-fg: var(--overlay-hint-default-fg);
+  --overlay-hint-shadow: var(--overlay-hint-default-shadow);
+  --overlay-hint-blur: var(--overlay-hint-default-blur);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(1.5 * var(--spacing-unit, 0.25rem));
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  padding: calc(2 * var(--spacing-unit, 0.25rem))
+    calc(3 * var(--spacing-unit, 0.25rem));
+  border-radius: var(--overlay-hint-radius);
+  border: var(--border-width-hairline) solid var(--overlay-hint-border);
+  background-color: var(--overlay-hint-bg);
+  color: var(--overlay-hint-fg);
+  box-shadow: var(--overlay-hint-shadow);
+  backdrop-filter: blur(var(--overlay-hint-blur));
+  -webkit-backdrop-filter: blur(var(--overlay-hint-blur));
+  font-size: var(--df-text-11);
+  font-weight: var(--df-font-weight-normal);
+  line-height: var(--df-leading-none);
+  letter-spacing: var(--df-tracking-wide);
+  white-space: nowrap;
+}
+
+:where([data-df="overlay-hint"][data-variant="default"]),
+.df-overlay-hint[data-variant="default"] {
+  --overlay-hint-bg: var(--overlay-hint-default-bg);
+  --overlay-hint-border: var(--overlay-hint-default-border);
+  --overlay-hint-fg: var(--overlay-hint-default-fg);
+  --overlay-hint-shadow: var(--overlay-hint-default-shadow);
+  --overlay-hint-blur: var(--overlay-hint-default-blur);
+}
+
+/* Dark surface: same frosted glass recipe, inverted for dark canvases. */
+:where(.dark [data-df="overlay-hint"][data-variant="default"]),
+:where(.dark[data-df="overlay-hint"][data-variant="default"]),
+.dark .df-overlay-hint[data-variant="default"],
+.dark.df-overlay-hint[data-variant="default"] {
+  --overlay-hint-bg: var(--overlay-hint-default-dark-bg);
+  --overlay-hint-border: var(--overlay-hint-default-dark-border);
+  --overlay-hint-fg: var(--overlay-hint-default-dark-fg);
+  --overlay-hint-shadow: var(--overlay-hint-default-dark-shadow);
+  --overlay-hint-blur: var(--overlay-hint-default-dark-blur);
+}
+
+:where([data-df="overlay-hint"][data-variant="muted"]),
+.df-overlay-hint[data-variant="muted"] {
+  --overlay-hint-bg: var(--overlay-hint-muted-bg);
+  --overlay-hint-border: var(--overlay-hint-muted-border);
+  --overlay-hint-fg: var(--overlay-hint-muted-fg);
+  --overlay-hint-shadow: var(--overlay-hint-muted-shadow);
+  --overlay-hint-blur: var(--overlay-hint-muted-blur);
+}
+
+:where([data-df="overlay-hint"][data-variant="marquee"]),
+.df-overlay-hint[data-variant="marquee"] {
+  --overlay-hint-bg: var(--overlay-hint-marquee-bg);
+  --overlay-hint-border: var(--overlay-hint-marquee-border);
+  --overlay-hint-fg: var(--overlay-hint-marquee-fg);
+  --overlay-hint-shadow: var(--overlay-hint-marquee-shadow);
+  --overlay-hint-blur: var(--overlay-hint-marquee-blur);
+  gap: calc(2 * var(--spacing-unit, 0.25rem));
+  padding: calc(1.5 * var(--spacing-unit, 0.25rem))
+    calc(1.5 * var(--spacing-unit, 0.25rem))
+    calc(1.5 * var(--spacing-unit, 0.25rem))
+    calc(3 * var(--spacing-unit, 0.25rem));
+  font-family: var(--df-font-mono);
+  font-size: var(--df-text-xs);
+  font-weight: var(--df-font-weight-normal);
+}
+
+:where(.dark [data-df="overlay-hint"][data-variant="marquee"]),
+:where(.dark[data-df="overlay-hint"][data-variant="marquee"]),
+:where([data-df="overlay-hint"][data-variant="marquee"][data-scheme="dark"]),
+.dark .df-overlay-hint[data-variant="marquee"],
+.dark.df-overlay-hint[data-variant="marquee"],
+.df-overlay-hint[data-variant="marquee"][data-scheme="dark"] {
+  --overlay-hint-bg: var(--overlay-hint-marquee-dark-bg);
+  --overlay-hint-border: var(--overlay-hint-marquee-dark-border);
+  --overlay-hint-fg: var(--overlay-hint-marquee-dark-fg);
+  --overlay-hint-shadow: var(--overlay-hint-marquee-dark-shadow);
+  --overlay-hint-blur: var(--overlay-hint-marquee-dark-blur);
+}
+
+:where([data-df="overlay-hint"][data-variant="marquee"][data-scheme="light"]),
+.df-overlay-hint[data-variant="marquee"][data-scheme="light"] {
+  --overlay-hint-bg: var(--overlay-hint-marquee-bg);
+  --overlay-hint-border: var(--overlay-hint-marquee-border);
+  --overlay-hint-fg: var(--overlay-hint-marquee-fg);
+  --overlay-hint-shadow: var(--overlay-hint-marquee-shadow);
+  --overlay-hint-blur: var(--overlay-hint-marquee-blur);
+}
+
+/*
+ * Seamless marquee: two identical segments sit in a row. Each segment
+ * animates by its own -100% width. When copy A exits left, copy B is
+ * exactly where A started, so the infinite reset is invisible.
+ */
+@keyframes df-overlay-hint-marquee-segment {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+:where([data-df="overlay-hint-marquee"]),
+.df-overlay-hint-marquee {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  width: var(--overlay-hint-marquee-width);
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  /* Soft fade at both ends so scrolling text dissolves into the chip. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--overlay-hint-marquee-fade),
+    #000 calc(100% - var(--overlay-hint-marquee-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--overlay-hint-marquee-fade),
+    #000 calc(100% - var(--overlay-hint-marquee-fade)),
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+:where([data-df="overlay-hint"][data-variant="marquee"][data-click-target="chip"]),
+.df-overlay-hint[data-variant="marquee"][data-click-target="chip"] {
+  cursor: pointer;
+  text-decoration: none;
+  text-align: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  /* Keep chip radius when the host is a button or link. */
+  border-radius: var(--overlay-hint-radius);
+  color: var(--overlay-hint-fg);
+  /* Preserve marquee type; do not reset with font: inherit. */
+  font-family: var(--df-font-mono);
+  font-size: var(--df-text-xs);
+  font-weight: var(--df-font-weight-normal);
+  letter-spacing: var(--df-tracking-wide);
+  line-height: var(--df-leading-none);
+}
+
+:where([data-df="overlay-hint"][data-variant="marquee"][data-click-target="chip"] .df-overlay-hint-action),
+.df-overlay-hint[data-variant="marquee"][data-click-target="chip"]
+  .df-overlay-hint-action {
+  pointer-events: none;
+}
+
+:where([data-df="overlay-hint-marquee-segment"]),
+.df-overlay-hint-marquee-segment {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  white-space: nowrap;
+  /* Spacing lives inside each copy so -100% travel stays seamless. */
+  padding-inline-end: var(--overlay-hint-marquee-gap);
+  will-change: transform;
+  backface-visibility: hidden;
+  animation: df-overlay-hint-marquee-segment
+    var(--overlay-hint-marquee-duration) linear infinite;
+}
+
+:where([data-df="overlay-hint-marquee-segment"] [data-df="overlay-hint-label"]),
+.df-overlay-hint-marquee-segment .df-overlay-hint-label {
+  flex-shrink: 0;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* Marquee trailing control is a kit icon-only Button; this class is layout only. */
+.df-overlay-hint-action {
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-df="overlay-hint-marquee-segment"]),
+  .df-overlay-hint-marquee-segment {
+    animation: none !important;
+  }
+}
+
+:where([data-df="overlay-hint"][data-radius="none"]),
+.df-overlay-hint[data-radius="none"] {
+  --overlay-hint-radius: 0;
+}
+
+:where([data-df="overlay-hint"][data-radius="md"]),
+.df-overlay-hint[data-radius="md"] {
+  --overlay-hint-radius: var(--radius-md);
+}
+
+:where([data-df="overlay-hint"][data-radius="full"]),
+.df-overlay-hint[data-radius="full"] {
+  --overlay-hint-radius: var(--radius-full);
+}
+
+:where([data-df="overlay-hint-label"]),
+.df-overlay-hint-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:where([data-df="overlay-hint-separator"]),
+.df-overlay-hint-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: var(--opacity-muted, 0.7);
+}
+
+:where([data-df="overlay-hint-separator"] svg),
+.df-overlay-hint-separator svg {
+  width: calc(3 * var(--spacing-unit, 0.25rem));
+  height: calc(3 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="overlay-hint-slot"]),
+.df-overlay-hint-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+:where([data-df="overlay-hint-slot"] svg),
+.df-overlay-hint-slot svg {
+  width: calc(3.5 * var(--spacing-unit, 0.25rem));
+  height: calc(3.5 * var(--spacing-unit, 0.25rem));
 }

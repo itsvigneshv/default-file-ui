@@ -13,6 +13,19 @@ export type {
   BadgeVariant,
 } from "./df-badge"
 
+export {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./df-accordion"
+export type {
+  AccordionProps,
+  AccordionItemProps,
+  AccordionTriggerProps,
+  AccordionContentProps,
+} from "./df-accordion"
+
 export { Input } from "./df-input"
 export { Label } from "./df-label"
 export { Separator } from "./df-separator"
@@ -59,6 +72,13 @@ export type {
   FloatingControlsDividerEntry,
   FloatingControlsSlotEntry,
 } from "./df-floating-controls"
+export { OverlayHint, OVERLAY_HINT_SEPARATOR } from "./df-overlay-hint"
+export type {
+  OverlayHintProps,
+  OverlayHintVariant,
+  OverlayHintRadius,
+  OverlayHintScheme,
+} from "./df-overlay-hint"
 export { ScrollArea, ScrollBar } from "./df-scroll-area"
 export type {
   ScrollAreaProps,

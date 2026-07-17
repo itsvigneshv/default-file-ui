@@ -83,6 +83,12 @@
   --df-text-7xl: 4.5rem; /* 72px */
   --df-text-8xl: 6rem; /* 96px */
   --df-text-9xl: 8rem; /* 128px */
+  /* Marketing display numerals (stats) */
+  --df-text-display: clamp(4.5rem, 12vw, 9rem);
+
+  /* Font families */
+  --df-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --df-font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* Font weight */
   --df-font-weight-thin: 100;
@@ -96,6 +102,7 @@
   --df-font-weight-black: 900;
 
   /* Letter spacing */
+  --df-tracking-display: -0.11em;
   --df-tracking-tighter: -0.05em;
   --df-tracking-tight: -0.025em;
   --df-tracking-snug: -0.01em;
@@ -371,6 +378,50 @@
   --overlay-solid-fg: oklch(0.2 0 0);
   --overlay-solid-hover-bg: color-mix(in oklch, white 88%, oklch(0.85 0 0));
   --overlay-divider: color-mix(in oklch, white 15%, transparent);
+
+  /*
+   * Overlay Hint chrome. Override on :root or per instance via
+   * --overlay-hint-bg / border / fg / radius (or the variant defaults below).
+   * default: frosted glass (light surface + .dark surface). muted: solid chip.
+   * marquee: scrolling label with a trailing icon action (light + dark).
+   */
+  --overlay-hint-radius: var(--radius-md);
+  --overlay-hint-default-bg: color-mix(in oklch, white 78%, transparent);
+  --overlay-hint-default-border: color-mix(in oklch, black 10%, transparent);
+  --overlay-hint-default-fg: color-mix(in oklch, black 72%, transparent);
+  --overlay-hint-default-shadow: 0 10px 28px
+    color-mix(in oklch, black 10%, transparent);
+  --overlay-hint-default-blur: var(--overlay-blur);
+  --overlay-hint-default-dark-bg: var(--overlay-bg);
+  --overlay-hint-default-dark-border: var(--overlay-border);
+  --overlay-hint-default-dark-fg: var(--overlay-item-fg);
+  --overlay-hint-default-dark-shadow: var(--overlay-shadow);
+  --overlay-hint-default-dark-blur: var(--overlay-blur);
+  --overlay-hint-muted-bg: var(--muted);
+  --overlay-hint-muted-border: var(--border);
+  --overlay-hint-muted-fg: var(--muted-foreground);
+  --overlay-hint-muted-shadow: none;
+  --overlay-hint-muted-blur: 0px;
+  --overlay-hint-marquee-bg: color-mix(in oklch, white 88%, transparent);
+  --overlay-hint-marquee-border: color-mix(in oklch, black 10%, transparent);
+  --overlay-hint-marquee-fg: color-mix(in oklch, black 62%, transparent);
+  --overlay-hint-marquee-shadow: 0 10px 28px
+    color-mix(in oklch, black 10%, transparent);
+  --overlay-hint-marquee-blur: var(--overlay-blur);
+  --overlay-hint-marquee-action-bg: color-mix(in oklch, black 8%, transparent);
+  --overlay-hint-marquee-action-fg: color-mix(in oklch, black 72%, transparent);
+  --overlay-hint-marquee-dark-bg: var(--overlay-bg);
+  --overlay-hint-marquee-dark-border: var(--overlay-border);
+  --overlay-hint-marquee-dark-fg: var(--overlay-item-fg);
+  --overlay-hint-marquee-dark-shadow: var(--overlay-shadow);
+  --overlay-hint-marquee-dark-blur: var(--overlay-blur);
+  --overlay-hint-marquee-dark-action-bg: color-mix(in oklch, white 12%, transparent);
+  --overlay-hint-marquee-dark-action-fg: var(--overlay-item-fg);
+  --overlay-hint-marquee-width: 12rem;
+  --overlay-hint-marquee-duration: 18s;
+  --overlay-hint-marquee-gap: calc(4 * var(--spacing-unit, 0.25rem));
+  /* Soft edge fade depth for scrolling label (left and right). */
+  --overlay-hint-marquee-fade: 0.75rem;
 
   /* Overlay / content sizing (not part of the spacing rhythm) */
   --df-popover-width: 18rem;

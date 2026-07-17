@@ -92,6 +92,7 @@ export const FONT_SIZE = {
   "7xl": ["var(--df-text-7xl)", "var(--df-leading-none)"],
   "8xl": ["var(--df-text-8xl)", "var(--df-leading-none)"],
   "9xl": ["var(--df-text-9xl)", "var(--df-leading-none)"],
+  display: ["var(--df-text-display)", "var(--df-leading-none)"],
 }
 
 export const FONT_WEIGHT = {
@@ -107,6 +108,7 @@ export const FONT_WEIGHT = {
 }
 
 export const TRACKING = {
+  display: "var(--df-tracking-display)",
   tighter: "var(--df-tracking-tighter)",
   tight: "var(--df-tracking-tight)",
   snug: "var(--df-tracking-snug)",
@@ -285,10 +287,14 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "df-btn-xs",
   "df-btn-sm",
   "df-btn-lg",
+  "df-btn-xl",
+  "df-btn-2xl",
   "df-btn-icon",
   "df-btn-icon-xs",
   "df-btn-icon-sm",
   "df-btn-icon-lg",
+  "df-btn-icon-xl",
+  "df-btn-icon-2xl",
   "df-input",
   "df-toggle-group",
   "df-toggle-item",
@@ -317,6 +323,9 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "peer",
   "custom",
   "dark",
+  // Scroll-reveal / auto-tab state hooks (styled in df-animations.css)
+  "is-inview",
+  "is-active",
   // Variant prop values that the class scanner may pick up as tokens
   "outline",
   "default",
@@ -324,4 +333,6 @@ export const NON_UTILITY_ALLOWLIST = new Set([
   "ghost",
   "destructive",
   "link",
+  "center",
+  "left",
 ])

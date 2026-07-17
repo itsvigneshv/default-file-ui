@@ -195,17 +195,21 @@ function escapeClass(name) {
 }
 
 /**
- * Opacity modifiers resolve to opaque shades (100% alpha), not see-through fills.
- * Semantic tokens (var(--…)) blend against --background so muted/50 looks like
- * muted at 50% over the page surface, as a solid color. Absolute colors (black,
- * white, hex) still mix with transparent for true overlays on arbitrary media.
+ * Opacity modifiers for semantic tokens (muted/50, card/95, …) resolve to opaque
+ * shades blended against --background. Absolute overlays (white, black, hex)
+ * mix with transparent so they stay see-through on dark stages and media.
+ *
+ * white/black are aliased to var(--df-neutral-*), so name must be checked; a
+ * bare startsWith("var(") test would wrongly tint them against the page surface.
  */
+const OVERLAY_COLOR_NAMES = new Set(["white", "black"])
+
 function colorValue(name, opacity) {
   const base = COLORS[name]
   if (!base) return null
   if (opacity == null) return base
   const pct = Number(opacity)
-  if (base.startsWith("var(")) {
+  if (base.startsWith("var(") && !OVERLAY_COLOR_NAMES.has(name)) {
     return `color-mix(in oklch, ${base} ${pct}%, var(--background))`
   }
   return `color-mix(in srgb, ${base} ${pct}%, transparent)`
