@@ -4,6 +4,16 @@
   }
 }
 
+@keyframes df-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @keyframes df-enter {
   from {
     opacity: var(--df-enter-opacity, 1);
@@ -350,7 +360,9 @@
   .home-stage-frame,
   .df-marquee-group,
   .df-tab-progress.is-active,
-  .df-spectrum-text-fill {
+  .df-spectrum-text-fill,
+  .animate-spin,
+  .animate-pulse {
     animation: none !important;
   }
 
