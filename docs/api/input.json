@@ -1,0 +1,109 @@
+{
+  "name": "input",
+  "slug": "input",
+  "title": "Input",
+  "description": "Single-line text fields for forms and filters.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-input",
+  "dependencies": [],
+  "api": {
+    "description": "Single-line text field. Passes through native input attributes.",
+    "groups": [
+      {
+        "id": "input",
+        "title": "Input",
+        "props": [
+          {
+            "name": "type",
+            "type": "string",
+            "default": "\"text\"",
+            "description": "Native input type (text, email, password, etc.)."
+          },
+          {
+            "name": "value / defaultValue",
+            "type": "string",
+            "description": "Controlled or uncontrolled field value."
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "description": "Empty-state hint text."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Non-interactive field."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles. Base styles use data-df=\"input\"."
+          },
+          {
+            "name": "…input attributes",
+            "type": "ComponentProps<\"input\">",
+            "description": "All native input props (name, required, onChange, etc.)."
+          }
+        ]
+      },
+      {
+        "id": "input-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--input",
+            "type": "CSS color",
+            "description": "Field border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Fallback border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--ring",
+            "type": "CSS color",
+            "description": "Focus ring color.",
+            "default": "var(--df-neutral-400)"
+          },
+          {
+            "name": "--background",
+            "type": "CSS color",
+            "description": "Field fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Text color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--destructive",
+            "type": "CSS color",
+            "description": "Invalid state border.",
+            "default": "oklch(0.577 0.245 27.325)"
+          },
+          {
+            "name": "--spacing-unit",
+            "type": "CSS length",
+            "description": "Base unit for padding.",
+            "default": "0.25rem"
+          },
+          {
+            "name": "--df-corner-shape",
+            "type": "CSS corner-shape",
+            "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
+            "default": "var(--df-corner-shape-round)"
+          }
+        ]
+      }
+    ]
+  }
+}

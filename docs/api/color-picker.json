@@ -1,0 +1,105 @@
+{
+  "name": "color-picker",
+  "slug": "color-picker",
+  "title": "Color Picker",
+  "description": "Pill swatch trigger with hex or clear trailing, and channel editors in a popover.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation",
+    "input",
+    "popover",
+    "tabs"
+  ],
+  "importPath": "@default-file/ui/components/df-color-picker",
+  "dependencies": [],
+  "api": {
+    "description": "Pill swatch trigger with optional hex or clear trailing, and channel editors in a popover.",
+    "groups": [
+      {
+        "id": "color-picker",
+        "title": "ColorPicker",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "description": "Current color as a hex string (required)."
+          },
+          {
+            "name": "onChange",
+            "type": "(hex: string) => void",
+            "description": "Called when the color changes (required)."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "default": "\"Pick color\"",
+            "description": "Accessible name for the swatch trigger."
+          },
+          {
+            "name": "trailing",
+            "type": "\"hex\" | \"clear\"",
+            "description": "Optional trailing control: show hex text, or a clear action."
+          },
+          {
+            "name": "onClear",
+            "type": "() => void",
+            "description": "Required when trailing is \"clear\"."
+          },
+          {
+            "name": "clearLabel",
+            "type": "string",
+            "default": "\"Remove color\"",
+            "description": "Accessible label for the clear control."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the root."
+          }
+        ]
+      },
+      {
+        "id": "color-picker-layout",
+        "title": "Layout & appearance",
+        "props": [
+          {
+            "name": "Popover editors",
+            "type": "internal UI",
+            "description": "Opened panel supports hex, rgb, hsl, and hsb channel modes (not separate props)."
+          }
+        ]
+      },
+      {
+        "id": "color-picker-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-color-picker-width",
+            "type": "CSS length",
+            "description": "Popover panel width.",
+            "default": "300px"
+          },
+          {
+            "name": "--df-color-picker-height",
+            "type": "CSS length",
+            "description": "Popover panel height.",
+            "default": "220px"
+          },
+          {
+            "name": "--df-shadow-picker-thumb",
+            "type": "CSS shadow",
+            "description": "Ring around the channel thumb.",
+            "default": "0 0 0 1px rgb(0 0 0 / 0.45)"
+          },
+          {
+            "name": "--df-corner-shape",
+            "type": "CSS corner-shape",
+            "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
+            "default": "var(--df-corner-shape-round)"
+          }
+        ]
+      }
+    ]
+  }
+}

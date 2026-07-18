@@ -1,0 +1,212 @@
+#!/usr/bin/env node
+/**
+ * Smoke tests for discovery CLI helpers and MCP tool wiring.
+ * Run: npm run test:discovery
+ */
+import assert from "node:assert/strict"
+import { spawn } from "node:child_process"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+import { Client } from "@modelcontextprotocol/sdk/client/index.js"
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
+
+import {
+  checkCoverage,
+  kitSummary,
+  listComponents,
+  listTokens,
+  searchKit,
+  showComponent,
+} from "./discover.mjs"
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
+const BIN = path.join(ROOT, "bin/default-file-ui.mjs")
+
+function section(title) {
+  console.log(`\n== ${title} ==`)
+}
+
+async function testHelpers() {
+  section("helpers")
+  const summary = kitSummary()
+  assert.ok(summary.uiCount >= 20, "expected many UI items")
+  assert.ok(summary.totalProps >= 500, `expected rich props, got ${summary.totalProps}`)
+  console.log(`summary: ${summary.uiCount} ui, ${summary.totalProps} props`)
+
+  const items = listComponents()
+  assert.ok(items.some((i) => i.name === "button"))
+  assert.ok(items.some((i) => i.name === "foundation"))
+
+  const button = showComponent("button")
+  assert.ok(button, "button detail")
+  assert.ok(button.api?.groups?.length > 0, "button api groups")
+  const propNames = button.api.groups.flatMap((g) => g.props.map((p) => p.name))
+  for (const required of ["variant", "size", "leading", "trailing", "disabled"]) {
+    assert.ok(propNames.includes(required), `button missing prop ${required}`)
+  }
+  console.log(`button props: ${propNames.length}`)
+
+  const select = showComponent("select")
+  const selectProps = select.api.groups.flatMap((g) => g.props)
+  assert.ok(selectProps.length >= 20, `select props too thin: ${selectProps.length}`)
+  console.log(`select props: ${selectProps.length}`)
+
+  const search = searchKit("toast")
+  assert.ok(search.some((r) => r.name === "toast"))
+
+  const cover = checkCoverage("settings form with select, switch, and toast")
+  assert.equal(cover.status, "covered")
+  assert.ok(cover.matched.some((m) => m.name === "select"))
+  assert.ok(cover.matched.some((m) => m.name === "switch"))
+  assert.ok(cover.matched.some((m) => m.name === "toast"))
+  assert.ok(cover.matched.some((m) => m.name === "input"))
+  assert.ok(
+    cover.matched.length <= 12,
+    `cover matched too many items: ${cover.matched.length}`
+  )
+  console.log(`cover: ${cover.status} (${cover.matched.length} matches)`)
+
+  const gap = checkCoverage("data table with pagination")
+  assert.ok(gap.status === "partial" || gap.status === "gap")
+  assert.ok(gap.gaps.length > 0)
+  console.log(`gap cover: ${gap.status}, gaps=${gap.gaps.length}`)
+
+  const tokens = listTokens()
+  assert.ok(tokens.tokenCount > 50)
+  console.log(`tokens: ${tokens.tokenCount} across ${tokens.groupCount} groups`)
+}
+
+async function testCliJson() {
+  section("cli --json")
+  const result = await runCli(["show", "button", "--json"])
+  const data = JSON.parse(result.stdout)
+  assert.equal(data.name, "button")
+  assert.ok(data.api.groups.length > 0)
+  console.log("df-ui show button --json ok")
+
+  const list = await runCli(["list", "--json"])
+  const listData = JSON.parse(list.stdout)
+  assert.ok(listData.items.length >= 20)
+  console.log(`df-ui list --json ok (${listData.items.length} items)`)
+}
+
+function runCli(args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [BIN, ...args], {
+      cwd: ROOT,
+      env: process.env,
+    })
+    let stdout = ""
+    let stderr = ""
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk
+    })
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk
+    })
+    child.on("error", reject)
+    child.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(`CLI failed (${code}): ${stderr || stdout}`))
+        return
+      }
+      resolve({ stdout, stderr })
+    })
+  })
+}
+
+async function testMcp() {
+  section("mcp tools")
+  const transport = new StdioClientTransport({
+    command: process.execPath,
+    args: [BIN, "mcp"],
+    cwd: ROOT,
+    stderr: "pipe",
+  })
+  const client = new Client({ name: "df-ui-test", version: "0.0.0" })
+  await client.connect(transport)
+
+  try {
+    const tools = await client.listTools()
+    const names = tools.tools.map((t) => t.name).sort()
+    for (const required of [
+      "list_components",
+      "get_component",
+      "list_tokens",
+      "search_kit",
+      "check_coverage",
+      "get_docs",
+      "init_project",
+      "add_components",
+    ]) {
+      assert.ok(names.includes(required), `missing tool ${required}`)
+    }
+    console.log(`tools: ${names.join(", ")}`)
+
+    const listed = await client.callTool({
+      name: "list_components",
+      arguments: {},
+    })
+    const listPayload = JSON.parse(listed.content[0].text)
+    assert.ok(listPayload.items.length >= 20)
+
+    const component = await client.callTool({
+      name: "get_component",
+      arguments: { name: "button" },
+    })
+    const detail = JSON.parse(component.content[0].text)
+    const props = detail.api.groups.flatMap((g) => g.props)
+    assert.ok(props.some((p) => p.name === "variant"))
+    assert.ok(props.every((p) => p.name && p.type && p.description != null))
+    console.log(`mcp get_component button: ${props.length} props with types`)
+
+    // Every UI component with API metadata must return props
+    const uiNames = listPayload.items
+      .filter((i) => i.type === "registry:ui")
+      .map((i) => i.name)
+    let withProps = 0
+    let totalProps = 0
+    for (const name of uiNames) {
+      const res = await client.callTool({
+        name: "get_component",
+        arguments: { name },
+      })
+      const body = JSON.parse(res.content[0].text)
+      const count = (body.api?.groups ?? []).reduce(
+        (n, g) => n + (g.props?.length ?? 0),
+        0
+      )
+      if (count > 0) {
+        withProps += 1
+        totalProps += count
+      }
+    }
+    assert.equal(withProps, uiNames.length, "every UI item should expose props")
+    console.log(
+      `mcp prop sweep: ${withProps}/${uiNames.length} components, ${totalProps} props total`
+    )
+
+    const coverage = await client.callTool({
+      name: "check_coverage",
+      arguments: { need: "settings form with select and toast" },
+    })
+    const cover = JSON.parse(coverage.content[0].text)
+    assert.ok(["covered", "partial"].includes(cover.status))
+    console.log(`mcp check_coverage: ${cover.status}`)
+  } finally {
+    await client.close()
+  }
+}
+
+async function main() {
+  await testHelpers()
+  await testCliJson()
+  await testMcp()
+  console.log("\nAll discovery/MCP smoke tests passed.\n")
+}
+
+main().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})

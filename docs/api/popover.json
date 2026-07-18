@@ -1,0 +1,159 @@
+{
+  "name": "popover",
+  "slug": "popover",
+  "title": "Popover",
+  "description": "Anchored floating panels for short content.",
+  "chapter": "overlays",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-popover",
+  "dependencies": [],
+  "api": {
+    "description": "Anchored floating panel. Compose Popover, PopoverTrigger, PopoverContent, and optional header parts.",
+    "groups": [
+      {
+        "id": "popover",
+        "title": "Popover",
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when open state changes."
+          }
+        ]
+      },
+      {
+        "id": "popover-trigger",
+        "title": "PopoverTrigger",
+        "props": [
+          {
+            "name": "render",
+            "type": "ReactElement",
+            "description": "Host element that toggles the popover."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger content when not using render."
+          }
+        ]
+      },
+      {
+        "id": "popover-content",
+        "title": "PopoverContent",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"bottom\"",
+            "description": "Preferred placement side."
+          },
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\"",
+            "default": "\"center\"",
+            "description": "Alignment along the side."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "4",
+            "description": "Gap between trigger and panel."
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "description": "Shift along the alignment axis."
+          },
+          {
+            "name": "matchTriggerWidth",
+            "type": "boolean",
+            "default": "false",
+            "description": "Lock the panel to the trigger width. Off by default: the panel sizes to its own content (className width) while staying at least as wide as the trigger."
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "description": "When false, render the panel inline (docs demos). Default portals to document.body."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the panel."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Panel body."
+          }
+        ]
+      },
+      {
+        "id": "popover-chrome",
+        "title": "Header parts",
+        "description": "Optional semantic wrappers inside PopoverContent.",
+        "props": [
+          {
+            "name": "PopoverHeader",
+            "type": "div attrs",
+            "description": "Header region wrapper."
+          },
+          {
+            "name": "PopoverTitle",
+            "type": "h2 attrs",
+            "description": "Title text."
+          },
+          {
+            "name": "PopoverDescription",
+            "type": "p attrs",
+            "description": "Supporting description."
+          }
+        ]
+      },
+      {
+        "id": "popover-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-popover-width",
+            "type": "CSS length",
+            "description": "Default panel width.",
+            "default": "18rem"
+          },
+          {
+            "name": "--popover",
+            "type": "CSS color",
+            "description": "Panel fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--popover-foreground",
+            "type": "CSS color",
+            "description": "Panel text color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Panel border.",
+            "default": "var(--df-neutral-100)"
+          }
+        ]
+      }
+    ]
+  }
+}

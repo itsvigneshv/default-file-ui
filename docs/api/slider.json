@@ -1,0 +1,104 @@
+{
+  "name": "slider",
+  "slug": "slider",
+  "title": "Slider",
+  "description": "Continuous value selection along a track.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-slider",
+  "dependencies": [],
+  "api": {
+    "description": "Continuous value selection along a track.",
+    "groups": [
+      {
+        "id": "slider",
+        "title": "Slider",
+        "props": [
+          {
+            "name": "min",
+            "type": "number",
+            "default": "0",
+            "description": "Minimum value."
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "default": "100",
+            "description": "Maximum value."
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "default": "1",
+            "description": "Increment between values."
+          },
+          {
+            "name": "value",
+            "type": "number[]",
+            "description": "Controlled value as an array (single thumb uses one entry)."
+          },
+          {
+            "name": "defaultValue",
+            "type": "number[]",
+            "default": "[min]",
+            "description": "Uncontrolled initial value."
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: number[]) => void",
+            "description": "Called when the value changes."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Non-interactive slider."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the root."
+          }
+        ]
+      },
+      {
+        "id": "slider-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--primary",
+            "type": "CSS color",
+            "description": "Filled track and thumb.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--muted",
+            "type": "CSS color",
+            "description": "Unfilled track.",
+            "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Thumb border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--ring",
+            "type": "CSS color",
+            "description": "Focus ring color.",
+            "default": "var(--df-neutral-400)"
+          },
+          {
+            "name": "--spacing-unit",
+            "type": "CSS length",
+            "description": "Base unit for thumb size and offsets.",
+            "default": "0.25rem"
+          }
+        ]
+      }
+    ]
+  }
+}

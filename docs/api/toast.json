@@ -1,0 +1,122 @@
+{
+  "name": "toast",
+  "slug": "toast",
+  "title": "Toast",
+  "description": "Transient messages with tone and screen position.",
+  "chapter": "feedback",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-toast",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Transient messages. Call toast helpers from code and mount Toaster once in the app shell.",
+    "groups": [
+      {
+        "id": "toast-api",
+        "title": "Helpers",
+        "description": "Imperative helpers for showing and dismissing toasts.",
+        "props": [
+          {
+            "name": "toast.success",
+            "type": "(message: string) => string",
+            "description": "Show a success toast; returns an id."
+          },
+          {
+            "name": "toast.error",
+            "type": "(message: string) => string",
+            "description": "Show an error toast."
+          },
+          {
+            "name": "toast.info",
+            "type": "(message: string) => string",
+            "description": "Show an info toast."
+          },
+          {
+            "name": "toast.warning",
+            "type": "(message: string) => string",
+            "description": "Show a warning toast."
+          },
+          {
+            "name": "toast.dismiss",
+            "type": "(id?: string) => void",
+            "description": "Dismiss one toast by id, or all when omitted."
+          },
+          {
+            "name": "setToastPosition",
+            "type": "(position: ToastPosition) => void",
+            "description": "Globally update where new toasts appear."
+          }
+        ]
+      },
+      {
+        "id": "toaster",
+        "title": "Toaster",
+        "props": [
+          {
+            "name": "position",
+            "type": "\"top-left\" | \"top-center\" | \"top-right\" | \"bottom-left\" | \"bottom-center\" | \"bottom-right\" | \"top\" | \"bottom\" | …",
+            "default": "\"bottom-right\"",
+            "description": "Screen corner or edge for the stack."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the toaster root."
+          }
+        ]
+      },
+      {
+        "id": "toast-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-toaster-width",
+            "type": "CSS length",
+            "description": "Toast card width.",
+            "default": "22rem"
+          },
+          {
+            "name": "--z-toast",
+            "type": "number",
+            "description": "Stack layer above overlays.",
+            "default": "60"
+          },
+          {
+            "name": "--background",
+            "type": "CSS color",
+            "description": "Toast fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Toast text color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Toast border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--destructive",
+            "type": "CSS color",
+            "description": "Error toast accent.",
+            "default": "oklch(0.577 0.245 27.325)"
+          },
+          {
+            "name": "--df-corner-shape",
+            "type": "CSS corner-shape",
+            "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
+            "default": "var(--df-corner-shape-round)"
+          }
+        ]
+      }
+    ]
+  }
+}

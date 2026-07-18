@@ -1,0 +1,75 @@
+{
+  "name": "number-slider",
+  "slug": "number-slider",
+  "title": "Number Slider",
+  "description": "Labeled slider with a live numeric readout.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation",
+    "label",
+    "slider"
+  ],
+  "importPath": "@default-file/ui/components/df-number-slider",
+  "dependencies": [],
+  "api": {
+    "description": "Labeled slider with a live numeric readout. Composes Label and Slider.",
+    "groups": [
+      {
+        "id": "number-slider",
+        "title": "NumberSlider",
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "description": "Field label above the slider (required)."
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "description": "Current value (required)."
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "description": "Minimum value (required)."
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "description": "Maximum value (required)."
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "default": "0.01",
+            "description": "Increment between values. Also drives display precision."
+          },
+          {
+            "name": "onChange",
+            "type": "(value: number) => void",
+            "description": "Called when the value changes (required)."
+          }
+        ]
+      },
+      {
+        "id": "number-slider-tokens",
+        "title": "Tokens",
+        "description": "Composes Label and Slider. See those components for their own token groups.",
+        "props": [
+          {
+            "name": "--spacing-unit",
+            "type": "CSS length",
+            "description": "Base unit for the gap between label, slider, and readout.",
+            "default": "0.25rem"
+          },
+          {
+            "name": "--muted-foreground",
+            "type": "CSS color",
+            "description": "Readout text color.",
+            "default": "var(--df-neutral-500)"
+          }
+        ]
+      }
+    ]
+  }
+}

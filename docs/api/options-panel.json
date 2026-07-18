@@ -1,0 +1,143 @@
+{
+  "name": "options-panel",
+  "slug": "options-panel",
+  "title": "Options Panel",
+  "description": "Anchored panel chrome with titled header and open body/footer slots for tool options.",
+  "chapter": "overlays",
+  "registryDependencies": [
+    "foundation",
+    "popover"
+  ],
+  "importPath": "@default-file/ui/components/df-options-panel",
+  "dependencies": [],
+  "api": {
+    "description": "Anchored options panel chrome with a titled header and open body/footer slots. Compose any sections or actions inside the slots. Nothing is hardcoded.",
+    "groups": [
+      {
+        "id": "options-panel",
+        "title": "OptionsPanel",
+        "description": "Root open state. Same API as Popover.",
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when open state changes."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-trigger",
+        "title": "OptionsPanelTrigger",
+        "props": [
+          {
+            "name": "render",
+            "type": "ReactElement",
+            "description": "Host element that toggles the panel."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger content when not using render."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-content",
+        "title": "OptionsPanelContent",
+        "description": "Panel shell with options chrome defaults (content-sized width, end align, bottom side).",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"bottom\"",
+            "description": "Preferred placement side."
+          },
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\"",
+            "default": "\"end\"",
+            "description": "Alignment along the side."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "8",
+            "description": "Gap between trigger and panel."
+          },
+          {
+            "name": "matchTriggerWidth",
+            "type": "boolean",
+            "default": "false",
+            "description": "Lock the panel to the trigger width. Off by default so the panel sizes to its content."
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "description": "When false, render the panel inline (docs demos). Default portals to document.body."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Override or extend the panel chrome styles."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Compose OptionsPanelHeader, OptionsPanelBody, and OptionsPanelFooter."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-slots",
+        "title": "Header, body, and footer slots",
+        "description": "Pure layout regions. Put any controls in body; any actions or meta in footer.",
+        "props": [
+          {
+            "name": "OptionsPanelHeader",
+            "type": "div attrs",
+            "description": "Header region with bottom border. Usually wraps the title."
+          },
+          {
+            "name": "OptionsPanelTitle",
+            "type": "h2 attrs",
+            "description": "Panel title text."
+          },
+          {
+            "name": "OptionsPanelBody",
+            "type": "div attrs",
+            "description": "Scrollable body slot. Fully swappable for sections, selects, and custom nodes."
+          },
+          {
+            "name": "OptionsPanelFooter",
+            "type": "div attrs",
+            "description": "Footer slot with top border. Fully swappable for buttons, status, and meta."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-options-panel-max-height",
+            "type": "CSS length",
+            "description": "Maximum panel height before scrolling.",
+            "default": "520px"
+          }
+        ]
+      }
+    ]
+  }
+}

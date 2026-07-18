@@ -1,0 +1,62 @@
+{
+  "name": "label",
+  "slug": "label",
+  "title": "Label",
+  "description": "Accessible labels for form controls.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-label",
+  "dependencies": [],
+  "api": {
+    "description": "Accessible label for form controls.",
+    "groups": [
+      {
+        "id": "label",
+        "title": "Label",
+        "props": [
+          {
+            "name": "htmlFor",
+            "type": "string",
+            "description": "Id of the labeled control."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Label text or content."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          },
+          {
+            "name": "…label attributes",
+            "type": "ComponentProps<\"label\">",
+            "description": "All native label props."
+          }
+        ]
+      },
+      {
+        "id": "label-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Label text color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--muted-foreground",
+            "type": "CSS color",
+            "description": "Disabled label text color.",
+            "default": "var(--df-neutral-500)"
+          }
+        ]
+      }
+    ]
+  }
+}

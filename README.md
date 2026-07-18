@@ -30,9 +30,53 @@ Inspect the detected framework and `df.json`:
 npx --yes -p github:itsvigneshv/default-file-ui#main df-ui info
 ```
 
+Discover the kit (human or agent):
+
+```bash
+df-ui list --json
+df-ui show button --json
+df-ui search "toast select" --json
+df-ui cover "settings form with select, switch, and toast" --json
+df-ui tokens --group radius --json
+df-ui docs overview
+```
+
+`show` returns full prop tables from `docs/api` (name, type, default, description).
+
 Commands honor the active package manager. With pnpm, yarn, or bun use the
 matching runner (`pnpm dlx`, `yarn dlx`, `bunx`). Pass `--color-scale compact`
 to `init` to record a compact scale in `df.json`.
+
+## MCP for AI hosts
+
+Stdio MCP so any MCP-capable host can inspect and install the kit:
+
+```bash
+df-ui mcp
+```
+
+Example host config:
+
+```json
+{
+  "mcpServers": {
+    "default-file-ui": {
+      "command": "npx",
+      "args": [
+        "--yes",
+        "-p",
+        "github:itsvigneshv/default-file-ui#main",
+        "df-ui",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+Tools: `list_components`, `get_component`, `list_tokens`, `search_kit`, `check_coverage`, `get_docs`, `init_project`, `add_components`.
+
+Agent brief: [docs/agents.md](./docs/agents.md).
 
 ## Install (package)
 
@@ -61,6 +105,12 @@ Root `registry.json` lists installable items. Built payloads live under `public/
 Install path for registry consumers that accept a GitHub source:
 
 `itsvigneshv/default-file-ui/<item>`
+
+Machine-readable prop docs for agents live under `docs/api/`. Catalogue chapter metadata is in `docs/catalog.json`.
+
+## One kit path
+
+Components, tokens, and owned CSS ship together. For Default File UI surfaces, prefer this package (or `df-ui add` copy-source) instead of combining a separate styling stack with a separate component kit.
 
 ## Color scale modes
 
