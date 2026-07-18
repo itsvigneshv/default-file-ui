@@ -568,7 +568,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-inline-end: -0.125rem;
+  margin-inline-end: var(--df-badge-dismiss-inset);
   padding: 0;
   border: 0;
   border-radius: var(--radius-full);
@@ -3716,7 +3716,7 @@
   );
   --df-border-glow-glow-pad: var(
     --df-border-glow-glow-radius-local,
-    var(--df-border-glow-glow-radius, 2.5rem)
+    var(--df-border-glow-glow-radius)
   );
   --df-border-glow-cone: var(
     --df-border-glow-cone-spread-local,
@@ -3742,7 +3742,7 @@
   background: var(--df-border-glow-face);
   background-clip: padding-box;
   box-shadow: var(--df-shadow-stage-sm);
-  transform: translate3d(0, 0, 0.01px);
+  transform: translate3d(0, 0, var(--df-layer-promote-z));
 }
 
 .df-border-glow[data-variant="light"] {
@@ -3925,10 +3925,7 @@
 }
 
 .df-border-glow[data-bloom="false"] > .df-border-glow-edge-light {
-  --df-border-glow-outline-outset: var(
-    --df-border-glow-outline-offset,
-    calc(0.5 * var(--spacing-unit, 0.25rem))
-  );
+  --df-border-glow-outline-outset: var(--df-border-glow-outline-offset);
   inset: calc(var(--df-border-glow-outline-outset) * -1);
   border-radius: calc(
     var(--df-border-glow-radius-used) + var(--df-border-glow-outline-outset)
@@ -3968,11 +3965,12 @@
   box-shadow: none;
 }
 
+.df-border-glow[data-trace="true"] {
+  --df-border-glow-outline-offset: var(--df-border-glow-trace-outline-offset);
+}
+
 .df-border-glow[data-trace="true"] > .df-border-glow-edge-light {
-  --df-border-glow-outline-outset: var(
-    --df-border-glow-outline-offset,
-    calc(0.5 * var(--spacing-unit, 0.25rem))
-  );
+  --df-border-glow-outline-outset: var(--df-border-glow-outline-offset);
   inset: calc(var(--df-border-glow-outline-outset) * -1);
   border-radius: calc(
     var(--df-border-glow-radius-used) + var(--df-border-glow-outline-outset)

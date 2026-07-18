@@ -77,8 +77,8 @@
           {
             "name": "glowRadius",
             "type": "number",
-            "default": "15",
-            "description": "How far the soft outer bloom extends beyond the card in pixels."
+            "default": "var(--df-border-glow-glow-radius)",
+            "description": "How far the soft outer bloom extends beyond the card in pixels. Omit to use --df-border-glow-glow-radius."
           },
           {
             "name": "glowIntensity",
@@ -150,14 +150,14 @@
           {
             "name": "outlineOffset",
             "type": "number",
-            "default": "12",
-            "description": "Gap in pixels between the card edge and the outer hairline."
+            "default": "var(--df-border-glow-trace-outline-offset)",
+            "description": "Gap in pixels between the card edge and the outer hairline. Omit in trace mode to use --df-border-glow-trace-outline-offset."
           },
           {
             "name": "outlineWidth",
             "type": "number",
-            "default": "1",
-            "description": "Thickness in pixels of the outer hairline."
+            "default": "var(--df-border-glow-outline-width)",
+            "description": "Thickness in pixels of the outer hairline. Omit to use --df-border-glow-outline-width."
           },
           {
             "name": "followDuration",
@@ -218,13 +218,19 @@
             "name": "--df-border-glow-glow-radius",
             "type": "length",
             "description": "Theme default for glowRadius.",
-            "default": "15px"
+            "default": "calc(3.75 * var(--spacing-unit))"
           },
           {
             "name": "--df-border-glow-outline-offset",
             "type": "length",
-            "description": "Gap between the card edge and the outer hairline in trace mode.",
+            "description": "Gap between the card edge and the outer outline when bloom is off.",
             "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-border-glow-trace-outline-offset",
+            "type": "length",
+            "description": "Gap between the card edge and the outer hairline in trace mode.",
+            "default": "calc(3 * var(--spacing-unit))"
           },
           {
             "name": "--df-border-glow-outline-width",

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-18T13:56:36.650Z",
-  "source": "ux-tools/src/lib/ui-docs",
+  "generatedAt": "2026-07-18T16:43:51.266Z",
+  "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -31,7 +31,7 @@
       ],
       "importPath": "@default-file/ui/components/df-border-glow",
       "dependencies": [],
-      "propCount": 49
+      "propCount": 50
     },
     {
       "slug": "button",

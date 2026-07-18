@@ -139,6 +139,7 @@ function buildCoverTerms(name, title, chapter) {
   return [...terms]
 }
 
+/** List registry items, optionally filtered by type or chapter. */
 export function listComponents({ type, chapter } = {}) {
   const { items } = loadBundle()
   return items.filter((item) => {
@@ -148,12 +149,14 @@ export function listComponents({ type, chapter } = {}) {
   })
 }
 
+/** Load prop API JSON for a registry item, or null when missing. */
 export function loadComponentApi(name) {
   const slug = name
   if (!kitFileExists("docs", "api", `${slug}.json`)) return null
   return readKitJson("docs", "api", `${slug}.json`)
 }
 
+/** Registry item plus prop API when docs/api/<name>.json exists. */
 export function showComponent(name) {
   const { byName } = loadBundle()
   const item = byName.get(name)
@@ -166,6 +169,7 @@ export function showComponent(name) {
   }
 }
 
+/** Ranked keyword search over names, titles, descriptions, and tags. */
 export function searchKit(query, { limit = 20 } = {}) {
   const q = String(query ?? "").trim().toLowerCase()
   if (!q) return []
@@ -239,6 +243,7 @@ function matchNeedToItems(needText, items) {
   })
 }
 
+/** Coverage report for a free-text UI need (covered, partial, or gap). */
 export function checkCoverage(need) {
   const query = String(need ?? "").trim()
   const { items, byName } = loadBundle()
@@ -247,17 +252,14 @@ export function checkCoverage(need) {
 
   for (const rule of NEED_SYNONYMS) {
     if (!rule.patterns.test(query)) continue
-    const already = rule.related.some((name) => matched.some((m) => m.name === name))
-    if (!already || rule.gap) {
-      // Always record specialty gaps when the pattern hits and no dedicated item exists
-      const dedicatedMissing = !items.some((item) => rule.patterns.test(item.name))
-      if (dedicatedMissing) {
-        gaps.push({
-          need: rule.gap,
-          suggestion: rule.suggestion,
-          related: rule.related.filter((name) => byName.has(name)),
-        })
-      }
+    // Record a gap when the need matches and the kit has no dedicated item.
+    const dedicatedMissing = !items.some((item) => rule.patterns.test(item.name))
+    if (dedicatedMissing) {
+      gaps.push({
+        need: rule.gap,
+        suggestion: rule.suggestion,
+        related: rule.related.filter((name) => byName.has(name)),
+      })
     }
   }
 
@@ -295,6 +297,7 @@ export function checkCoverage(need) {
   }
 }
 
+/** Install, MCP, tokens, and foundation guidance shipped with the kit. */
 export function getDocs(topic = "overview") {
   const key = String(topic || "overview").toLowerCase()
   const docs = {
@@ -360,6 +363,7 @@ export function getDocs(topic = "overview") {
   }
 }
 
+/** High-level kit inventory for agents (counts, chapters, prop totals). */
 export function kitSummary() {
   const { items, apiIndex } = loadBundle()
   const ui = items.filter((i) => i.type === "registry:ui")
@@ -377,6 +381,7 @@ export function kitSummary() {
   }
 }
 
+/** Parse token CSS into grouped name lists for df-ui tokens. */
 export function parseTokenIndex() {
   const tokensPath = kitPath("src", "css", "df-tokens.css")
   const scalesPath = kitPath("src", "css", "df-color-scales.css")
@@ -449,13 +454,14 @@ function tokenGroup(name) {
   return "other"
 }
 
+/** Token inventory by group. Pass includeTokens or a group to expand names. */
 export function listTokens({ group, includeTokens = false } = {}) {
   const index = parseTokenIndex()
   const filtered = group
     ? index.groups.filter((g) => g.group === group)
     : index.groups
-  // Full token arrays are large (color scales). Default to names only when a
-  // group is selected, or when includeTokens is true.
+  // Full token arrays are large (color scales). Expand when a group is selected
+  // or when includeTokens is true.
   const expand = Boolean(group) || includeTokens
   return {
     source: index.source,

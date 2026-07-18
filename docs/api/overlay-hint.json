@@ -48,7 +48,7 @@
             "name": "size",
             "type": "\"sm\" | \"md\"",
             "default": "\"md\"",
-            "description": "Marquee density only. md is the default chip. sm tightens padding, uses text-11 type, and shrinks the trailing control for compact chrome such as a home hero. Ignored on default and muted."
+            "description": "Marquee density only. md is the default chip. sm tightens padding, uses text-11 type, and shrinks the trailing control for compact tool chrome. Ignored on default and muted."
           },
           {
             "name": "action",

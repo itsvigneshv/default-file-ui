@@ -128,7 +128,7 @@ function meshLayersFromColors(colors: string[]): Record<string, string> {
   for (const blob of MESH_BLOBS) {
     const color = colors[Math.min(blob.stop, last)]!
     layers[blob.varName] =
-      `radial-gradient(at ${blob.at}, ${color} 0px, transparent 50%)`
+      `radial-gradient(at ${blob.at}, ${color} 0%, transparent 50%)`
   }
   layers["--df-border-glow-g-base"] = `linear-gradient(${colors[0]} 0 100%)`
   return layers
@@ -279,7 +279,7 @@ function BorderGlow({
   strokeColor,
   borderRadius,
   cornerShape,
-  glowRadius = 15,
+  glowRadius,
   glowIntensity = 0.8,
   coneSpread,
   animated = false,
@@ -314,8 +314,6 @@ function BorderGlow({
   const resolvedCone = coneSpread ?? (trace ? 20 : 5)
   const resolvedFollow = followDuration ?? (trace ? 0.5 : 0)
   const resolvedReveal = revealDuration ?? (trace ? 0.7 : 0)
-  const resolvedOffset = outlineOffset ?? (trace ? 12 : undefined)
-  const resolvedWidth = outlineWidth ?? (trace ? 1 : undefined)
   const resolvedArcFade = clamp01(arcFade ?? (trace ? 0.75 : 0))
   const fullArcDeg = resolvedCone * 3.6
   const face =
@@ -521,19 +519,21 @@ function BorderGlow({
           "--df-border-glow-bg-local": face,
           "--df-border-glow-stroke-used": stroke,
           "--df-border-glow-edge-sensitivity": edgeSensitivity,
-          "--df-border-glow-glow-radius-local": `${glowRadius}px`,
           "--df-border-glow-cone-spread-local": resolvedCone,
           "--df-border-glow-fill-opacity-local": wash,
           "--df-border-glow-trace": 0,
           "--df-border-glow-trace-arc": "0deg",
+          ...(glowRadius != null
+            ? { "--df-border-glow-glow-radius-local": `${glowRadius}px` }
+            : null),
           ...(borderRadius != null
             ? { "--df-border-glow-radius-local": `${borderRadius}px` }
             : null),
-          ...(resolvedOffset != null
-            ? { "--df-border-glow-outline-offset": `${resolvedOffset}px` }
+          ...(outlineOffset != null
+            ? { "--df-border-glow-outline-offset": `${outlineOffset}px` }
             : null),
-          ...(resolvedWidth != null
-            ? { "--df-border-glow-outline-width": `${resolvedWidth}px` }
+          ...(outlineWidth != null
+            ? { "--df-border-glow-outline-width": `${outlineWidth}px` }
             : null),
           ...(trace
             ? { "--df-border-glow-trace-fade": resolvedArcFade }

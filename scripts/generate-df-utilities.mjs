@@ -219,7 +219,7 @@ function sizeValue(val) {
   if (val === "svh") return "100svh"
   if (val === "dvh") return "100dvh"
   if (val === "screen") return "100vh"
-  if (val === "px") return "1px"
+  if (val === "px") return "var(--spacing-px)"
   return null
 }
 
@@ -275,10 +275,10 @@ function declsFor(utility) {
     "w-full": { width: "100%" },
     "w-fit": { width: "fit-content" },
     "w-auto": { width: "auto" },
-    "w-px": { width: "1px" },
+    "w-px": { width: "var(--spacing-px)" },
     "h-full": { height: "100%" },
     "h-auto": { height: "auto" },
-    "h-px": { height: "1px" },
+    "h-px": { height: "var(--spacing-px)" },
     "size-full": { width: "100%", height: "100%" },
     relative: { position: "relative" },
     absolute: { position: "absolute" },
@@ -346,16 +346,40 @@ function declsFor(utility) {
     "tabular-nums": { "font-variant-numeric": "tabular-nums" },
     underline: { "text-decoration-line": "underline" },
     "no-underline": { "text-decoration-line": "none" },
-    "underline-offset-2": { "text-underline-offset": "2px" },
-    "underline-offset-3": { "text-underline-offset": "3px" },
-    "underline-offset-4": { "text-underline-offset": "4px" },
-    border: { "border-width": "1px", "border-style": "solid" },
+    "underline-offset-2": {
+      "text-underline-offset": "var(--df-underline-offset-sm)",
+    },
+    "underline-offset-3": {
+      "text-underline-offset": "var(--df-underline-offset-md)",
+    },
+    "underline-offset-4": {
+      "text-underline-offset": "var(--df-underline-offset)",
+    },
+    border: {
+      "border-width": "var(--border-width-hairline)",
+      "border-style": "solid",
+    },
     "border-0": { "border-width": "0" },
-    "border-2": { "border-width": "2px", "border-style": "solid" },
-    "border-b": { "border-bottom-width": "1px", "border-bottom-style": "solid" },
-    "border-t": { "border-top-width": "1px", "border-top-style": "solid" },
-    "border-l": { "border-left-width": "1px", "border-left-style": "solid" },
-    "border-r": { "border-right-width": "1px", "border-right-style": "solid" },
+    "border-2": {
+      "border-width": "var(--border-width-thick)",
+      "border-style": "solid",
+    },
+    "border-b": {
+      "border-bottom-width": "var(--border-width-hairline)",
+      "border-bottom-style": "solid",
+    },
+    "border-t": {
+      "border-top-width": "var(--border-width-hairline)",
+      "border-top-style": "solid",
+    },
+    "border-l": {
+      "border-left-width": "var(--border-width-hairline)",
+      "border-left-style": "solid",
+    },
+    "border-r": {
+      "border-right-width": "var(--border-width-hairline)",
+      "border-right-style": "solid",
+    },
     "border-x-0": { "border-left-width": "0", "border-right-width": "0" },
     "border-t-0": { "border-top-width": "0" },
     "border-b-0": { "border-bottom-width": "0" },
@@ -363,17 +387,23 @@ function declsFor(utility) {
     "border-r-0": { "border-right-width": "0" },
     "border-transparent": { "border-color": "transparent" },
     "rounded-none": { "border-radius": "0" },
-    "rounded-full": { "border-radius": "9999px" },
+    "rounded-full": { "border-radius": "var(--radius-full)" },
     "shadow-none": { "box-shadow": "none" },
     "ring-0": { "box-shadow": "0 0 0 0 transparent" },
-    "ring-1": { "box-shadow": "0 0 0 1px var(--df-ring-color, var(--ring))" },
+    "ring-1": {
+      "box-shadow":
+        "0 0 0 var(--ring-width) var(--df-ring-color, var(--ring))",
+    },
     "ring-4": {
       "box-shadow":
-        "0 0 0 4px var(--df-ring-color, color-mix(in oklch, var(--ring) 50%, transparent))",
+        "0 0 0 var(--ring-width-lg) var(--df-ring-color, color-mix(in oklch, var(--ring) 50%, transparent))",
     },
     "outline-none": { outline: "none" },
     "outline-hidden": { outline: "none" },
-    "outline-1": { "outline-width": "1px", "outline-style": "solid" },
+    "outline-1": {
+      "outline-width": "var(--border-width-hairline)",
+      "outline-style": "solid",
+    },
     antialiased: {
       "-webkit-font-smoothing": "antialiased",
       "-moz-osx-font-smoothing": "grayscale",
@@ -611,7 +641,7 @@ function declsFor(utility) {
     if (c)
       return add({
         "--df-ring-color": c,
-        "box-shadow": `0 0 0 1px ${c}`,
+        "box-shadow": `0 0 0 var(--ring-width) ${c}`,
       })
   }
 

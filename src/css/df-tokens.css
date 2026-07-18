@@ -34,7 +34,13 @@
   --border-width-thick: 2px;
   --outline-width: var(--border-width-thick);
   --outline-offset: var(--border-width-hairline);
-  --df-underline-offset: 4px;
+  --ring-width: var(--border-width-hairline);
+  --ring-width-lg: calc(var(--spacing-unit));
+  --df-underline-offset-sm: var(--border-width-thick);
+  --df-underline-offset-md: calc(0.75 * var(--spacing-unit));
+  --df-underline-offset: calc(var(--spacing-unit));
+  --df-layer-promote-z: 0.01px;
+  --df-badge-dismiss-inset: calc(-0.5 * var(--spacing-unit));
 
   --radius: 0.625rem;
   --radius-xxs: calc(var(--radius) * 0.2);
@@ -260,9 +266,10 @@
   );
   --df-border-glow-radius: var(--radius-4xl);
   --df-border-glow-edge-sensitivity: 0;
-  --df-border-glow-glow-radius: 15px;
-  --df-border-glow-outline-offset: calc(0.5 * var(--spacing-unit, 0.25rem));
+  --df-border-glow-glow-radius: calc(3.75 * var(--spacing-unit));
+  --df-border-glow-outline-offset: calc(0.5 * var(--spacing-unit));
   --df-border-glow-outline-width: var(--border-width-hairline);
+  --df-border-glow-trace-outline-offset: calc(3 * var(--spacing-unit));
   --df-border-glow-trace-follow: 0.5;
   --df-border-glow-trace-reveal: 0.7;
   --df-border-glow-trace-fade: 0.75;

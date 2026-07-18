@@ -25,17 +25,17 @@
 }
 
 .border {
-  border-width: 1px;
+  border-width: var(--border-width-hairline);
   border-style: solid;
 }
 
 .border-2 {
-  border-width: 2px;
+  border-width: var(--border-width-thick);
   border-style: solid;
 }
 
 .border-b {
-  border-bottom-width: 1px;
+  border-bottom-width: var(--border-width-hairline);
   border-bottom-style: solid;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .border-t {
-  border-top-width: 1px;
+  border-top-width: var(--border-width-hairline);
   border-top-style: solid;
 }
 
@@ -141,7 +141,7 @@
 }
 
 .h-px {
-  height: 1px;
+  height: var(--spacing-px);
 }
 
 .hover\:bg-neutral-200:hover {
@@ -306,21 +306,21 @@
 }
 
 .ring-1 {
-  box-shadow: 0 0 0 1px var(--df-ring-color, var(--ring));
+  box-shadow: 0 0 0 var(--ring-width) var(--df-ring-color, var(--ring));
 }
 
 .ring-black\/10 {
   --df-ring-color: color-mix(in srgb, var(--df-neutral-1000) 10%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--df-neutral-1000) 10%, transparent);
+  box-shadow: 0 0 0 var(--ring-width) color-mix(in srgb, var(--df-neutral-1000) 10%, transparent);
 }
 
 .ring-border {
   --df-ring-color: var(--border);
-  box-shadow: 0 0 0 1px var(--border);
+  box-shadow: 0 0 0 var(--ring-width) var(--border);
 }
 
 .rounded-full {
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
 }
 
 .rounded-lg {
