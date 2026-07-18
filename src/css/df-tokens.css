@@ -1,4 +1,8 @@
 :root {
+  /* Destructive status colors (red scale). */
+  --df-destructive: var(--df-red-550);
+  --df-destructive-bright: var(--df-red-400);
+
   --background: var(--df-neutral-0);
   --foreground: var(--df-neutral-900);
   --card: var(--df-neutral-0);
@@ -13,12 +17,13 @@
   --muted-foreground: var(--df-neutral-500);
   --accent: var(--df-neutral-50);
   --accent-foreground: var(--df-neutral-850, var(--df-neutral-900));
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: var(--df-destructive);
   --border: var(--df-neutral-100);
   --input: var(--df-neutral-100);
   --ring: var(--df-neutral-400);
 
-  --brand-ink: #0b1220;
+  /* Near-black ink surfaces (neutral scale). */
+  --brand-ink: var(--df-neutral-950);
   --brand-ink-foreground: var(--df-neutral-0);
 
   --chart-1: var(--df-neutral-200);
@@ -220,21 +225,27 @@
   --df-switch-track-height-sm: 14px;
   --df-switch-track-width-sm: 24px;
   --df-scrollbar-thickness: 3px;
+  --df-scrollbar-min-thumb: 24px;
+  --df-scrollbar-min-thumb-edge: 20px;
   --df-tabs-indicator-thickness: var(--border-width-thick);
   --df-color-picker-width: 300px;
   --df-color-picker-height: 220px;
+  /* Fixed #RRGGBB slot so the hex trigger width stays stable while dragging. */
+  --df-color-picker-hex-width: 7ch;
   --df-options-panel-max-height: 520px;
   --df-menu-stacked-max-height: 16rem;
   --df-option-list-min-width: 12rem;
+  --df-option-list-scroll-thumb-gap: calc(1 * var(--spacing-unit));
+  --df-option-list-scroll-track-width: calc(2.5 * var(--spacing-unit));
   --df-shadow-picker-thumb: 0 0 0 1px rgb(0 0 0 / 0.45);
   --df-shadow-dock-chip: 0 1px 2px rgb(0 0 0 / 0.04);
   --df-shadow-stage: 0 0 0 1px rgb(0 0 0 / 0.4), 0 24px 80px rgb(0 0 0 / 0.45);
   --df-shadow-fab: 0 8px 32px rgb(0 0 0 / 0.35);
   --df-shadow-cta: 0 8px 28px -12px rgb(15 23 42 / 0.45);
   --df-shadow-lift: 0 12px 32px -12px rgb(15 23 42 / 0.6);
-  --brand-ink-mid: #152238;
-  --brand-ink-lift: #1c3354;
-  --brand-ink-deep: #121a2c;
+  --brand-ink-mid: var(--df-neutral-900);
+  --brand-ink-lift: var(--df-neutral-800);
+  --brand-ink-deep: var(--df-neutral-980);
 
   --df-shadow-card-soft: 0 1px 0 oklch(0.92 0 0), 0 12px 32px -24px oklch(0.35 0.02 260 / 0.35);
   --df-shadow-card-hover: 0 24px 48px -28px oklch(0.35 0.02 260 / 0.5);
@@ -243,17 +254,12 @@
   --df-shadow-stage-md: 0 24px 60px -20px oklch(0 0 0 / 0.55);
   --df-shadow-stage-lg: 0 28px 70px -24px oklch(0 0 0 / 0.65);
   --home-plane: oklch(0.97 0.005 260);
-  /* Matches public/UX Principle.png stage fill (sampled #fefaf6). */
+  /* Home tool preview stage fills. */
   --home-tool-preview-ux-principles: #fefaf6;
-  /* Matches public/ux-process.png stage fill (sampled #fdf6f1). */
   --home-tool-preview-ux-process: #fdf6f1;
-  /* Matches public/shader-gradient.png stage fill (sampled #fcf6f2). */
   --home-tool-preview-shader-gradient: #fcf6f2;
-  /* Matches public/mesh-gradient.png stage fill (sampled #fcf5f0). */
   --home-tool-preview-mesh-gradient: #fcf5f0;
-  /* Matches public/color-lab.png stage fill (sampled #fcf5f0). */
   --home-tool-preview-color-lab: #fcf5f0;
-  /* Matches public/desing-extractor.png stage fill (sampled #fef7f2). */
   --home-tool-preview-design-extractor: #fef7f2;
   --home-showcase-radius: calc(var(--radius) * 3.4);
   --home-hero-collage-gap: calc(28 * var(--spacing-unit, 0.25rem));
@@ -479,6 +485,21 @@
   --success: oklch(0.55 0.14 145);
   --warning: oklch(0.7 0.14 75);
 
+  /* TextMark wash and stroke defaults. */
+  --df-text-mark-yellow: color-mix(
+    in oklch,
+    var(--df-yellow-green-90) 82%,
+    transparent
+  );
+  --df-text-mark-pink: color-mix(
+    in oklch,
+    var(--df-magenta-200) 68%,
+    transparent
+  );
+  --df-text-mark-blue: var(--df-blue-400);
+  --df-text-mark: var(--df-text-mark-yellow);
+  --df-text-mark-foreground: var(--foreground);
+
   --focus-ring: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
   --focus-ring-lg: 0 0 0 4px color-mix(in oklch, var(--ring) 50%, transparent);
   --focus-ring-error: 0 0 0 3px color-mix(in oklch, var(--destructive) 20%, transparent);
@@ -546,10 +567,7 @@
   --overlay-hint-marquee-duration: 18s;
   --overlay-hint-marquee-gap: calc(4 * var(--spacing-unit, 0.25rem));
   --overlay-hint-marquee-fade: 0.75rem;
-  /*
-   * Mask stops (alpha), not paint colors: opaque = visible, clear = hidden.
-   * Used by fade-edge masks such as Overlay Hint marquee.
-   */
+  /* Mask stops for fade edges (opaque shows, clear hides). */
   --df-mask-opaque: #000;
   --df-mask-clear: transparent;
   --overlay-hint-marquee-mask: linear-gradient(
@@ -623,7 +641,7 @@
   --muted-foreground: var(--df-neutral-400);
   --accent: var(--df-neutral-800);
   --accent-foreground: var(--df-neutral-0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: var(--df-destructive-bright);
   --border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --input: color-mix(in oklch, var(--df-neutral-0) 15%, transparent);
   --ring: var(--df-neutral-500);
@@ -652,4 +670,17 @@
   --sidebar-accent-foreground: var(--df-neutral-0);
   --sidebar-border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --sidebar-ring: var(--df-neutral-500);
+  --df-text-mark-yellow: color-mix(
+    in oklch,
+    var(--df-yellow-green-90) 70%,
+    transparent
+  );
+  --df-text-mark-pink: color-mix(
+    in oklch,
+    var(--df-magenta-350) 50%,
+    transparent
+  );
+  --df-text-mark-blue: var(--df-blue-320);
+  --df-text-mark: var(--df-text-mark-yellow);
+  --df-text-mark-foreground: var(--foreground);
 }

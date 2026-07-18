@@ -2,8 +2,8 @@
   "name": "floating-controls",
   "slug": "floating-controls",
   "title": "Floating Controls",
-  "description": "Modular action bar with configurable slots and dividers for tool chrome.",
-  "chapter": "chrome",
+  "description": "Modular action bar with configurable slots and dividers for toolbars and docks.",
+  "chapter": "toolbars",
   "registryDependencies": [
     "foundation",
     "separator"

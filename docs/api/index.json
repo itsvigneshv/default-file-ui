@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T16:43:51.266Z",
+  "generatedAt": "2026-07-18T19:08:44.981Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -73,7 +73,7 @@
       ],
       "importPath": "@default-file/ui/components/df-color-picker",
       "dependencies": [],
-      "propCount": 12
+      "propCount": 13
     },
     {
       "slug": "content-switcher",
@@ -92,8 +92,8 @@
       "slug": "floating-controls",
       "name": "floating-controls",
       "title": "Floating Controls",
-      "description": "Modular action bar with configurable slots and dividers for tool chrome.",
-      "chapter": "chrome",
+      "description": "Modular action bar with configurable slots and dividers for toolbars and docks.",
+      "chapter": "toolbars",
       "registryDependencies": [
         "foundation",
         "separator"
@@ -158,7 +158,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 92
+      "propCount": 96
     },
     {
       "slug": "options-panel",
@@ -257,7 +257,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 71
+      "propCount": 72
     },
     {
       "slug": "separator",
@@ -290,7 +290,7 @@
       "name": "spectrum-text",
       "title": "Spectrum Text",
       "description": "Inline text with a shifting multi-stop gradient fill from kit color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
-      "chapter": "structure",
+      "chapter": "text",
       "registryDependencies": [
         "foundation"
       ],
@@ -322,7 +322,22 @@
       ],
       "importPath": "@default-file/ui/components/df-tabs",
       "dependencies": [],
-      "propCount": 38
+      "propCount": 39
+    },
+    {
+      "slug": "text-mark",
+      "name": "text-mark",
+      "title": "Text Mark",
+      "description": "Animated hand-drawn marks for inline text: marker wash, sketchy underline, or scribble circle. Configurable shape, color, iterations, padding, and active state.",
+      "chapter": "text",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-text-mark",
+      "dependencies": [
+        "rough-notation"
+      ],
+      "propCount": 25
     },
     {
       "slug": "toast",
@@ -363,7 +378,7 @@
       ],
       "importPath": "@default-file/ui/components/df-tooltip",
       "dependencies": [],
-      "propCount": 20
+      "propCount": 21
     }
   ]
 }

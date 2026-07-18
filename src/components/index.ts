@@ -47,6 +47,9 @@ export type {
   TabsContentProps,
   TabsVariant,
   TabsSize,
+  TabsOrientation,
+  TabsLineSide,
+  TabsLineAlign,
   TabsRadius,
 } from "./df-tabs"
 export {
@@ -186,3 +189,10 @@ export type {
 } from "./df-search-input"
 export { BorderGlow } from "./df-border-glow"
 export type { BorderGlowProps, BorderGlowVariant } from "./df-border-glow"
+export { TextMark } from "./df-text-mark"
+export type {
+  TextMarkProps,
+  TextMarkKind,
+  TextMarkLayer,
+  TextMarkBracketSide,
+} from "./df-text-mark"

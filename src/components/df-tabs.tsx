@@ -13,6 +13,8 @@ type TabsVariant = "pill" | "line" | "segment"
 type TabsSize = "sm" | "default" | "lg"
 type TabsOrientation = "horizontal" | "vertical"
 type TabsLineSide = "top" | "bottom" | "left" | "right"
+/** For the line variant: stretch the divider and group triggers on that side. */
+type TabsLineAlign = "start" | "end"
 type TabsRadius = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "full"
 type TabsSpacing = number | "none"
 
@@ -51,6 +53,7 @@ type TabsContextValue = {
   size: TabsSize
   orientation: TabsOrientation
   lineSide: TabsLineSide
+  lineAlign: TabsLineAlign | undefined
   radius: TabsRadius
   gap: number
   spacing: number
@@ -76,6 +79,7 @@ type TabsProps = Omit<
   size?: TabsSize
   orientation?: TabsOrientation
   lineSide?: TabsLineSide
+  lineAlign?: TabsLineAlign
   radius?: TabsRadius
   cornerShape?: DfCornerShape
   gap?: TabsSpacing
@@ -92,6 +96,7 @@ function Tabs({
   size = "default",
   orientation = "horizontal",
   lineSide,
+  lineAlign,
   radius,
   cornerShape,
   gap,
@@ -108,6 +113,10 @@ function Tabs({
   const baseId = `df-tabs${reactId.replace(/:/g, "")}`
   const resolvedRadius = resolveTabsRadius(variant, orientation, radius)
   const resolvedLineSide = resolveLineSide(orientation, lineSide)
+  const resolvedLineAlign =
+    variant === "line" && (lineAlign === "start" || lineAlign === "end")
+      ? lineAlign
+      : undefined
   const resolvedGap = resolveSpacingUnits(gap, 1.5)
   const resolvedSpacing = resolveSpacingUnits(
     spacing,
@@ -124,6 +133,7 @@ function Tabs({
         size,
         orientation,
         lineSide: resolvedLineSide,
+        lineAlign: resolvedLineAlign,
         radius: resolvedRadius,
         gap: resolvedGap,
         spacing: resolvedSpacing,
@@ -136,6 +146,7 @@ function Tabs({
         data-size={size}
         data-orientation={orientation}
         data-line-side={resolvedLineSide}
+        data-line-align={resolvedLineAlign}
         data-radius={resolvedRadius}
         data-corner-shape={cornerShape}
         data-gap={resolvedGap}
@@ -163,7 +174,8 @@ type TabsListProps = React.HTMLAttributes<HTMLDivElement>
 type IndicatorRect = { left: number; top: number; width: number; height: number }
 
 function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
-  const { variant, size, orientation, lineSide, radius, value } = useTabsContext()
+  const { variant, size, orientation, lineSide, lineAlign, radius, value } =
+    useTabsContext()
   const vertical = orientation === "vertical"
   const listRef = React.useRef<HTMLDivElement>(null)
   const [indicator, setIndicator] = React.useState<IndicatorRect | null>(null)
@@ -195,7 +207,7 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
       .querySelectorAll('[data-df="tabs-trigger"]')
       .forEach((trigger) => observer.observe(trigger))
     return () => observer.disconnect()
-  }, [variant, size, orientation, radius, value])
+  }, [variant, size, orientation, lineAlign, radius, value])
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event)
@@ -238,6 +250,7 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
       data-size={size}
       data-orientation={orientation}
       data-line-side={lineSide}
+      data-line-align={lineAlign}
       data-radius={radius}
       className={cn("df-tabs-list", className)}
       onKeyDown={handleKeyDown}
@@ -250,6 +263,7 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
           data-variant={variant}
           data-orientation={orientation}
           data-line-side={lineSide}
+          data-line-align={lineAlign}
           data-radius={radius}
           className="df-tabs-indicator"
           style={
@@ -299,6 +313,7 @@ function TabsTrigger({
     size,
     orientation,
     lineSide,
+    lineAlign,
     radius,
     baseId,
   } = useTabsContext()
@@ -318,6 +333,7 @@ function TabsTrigger({
       data-size={size}
       data-orientation={orientation}
       data-line-side={lineSide}
+      data-line-align={lineAlign}
       data-radius={radius}
       data-state={selected ? "active" : "inactive"}
       data-leading={leading != null ? "true" : undefined}
@@ -390,6 +406,7 @@ export type {
   TabsSize,
   TabsOrientation,
   TabsLineSide,
+  TabsLineAlign,
   TabsRadius,
   TabsSpacing,
   DfCornerShape,

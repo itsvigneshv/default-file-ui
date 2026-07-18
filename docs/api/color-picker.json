@@ -87,6 +87,12 @@
             "default": "220px"
           },
           {
+            "name": "--df-color-picker-hex-width",
+            "type": "CSS length",
+            "description": "Fixed width for the hex label on the pill trigger so it does not reflow while dragging.",
+            "default": "7ch"
+          },
+          {
             "name": "--df-shadow-picker-thumb",
             "type": "CSS shadow",
             "description": "Ring around the channel thumb.",

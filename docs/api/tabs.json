@@ -38,7 +38,12 @@
             "name": "lineSide",
             "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
             "default": "\"bottom\" (horizontal) / \"right\" (vertical)",
-            "description": "Line variant only: the edge the divider and active indicator sit on. Horizontal accepts top/bottom; vertical accepts left/right. Use left when the list sits to the right of its content so the line faces the panel."
+            "description": "For the line variant only: which edge holds the divider and active indicator. Horizontal layouts accept top or bottom; vertical layouts accept left or right. Prefer left when the list sits to the right of its content so the line faces the panel."
+          },
+          {
+            "name": "lineAlign",
+            "type": "\"start\" | \"end\"",
+            "description": "For the line variant only. Leave unset so the list sizes to its triggers. Choose start or end to stretch the divider across the available width and group the tabs on that side. In a horizontal layout, start places tabs on the left and end places them on the right. In a vertical layout, start places tabs at the top and end places them at the bottom."
           },
           {
             "name": "radius",

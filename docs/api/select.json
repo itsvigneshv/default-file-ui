@@ -300,7 +300,13 @@
             "name": "scrollMaxHeight",
             "type": "string | number",
             "default": "\"min(60vh, 24rem)\"",
-            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem)."
+            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem). When the panel opens, the selected option scrolls into view while list order stays the same."
+          },
+          {
+            "name": "scrollThumbGap",
+            "type": "number",
+            "default": "token (--df-option-list-scroll-thumb-gap)",
+            "description": "Space on each side of the scrollbar thumb, in pixels. Defaults to one spacing unit via --df-option-list-scroll-thumb-gap."
           },
           {
             "name": "footer",

@@ -552,16 +552,29 @@ function OptionListSearch({
   )
 }
 
+type OptionListBodyProps = React.ComponentProps<"div"> & {
+  scrollable?: boolean
+  maxHeight?: string | number
+  /** Space on each side of the scrollbar thumb, in pixels. */
+  scrollThumbGap?: number
+}
+
 function OptionListBody({
   className,
   children,
   scrollable = false,
   maxHeight = "var(--df-menu-stacked-max-height)",
+  scrollThumbGap,
+  style,
   ...props
-}: React.ComponentProps<"div"> & {
-  scrollable?: boolean
-  maxHeight?: string | number
-}) {
+}: OptionListBodyProps) {
+  const gapStyle =
+    scrollThumbGap != null
+      ? ({
+          "--df-option-list-scroll-thumb-gap": `${scrollThumbGap}px`,
+        } as React.CSSProperties)
+      : undefined
+
   if (scrollable) {
     return (
       <div
@@ -569,6 +582,7 @@ function OptionListBody({
         data-scrollable=""
         className={cn("min-h-0", className)}
         {...props}
+        style={{ ...gapStyle, ...style }}
       >
         <ScrollArea visibility="always" style={{ maxHeight }}>
           {children}
@@ -578,7 +592,12 @@ function OptionListBody({
   }
 
   return (
-    <div data-df="option-list-body" className={cn(className)} {...props}>
+    <div
+      data-df="option-list-body"
+      className={cn(className)}
+      {...props}
+      style={style}
+    >
       {children}
     </div>
   )
@@ -611,6 +630,8 @@ type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
   onSearchChange?: (value: string) => void
   scrollable?: boolean
   scrollMaxHeight?: string | number
+  /** Space on each side of the scrollbar thumb, in pixels. */
+  scrollThumbGap?: number
   footer?: React.ReactNode
 }
 
@@ -645,6 +666,7 @@ function OptionListContent({
   onSearchChange,
   scrollable,
   scrollMaxHeight,
+  scrollThumbGap,
   footer,
   ...props
 }: OptionListContentProps) {
@@ -677,6 +699,18 @@ function OptionListContent({
       ? "var(--df-menu-stacked-max-height)"
       : "min(60vh, var(--df-menu-max-height))")
 
+  // Keep list order; when the panel opens, bring the selected option into view.
+  React.useLayoutEffect(() => {
+    if (!open || !mounted) return
+    const root = contentRef.current
+    if (!root) return
+    const selected = root.querySelector<HTMLElement>(
+      '[data-df="option-list-item"][data-state="selected"]'
+    )
+    if (!selected) return
+    selected.scrollIntoView({ block: "nearest", inline: "nearest" })
+  }, [open, mounted])
+
   if (!mounted) {
     return (
       <div hidden aria-hidden data-df="option-list-label-registry">
@@ -694,7 +728,11 @@ function OptionListContent({
   }
 
   const body = (
-    <OptionListBody scrollable={wrapInScrollArea} maxHeight={effectiveMaxHeight}>
+    <OptionListBody
+      scrollable={wrapInScrollArea}
+      maxHeight={effectiveMaxHeight}
+      scrollThumbGap={scrollThumbGap}
+    >
       {children}
     </OptionListBody>
   )
@@ -717,9 +755,11 @@ function OptionListContent({
               ...(alignItemWithTrigger
                 ? null
                 : {
+                    // Hug content; floor at trigger width via --anchor-width.
                     width: "max-content",
+                    minWidth: "var(--anchor-width)",
                     maxWidth:
-                      "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-max-w-sm))",
+                      "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), max(var(--anchor-width), var(--df-max-w-sm)))",
                   }),
             }
           : {
@@ -998,6 +1038,7 @@ export {
   useOptionListContext,
 }
 export type {
+  OptionListBodyProps,
   OptionListContentProps,
   OptionListItemLayout,
   OptionListItemProps,

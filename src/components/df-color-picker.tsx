@@ -522,7 +522,10 @@ export function ColorPicker({
           }
         >
           <SwatchDot value={value} />
-          <span className="text-11 font-semibold uppercase leading-none tabular-nums text-neutral-700">
+          <span
+            className="inline-block shrink-0 font-mono text-11 font-semibold uppercase leading-none text-neutral-700"
+            style={{ width: "var(--df-color-picker-hex-width)" }}
+          >
             {value}
           </span>
         </PopoverTrigger>

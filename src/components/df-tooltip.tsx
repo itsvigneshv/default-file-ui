@@ -11,6 +11,7 @@ import {
 import { cn } from "../lib/utils"
 
 type TooltipVariant = "compact" | "detailed"
+type TooltipAppearance = "light" | "dark" | "inverse"
 type TooltipSide = "top" | "bottom" | "left" | "right"
 type TooltipAlign = "start" | "center" | "end"
 
@@ -22,6 +23,7 @@ type TooltipContextValue = {
   triggerRef: React.RefObject<HTMLElement | null>
   contentId: string
   variant: TooltipVariant
+  appearance: TooltipAppearance
 }
 
 const TooltipContext = React.createContext<TooltipContextValue | null>(null)
@@ -38,6 +40,7 @@ function Tooltip({
   onOpenChange,
   delayDuration = 200,
   variant = "compact",
+  appearance = "inverse",
   children,
 }: {
   open?: boolean
@@ -45,6 +48,8 @@ function Tooltip({
   onOpenChange?: (open: boolean) => void
   delayDuration?: number
   variant?: TooltipVariant
+  /** Panel surface: light, dark, or inverse to the document theme. */
+  appearance?: TooltipAppearance
   children: React.ReactNode
 }) {
   const [isOpen, setOpen] = useControllableState({
@@ -115,6 +120,7 @@ function Tooltip({
         triggerRef,
         contentId,
         variant,
+        appearance,
       }}
     >
       {children}
@@ -197,7 +203,7 @@ function TooltipContent({
   wrap?: boolean
   arrow?: boolean
 }) {
-  const { open, triggerRef, contentId, variant } = useTooltipContext()
+  const { open, triggerRef, contentId, variant, appearance } = useTooltipContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const [present, setPresent] = React.useState(open)
   const style = useAnchoredPosition({
@@ -237,6 +243,7 @@ function TooltipContent({
       role="tooltip"
       data-df="tooltip-content"
       data-variant={variant}
+      data-appearance={appearance}
       data-side={side}
       data-align={align}
       data-state={open ? "open" : "closed"}
@@ -259,4 +266,4 @@ function TooltipContent({
 }
 
 export { Tooltip, TooltipContent, TooltipTrigger }
-export type { TooltipVariant }
+export type { TooltipAppearance, TooltipVariant }

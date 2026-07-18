@@ -23,6 +23,12 @@
             "description": "Content density and typography."
           },
           {
+            "name": "appearance",
+            "type": "\"light\" | \"dark\" | \"inverse\"",
+            "default": "\"inverse\"",
+            "description": "Panel surface color. inverse uses a dark tip on light pages and a light tip on dark pages; light and dark lock one surface."
+          },
+          {
             "name": "open",
             "type": "boolean",
             "description": "Controlled open state."
@@ -30,7 +36,7 @@
           {
             "name": "defaultOpen",
             "type": "boolean",
-            "description": "Uncontrolled initial open state."
+            "description": "Initial open state when uncontrolled."
           },
           {
             "name": "onOpenChange",
@@ -97,7 +103,7 @@
           {
             "name": "wrap",
             "type": "boolean",
-            "description": "Detailed only: wrap text within max width."
+            "description": "For the detailed variant, wrap text within the max width."
           },
           {
             "name": "arrow",

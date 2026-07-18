@@ -12,12 +12,20 @@
   position: absolute;
 }
 
+.align-baseline {
+  vertical-align: baseline;
+}
+
 .bg-border\/50 {
   background-color: color-mix(in oklch, var(--border) 50%, var(--background));
 }
 
 .bg-neutral-50 {
   background-color: var(--df-neutral-50);
+}
+
+.bg-transparent {
+  background-color: transparent;
 }
 
 .block {
@@ -158,6 +166,10 @@
 
 .hover\:text-neutral-700:hover {
   color: var(--df-neutral-700);
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .inline-flex {

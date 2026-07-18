@@ -18,13 +18,26 @@ type ScrollAreaProps = React.ComponentProps<"div"> & {
   orientation?: ScrollAreaOrientation
   side?: ScrollAreaSide
   visibility?: ScrollAreaVisibility
-  /** Reserve track inset. `auto` only when that axis overflows; `none` never. */
+  /**
+   * Track inset. `auto` reserves a gutter so the bar can appear without
+   * shifting content. `none` overlays with no inset. Defaults to `none` for
+   * edge, `auto` otherwise. Explicit values always win.
+   */
   space?: ScrollAreaSpace
   width?: number
 }
 
 type ThumbState = { size: number; offset: number; visible: boolean }
 const HIDDEN_THUMB: ThumbState = { size: 0, offset: 0, visible: false }
+
+function readCssPx(token: string, fallback: number): number {
+  if (typeof document === "undefined") return fallback
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(token)
+    .trim()
+  const px = Number.parseFloat(raw)
+  return Number.isFinite(px) && px > 0 ? px : fallback
+}
 
 function trackContentSize(
   track: HTMLElement | null,
@@ -55,7 +68,7 @@ function ScrollArea({
   orientation = "vertical",
   side,
   visibility = "hover",
-  space = "auto",
+  space,
   width,
   ...props
 }: ScrollAreaProps) {
@@ -72,13 +85,14 @@ function ScrollArea({
 
   const trackVertical = orientation === "vertical" || orientation === "both"
   const trackHorizontal = orientation === "horizontal" || orientation === "both"
-  const minThumb = variant === "edge" ? 20 : 24
+  const minThumb =
+    variant === "edge"
+      ? readCssPx("--df-scrollbar-min-thumb-edge", 20)
+      : readCssPx("--df-scrollbar-min-thumb", 24)
   const verticalSide = side === "left" ? "left" : "right"
   const horizontalSide = side === "top" ? "top" : "bottom"
-  // Keep inset on default+hover so the wider bar can fade in without shifting content.
-  // Edge thumbs are thin enough for space="none" overlay.
-  const resolvedSpace =
-    variant === "default" && visibility === "hover" ? "auto" : space
+  // Explicit space wins. Edge overlays; other variants reserve a stable inset.
+  const resolvedSpace = space ?? (variant === "edge" ? "none" : "auto")
 
   const syncThumb = React.useCallback(() => {
     const el = viewportRef.current
@@ -126,7 +140,8 @@ function ScrollArea({
     }, 900)
   }, [])
 
-  React.useEffect(() => {
+  // Measure before paint so overflow state does not shift layout after first frame.
+  React.useLayoutEffect(() => {
     const el = viewportRef.current
     if (!el) return
     syncThumb()
