@@ -1,0 +1,109 @@
+{
+  "name": "switch",
+  "slug": "switch",
+  "title": "Switch",
+  "description": "Binary on and off toggles.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-switch",
+  "dependencies": [],
+  "api": {
+    "description": "Binary on and off toggle.",
+    "groups": [
+      {
+        "id": "switch",
+        "title": "Switch",
+        "props": [
+          {
+            "name": "checked",
+            "type": "boolean",
+            "description": "Controlled checked state."
+          },
+          {
+            "name": "defaultChecked",
+            "type": "boolean",
+            "default": "false",
+            "description": "Uncontrolled initial checked state."
+          },
+          {
+            "name": "onCheckedChange",
+            "type": "(checked: boolean) => void",
+            "description": "Called when the switch toggles."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"default\"",
+            "default": "\"default\"",
+            "description": "Control size."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Non-interactive switch."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          },
+          {
+            "name": "…button attributes",
+            "type": "ButtonHTMLAttributes (minus onChange)",
+            "description": "Native button props (aria-label recommended)."
+          }
+        ]
+      },
+      {
+        "id": "switch-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-switch-track-height",
+            "type": "CSS length",
+            "description": "Default track height.",
+            "default": "18.4px"
+          },
+          {
+            "name": "--df-switch-track-width",
+            "type": "CSS length",
+            "description": "Default track width.",
+            "default": "32px"
+          },
+          {
+            "name": "--df-switch-track-height-sm",
+            "type": "CSS length",
+            "description": "Small track height.",
+            "default": "14px"
+          },
+          {
+            "name": "--df-switch-track-width-sm",
+            "type": "CSS length",
+            "description": "Small track width.",
+            "default": "24px"
+          },
+          {
+            "name": "--primary",
+            "type": "CSS color",
+            "description": "Checked track fill.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--input",
+            "type": "CSS color",
+            "description": "Unchecked track fill.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--background",
+            "type": "CSS color",
+            "description": "Thumb fill.",
+            "default": "var(--df-neutral-0)"
+          }
+        ]
+      }
+    ]
+  }
+}

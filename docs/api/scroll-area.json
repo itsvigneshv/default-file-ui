@@ -1,0 +1,120 @@
+{
+  "name": "scroll-area",
+  "slug": "scroll-area",
+  "title": "Scroll Area",
+  "description": "Scrollable regions with a custom thumb.",
+  "chapter": "structure",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-scroll-area",
+  "dependencies": [],
+  "api": {
+    "description": "Scrollable region with a custom overlay thumb. By default the thumb appears on hover or while scrolling and hides when idle; set visibility to always to keep it on whenever the content overflows. Track inset follows space: auto reserves it only when that axis overflows. space none overlays without inset, except on the default variant with hover where auto is forced so the wider bar cannot jerk the layout.",
+    "groups": [
+      {
+        "id": "scroll-area",
+        "title": "ScrollArea",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"edge\"",
+            "default": "\"default\"",
+            "description": "Scrollbar appearance. `default` is a wider inset overlay thumb. `edge` is a thin accent flush with the trailing edge. Use next to a sidebar or column divider so the thumb reads as part of that line."
+          },
+          {
+            "name": "thumbShape",
+            "type": "\"rounded\" | \"flat\"",
+            "default": "\"rounded\"",
+            "description": "Thumb corner shape. Works on both variants. `rounded` gives pill ends; `flat` gives square ends, handy with the `edge` variant so the thumb reads as a straight segment of the divider."
+          },
+          {
+            "name": "orientation",
+            "type": "\"vertical\" | \"horizontal\" | \"both\"",
+            "default": "\"vertical\"",
+            "description": "Axis the scrollbar tracks. `vertical` shows an up/down thumb on the trailing edge; `horizontal` shows a left/right thumb along the bottom; `both` renders a thumb on each axis as content overflows."
+          },
+          {
+            "name": "side",
+            "type": "\"left\" | \"right\" | \"top\" | \"bottom\"",
+            "default": "\"right\" (vertical) / \"bottom\" (horizontal)",
+            "description": "Which edge the scrollbar sits on. The vertical bar honours `left`/`right`; the horizontal bar honours `top`/`bottom`. Pair with `edge` to flush the thumb against a leading divider, for example a right-hand table of contents whose border sits on its left."
+          },
+          {
+            "name": "visibility",
+            "type": "\"hover\" | \"always\"",
+            "default": "\"hover\"",
+            "description": "When the thumb is shown. `hover` fades it in on hover or while scrolling and hides it when idle; `always` keeps it visible whenever the content overflows."
+          },
+          {
+            "name": "space",
+            "type": "\"auto\" | \"none\"",
+            "default": "\"auto\"",
+            "description": "Whether the viewport reserves track inset. auto adds inset only when that axis overflows. none overlays the thumb with no inset. Ignored for the default variant with visibility hover (forced to auto) so the wider bar cannot appear by stealing layout and jerking content. Use none with the edge variant, or with visibility always, where overlay is safe."
+          },
+          {
+            "name": "width",
+            "type": "number",
+            "description": "Scrollbar and thumb thickness in pixels (width for the vertical bar, height for the horizontal bar). Overrides the variant default (~10px for `default`, 3px for `edge`)."
+          },
+          {
+            "name": "viewportClassName",
+            "type": "string",
+            "description": "Classes on the scrollable viewport (the element that actually scrolls)."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Classes on the outer scroll-area root. Set a fixed height here (or via style) so content can overflow."
+          },
+          {
+            "name": "style",
+            "type": "CSSProperties",
+            "description": "Inline styles on the root. Often used to set height when className is not enough."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Scrollable content inside the viewport."
+          },
+          {
+            "name": "…div attributes",
+            "type": "ComponentProps<\"div\">",
+            "description": "Native div props on the root (for example id, aria-label, onScroll)."
+          }
+        ]
+      },
+      {
+        "id": "scroll-bar",
+        "title": "ScrollBar",
+        "description": "Standalone scrollbar part when composing manually. Prefer ScrollArea for typical use. It owns thumb sizing and show/hide.",
+        "props": [
+          {
+            "name": "orientation",
+            "type": "\"vertical\" | \"horizontal\"",
+            "default": "\"vertical\"",
+            "description": "Scrollbar axis."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the scrollbar track."
+          }
+        ]
+      },
+      {
+        "id": "scroll-area-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-scrollbar-thickness",
+            "type": "CSS length",
+            "description": "Default thumb thickness for the edge variant.",
+            "default": "3px"
+          }
+        ]
+      }
+    ]
+  }
+}

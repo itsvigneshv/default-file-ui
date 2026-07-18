@@ -1,0 +1,91 @@
+{
+  "name": "choice-chip",
+  "slug": "choice-chip",
+  "title": "Choice Chip",
+  "description": "Compact selectable chips for filters.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-choice-chip",
+  "dependencies": [],
+  "api": {
+    "description": "Compact selectable chip for filters and quick choices.",
+    "groups": [
+      {
+        "id": "choice-chip",
+        "title": "ChoiceChip",
+        "props": [
+          {
+            "name": "selected",
+            "type": "boolean",
+            "description": "Selected (pressed) appearance."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"md\"",
+            "description": "T-shirt height and type size."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Non-interactive chip."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Chip label."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          },
+          {
+            "name": "…button attributes",
+            "type": "ButtonHTMLAttributes",
+            "description": "Native button props (onClick, type, aria-*, etc.)."
+          }
+        ]
+      },
+      {
+        "id": "choice-chip-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--primary",
+            "type": "CSS color",
+            "description": "Selected fill.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Unselected border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--muted",
+            "type": "CSS color",
+            "description": "Hover fill.",
+            "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--background",
+            "type": "CSS color",
+            "description": "Unselected fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--spacing-unit",
+            "type": "CSS length",
+            "description": "Base unit for padding and gap.",
+            "default": "0.25rem"
+          }
+        ]
+      }
+    ]
+  }
+}

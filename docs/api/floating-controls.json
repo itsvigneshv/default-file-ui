@@ -1,0 +1,216 @@
+{
+  "name": "floating-controls",
+  "slug": "floating-controls",
+  "title": "Floating Controls",
+  "description": "Modular action bar with configurable slots and dividers for tool chrome.",
+  "chapter": "chrome",
+  "registryDependencies": [
+    "foundation",
+    "separator"
+  ],
+  "importPath": "@default-file/ui/components/df-floating-controls",
+  "dependencies": [],
+  "api": {
+    "description": "Modular action bar with items, dividers, and slots. Pass children or an items array.",
+    "groups": [
+      {
+        "id": "floating-controls",
+        "title": "FloatingControls",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"surface\" | \"overlay\"",
+            "default": "\"surface\"",
+            "description": "Bar surface treatment."
+          },
+          {
+            "name": "items",
+            "type": "FloatingControlsEntry[]",
+            "description": "Declarative entries (item, divider, slot). Ignored when children are passed."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Compose FloatingControlsItem, Divider, and Slot manually."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the bar."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-item",
+        "title": "FloatingControlsItem",
+        "props": [
+          {
+            "name": "leading",
+            "type": "ReactNode",
+            "description": "Leading icon or mark."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "Trailing icon or mark."
+          },
+          {
+            "name": "tone",
+            "type": "\"ghost\" | \"solid\"",
+            "default": "\"ghost\"",
+            "description": "Item emphasis."
+          },
+          {
+            "name": "label / children",
+            "type": "ReactNode",
+            "description": "Item label content."
+          },
+          {
+            "name": "…button attributes",
+            "type": "ButtonHTMLAttributes",
+            "description": "Native button props (onClick, aria-label, etc.)."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-divider",
+        "title": "FloatingControlsDivider",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Optional custom divider content; default is a rule."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-slot",
+        "title": "FloatingControlsSlot",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Freeform slot for custom controls."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-items-api",
+        "title": "items[] entry shapes",
+        "description": "When using the declarative items prop.",
+        "props": [
+          {
+            "name": "Item entry",
+            "type": "{ leading?, trailing?, tone?, label?, … }",
+            "description": "Maps to FloatingControlsItem."
+          },
+          {
+            "name": "Divider entry",
+            "type": "{ type: \"divider\", children? }",
+            "description": "Inserts a divider between items."
+          },
+          {
+            "name": "Slot entry",
+            "type": "{ type: \"slot\", children }",
+            "description": "Inserts a custom slot."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--overlay-bg",
+            "type": "CSS color",
+            "description": "Bar fill on the overlay variant.",
+            "default": "color-mix(in oklch, black 50%, transparent)"
+          },
+          {
+            "name": "--overlay-fg",
+            "type": "CSS color",
+            "description": "Bar label color on the overlay variant.",
+            "default": "color-mix(in oklch, white 88%, transparent)"
+          },
+          {
+            "name": "--overlay-border",
+            "type": "CSS color",
+            "description": "Bar border on the overlay variant.",
+            "default": "color-mix(in oklch, white 10%, transparent)"
+          },
+          {
+            "name": "--overlay-shadow",
+            "type": "CSS shadow",
+            "description": "Bar shadow on the overlay variant.",
+            "default": "var(--df-shadow-overlay)"
+          },
+          {
+            "name": "--overlay-blur",
+            "type": "CSS length",
+            "description": "Backdrop blur on the overlay variant.",
+            "default": "var(--df-blur-overlay)"
+          },
+          {
+            "name": "--overlay-item-fg",
+            "type": "CSS color",
+            "description": "Item label color at rest.",
+            "default": "color-mix(in oklch, white 82%, transparent)"
+          },
+          {
+            "name": "--overlay-item-fg-active",
+            "type": "CSS color",
+            "description": "Item label color when active.",
+            "default": "white"
+          },
+          {
+            "name": "--overlay-item-hover-bg",
+            "type": "CSS color",
+            "description": "Item fill on hover.",
+            "default": "color-mix(in oklch, white 10%, transparent)"
+          },
+          {
+            "name": "--overlay-item-on-bg",
+            "type": "CSS color",
+            "description": "Item fill when toggled on.",
+            "default": "color-mix(in oklch, white 12%, transparent)"
+          },
+          {
+            "name": "--overlay-solid-bg",
+            "type": "CSS color",
+            "description": "Bar fill on the surface variant.",
+            "default": "white"
+          },
+          {
+            "name": "--overlay-solid-fg",
+            "type": "CSS color",
+            "description": "Bar label color on the surface variant.",
+            "default": "oklch(0.2 0 0)"
+          },
+          {
+            "name": "--overlay-solid-hover-bg",
+            "type": "CSS color",
+            "description": "Item fill on hover for the surface variant.",
+            "default": "color-mix(in oklch, white 88%, oklch(0.85 0 0))"
+          },
+          {
+            "name": "--overlay-divider",
+            "type": "CSS color",
+            "description": "Divider color between items.",
+            "default": "color-mix(in oklch, white 15%, transparent)"
+          }
+        ]
+      }
+    ]
+  }
+}

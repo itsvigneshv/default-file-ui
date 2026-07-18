@@ -1,0 +1,606 @@
+{
+  "name": "option-list",
+  "slug": "option-list",
+  "title": "Option List",
+  "description": "Open panel and option rows: search, checkboxes, secondary text, scroll, and footer actions.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation",
+    "search-input",
+    "scroll-area"
+  ],
+  "importPath": "@default-file/ui/components/df-option-list",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Open panel and option rows for pickers. Select composes this list for its menu.",
+    "groups": [
+      {
+        "id": "option-list-root",
+        "title": "OptionList",
+        "description": "Root selection and open state.",
+        "props": [
+          {
+            "name": "selectionMode",
+            "type": "\"single\" | \"multiple\"",
+            "default": "\"single\"",
+            "description": "Single value or multiple values."
+          },
+          {
+            "name": "value",
+            "type": "string | null",
+            "description": "Controlled value in single mode."
+          },
+          {
+            "name": "defaultValue",
+            "type": "string | null",
+            "default": "null",
+            "description": "Uncontrolled initial value in single mode."
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: string | null) => void",
+            "description": "Called when the single value changes."
+          },
+          {
+            "name": "values",
+            "type": "string[]",
+            "description": "Controlled values in multiple mode."
+          },
+          {
+            "name": "defaultValues",
+            "type": "string[]",
+            "default": "[]",
+            "description": "Uncontrolled initial values in multiple mode."
+          },
+          {
+            "name": "onValuesChange",
+            "type": "(values: string[]) => void",
+            "description": "Called when multiple values change."
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "default": "false",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when the panel opens or closes."
+          },
+          {
+            "name": "closeOnSelect",
+            "type": "boolean",
+            "description": "Close after choosing a row. Defaults to true in single mode, false in multiple."
+          },
+          {
+            "name": "submenuAnimated",
+            "type": "boolean",
+            "default": "true",
+            "description": "Default motion for all nested OptionListSubmenu panels. true plays open/close animations; false makes nested menus appear and disappear instantly. Overridden by OptionListSubmenu or OptionListSubContent animated."
+          },
+          {
+            "name": "submenuOpenDuration",
+            "type": "number",
+            "default": "180",
+            "description": "Default open animation duration in milliseconds for nested submenus. Ignored when submenuAnimated is false. Overridden by OptionListSubmenu or OptionListSubContent openDuration."
+          },
+          {
+            "name": "submenuCloseDuration",
+            "type": "number",
+            "default": "90",
+            "description": "Default close animation duration in milliseconds for nested submenus. Ignored when submenuAnimated is false. Overridden by OptionListSubmenu or OptionListSubContent closeDuration."
+          }
+        ]
+      },
+      {
+        "id": "option-list-trigger",
+        "title": "OptionListTrigger",
+        "description": "Opens and closes the option list. Use render to compose onto Badge or another host.",
+        "props": [
+          {
+            "name": "render",
+            "type": "ReactElement",
+            "description": "Host element to clone trigger behavior onto (for example Badge). Owns click, keyboard, and anchor ref."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger content (label, chevron, etc.)."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          },
+          {
+            "name": "…button attributes",
+            "type": "ButtonHTMLAttributes",
+            "description": "Native button props when not using render."
+          }
+        ]
+      },
+      {
+        "id": "option-list-content",
+        "title": "OptionListContent",
+        "description": "Portaled or inline panel with optional search, scroll, footer, and dismissOnScroll.",
+        "props": [
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
+            "default": "\"start\"",
+            "description": "Horizontal anchor relative to the trigger. auto picks the best fit."
+          },
+          {
+            "name": "alignItemWithTrigger",
+            "type": "boolean",
+            "default": "false",
+            "description": "When true, menu width matches the trigger. When false, the menu hugs option content (and stays at least as wide as the trigger)."
+          },
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"bottom\"",
+            "description": "Preferred placement side."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "4",
+            "description": "Gap between trigger and panel."
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "description": "Shift along the alignment axis."
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "description": "Render in a portal. Set false for inline previews."
+          },
+          {
+            "name": "dismissOnScroll",
+            "type": "boolean",
+            "default": "true",
+            "description": "Close when the page scrolls. Scrolling inside the list stays open. Set false to keep the panel following the trigger (it can cover sticky chrome)."
+          },
+          {
+            "name": "search",
+            "type": "boolean",
+            "default": "false",
+            "description": "Show a search field above the options."
+          },
+          {
+            "name": "searchPlaceholder",
+            "type": "string",
+            "default": "\"Search\"",
+            "description": "Placeholder for the search field."
+          },
+          {
+            "name": "searchValue",
+            "type": "string",
+            "description": "Controlled search query."
+          },
+          {
+            "name": "defaultSearchValue",
+            "type": "string",
+            "description": "Uncontrolled initial search query."
+          },
+          {
+            "name": "onSearchChange",
+            "type": "(value: string) => void",
+            "description": "Called when the search query changes."
+          },
+          {
+            "name": "scrollable",
+            "type": "boolean",
+            "default": "auto",
+            "description": "Wrap options in the kit ScrollArea (custom scrollbar). Defaults on for plain panels and off when the panel contains a submenu; pass explicitly to override."
+          },
+          {
+            "name": "scrollMaxHeight",
+            "type": "string | number",
+            "default": "\"min(60vh, 24rem)\"",
+            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem)."
+          },
+          {
+            "name": "footer",
+            "type": "ReactNode",
+            "description": "Footer actions under the options (for example Reset)."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Panel surface styles."
+          }
+        ]
+      },
+      {
+        "id": "option-list-item",
+        "title": "OptionListItem",
+        "description": "Selectable row with leading control, secondary copy, trailing badge or chevron, and selection indicator. Inside OptionListSubmenu (trigger zone) it opens the submenu on hover instead of selecting.",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "description": "Option value stored in selection state."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Non-selectable row."
+          },
+          {
+            "name": "leading",
+            "type": "\"checkbox\" | \"check\" | ReactNode | false",
+            "description": "Leading control. Use \"checkbox\" for multi-select rows."
+          },
+          {
+            "name": "secondary",
+            "type": "ReactNode",
+            "description": "Supporting copy beside or under the label."
+          },
+          {
+            "name": "layout",
+            "type": "\"inline\" | \"stacked\"",
+            "default": "\"inline\"",
+            "description": "inline places secondary beside the label; stacked places it underneath."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "End-of-row slot: badge counter, nested-menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
+          },
+          {
+            "name": "indicator",
+            "type": "boolean",
+            "description": "Selected check in single mode. Defaults off when leading is checkbox or trailing is set; otherwise on."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Primary label text for the row."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional row styles."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div props. Use data-highlighted for hover/open parent rows in nested menus."
+          }
+        ]
+      },
+      {
+        "id": "option-list-submenu",
+        "title": "OptionListSubmenu",
+        "description": "Hover-open nested branch. Wrap a trigger OptionListItem and an OptionListSubContent. Nest again inside the content for deeper levels. Motion defaults inherit from OptionList and can be overridden here.",
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled submenu open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "default": "false",
+            "description": "Uncontrolled initial open state (useful for docs previews)."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when the submenu opens or closes."
+          },
+          {
+            "name": "animated",
+            "type": "boolean",
+            "default": "inherits OptionList.submenuAnimated (true)",
+            "description": "true plays fade/slide open and close for this branch. false opens and closes instantly with no motion. Prefer OptionList submenuAnimated=false to turn off motion for every nested level at once."
+          },
+          {
+            "name": "openDuration",
+            "type": "number",
+            "default": "inherits OptionList.submenuOpenDuration (180)",
+            "description": "Open animation duration in milliseconds for this branch. Only applies when animated is true."
+          },
+          {
+            "name": "closeDuration",
+            "type": "number",
+            "default": "inherits OptionList.submenuCloseDuration (90)",
+            "description": "Close animation duration in milliseconds for this branch. Only applies when animated is true. Keep this shorter than openDuration for a snappy dismiss."
+          },
+          {
+            "name": "closeDelay",
+            "type": "number",
+            "default": "60",
+            "description": "Milliseconds to wait after the pointer leaves the branch before starting close. Gives time to move into the child panel. Exit animation (if animated) starts after this delay."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger OptionListItem plus OptionListSubContent (and nested submenus)."
+          }
+        ]
+      },
+      {
+        "id": "option-list-sub-content",
+        "title": "OptionListSubContent",
+        "description": "Child panel for a submenu. Opens on hover of the parent row; nest further OptionListSubmenu trees inside. Placement and motion can be set per panel.",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"right\"",
+            "description": "Preferred placement relative to the parent row."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "4",
+            "description": "Gap between the parent row and the child panel."
+          },
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
+            "default": "\"start\"",
+            "description": "Alignment along the parent row."
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "description": "Shift along the alignment axis."
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "description": "Render in a portal. Set false for inline nested previews in docs."
+          },
+          {
+            "name": "animated",
+            "type": "boolean",
+            "default": "inherits OptionListSubmenu.animated",
+            "description": "Per-panel motion override. false makes this panel appear and disappear instantly even if parent submenus are animated."
+          },
+          {
+            "name": "openDuration",
+            "type": "number",
+            "default": "inherits OptionListSubmenu.openDuration",
+            "description": "Per-panel open duration in milliseconds. Ignored when animated is false."
+          },
+          {
+            "name": "closeDuration",
+            "type": "number",
+            "default": "inherits OptionListSubmenu.closeDuration",
+            "description": "Per-panel close duration in milliseconds. Ignored when animated is false."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Panel surface styles."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Option rows and nested OptionListSubmenu branches."
+          }
+        ]
+      },
+      {
+        "id": "option-list-search",
+        "title": "OptionListSearch",
+        "description": "Search field used when content search is composed manually.",
+        "props": [
+          {
+            "name": "placeholder",
+            "type": "string",
+            "default": "\"Search\"",
+            "description": "Empty-state hint."
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "description": "Controlled query."
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "description": "Uncontrolled initial query."
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: string) => void",
+            "description": "Called when the query changes."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"sm\"",
+            "description": "SearchInput size."
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "default": "true",
+            "description": "Show clear control when filled."
+          }
+        ]
+      },
+      {
+        "id": "option-list-body",
+        "title": "OptionListBody",
+        "description": "Scrollable or static body wrapping option rows.",
+        "props": [
+          {
+            "name": "scrollable",
+            "type": "boolean",
+            "default": "false",
+            "description": "Wrap children in ScrollArea."
+          },
+          {
+            "name": "maxHeight",
+            "type": "string | number",
+            "default": "\"16rem\"",
+            "description": "Height constraint when scrollable."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Option rows."
+          }
+        ]
+      },
+      {
+        "id": "option-list-footer",
+        "title": "OptionListFooter",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Footer actions (for example Reset / Select all)."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
+          }
+        ]
+      },
+      {
+        "id": "option-list-parts",
+        "title": "Grouping parts",
+        "props": [
+          {
+            "name": "OptionListGroup",
+            "type": "div attrs",
+            "description": "Groups related items."
+          },
+          {
+            "name": "OptionListLabel",
+            "type": "div attrs",
+            "description": "Muted group heading inside the panel."
+          },
+          {
+            "name": "OptionListSeparator",
+            "type": "separator",
+            "description": "Horizontal rule between sections."
+          },
+          {
+            "name": "OptionListScrollUpButton / ScrollDownButton",
+            "type": "button",
+            "description": "Optional scroll affordances for long lists."
+          },
+          {
+            "name": "useOptionListContext",
+            "type": "() => context",
+            "description": "Read open state, selection, labels, and search from parts."
+          }
+        ]
+      },
+      {
+        "id": "option-list-layout",
+        "title": "Layout & appearance",
+        "props": [
+          {
+            "name": "Hug content",
+            "type": "alignItemWithTrigger={false}",
+            "default": "false",
+            "description": "Panel width follows option content; at least trigger width."
+          },
+          {
+            "name": "Match trigger width",
+            "type": "alignItemWithTrigger",
+            "description": "Lock panel width to the trigger."
+          },
+          {
+            "name": "Inline previews",
+            "type": "portal={false}",
+            "description": "Render the panel in place for docs and nested layouts."
+          },
+          {
+            "name": "Trailing badge counter",
+            "type": "trailing={<Badge>…</Badge>}",
+            "description": "Number badge at the end of the row. Right padding matches checkbox rows; selected check stays hidden."
+          },
+          {
+            "name": "Nested submenu row",
+            "type": "OptionListSubmenu + SubContent",
+            "description": "Hover the parent row to open the child panel on the right. Nest Submenu trees for three or more levels. Use trailing for badge + ChevronRight. Control motion with submenuAnimated / animated (boolean) and submenuOpenDuration / submenuCloseDuration or openDuration / closeDuration (ms)."
+          },
+          {
+            "name": "Instant nested menus",
+            "type": "submenuAnimated={false}",
+            "description": "Disable open/close animation for every nested level from OptionList. Equivalent per-branch: OptionListSubmenu animated={false}."
+          },
+          {
+            "name": "Custom nested speed",
+            "type": "submenuOpenDuration / submenuCloseDuration",
+            "description": "Set open and close durations in milliseconds on OptionList (defaults 180 / 90). Override on a single Submenu or SubContent when one branch should feel different."
+          },
+          {
+            "name": "Item spacing",
+            "type": "CSS",
+            "description": "Rows use kit gap and hover/selected/disabled states via data attributes."
+          }
+        ]
+      },
+      {
+        "id": "option-list-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-option-list-min-width",
+            "type": "CSS length",
+            "description": "Minimum panel width.",
+            "default": "12rem"
+          },
+          {
+            "name": "--df-menu-min-width",
+            "type": "CSS length",
+            "description": "Minimum menu width.",
+            "default": "9rem"
+          },
+          {
+            "name": "--df-menu-max-height",
+            "type": "CSS length",
+            "description": "Maximum panel height before scrolling.",
+            "default": "24rem"
+          },
+          {
+            "name": "--df-menu-stacked-max-height",
+            "type": "CSS length",
+            "description": "Maximum body height when a footer is present.",
+            "default": "16rem"
+          },
+          {
+            "name": "--df-submenu-min-width",
+            "type": "CSS length",
+            "description": "Minimum nested submenu width.",
+            "default": "18rem"
+          },
+          {
+            "name": "--df-submenu-max-height",
+            "type": "CSS length",
+            "description": "Maximum nested submenu height.",
+            "default": "28rem"
+          }
+        ]
+      }
+    ]
+  }
+}

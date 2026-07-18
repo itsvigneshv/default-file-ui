@@ -21,7 +21,8 @@
     "src",
     "public/r",
     "registry.json",
-    "scripts"
+    "scripts",
+    "docs"
   ],
   "exports": {
     "./css/*": "./src/css/*",
@@ -38,6 +39,8 @@
     "df:tokens": "npm run df:colors && npm run df:utilities && npm run df:breakpoints",
     "df:registry": "node scripts/build-df-registry.mjs",
     "df:cli": "node bin/default-file-ui.mjs",
+    "df:mcp": "node bin/default-file-ui.mjs mcp",
+    "test:discovery": "node scripts/cli/test-discovery.mjs",
     "prepublishOnly": "npm run df:tokens"
   },
   "peerDependencies": {
@@ -49,5 +52,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
   }
 }

@@ -1,0 +1,394 @@
+{
+  "generatedAt": "2026-07-18T13:56:36.650Z",
+  "foundation": {
+    "registryName": "foundation",
+    "title": "Foundation",
+    "description": "CSS layers, tokens, hooks, and the cn utility. Install this first for copy-source setups."
+  },
+  "chapters": [
+    {
+      "id": "actions",
+      "label": "Actions"
+    },
+    {
+      "id": "inputs",
+      "label": "Inputs"
+    },
+    {
+      "id": "feedback",
+      "label": "Feedback"
+    },
+    {
+      "id": "overlays",
+      "label": "Overlays"
+    },
+    {
+      "id": "structure",
+      "label": "Structure"
+    },
+    {
+      "id": "chrome",
+      "label": "Tool chrome"
+    }
+  ],
+  "components": [
+    {
+      "slug": "badge",
+      "name": "badge",
+      "title": "Badge",
+      "description": "Compact labels for status and metadata.",
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-badge",
+      "dependencies": [],
+      "propCount": 26
+    },
+    {
+      "slug": "border-glow",
+      "name": "border-glow",
+      "title": "Border Glow",
+      "description": "Card chrome with a pointer-directed border, optional soft bloom, and a hairline trace mode.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-border-glow",
+      "dependencies": [],
+      "propCount": 49
+    },
+    {
+      "slug": "button",
+      "name": "button",
+      "title": "Button",
+      "description": "Primary actions with variants, text sizes from xs to 2xl, and matching icon sizes.",
+      "chapter": "actions",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-button",
+      "dependencies": [],
+      "propCount": 22
+    },
+    {
+      "slug": "choice-chip",
+      "name": "choice-chip",
+      "title": "Choice Chip",
+      "description": "Compact selectable chips for filters.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-choice-chip",
+      "dependencies": [],
+      "propCount": 11
+    },
+    {
+      "slug": "color-picker",
+      "name": "color-picker",
+      "title": "Color Picker",
+      "description": "Pill swatch trigger with hex or clear trailing, and channel editors in a popover.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "input",
+        "popover",
+        "tabs"
+      ],
+      "importPath": "@default-file/ui/components/df-color-picker",
+      "dependencies": [],
+      "propCount": 12
+    },
+    {
+      "slug": "content-switcher",
+      "name": "content-switcher",
+      "title": "Content Switcher",
+      "description": "Segmented single-select for filters and view modes, with size and deselect options.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-content-switcher",
+      "dependencies": [],
+      "propCount": 17
+    },
+    {
+      "slug": "floating-controls",
+      "name": "floating-controls",
+      "title": "Floating Controls",
+      "description": "Modular action bar with configurable slots and dividers for tool chrome.",
+      "chapter": "chrome",
+      "registryDependencies": [
+        "foundation",
+        "separator"
+      ],
+      "importPath": "@default-file/ui/components/df-floating-controls",
+      "dependencies": [],
+      "propCount": 29
+    },
+    {
+      "slug": "input",
+      "name": "input",
+      "title": "Input",
+      "description": "Single-line text fields for forms and filters.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-input",
+      "dependencies": [],
+      "propCount": 14
+    },
+    {
+      "slug": "label",
+      "name": "label",
+      "title": "Label",
+      "description": "Accessible labels for form controls.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-label",
+      "dependencies": [],
+      "propCount": 6
+    },
+    {
+      "slug": "number-slider",
+      "name": "number-slider",
+      "title": "Number Slider",
+      "description": "Labeled slider with a live numeric readout.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "label",
+        "slider"
+      ],
+      "importPath": "@default-file/ui/components/df-number-slider",
+      "dependencies": [],
+      "propCount": 8
+    },
+    {
+      "slug": "option-list",
+      "name": "option-list",
+      "title": "Option List",
+      "description": "Open panel and option rows: search, checkboxes, secondary text, scroll, and footer actions.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "search-input",
+        "scroll-area"
+      ],
+      "importPath": "@default-file/ui/components/df-option-list",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 92
+    },
+    {
+      "slug": "options-panel",
+      "name": "options-panel",
+      "title": "Options Panel",
+      "description": "Anchored panel chrome with titled header and open body/footer slots for tool options.",
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation",
+        "popover"
+      ],
+      "importPath": "@default-file/ui/components/df-options-panel",
+      "dependencies": [],
+      "propCount": 17
+    },
+    {
+      "slug": "overlay-hint",
+      "name": "overlay-hint",
+      "title": "Overlay Hint",
+      "description": "Tokenized instruction pill with default frosted glass, a muted chip, and a marquee variant with scrolling text, trailing icon action, and sm or md density.",
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-overlay-hint",
+      "dependencies": [],
+      "propCount": 57
+    },
+    {
+      "slug": "panel-section",
+      "name": "panel-section",
+      "title": "Panel Section",
+      "description": "Titled groupings for control panels.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-panel-section",
+      "dependencies": [],
+      "propCount": 6
+    },
+    {
+      "slug": "popover",
+      "name": "popover",
+      "title": "Popover",
+      "description": "Anchored floating panels for short content.",
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-popover",
+      "dependencies": [],
+      "propCount": 20
+    },
+    {
+      "slug": "scroll-area",
+      "name": "scroll-area",
+      "title": "Scroll Area",
+      "description": "Scrollable regions with a custom thumb.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-scroll-area",
+      "dependencies": [],
+      "propCount": 15
+    },
+    {
+      "slug": "search-input",
+      "name": "search-input",
+      "title": "Search Input",
+      "description": "Search fields with clear control, pill shape, and start or end icon placement.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "input"
+      ],
+      "importPath": "@default-file/ui/components/df-search-input",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 15
+    },
+    {
+      "slug": "select",
+      "name": "select",
+      "title": "Select",
+      "description": "Field control for single or multi choice: label, hint, sizes, disabled, and value display.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "option-list",
+        "label"
+      ],
+      "importPath": "@default-file/ui/components/df-select",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 71
+    },
+    {
+      "slug": "separator",
+      "name": "separator",
+      "title": "Separator",
+      "description": "Horizontal or vertical rules between sections.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-separator",
+      "dependencies": [],
+      "propCount": 4
+    },
+    {
+      "slug": "slider",
+      "name": "slider",
+      "title": "Slider",
+      "description": "Continuous value selection along a track.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-slider",
+      "dependencies": [],
+      "propCount": 13
+    },
+    {
+      "slug": "spectrum-text",
+      "name": "spectrum-text",
+      "title": "Spectrum Text",
+      "description": "Inline text with a shifting multi-stop gradient fill from kit color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-spectrum-text",
+      "dependencies": [],
+      "propCount": 11
+    },
+    {
+      "slug": "switch",
+      "name": "switch",
+      "title": "Switch",
+      "description": "Binary on and off toggles.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-switch",
+      "dependencies": [],
+      "propCount": 14
+    },
+    {
+      "slug": "tabs",
+      "name": "tabs",
+      "title": "Tabs",
+      "description": "Panel switcher with pill, line, and segment variants.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-tabs",
+      "dependencies": [],
+      "propCount": 38
+    },
+    {
+      "slug": "toast",
+      "name": "toast",
+      "title": "Toast",
+      "description": "Transient messages with tone and screen position.",
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-toast",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 15
+    },
+    {
+      "slug": "toggle-group",
+      "name": "toggle-group",
+      "title": "Toggle Group",
+      "description": "Grouped options for single-select choices.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-toggle-group",
+      "dependencies": [],
+      "propCount": 23
+    },
+    {
+      "slug": "tooltip",
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "Compact and detailed labels on hover and focus.",
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-tooltip",
+      "dependencies": [],
+      "propCount": 20
+    }
+  ]
+}

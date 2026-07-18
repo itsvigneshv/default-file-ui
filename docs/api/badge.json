@@ -1,0 +1,190 @@
+{
+  "name": "badge",
+  "slug": "badge",
+  "title": "Badge",
+  "description": "Compact labels for status and metadata.",
+  "chapter": "feedback",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-badge",
+  "dependencies": [],
+  "api": {
+    "description": "Compact label for status and metadata. Compose a close control, nested counter, or OptionList dropdown via children and render.",
+    "groups": [
+      {
+        "id": "badge",
+        "title": "Badge",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"secondary\" | \"destructive\" | \"outline\" | \"ghost\" | \"link\"",
+            "default": "\"default\"",
+            "description": "Visual style of the badge."
+          },
+          {
+            "name": "size",
+            "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"",
+            "default": "\"md\"",
+            "description": "T-shirt height and type size. Nested counter chips are supported on md, lg, and xl only."
+          },
+          {
+            "name": "radius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"4xl\"",
+            "description": "Corner radius of the badge."
+          },
+          {
+            "name": "cornerShape",
+            "type": "\"round\" | \"smooth\"",
+            "description": "Instance corner curve. Omit to inherit --df-corner-shape from the theme (set at create/init)."
+          },
+          {
+            "name": "count",
+            "type": "number | string",
+            "description": "Trailing count chip bound to any numeric value (1 to 4+ digits). Shown on md, lg, and xl hosts."
+          },
+          {
+            "name": "render",
+            "type": "ReactElement",
+            "description": "Host element to clone badge styles onto. For dropdowns, prefer OptionListTrigger render={<Badge />}."
+          },
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "description": "Legacy alias for composing onto a child host."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Label and optional trailing content: close button, nested count badge, or chevron."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the badge."
+          },
+          {
+            "name": "…HTML attributes",
+            "type": "HTMLAttributes<HTMLElement>",
+            "description": "Standard element attributes (id, title, aria-*, etc.)."
+          }
+        ]
+      },
+      {
+        "id": "badge-composition",
+        "title": "Composition",
+        "description": "Patterns built with children or render. Not separate props on Badge.",
+        "props": [
+          {
+            "name": "Close button",
+            "type": "children",
+            "description": "Place a button with an X icon after the label. The button inherits badge color and is keyboard-focusable."
+          },
+          {
+            "name": "Counter",
+            "type": "count | children",
+            "description": "Prefer the count prop for numeric data. Or nest a second Badge. Host size must be md, lg, or xl so the chip stays readable. Width grows with 1 to 4+ digits."
+          },
+          {
+            "name": "Dropdown",
+            "type": "OptionListTrigger render={<Badge />}",
+            "description": "OptionListTrigger owns open/close. Pass Badge via render so the chip is the clickable host. Pair with OptionListContent for the menu."
+          }
+        ]
+      },
+      {
+        "id": "badge-dropdown-panel",
+        "title": "Dropdown panel",
+        "description": "Pass these on OptionListContent when the badge opens an option list. Placement is relative to the badge trigger.",
+        "props": [
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
+            "default": "\"start\"",
+            "description": "Horizontal menu alignment. start pins left, end pins right, center centers on the badge, auto picks the best fit from available space (content-aware)."
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "description": "Extra shift along the alignment axis in pixels."
+          },
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"bottom\"",
+            "description": "Preferred side of the badge for the menu."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "4",
+            "description": "Gap between the badge and the menu."
+          },
+          {
+            "name": "alignItemWithTrigger",
+            "type": "boolean",
+            "default": "false",
+            "description": "When true, menu width matches the badge. When false, the menu sizes to its option content."
+          }
+        ]
+      },
+      {
+        "id": "badge-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--primary",
+            "type": "CSS color",
+            "description": "Default variant fill.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--secondary",
+            "type": "CSS color",
+            "description": "Secondary variant fill.",
+            "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--destructive",
+            "type": "CSS color",
+            "description": "Destructive variant fill.",
+            "default": "oklch(0.577 0.245 27.325)"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Outline variant border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--muted",
+            "type": "CSS color",
+            "description": "Ghost variant hover fill.",
+            "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--muted-foreground",
+            "type": "CSS color",
+            "description": "Ghost variant label.",
+            "default": "var(--df-neutral-500)"
+          },
+          {
+            "name": "--radius-4xl",
+            "type": "CSS length",
+            "description": "Default radius step. The radius prop can select any --radius-* step, from none to full.",
+            "default": "calc(var(--radius) * 2.6)"
+          },
+          {
+            "name": "--df-corner-shape",
+            "type": "CSS corner-shape",
+            "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
+            "default": "var(--df-corner-shape-round)"
+          }
+        ]
+      }
+    ]
+  }
+}

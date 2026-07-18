@@ -1,0 +1,465 @@
+{
+  "name": "select",
+  "slug": "select",
+  "title": "Select",
+  "description": "Field control for single or multi choice: label, hint, sizes, disabled, and value display.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation",
+    "option-list",
+    "label"
+  ],
+  "importPath": "@default-file/ui/components/df-select",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Select composes Option List for the open panel. Configure the root, field chrome, trigger, value display, content, and items below.",
+    "groups": [
+      {
+        "id": "select-root",
+        "title": "Select",
+        "description": "Root state for single or multi choice, open state, and disabled.",
+        "props": [
+          {
+            "name": "selectionMode",
+            "type": "\"single\" | \"multiple\"",
+            "default": "\"single\"",
+            "description": "Single value or multiple values."
+          },
+          {
+            "name": "value",
+            "type": "string | null",
+            "description": "Controlled value in single mode."
+          },
+          {
+            "name": "defaultValue",
+            "type": "string | null",
+            "default": "null",
+            "description": "Uncontrolled initial value in single mode."
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: string | null) => void",
+            "description": "Called when the single value changes."
+          },
+          {
+            "name": "values",
+            "type": "string[]",
+            "description": "Controlled values in multiple mode."
+          },
+          {
+            "name": "defaultValues",
+            "type": "string[]",
+            "description": "Uncontrolled initial values in multiple mode."
+          },
+          {
+            "name": "onValuesChange",
+            "type": "(values: string[]) => void",
+            "description": "Called when multiple values change."
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled open state for the option list."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "default": "false",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when the panel opens or closes."
+          },
+          {
+            "name": "closeOnSelect",
+            "type": "boolean",
+            "description": "Close after choosing a row. Defaults to true in single mode, false in multiple."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "description": "Non-interactive field; keeps the menu closed."
+          }
+        ]
+      },
+      {
+        "id": "select-field",
+        "title": "SelectField",
+        "description": "Optional outside label and hint. Omit any prop to hide that piece.",
+        "props": [
+          {
+            "name": "label",
+            "type": "ReactNode",
+            "description": "Label above the control. Omit to hide the label row."
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "description": "Shows the required mark on the label."
+          },
+          {
+            "name": "help",
+            "type": "ReactNode",
+            "description": "Help control after the label (for example SelectFieldHelp inside a Tooltip)."
+          },
+          {
+            "name": "hint",
+            "type": "ReactNode",
+            "description": "Supporting text below the control. Omit to hide."
+          },
+          {
+            "name": "htmlFor",
+            "type": "string",
+            "description": "Associates the label with the trigger id."
+          },
+          {
+            "name": "hintId",
+            "type": "string",
+            "description": "Id for the hint; pair with aria-describedby on the trigger."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Layout width and spacing for the field shell."
+          }
+        ]
+      },
+      {
+        "id": "select-trigger",
+        "title": "SelectTrigger",
+        "description": "Combobox host for the visible control. Sizes, width, radius, and truncation are configured here.",
+        "props": [
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\" | \"default\"",
+            "default": "\"md\"",
+            "description": "T-shirt height and type size. \"default\" is an alias for \"md\"."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Overrides Select disabled when set on the trigger."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Width and shape. Examples: w-64 (fixed width), w-36 (truncate), rounded-xl / rounded-full (radius override). Default radius uses the kit --radius-4xl token."
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "description": "For label association and accessibility."
+          },
+          {
+            "name": "aria-describedby",
+            "type": "string",
+            "description": "Point at SelectField hintId when a hint is shown."
+          }
+        ]
+      },
+      {
+        "id": "select-value",
+        "title": "SelectValue",
+        "description": "Shows the placeholder, selected label, or a custom render (summary / badges).",
+        "props": [
+          {
+            "name": "placeholder",
+            "type": "string",
+            "description": "Pre-select copy when no value is chosen."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode | ((ctx) => ReactNode)",
+            "description": "Static content or a render function with selectionMode, value, values, labelFor, and toggleValue."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Value text styles. Truncation follows a fixed-width trigger."
+          }
+        ]
+      },
+      {
+        "id": "select-value-helpers",
+        "title": "SelectValueSummary & SelectValueBadge",
+        "description": "Multi-select value displays used inside SelectValue.",
+        "props": [
+          {
+            "name": "SelectValueSummary.count",
+            "type": "number",
+            "description": "Primary count text, for example “2 selected”."
+          },
+          {
+            "name": "SelectValueSummary.supportingText",
+            "type": "ReactNode",
+            "description": "Muted secondary detail, for example “16 users”."
+          },
+          {
+            "name": "SelectValueBadge.value",
+            "type": "string",
+            "description": "Selected option value; remove toggles this value off."
+          },
+          {
+            "name": "SelectValueBadge.children",
+            "type": "ReactNode",
+            "description": "Badge label. Defaults to the registered option label."
+          },
+          {
+            "name": "SelectValueBadge.onRemove",
+            "type": "(value: string) => void",
+            "description": "Optional custom remove handler instead of toggleValue."
+          }
+        ]
+      },
+      {
+        "id": "select-content",
+        "title": "SelectContent",
+        "description": "Open Option List panel. Same API as OptionListContent.",
+        "props": [
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
+            "default": "\"start\"",
+            "description": "Horizontal anchor relative to the trigger. auto picks the best fit."
+          },
+          {
+            "name": "alignItemWithTrigger",
+            "type": "boolean",
+            "default": "false",
+            "description": "When true, menu width matches the trigger. When false, the menu hugs option content (and stays at least as wide as the trigger)."
+          },
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"bottom\"",
+            "description": "Preferred placement side."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "4",
+            "description": "Gap between trigger and panel."
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "description": "Shift along the alignment axis."
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "description": "Render in a portal. Set false for inline previews."
+          },
+          {
+            "name": "dismissOnScroll",
+            "type": "boolean",
+            "default": "true",
+            "description": "Close when the page scrolls. Scrolling inside the list stays open. Set false to keep the panel following the trigger (it can cover sticky chrome)."
+          },
+          {
+            "name": "search",
+            "type": "boolean",
+            "default": "false",
+            "description": "Show a search field above the options."
+          },
+          {
+            "name": "searchPlaceholder",
+            "type": "string",
+            "default": "\"Search\"",
+            "description": "Placeholder for the search field."
+          },
+          {
+            "name": "searchValue",
+            "type": "string",
+            "description": "Controlled search query."
+          },
+          {
+            "name": "defaultSearchValue",
+            "type": "string",
+            "description": "Uncontrolled initial search query."
+          },
+          {
+            "name": "onSearchChange",
+            "type": "(value: string) => void",
+            "description": "Called when the search query changes."
+          },
+          {
+            "name": "scrollable",
+            "type": "boolean",
+            "default": "auto",
+            "description": "Wrap options in the kit ScrollArea (custom scrollbar). Defaults on for plain panels and off when the panel contains a submenu; pass explicitly to override."
+          },
+          {
+            "name": "scrollMaxHeight",
+            "type": "string | number",
+            "default": "\"min(60vh, 24rem)\"",
+            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem)."
+          },
+          {
+            "name": "footer",
+            "type": "ReactNode",
+            "description": "Footer actions under the options (for example Reset)."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Panel surface styles."
+          }
+        ]
+      },
+      {
+        "id": "select-item",
+        "title": "SelectItem",
+        "description": "Option row. Same API as OptionListItem, including trailing badges and nested chevrons.",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "description": "Option value stored in Select state."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Non-selectable row."
+          },
+          {
+            "name": "leading",
+            "type": "\"checkbox\" | \"check\" | ReactNode | false",
+            "description": "Leading control. Use \"checkbox\" for multi-select rows."
+          },
+          {
+            "name": "secondary",
+            "type": "ReactNode",
+            "description": "Supporting copy beside or under the label."
+          },
+          {
+            "name": "layout",
+            "type": "\"inline\" | \"stacked\"",
+            "default": "\"inline\"",
+            "description": "inline places secondary beside the label; stacked places it underneath."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "End-of-row slot: badge counter, nested-menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
+          },
+          {
+            "name": "indicator",
+            "type": "boolean",
+            "description": "Selected check in single mode. Defaults off when leading is checkbox or trailing is set; otherwise on."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Primary label registered for SelectValue."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional row styles."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div props. Use data-highlighted for hover/open parent rows in nested menus."
+          }
+        ]
+      },
+      {
+        "id": "select-layout",
+        "title": "Layout & appearance",
+        "description": "Common configurations that are not single named props. Use className and tokens.",
+        "props": [
+          {
+            "name": "Radius",
+            "type": "CSS / className",
+            "default": "--radius-4xl",
+            "description": "Trigger uses the kit radius token. Override with className such as rounded-xl or rounded-full."
+          },
+          {
+            "name": "Corner shape",
+            "type": "theme token",
+            "default": "--df-corner-shape",
+            "description": "Curve style for rounded chrome. Set once with df-ui init --corner-shape (round or smooth), or override --df-corner-shape on :root."
+          },
+          {
+            "name": "Fixed width",
+            "type": "className on SelectTrigger",
+            "description": "Set an explicit width (for example w-64). Multi-select badges wrap to new lines and the trigger grows in height."
+          },
+          {
+            "name": "Text truncation",
+            "type": "className on SelectTrigger",
+            "description": "Constrain width (for example w-36). SelectValue ellipsizes the selected label; the open list still hugs options unless alignItemWithTrigger is true."
+          },
+          {
+            "name": "Hug content",
+            "type": "alignItemWithTrigger={false}",
+            "default": "false",
+            "description": "Default menu sizing: width follows the longest option (nowrap rows)."
+          },
+          {
+            "name": "Match trigger width",
+            "type": "alignItemWithTrigger",
+            "description": "Lock the menu to the trigger width. Useful for fixed-width multi-select fields."
+          },
+          {
+            "name": "Composition",
+            "type": "parts",
+            "description": "Also available: SelectGroup, SelectLabel, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton, SelectFieldLabel, SelectFieldHint, SelectFieldHelp."
+          }
+        ]
+      },
+      {
+        "id": "select-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-menu-min-width",
+            "type": "CSS length",
+            "description": "Minimum open panel width.",
+            "default": "9rem"
+          },
+          {
+            "name": "--df-menu-max-height",
+            "type": "CSS length",
+            "description": "Maximum panel height before scrolling.",
+            "default": "24rem"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Trigger and panel border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--background",
+            "type": "CSS color",
+            "description": "Trigger and panel fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--muted",
+            "type": "CSS color",
+            "description": "Hover row fill.",
+            "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--df-corner-shape",
+            "type": "CSS corner-shape",
+            "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
+            "default": "var(--df-corner-shape-round)"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "name": "tooltip",
+  "slug": "tooltip",
+  "title": "Tooltip",
+  "description": "Compact and detailed labels on hover and focus.",
+  "chapter": "feedback",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-tooltip",
+  "dependencies": [],
+  "api": {
+    "description": "Compact or detailed labels on hover and focus. Compose Tooltip, TooltipTrigger, and TooltipContent.",
+    "groups": [
+      {
+        "id": "tooltip",
+        "title": "Tooltip",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"compact\" | \"detailed\"",
+            "default": "\"compact\"",
+            "description": "Content density and typography."
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when open state changes."
+          },
+          {
+            "name": "delayDuration",
+            "type": "number",
+            "default": "200",
+            "description": "Hover delay in milliseconds before showing."
+          }
+        ]
+      },
+      {
+        "id": "tooltip-trigger",
+        "title": "TooltipTrigger",
+        "props": [
+          {
+            "name": "render",
+            "type": "ReactElement",
+            "description": "Host element to attach tooltip behavior to."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger content when not using render."
+          },
+          {
+            "name": "…button attributes",
+            "type": "ButtonHTMLAttributes",
+            "description": "Applied when rendering the default button host."
+          }
+        ]
+      },
+      {
+        "id": "tooltip-content",
+        "title": "TooltipContent",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "\"top\"",
+            "description": "Preferred placement side."
+          },
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\"",
+            "default": "\"center\"",
+            "description": "Alignment along the side."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "14",
+            "description": "Gap between trigger and content."
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "description": "Shift along the alignment axis."
+          },
+          {
+            "name": "wrap",
+            "type": "boolean",
+            "description": "Detailed only: wrap text within max width."
+          },
+          {
+            "name": "arrow",
+            "type": "boolean",
+            "default": "true",
+            "description": "Show the pointing arrow."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Tooltip label or detailed body."
+          }
+        ]
+      },
+      {
+        "id": "tooltip-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-tooltip-max-width",
+            "type": "CSS length",
+            "description": "Compact variant max width.",
+            "default": "16rem"
+          },
+          {
+            "name": "--df-tooltip-max-width-detailed",
+            "type": "CSS length",
+            "description": "Detailed variant max width.",
+            "default": "18rem"
+          },
+          {
+            "name": "--df-tooltip-arrow-offset",
+            "type": "CSS length",
+            "description": "Arrow distance from the content edge.",
+            "default": "3.5px"
+          },
+          {
+            "name": "--df-tooltip-arrow-align-nudge",
+            "type": "CSS length",
+            "description": "Arrow alignment nudge toward the trigger.",
+            "default": "4px"
+          },
+          {
+            "name": "--df-shadow-tooltip",
+            "type": "CSS shadow",
+            "description": "Drop shadow that includes the arrow silhouette.",
+            "default": "drop-shadow(0 4px 6px rgb(0 0 0 / 0.1)) drop-shadow(0 2px 3px rgb(0 0 0 / 0.08))"
+          }
+        ]
+      }
+    ]
+  }
+}
