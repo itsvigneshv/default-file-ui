@@ -159,7 +159,7 @@ export function breakpointMinWidth(name) {
   return value
 }
 
-/** Exclusive max-width value for a breakpoint name (one pixel below the step). */
+/** Exclusive max-width value for a breakpoint name. */
 export function breakpointMaxWidth(name) {
   const base = BREAKPOINTS[name]
   if (!base) throw new Error(`Unknown breakpoint "${name}"`)

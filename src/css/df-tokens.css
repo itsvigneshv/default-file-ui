@@ -43,11 +43,11 @@
   --df-breakpoint-3xl: 1920px;
   /* /df-generated:breakpoints */
 
-  /* Minimum interactive hit target sizes. */
+  /* Hit target minimums. */
   --df-touch-target-min: 2.75rem;
   --df-touch-target-comfortable: 3rem;
 
-  /* Device safe-area insets for host overlay composition. */
+  /* Safe-area insets. */
   --df-safe-area-inset-top: env(safe-area-inset-top, 0px);
   --df-safe-area-inset-right: env(safe-area-inset-right, 0px);
   --df-safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
@@ -251,10 +251,6 @@
   --df-max-w-7xl: 80rem;
   --df-max-w-prose: 65ch;
 
-  --df-switch-track-height: 18.4px;
-  --df-switch-track-width: 32px;
-  --df-switch-track-height-sm: 14px;
-  --df-switch-track-width-sm: 24px;
   --df-scrollbar-thickness: 3px;
   --df-scrollbar-min-thumb: 24px;
   --df-scrollbar-min-thumb-edge: 20px;
@@ -647,7 +643,7 @@
   --sidebar-accent-foreground: var(--df-neutral-900);
 }
 
-/* Control height scale for host data-df-density. */
+/* Control and affordance sizes for host data-df-density. */
 :root,
 [data-df-density="cozy"] {
   --df-control-height-2xs: calc(6 * var(--spacing-unit));
@@ -657,6 +653,16 @@
   --df-control-height-lg: calc(10 * var(--spacing-unit));
   --df-control-height-xl: calc(11 * var(--spacing-unit));
   --df-control-height-2xl: calc(12 * var(--spacing-unit));
+  --df-affordance-size-xs: calc(3 * var(--spacing-unit));
+  --df-affordance-size-sm: calc(4 * var(--spacing-unit));
+  --df-affordance-size-md: calc(5 * var(--spacing-unit));
+  --df-slider-track-height: calc(3 * var(--spacing-unit));
+  --df-tabs-segment-min-height-sm: calc(6.5 * var(--spacing-unit));
+  --df-tabs-segment-min-height-md: calc(7.5 * var(--spacing-unit));
+  --df-switch-track-height: 18.4px;
+  --df-switch-track-width: 32px;
+  --df-switch-track-height-sm: 14px;
+  --df-switch-track-width-sm: 24px;
 }
 
 [data-df-density="comfortable"] {

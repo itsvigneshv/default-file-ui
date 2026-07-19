@@ -210,12 +210,14 @@
 }
 
 :where([data-df="button"][data-size="default"]) {
-  padding-block: calc(2 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
+  padding-block: 0;
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="xs"]) {
   gap: calc(1 * var(--spacing-unit, 0.25rem));
-  padding-block: calc(1 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-xs);
+  padding-block: 0;
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
@@ -225,19 +227,23 @@
 }
 :where([data-df="button"][data-size="sm"]) {
   gap: calc(1 * var(--spacing-unit, 0.25rem));
-  padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
+  padding-block: 0;
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="lg"]) {
-  padding-block: calc(2.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-lg);
+  padding-block: 0;
   padding-inline: calc(5 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="xl"]) {
-  padding-block: calc(3 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-xl);
+  padding-block: 0;
   padding-inline: calc(6 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="2xl"]) {
-  padding-block: calc(3.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-2xl);
+  padding-block: 0;
   padding-inline: calc(7 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="icon"]) {
@@ -393,30 +399,36 @@
   text-decoration: none;
 }
 .df-btn-default-size {
-  padding-block: calc(2 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
+  padding-block: 0;
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-xs {
   gap: calc(1 * var(--spacing-unit, 0.25rem));
-  padding-block: calc(1 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-xs);
+  padding-block: 0;
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
 .df-btn-sm {
   gap: calc(1 * var(--spacing-unit, 0.25rem));
-  padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
+  padding-block: 0;
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-lg {
-  padding-block: calc(2.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-lg);
+  padding-block: 0;
   padding-inline: calc(5 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-xl {
-  padding-block: calc(3 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-xl);
+  padding-block: 0;
   padding-inline: calc(6 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-2xl {
-  padding-block: calc(3.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-2xl);
+  padding-block: 0;
   padding-inline: calc(7 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-icon {
@@ -789,6 +801,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: var(--df-control-height-2xs);
+  height: var(--df-control-height-2xs);
   margin-inline-end: var(--df-badge-dismiss-inset);
   padding: 0;
   border: 0;
@@ -891,19 +905,19 @@
 }
 
 :where([data-df="choice-chip"][data-size="sm"]) {
-  height: calc(6 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-2xs);
   padding: 0 calc(2 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-11);
 }
 
 :where([data-df="choice-chip"][data-size="md"]) {
-  height: calc(7 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-xs);
   padding: 0 calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
 
 :where([data-df="choice-chip"][data-size="lg"]) {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   padding: 0 calc(3.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
 }
@@ -1050,8 +1064,8 @@
 }
 :where([data-df="search-input-clear"]) {
   display: inline-flex;
-  width: calc(6 * var(--spacing-unit, 0.25rem));
-  height: calc(6 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-2xs);
+  height: var(--df-control-height-2xs);
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
@@ -1115,8 +1129,8 @@
   right: calc(6 * var(--spacing-unit, 0.25rem));
 }
 [data-df="search-input"][data-size="sm"] [data-df="search-input-clear"] {
-  width: calc(5 * var(--spacing-unit, 0.25rem));
-  height: calc(5 * var(--spacing-unit, 0.25rem));
+  width: var(--df-affordance-size-md);
+  height: var(--df-affordance-size-md);
 }
 [data-df="search-input"][data-size="sm"] [data-df="search-input-clear"] svg {
   width: calc(3 * var(--spacing-unit, 0.25rem));
@@ -1164,8 +1178,8 @@
   right: calc(8 * var(--spacing-unit, 0.25rem));
 }
 [data-df="search-input"][data-size="lg"] [data-df="search-input-clear"] {
-  width: calc(7 * var(--spacing-unit, 0.25rem));
-  height: calc(7 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-xs);
+  height: var(--df-control-height-xs);
 }
 [data-df="search-input"][data-size="lg"] [data-df="search-input-clear"] svg {
   width: calc(4 * var(--spacing-unit, 0.25rem));
@@ -1384,13 +1398,13 @@
 }
 
 :where([data-df="switch"][data-size="default"] [data-df="switch-thumb"]) {
-  width: calc(4 * var(--spacing-unit, 0.25rem));
-  height: calc(4 * var(--spacing-unit, 0.25rem));
+  width: var(--df-affordance-size-sm);
+  height: var(--df-affordance-size-sm);
 }
 
 :where([data-df="switch"][data-size="sm"] [data-df="switch-thumb"]) {
-  width: calc(3 * var(--spacing-unit, 0.25rem));
-  height: calc(3 * var(--spacing-unit, 0.25rem));
+  width: var(--df-affordance-size-xs);
+  height: var(--df-affordance-size-xs);
 }
 
 :where([data-df="switch"][aria-checked="true"] [data-df="switch-thumb"]),
@@ -1421,7 +1435,7 @@
   overflow: hidden;
   border-radius: var(--radius-4xl);
   background-color: var(--muted);
-  height: calc(3 * var(--spacing-unit, 0.25rem));
+  height: var(--df-slider-track-height);
   width: 100%;
 }
 
@@ -1435,8 +1449,8 @@
 
 :where([data-df="slider-thumb"]) {
   display: block;
-  width: calc(4 * var(--spacing-unit, 0.25rem));
-  height: calc(4 * var(--spacing-unit, 0.25rem));
+  width: var(--df-affordance-size-sm);
+  height: var(--df-affordance-size-sm);
   flex-shrink: 0;
   border-radius: var(--radius-4xl);
   border: var(--border-width-hairline) solid var(--primary);
@@ -2927,8 +2941,8 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: calc(6 * var(--spacing-unit, 0.25rem));
-  height: calc(6 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-2xs);
+  height: var(--df-control-height-2xs);
   border-radius: var(--radius-full);
   color: var(--muted-foreground);
 }
@@ -3241,7 +3255,7 @@
 :where([data-df="tabs-trigger"][data-variant="segment"][data-size="sm"]),
 .df-tabs-trigger[data-variant="segment"][data-size="sm"] {
   height: auto;
-  min-height: calc(6.5 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-tabs-segment-min-height-sm);
   padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(1 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-2xs);
@@ -3257,7 +3271,7 @@
 :where([data-df="tabs-trigger"][data-variant="segment"][data-size="default"]),
 .df-tabs-trigger[data-variant="segment"][data-size="default"] {
   height: auto;
-  min-height: calc(7.5 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-tabs-segment-min-height-md);
   padding-block: calc(1.75 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(2 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);

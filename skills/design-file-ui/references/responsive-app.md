@@ -25,15 +25,15 @@ Redraw regions for small screens. Do not only shrink desktop typography and hope
 
 ## Touch and keyboard
 
-- Comfortable hit targets for primary controls. Use `--df-touch-target-min` and density control heights for chrome.
-- Respect safe areas with `--df-safe-area-inset-*` and host `--df-overlay-inset-*`.
-- Account for on screen keyboard covering composers and sticky footers.
+- Comfortable hit targets for primary controls (`--df-touch-target-min`, density control heights).
+- Respect safe areas (`--df-safe-area-inset-*`, host `--df-overlay-inset-*`).
+- Account for on-screen keyboard covering composers and sticky footers.
 - Swipe actions need visible alternatives for accessibility.
 
 ## Kit responsive tokens
 
-- Breakpoints: `--df-breakpoint-*` with utility prefixes `sm:` to `3xl:`, `max-sm:` to `max-3xl:`, and container `@sm:` to `@3xl:` with `@container`.
-- Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-2xs` to `--df-control-height-2xl`. Keep semantic `size` props; do not swap sizes per breakpoint at call sites.
+- Breakpoints: `--df-breakpoint-*`; utilities `sm:` to `3xl:`, `max-sm:` to `max-3xl:`, `@sm:` to `@3xl:`, `@container`.
+- Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-*`. Use semantic `size` props.
 
 ## Density on mobile
 

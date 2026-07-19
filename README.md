@@ -142,11 +142,11 @@ Primitives live under `--df-*` (scales for color, type, space, radius, shadow, m
 
 Responsive tokens and utilities:
 
-- Breakpoint CSS vars `--df-breakpoint-sm` to `--df-breakpoint-3xl` are generated from `BREAKPOINTS` in `scripts/df-theme.mjs`.
-- Utility variants: viewport `sm:` to `3xl:` (min-width), `max-sm:` to `max-3xl:` (max-width), and container `@sm:` to `@3xl:` plus `@container` (`container-type: inline-size`).
+- Breakpoints: `--df-breakpoint-sm` to `--df-breakpoint-3xl` (from `BREAKPOINTS` in `scripts/df-theme.mjs`).
+- Utility variants: `sm:` to `3xl:` (min-width), `max-sm:` to `max-3xl:` (max-width), `@sm:` to `@3xl:` and `@container`.
 - Touch targets: `--df-touch-target-min`, `--df-touch-target-comfortable`.
-- Control density: host `data-df-density` (`cozy` default, `comfortable`, or `compact`) sets `--df-control-height-2xs` to `--df-control-height-2xl`. Wired form controls (icon buttons, Input, SearchInput, Select, Toggle, Tabs pill triggers, ContentSwitcher, FloatingControls) resolve height through these tokens. Authors keep semantic `size` props. Mid-size may be named `default` or `md` by family; Select aliases `default` to `md`. Color-scale `compact` is palette-only and separate from control density.
-- Safe-area: `--df-safe-area-inset-*` maps to `env(safe-area-inset-*, 0px)`. Hosts compose `--df-overlay-inset-top` and `--df-overlay-inset-bottom` from sticky chrome and these tokens.
+- Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-*`. Related sizes use `--df-affordance-size-*`, `--df-slider-track-height`, `--df-tabs-segment-min-height-*`, and `--df-switch-track-*`. Authors use semantic `size` props (`default` or `md` for mid-size by family). Color-scale `compact` is palette-only.
+- Safe-area: `--df-safe-area-inset-*`. Hosts compose `--df-overlay-inset-top` and `--df-overlay-inset-bottom` with sticky chrome.
 
 ## License
 
