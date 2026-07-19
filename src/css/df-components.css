@@ -241,13 +241,13 @@
   padding-inline: calc(7 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="icon"]) {
-  width: calc(9 * var(--spacing-unit, 0.25rem));
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-md);
+  height: var(--df-control-height-md);
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-xs"]) {
-  width: calc(7 * var(--spacing-unit, 0.25rem));
-  height: calc(7 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-xs);
+  height: var(--df-control-height-xs);
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-xs"] svg) {
@@ -255,23 +255,23 @@
   height: calc(3 * var(--spacing-unit, 0.25rem));
 }
 :where([data-df="button"][data-size="icon-sm"]) {
-  width: calc(8 * var(--spacing-unit, 0.25rem));
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-sm);
+  height: var(--df-control-height-sm);
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-lg"]) {
-  width: calc(10 * var(--spacing-unit, 0.25rem));
-  height: calc(10 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-lg);
+  height: var(--df-control-height-lg);
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-xl"]) {
-  width: calc(11 * var(--spacing-unit, 0.25rem));
-  height: calc(11 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-xl);
+  height: var(--df-control-height-xl);
   padding: 0;
 }
 :where([data-df="button"][data-size="icon-2xl"]) {
-  width: calc(12 * var(--spacing-unit, 0.25rem));
-  height: calc(12 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-2xl);
+  height: var(--df-control-height-2xl);
   padding: 0;
 }
 
@@ -420,33 +420,33 @@
   padding-inline: calc(7 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-icon {
-  width: calc(9 * var(--spacing-unit, 0.25rem));
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-md);
+  height: var(--df-control-height-md);
   padding: 0;
 }
 .df-btn-icon-xs {
-  width: calc(7 * var(--spacing-unit, 0.25rem));
-  height: calc(7 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-xs);
+  height: var(--df-control-height-xs);
   padding: 0;
 }
 .df-btn-icon-sm {
-  width: calc(8 * var(--spacing-unit, 0.25rem));
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-sm);
+  height: var(--df-control-height-sm);
   padding: 0;
 }
 .df-btn-icon-lg {
-  width: calc(10 * var(--spacing-unit, 0.25rem));
-  height: calc(10 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-lg);
+  height: var(--df-control-height-lg);
   padding: 0;
 }
 .df-btn-icon-xl {
-  width: calc(11 * var(--spacing-unit, 0.25rem));
-  height: calc(11 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-xl);
+  height: var(--df-control-height-xl);
   padding: 0;
 }
 .df-btn-icon-2xl {
-  width: calc(12 * var(--spacing-unit, 0.25rem));
-  height: calc(12 * var(--spacing-unit, 0.25rem));
+  width: var(--df-control-height-2xl);
+  height: var(--df-control-height-2xl);
   padding: 0;
 }
 
@@ -909,7 +909,7 @@
 }
 
 :where([data-df="input"]) {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   width: 100%;
   min-width: 0;
   border-radius: var(--radius-4xl);
@@ -952,7 +952,7 @@
 }
 
 .df-input {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   width: 100%;
   min-width: 0;
   border-radius: var(--radius-4xl);
@@ -1087,7 +1087,7 @@
 }
 
 [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
   font-size: var(--df-text-13);
   line-height: var(--df-leading-5);
   padding-block: calc(0.5 * var(--spacing-unit, 0.25rem));
@@ -1130,13 +1130,13 @@
 }
 
 [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   font-size: var(--df-text-sm);
   line-height: var(--df-leading-5);
 }
 
 [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
-  height: calc(10 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-lg);
   font-size: var(--df-text-base);
   line-height: var(--df-leading-5-25);
   padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
@@ -1198,7 +1198,7 @@
 
 @media (max-width: 639px) { /* df-bp:max-sm */
   [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
-    height: calc(9 * var(--spacing-unit, 0.25rem));
+    height: var(--df-control-height-md);
     font-size: var(--df-text-sm);
   }
   [data-df="search-input"][data-size="sm"] [data-df="search-input-icon"] {
@@ -1221,7 +1221,7 @@
 
 @media (min-width: 1920px) { /* df-bp:3xl */ 
   [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
-    height: calc(10 * var(--spacing-unit, 0.25rem));
+    height: var(--df-control-height-lg);
     font-size: var(--df-text-base);
   }
   [data-df="search-input"][data-size="md"] [data-df="search-input-icon"] {
@@ -1241,7 +1241,7 @@
     padding-right: calc(10 * var(--spacing-unit, 0.25rem));
   }
   [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
-    height: calc(11 * var(--spacing-unit, 0.25rem));
+    height: var(--df-control-height-xl);
     font-size: var(--df-text-base);
   }
 }
@@ -1497,22 +1497,22 @@
 
 :where([data-df="toggle"][data-size="default"]),
 :where([data-df="toggle-group-item"][data-size="default"]) {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
-  min-width: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
+  min-width: var(--df-control-height-md);
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 
 :where([data-df="toggle"][data-size="sm"]),
 :where([data-df="toggle-group-item"][data-size="sm"]) {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
-  min-width: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
+  min-width: var(--df-control-height-sm);
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 
 :where([data-df="toggle"][data-size="lg"]),
 :where([data-df="toggle-group-item"][data-size="lg"]) {
-  height: calc(10 * var(--spacing-unit, 0.25rem));
-  min-width: calc(10 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-lg);
+  min-width: var(--df-control-height-lg);
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
 }
 
@@ -1636,13 +1636,13 @@
   border-color: var(--input);
 }
 .df-toggle-item-default {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
-  min-width: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
+  min-width: var(--df-control-height-md);
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
 }
 .df-toggle-item-sm {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
-  min-width: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
+  min-width: var(--df-control-height-sm);
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-13);
 }
@@ -1651,8 +1651,8 @@
   height: calc(3.5 * var(--spacing-unit, 0.25rem));
 }
 .df-toggle-item-lg {
-  height: calc(10 * var(--spacing-unit, 0.25rem));
-  min-width: calc(10 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-lg);
+  min-width: var(--df-control-height-lg);
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
 }
 .df-toggle-group[data-spacing="0"] .df-toggle-item {
@@ -2165,7 +2165,7 @@
 }
 
 :where([data-df="select-trigger"][data-size="sm"]) {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
   gap: calc(1 * var(--spacing-unit, 0.25rem));
   padding: calc(1.5 * var(--spacing-unit, 0.25rem)) calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-13);
@@ -2173,12 +2173,12 @@
 
 :where([data-df="select-trigger"][data-size="md"]),
 :where([data-df="select-trigger"][data-size="default"]) {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   font-size: var(--df-text-sm);
 }
 
 :where([data-df="select-trigger"][data-size="lg"]) {
-  height: calc(10 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-lg);
   gap: calc(2 * var(--spacing-unit, 0.25rem));
   padding: calc(2.5 * var(--spacing-unit, 0.25rem)) calc(3.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-base);
@@ -2196,17 +2196,17 @@
 
 :where([data-df="select-trigger"][data-selection-mode="multiple"]) {
   height: auto;
-  min-height: calc(9 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-control-height-md);
   white-space: normal;
   align-items: flex-start;
 }
 
 :where([data-df="select-trigger"][data-selection-mode="multiple"][data-size="sm"]) {
-  min-height: calc(8 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-control-height-sm);
 }
 
 :where([data-df="select-trigger"][data-selection-mode="multiple"][data-size="lg"]) {
-  min-height: calc(10 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-control-height-lg);
 }
 
 :where([data-df="select-trigger"][data-selection-mode="multiple"] > svg:last-child) {
@@ -3233,7 +3233,7 @@
 
 :where([data-df="tabs-trigger"][data-size="sm"]),
 .df-tabs-trigger[data-size="sm"] {
-  height: calc(7 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-xs);
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
@@ -3249,7 +3249,7 @@
 
 :where([data-df="tabs-trigger"][data-size="default"]),
 .df-tabs-trigger[data-size="default"] {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
 }
@@ -3265,7 +3265,7 @@
 
 :where([data-df="tabs-trigger"][data-size="lg"]),
 .df-tabs-trigger[data-size="lg"] {
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   padding-inline: calc(4 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
 }
@@ -3273,7 +3273,7 @@
 :where([data-df="tabs-trigger"][data-variant="segment"][data-size="lg"]),
 .df-tabs-trigger[data-variant="segment"][data-size="lg"] {
   height: auto;
-  min-height: calc(9 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-control-height-md);
   padding-block: calc(2 * var(--spacing-unit, 0.25rem));
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
@@ -3487,7 +3487,7 @@
   gap: calc(1 * var(--spacing-unit, 0.25rem));
   flex-shrink: 0;
   margin: 0;
-  height: calc(9 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-md);
   padding-inline: calc(3 * var(--spacing-unit, 0.25rem));
   border: var(--border-width-hairline) solid var(--input);
   border-radius: 0;
@@ -3508,14 +3508,14 @@
 
 :where([data-df="content-switcher-item"][data-size="sm"]),
 .df-content-switcher-item[data-size="sm"] {
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-13);
 }
 
 :where([data-df="content-switcher-item"][data-size="xs"]),
 .df-content-switcher-item[data-size="xs"] {
-  height: calc(6 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-2xs);
   padding-inline: calc(2 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-xs);
 }
@@ -3623,7 +3623,7 @@
   gap: calc(1.5 * var(--spacing-unit, 0.25rem));
   flex-shrink: 0;
   margin: 0;
-  height: calc(8 * var(--spacing-unit, 0.25rem));
+  height: var(--df-control-height-sm);
   padding-inline: calc(2.5 * var(--spacing-unit, 0.25rem));
   border: none;
   border-radius: var(--radius-lg);

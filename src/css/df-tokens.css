@@ -650,27 +650,33 @@
 /* Control height scale for host data-df-density. */
 :root,
 [data-df-density="cozy"] {
+  --df-control-height-2xs: calc(6 * var(--spacing-unit));
   --df-control-height-xs: calc(7 * var(--spacing-unit));
   --df-control-height-sm: calc(8 * var(--spacing-unit));
   --df-control-height-md: calc(9 * var(--spacing-unit));
   --df-control-height-lg: calc(10 * var(--spacing-unit));
   --df-control-height-xl: calc(11 * var(--spacing-unit));
+  --df-control-height-2xl: calc(12 * var(--spacing-unit));
 }
 
 [data-df-density="comfortable"] {
+  --df-control-height-2xs: calc(7 * var(--spacing-unit));
   --df-control-height-xs: calc(8 * var(--spacing-unit));
   --df-control-height-sm: calc(9 * var(--spacing-unit));
   --df-control-height-md: calc(10 * var(--spacing-unit));
   --df-control-height-lg: calc(11 * var(--spacing-unit));
   --df-control-height-xl: calc(12 * var(--spacing-unit));
+  --df-control-height-2xl: calc(13 * var(--spacing-unit));
 }
 
 [data-df-density="compact"] {
+  --df-control-height-2xs: calc(5 * var(--spacing-unit));
   --df-control-height-xs: calc(6 * var(--spacing-unit));
   --df-control-height-sm: calc(7 * var(--spacing-unit));
   --df-control-height-md: calc(8 * var(--spacing-unit));
   --df-control-height-lg: calc(9 * var(--spacing-unit));
   --df-control-height-xl: calc(10 * var(--spacing-unit));
+  --df-control-height-2xl: calc(11 * var(--spacing-unit));
 }
 
 .dark {

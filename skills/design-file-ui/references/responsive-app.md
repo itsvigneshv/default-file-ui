@@ -33,7 +33,7 @@ Redraw regions for small screens. Do not only shrink desktop typography and hope
 ## Kit responsive tokens
 
 - Breakpoints: `--df-breakpoint-*` with utility prefixes `sm:` to `3xl:`, `max-sm:` to `max-3xl:`, and container `@sm:` to `@3xl:` with `@container`.
-- Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-*`.
+- Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-2xs` to `--df-control-height-2xl`. Keep semantic `size` props; do not swap sizes per breakpoint at call sites.
 
 ## Density on mobile
 
