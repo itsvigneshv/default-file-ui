@@ -241,7 +241,7 @@ Assess whether the kit covers a UI surface. Returns covered, partial, or gap.
 export function docsCommand(args) {
   if (args.includes("-h") || args.includes("--help")) {
     console.log(`
-Usage: df-ui docs [overview|install|mcp|tokens|foundation] [--json]
+Usage: df-ui docs [overview|install|mcp|tokens|foundation|skills] [--json]
 
 Print kit guidance for humans and agents.
 `)

@@ -11,6 +11,7 @@ import {
 import { infoCommand } from "./info.mjs"
 import { initCommand } from "./init.mjs"
 import { startMcpServer } from "./mcp.mjs"
+import { skillsCommand } from "./skills.mjs"
 
 export async function run(argv) {
   const [command, ...rest] = argv
@@ -70,6 +71,11 @@ export async function run(argv) {
     return
   }
 
+  if (command === "skills") {
+    skillsCommand(rest)
+    return
+  }
+
   if (command === "mcp") {
     await startMcpServer()
     return
@@ -96,6 +102,7 @@ Commands:
   search       Search components by keyword
   cover        Coverage check for a UI need
   docs         Install and agent guidance
+  skills       List, show, or install bundled Agent Skills
   mcp          Start stdio MCP server for AI hosts
 
 Examples:
@@ -105,6 +112,7 @@ Examples:
   df-ui list --json
   df-ui show button --json
   df-ui cover "settings form with select and toast" --json
+  df-ui skills install design-file-ui
   df-ui mcp
 `)
 }

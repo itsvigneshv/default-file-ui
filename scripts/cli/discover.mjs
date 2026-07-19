@@ -309,7 +309,7 @@ export function getDocs(topic = "overview") {
         "One install path. Do not add a separate utility CSS stack or a separate component kit for Default File UI surfaces.",
         "Package import: @import \"@default-file/ui/css/df-index.css\"; then import components from @default-file/ui/components/df-*.",
         "Copy-source: df-ui init, then df-ui add <items>. Foundation installs CSS, hooks, and cn.",
-        "AI hosts: run df-ui mcp (stdio) to inspect components, props, tokens, coverage, and install.",
+        "AI hosts: run df-ui mcp (stdio) to inspect components, props, tokens, coverage, skills, and install.",
       ].join("\n"),
     },
     install: {
@@ -319,6 +319,7 @@ export function getDocs(topic = "overview") {
         "Scaffold: npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next",
         "Existing app: df-ui init (writes df.json; supports --framework, --color-scale, --radius, --corner-shape, --install-mode)",
         "Add components: df-ui add button select",
+        "Agent skill: npx skills add itsvigneshv/default-file-ui --skill design-file-ui (or df-ui skills install design-file-ui)",
         "Package mode peers: react, react-dom, lucide-react",
         "CSS: @import \"@default-file/ui/css/df-index.css\";",
       ].join("\n"),
@@ -328,9 +329,20 @@ export function getDocs(topic = "overview") {
       title: "MCP",
       body: [
         "Start: df-ui mcp (stdio). Works with any MCP-capable host.",
-        "Tools: list_components, get_component, list_tokens, search_kit, check_coverage, get_docs, init_project, add_components.",
+        "Tools: list_components, get_component, list_tokens, search_kit, check_coverage, get_docs, list_skills, get_skill, install_skill, init_project, add_components.",
         "get_component returns full prop tables from docs/api when available.",
         "Host config example: command df-ui, args [\"mcp\"] (or npx -p github:itsvigneshv/default-file-ui#main df-ui mcp).",
+      ].join("\n"),
+    },
+    skills: {
+      topic: "skills",
+      title: "Skills",
+      body: [
+        "Bundled Agent Skill: design-file-ui (principles for distinctive frontend UI).",
+        "Open ecosystem: npx skills add itsvigneshv/default-file-ui --skill design-file-ui",
+        "Kit CLI: df-ui skills list | show design-file-ui | install design-file-ui",
+        "install copies into .agents/skills and .cursor/skills in the project.",
+        "MCP: list_skills, get_skill, install_skill.",
       ].join("\n"),
     },
     tokens: {
@@ -338,7 +350,7 @@ export function getDocs(topic = "overview") {
       title: "Tokens",
       body: [
         "Primitives use --df-* names (color, type, space, radius, shadow, motion, opacity, z-index, control sizes).",
-        "Semantic tokens (--background, --border, --brand-ink, …) point at primitives.",
+        "Semantic tokens (--background, --border, --brand-ink, ...) point at primitives.",
         "Color scale modes: data-df-color-scale=\"detailed\" (default) or \"compact\" on <html>.",
         "Use df-ui tokens to list machine-readable token names from the kit CSS.",
       ].join("\n"),

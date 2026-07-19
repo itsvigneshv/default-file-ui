@@ -20,13 +20,24 @@ df-ui search select --json
 df-ui cover "settings form with select, switch, and toast" --json
 df-ui tokens --json
 df-ui docs mcp
+df-ui docs skills
+df-ui skills list --json
+df-ui skills install design-file-ui
 ```
 
 `show` and MCP `get_component` return full prop tables (name, type, default, description) from `docs/api`.
 
+The bundled `design-file-ui` skill includes `references/kit.md`, which teaches discover-then-compose with these CLI and MCP tools.
+
+Open skills install:
+
+```bash
+npx skills add itsvigneshv/default-file-ui --skill design-file-ui
+```
+
 ## MCP (stdio)
 
-Works with any MCP-capable host.
+Works with any host that supports MCP.
 
 ```json
 {
@@ -67,7 +78,10 @@ Local install:
 | `list_tokens` | Token inventory by group |
 | `search_kit` | Keyword search |
 | `check_coverage` | covered / partial / gap for a UI need |
-| `get_docs` | overview, install, mcp, tokens, foundation |
+| `get_docs` | overview, install, mcp, tokens, foundation, skills |
+| `list_skills` | Bundled Agent Skills |
+| `get_skill` | Full SKILL.md + reference list |
+| `install_skill` | Copy skill into `.agents/skills` and `.cursor/skills` |
 | `init_project` | Scaffold or configure (writes files) |
 | `add_components` | Copy-source add (writes files) |
 

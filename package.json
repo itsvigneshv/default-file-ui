@@ -22,7 +22,8 @@
     "public/r",
     "registry.json",
     "scripts",
-    "docs"
+    "docs",
+    "skills"
   ],
   "exports": {
     "./css/*": "./src/css/*",

@@ -13,6 +13,7 @@ import {
   showComponent,
 } from "./discover.mjs"
 import { initCommand } from "./init.mjs"
+import { installSkill, listSkills, showSkill } from "./skills.mjs"
 
 function jsonResult(data) {
   return {
@@ -220,7 +221,7 @@ export async function startMcpServer() {
         "Read Default File UI guidance: overview, install, mcp, tokens, or foundation. Reinforces the one-kit install path (components + tokens + CSS).",
       inputSchema: {
         topic: z
-          .enum(["overview", "install", "mcp", "tokens", "foundation"])
+          .enum(["overview", "install", "mcp", "tokens", "foundation", "skills"])
           .optional()
           .describe("Docs topic"),
       },
@@ -228,6 +229,76 @@ export async function startMcpServer() {
     async ({ topic }) => {
       try {
         return jsonResult(getDocs(topic ?? "overview"))
+      } catch (error) {
+        return errorResult(error)
+      }
+    }
+  )
+
+  server.registerTool(
+    "list_skills",
+    {
+      title: "List skills",
+      description:
+        "List Agent Skills bundled with Default File UI (name and description).",
+      inputSchema: {},
+    },
+    async () => {
+      try {
+        return jsonResult({ skills: listSkills() })
+      } catch (error) {
+        return errorResult(error)
+      }
+    }
+  )
+
+  server.registerTool(
+    "get_skill",
+    {
+      title: "Get skill",
+      description:
+        "Read a bundled Agent Skill: SKILL.md markdown and reference file list.",
+      inputSchema: {
+        name: z.string().describe('Skill name, e.g. "design-file-ui"'),
+      },
+    },
+    async ({ name }) => {
+      try {
+        const detail = showSkill(name)
+        return jsonResult({
+          name: detail.name,
+          directory: detail.directory,
+          description: detail.description,
+          path: detail.path,
+          skillMarkdown: detail.skillMarkdown,
+          references: detail.references,
+        })
+      } catch (error) {
+        return errorResult(error)
+      }
+    }
+  )
+
+  server.registerTool(
+    "install_skill",
+    {
+      title: "Install skill",
+      description:
+        "Copy a bundled Agent Skill into .agents/skills and .cursor/skills. Prefer an explicit cwd. This writes files.",
+      inputSchema: {
+        name: z.string().describe('Skill name, e.g. "design-file-ui"'),
+        cwd: z
+          .string()
+          .optional()
+          .describe("Project directory (default: process cwd)"),
+      },
+      annotations: {
+        destructiveHint: true,
+      },
+    },
+    async ({ name, cwd }) => {
+      try {
+        return jsonResult(installSkill(name, { cwd: cwd || process.cwd() }))
       } catch (error) {
         return errorResult(error)
       }

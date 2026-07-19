@@ -39,6 +39,14 @@ df-ui search "toast select" --json
 df-ui cover "settings form with select, switch, and toast" --json
 df-ui tokens --group radius --json
 df-ui docs overview
+df-ui skills list --json
+df-ui skills install design-file-ui
+```
+
+Agent skill (skills.sh-compatible):
+
+```bash
+npx skills add itsvigneshv/default-file-ui --skill design-file-ui
 ```
 
 `show` returns full prop tables from `docs/api` (name, type, default, description).
@@ -49,7 +57,7 @@ to `init` to record a compact scale in `df.json`.
 
 ## MCP for AI hosts
 
-Stdio MCP so any MCP-capable host can inspect and install the kit:
+Stdio MCP so any host that supports MCP can inspect and install the kit:
 
 ```bash
 df-ui mcp
@@ -74,7 +82,7 @@ Example host config:
 }
 ```
 
-Tools: `list_components`, `get_component`, `list_tokens`, `search_kit`, `check_coverage`, `get_docs`, `init_project`, `add_components`.
+Tools: `list_components`, `get_component`, `list_tokens`, `search_kit`, `check_coverage`, `get_docs`, `list_skills`, `get_skill`, `install_skill`, `init_project`, `add_components`.
 
 Agent brief: [docs/agents.md](./docs/agents.md).
 
@@ -130,7 +138,7 @@ regardless of mode.
 
 ## Token layers
 
-Primitives live under `--df-*` (scales for color, type, space, radius, shadow, motion, opacity, z-index, control sizes). Semantic tokens (`--background`, `--border`, `--overlay-*`, `--brand-ink`, `--z-overlay`, …) name intent and point at primitives. Kit CSS and components resolve chrome through these vars only. Host apps may set inset contracts such as `--df-overlay-inset-top` and `--df-overlay-inset-bottom` so floating UI clears sticky chrome.
+Primitives live under `--df-*` (scales for color, type, space, radius, shadow, motion, opacity, z-index, control sizes). Semantic tokens (`--background`, `--border`, `--overlay-*`, `--brand-ink`, `--z-overlay`, ...) name intent and point at primitives. Kit CSS and components resolve chrome through these vars only. Host apps may set inset contracts such as `--df-overlay-inset-top` and `--df-overlay-inset-bottom` so floating UI clears sticky chrome.
 
 ## License
 

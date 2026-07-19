@@ -19,6 +19,7 @@ import {
   searchKit,
   showComponent,
 } from "./discover.mjs"
+import { listSkills, showSkill } from "./skills.mjs"
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 const BIN = path.join(ROOT, "bin/default-file-ui.mjs")
@@ -75,6 +76,20 @@ async function testHelpers() {
   const tokens = listTokens()
   assert.ok(tokens.tokenCount > 50)
   console.log(`tokens: ${tokens.tokenCount} across ${tokens.groupCount} groups`)
+
+  const skills = listSkills()
+  assert.ok(
+    skills.some((skill) => skill.name === "design-file-ui"),
+    "expected design-file-ui skill"
+  )
+  const designSkill = showSkill("design-file-ui")
+  assert.ok(designSkill.skillMarkdown.includes("name: design-file-ui"))
+  assert.ok(
+    !/award|awwward|awards-ui/i.test(designSkill.skillMarkdown),
+    "skill markdown must stay agnostic"
+  )
+  assert.ok(designSkill.references.length >= 3)
+  console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
 
 async function testCliJson() {
@@ -89,6 +104,11 @@ async function testCliJson() {
   const listData = JSON.parse(list.stdout)
   assert.ok(listData.items.length >= 20)
   console.log(`df-ui list --json ok (${listData.items.length} items)`)
+
+  const skillsList = await runCli(["skills", "list", "--json"])
+  const skillsData = JSON.parse(skillsList.stdout)
+  assert.ok(skillsData.skills.some((skill) => skill.name === "design-file-ui"))
+  console.log("df-ui skills list --json ok")
 }
 
 function runCli(args) {
@@ -137,12 +157,23 @@ async function testMcp() {
       "search_kit",
       "check_coverage",
       "get_docs",
+      "list_skills",
+      "get_skill",
+      "install_skill",
       "init_project",
       "add_components",
     ]) {
       assert.ok(names.includes(required), `missing tool ${required}`)
     }
     console.log(`tools: ${names.join(", ")}`)
+
+    const skillList = await client.callTool({
+      name: "list_skills",
+      arguments: {},
+    })
+    const skillPayload = JSON.parse(skillList.content[0].text)
+    assert.ok(skillPayload.skills.some((skill) => skill.name === "design-file-ui"))
+    console.log("mcp list_skills ok")
 
     const listed = await client.callTool({
       name: "list_components",
