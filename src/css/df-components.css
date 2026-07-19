@@ -2424,12 +2424,7 @@
   min-width: 0;
 }
 
-/*
- * Kit-scroll panels: shell inset on top, bottom, and start so vertical air
- * stays even while scrolling. End shell pad stays 0 for track placement.
- * Idle right chrome uses the same shell inset on the viewport; overflow
- * bumps that to the track gutter below.
- */
+/* Kit-scroll shell inset on start and vertical edges. End pad stays 0 for track placement. */
 :where([data-df="option-list-content"][data-scroll="kit"]:not([data-stacked="true"])) {
   overflow: hidden;
   max-height: none;
@@ -2476,6 +2471,16 @@
 }
 
 :where([data-df="option-list-content"][data-scroll="kit"]:not([data-stacked="true"]) [data-df="option-list-body"][data-scrollable] [data-df="scroll-area-viewport"]) {
+  padding-right: var(--df-option-list-shell-inset);
+}
+
+:where([data-df="option-list-content"][data-stacked="true"][data-scroll="kit"] [data-df="option-list-body"][data-scrollable]) {
+  padding-top: var(--df-option-list-shell-inset);
+  padding-bottom: var(--df-option-list-shell-inset);
+}
+
+:where([data-df="option-list-content"][data-stacked="true"][data-scroll="kit"] [data-df="option-list-body"][data-scrollable] [data-df="scroll-area-viewport"]) {
+  padding-left: var(--df-option-list-shell-inset);
   padding-right: var(--df-option-list-shell-inset);
 }
 
