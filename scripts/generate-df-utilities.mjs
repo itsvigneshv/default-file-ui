@@ -5,6 +5,7 @@ import path from "node:path"
 import {
   BLUR,
   BREAKPOINTS,
+  breakpointMaxWidth,
   COLORS,
   FONT_SIZE,
   FONT_WEIGHT,
@@ -16,6 +17,15 @@ import {
   SPACING,
   TRACKING,
 } from "./df-theme.mjs"
+
+const VIEWPORT_MAX_VARIANTS = new Set(
+  Object.keys(BREAKPOINTS).map((name) => `max-${name}`)
+)
+const CONTAINER_MIN_VARIANTS = new Set(
+  Object.keys(BREAKPOINTS).map((name) => `@${name}`)
+)
+const RESPONSIVE_VARIANT_PATTERN =
+  "dark|max-sm|max-md|max-lg|max-xl|max-2xl|max-3xl|sm|md|lg|xl|2xl|3xl|@sm|@md|@lg|@xl|@2xl|@3xl"
 
 const ROOT = path.resolve(import.meta.dirname, "..")
 const SRC = path.join(ROOT, "src")
@@ -45,6 +55,11 @@ function walk(dir, files = []) {
   return files
 }
 
+function isAllowedAtToken(token) {
+  if (token === "@container") return true
+  return /^@(?:sm|md|lg|xl|2xl|3xl):/.test(token)
+}
+
 function addTokens(set, str) {
   if (!str || typeof str !== "string") return
   for (const token of str.split(/\s+/)) {
@@ -52,7 +67,10 @@ function addTokens(set, str) {
     if (token.includes("${")) continue
     if (token.startsWith("http")) continue
     if (token.includes("/legal") || token.includes("/tools") || token.includes("/api")) continue
-    if (token.startsWith("@")) continue
+    if (token.startsWith("@")) {
+      if (isAllowedAtToken(token)) set.add(token)
+      continue
+    }
     if (
       /^(?:[a-z0-9][a-z0-9-]*:)*-?(?:[a-z][a-z0-9-]*|[a-z]+-\[[^\]]+\])/.test(token) ||
       token.includes("[") ||
@@ -824,6 +842,8 @@ function declsFor(utility) {
   m = u.match(/^\[writing-mode:(.+)\]$/)
   if (m) return add({ "writing-mode": decodeArbitrary(m[1]) })
 
+  if (u === "@container") return add({ "container-type": "inline-size" })
+
   return null
 }
 
@@ -833,7 +853,9 @@ function splitVariants(token) {
 
   while (true) {
     const m = rest.match(
-      /^(dark|sm|md|lg|xl|2xl|3xl|hover|focus|focus-visible|active|disabled|motion-safe|motion-reduce|group-hover|group-focus-visible|peer-disabled|placeholder|file|data-open|data-closed|data-checked|data-unchecked|data-disabled|data-horizontal|data-vertical|data-placeholder|aria-invalid|aria-expanded|aria-pressed|aria-disabled|supports-backdrop-filter):(.+)$/
+      new RegExp(
+        `^(${RESPONSIVE_VARIANT_PATTERN}|hover|focus|focus-visible|active|disabled|motion-safe|motion-reduce|group-hover|group-focus-visible|peer-disabled|placeholder|file|data-open|data-closed|data-checked|data-unchecked|data-disabled|data-horizontal|data-vertical|data-placeholder|aria-invalid|aria-expanded|aria-pressed|aria-disabled|supports-backdrop-filter):(.+)$`
+      )
     )
     if (!m) break
     variants.push(m[1])
@@ -851,17 +873,32 @@ function splitVariants(token) {
   return { variants, utility: rest }
 }
 
+function queryKey(query) {
+  return `${query.type}:${query.feature}`
+}
+
 function selectorFor(token, variants) {
   let sel = `.${escapeClass(token)}`
   const suffix = []
   let wrapDark = false
-  let media = null
+  let query = null
   let motionSafe = false
 
   for (const v of variants) {
     if (v === "dark") wrapDark = true
-    else if (BREAKPOINTS[v]) media = `(min-width: ${BREAKPOINTS[v]})`
-    else if (v === "hover") suffix.push(":hover")
+    else if (VIEWPORT_MAX_VARIANTS.has(v)) {
+      query = {
+        type: "media",
+        feature: `(max-width: ${breakpointMaxWidth(v.slice(4))})`,
+      }
+    } else if (BREAKPOINTS[v]) {
+      query = { type: "media", feature: `(min-width: ${BREAKPOINTS[v]})` }
+    } else if (CONTAINER_MIN_VARIANTS.has(v)) {
+      query = {
+        type: "container",
+        feature: `(min-width: ${BREAKPOINTS[v.slice(1)]})`,
+      }
+    } else if (v === "hover") suffix.push(":hover")
     else if (v === "focus") suffix.push(":focus")
     else if (v === "focus-visible") suffix.push(":focus-visible")
     else if (v === "active") suffix.push(":active")
@@ -912,7 +949,7 @@ function selectorFor(token, variants) {
   }
 
   if (wrapDark) sel = `.dark ${sel}`
-  return { sel, media, motionSafe }
+  return { sel, query, motionSafe }
 }
 
 function formatRule(sel, decls) {
@@ -984,6 +1021,7 @@ const EXTRA = [
   "xl:w-[300px]",
   "xl:min-w-[300px]",
   "xl:max-w-[300px]",
+  "@container",
 ]
 for (const e of EXTRA) all.add(e)
 
@@ -1002,8 +1040,23 @@ const animMap = {
 }
 
 const baseRules = []
-const mediaRules = new Map()
+const queryRules = new Map()
 const unresolved = []
+
+function sortQueryEntries(entries) {
+  return entries.sort((a, b) => {
+    const rank = (key) => {
+      const type = key.startsWith("container:") ? "container" : "media"
+      const feature = key.slice(key.indexOf(":") + 1)
+      const min = feature.match(/min-width:\s*(\d+)px/)
+      const max = feature.match(/max-width:\s*(\d+)px/)
+      const group = type === "container" ? 2 : max ? 1 : 0
+      const px = min ? Number(min[1]) : max ? Number(max[1]) : 0
+      return group * 100000 + px
+    }
+    return rank(a[0]) - rank(b[0])
+  })
+}
 
 for (const token of [...all].sort()) {
   if (token.startsWith("group/") || token === "group" || token === "peer")
@@ -1017,29 +1070,26 @@ for (const token of [...all].sort()) {
     continue
   }
 
-  const { sel, media, motionSafe } = selectorFor(token, variants)
+  const { sel, query, motionSafe } = selectorFor(token, variants)
   let rule = formatRule(sel, decls)
   if (motionSafe) {
     rule = `@media (prefers-reduced-motion: no-preference) {\n${rule}\n}`
   }
-  if (media) {
-    if (!mediaRules.has(media)) mediaRules.set(media, [])
-    mediaRules.get(media).push(rule)
+  if (query) {
+    const key = queryKey(query)
+    if (!queryRules.has(key)) queryRules.set(key, [])
+    queryRules.get(key).push(rule)
   } else {
     baseRules.push(rule)
   }
 }
 
 let css = baseRules.join("\n\n") + "\n"
-const mediaEntries = [...mediaRules.entries()].sort((a, b) => {
-  const px = (q) => {
-    const m = q.match(/min-width:\s*(\d+)px/)
-    return m ? Number(m[1]) : Number.MAX_SAFE_INTEGER
-  }
-  return px(a[0]) - px(b[0])
-})
-for (const [query, rules] of mediaEntries) {
-  css += `\n@media ${query} {\n${rules.join("\n\n")}\n}\n`
+const mediaEntries = sortQueryEntries([...queryRules.entries()])
+for (const [key, rules] of mediaEntries) {
+  const type = key.startsWith("container:") ? "container" : "media"
+  const feature = key.slice(key.indexOf(":") + 1)
+  css += `\n@${type} ${feature} {\n${rules.join("\n\n")}\n}\n`
 }
 
 const invariantErrors = []
@@ -1069,16 +1119,18 @@ if (!textNeutral || textNeutral.color !== "var(--df-neutral-400)") {
   )
 }
 
-let lastPx = 0
-for (const [query] of mediaEntries) {
-  const m = query.match(/min-width:\s*(\d+)px/)
-  const px = m ? Number(m[1]) : 0
-  if (px < lastPx) {
+let lastMinMediaPx = 0
+for (const [key] of mediaEntries) {
+  if (!key.startsWith("media:")) continue
+  const m = key.match(/min-width:\s*(\d+)px/)
+  if (!m) continue
+  const px = Number(m[1])
+  if (px < lastMinMediaPx) {
     invariantErrors.push(
-      `Media queries must be ascending (saw ${px}px after ${lastPx}px)`
+      `Media min-width queries must be ascending (saw ${px}px after ${lastMinMediaPx}px)`
     )
   }
-  lastPx = px
+  lastMinMediaPx = px
 }
 
 const realUnresolved = unresolved.filter((token) => {
@@ -1105,7 +1157,7 @@ if (invariantErrors.length) {
 fs.writeFileSync(OUT, css)
 const ruleCount =
   baseRules.length +
-  [...mediaRules.values()].reduce((a, b) => a + b.length, 0)
+  [...queryRules.values()].reduce((a, b) => a + b.length, 0)
 console.log(
   `Wrote ${OUT}\n  tokens: ${all.size}\n  rules: ${ruleCount}\n  unresolved: ${realUnresolved.length}`
 )

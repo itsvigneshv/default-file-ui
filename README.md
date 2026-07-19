@@ -138,7 +138,15 @@ regardless of mode.
 
 ## Token layers
 
-Primitives live under `--df-*` (scales for color, type, space, radius, shadow, motion, opacity, z-index, control sizes). Semantic tokens (`--background`, `--border`, `--overlay-*`, `--brand-ink`, `--z-overlay`, ...) name intent and point at primitives. Kit CSS and components resolve chrome through these vars only. Host apps may set inset contracts such as `--df-overlay-inset-top` and `--df-overlay-inset-bottom` so floating UI clears sticky chrome.
+Primitives live under `--df-*` (scales for color, type, space, radius, shadow, motion, opacity, z-index, control sizes, breakpoints, touch targets). Semantic tokens (`--background`, `--border`, `--overlay-*`, `--brand-ink`, `--z-overlay`, ...) name intent and point at primitives. Kit CSS and components resolve chrome through these vars only.
+
+Responsive tokens and utilities:
+
+- Breakpoint CSS vars `--df-breakpoint-sm` to `--df-breakpoint-3xl` are generated from `BREAKPOINTS` in `scripts/df-theme.mjs`.
+- Utility variants: viewport `sm:` to `3xl:` (min-width), `max-sm:` to `max-3xl:` (max-width), and container `@sm:` to `@3xl:` plus `@container` (`container-type: inline-size`).
+- Touch targets: `--df-touch-target-min`, `--df-touch-target-comfortable`.
+- Control density: host `data-df-density` (`cozy` default, `comfortable`, or `compact`) sets `--df-control-height-*`. Color-scale `compact` is palette-only and separate from control density.
+- Safe-area: `--df-safe-area-inset-*` maps to `env(safe-area-inset-*, 0px)`. Hosts compose `--df-overlay-inset-top` and `--df-overlay-inset-bottom` from sticky chrome and these tokens.
 
 ## License
 

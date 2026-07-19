@@ -46,10 +46,10 @@ const NEED_SYNONYMS = [
     related: ["choice-chip", "toggle-group", "content-switcher", "select", "option-list"],
   },
   {
-    patterns: /\b(accordion|collapse|disclosure)\b/i,
-    gap: "Accordion or disclosure primitive",
-    suggestion: "Compose with panel-section and owned expand/collapse state.",
-    related: ["panel-section", "separator"],
+    patterns: /\b(collapse|disclosure)\b/i,
+    gap: "Standalone disclosure primitive outside Accordion",
+    suggestion: "Use accordion for expandable sections, or compose with panel-section for custom shells.",
+    related: ["accordion", "panel-section", "separator"],
   },
   {
     patterns: /\b(avatar|breadcrumb|pagination|skeleton|progress|spinner)\b/i,

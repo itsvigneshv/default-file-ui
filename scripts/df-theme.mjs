@@ -149,6 +149,23 @@ export const BREAKPOINTS = {
   "3xl": "1920px",
 }
 
+/** Breakpoint names in scale order. */
+export const BREAKPOINT_NAMES = Object.keys(BREAKPOINTS)
+
+/** Min-width value for a breakpoint name. */
+export function breakpointMinWidth(name) {
+  const value = BREAKPOINTS[name]
+  if (!value) throw new Error(`Unknown breakpoint "${name}"`)
+  return value
+}
+
+/** Exclusive max-width value for a breakpoint name (one pixel below the step). */
+export function breakpointMaxWidth(name) {
+  const base = BREAKPOINTS[name]
+  if (!base) throw new Error(`Unknown breakpoint "${name}"`)
+  return `${parseInt(base, 10) - 1}px`
+}
+
 export const SHADOW = {
   "2xs": "var(--df-shadow-2xs)",
   xs: "var(--df-shadow-xs)",

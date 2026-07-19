@@ -34,6 +34,25 @@
 
   --spacing-unit: 0.25rem;
 
+  /* df-generated:breakpoints */
+  --df-breakpoint-sm: 640px;
+  --df-breakpoint-md: 768px;
+  --df-breakpoint-lg: 1024px;
+  --df-breakpoint-xl: 1280px;
+  --df-breakpoint-2xl: 1536px;
+  --df-breakpoint-3xl: 1920px;
+  /* /df-generated:breakpoints */
+
+  /* Minimum interactive hit target sizes. */
+  --df-touch-target-min: 2.75rem;
+  --df-touch-target-comfortable: 3rem;
+
+  /* Device safe-area insets for host overlay composition. */
+  --df-safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --df-safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --df-safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --df-safe-area-inset-left: env(safe-area-inset-left, 0px);
+
   --border-width-hairline: 1px;
   --border-width-thin: 1.5px;
   --border-width-thick: 2px;
@@ -626,6 +645,32 @@
   --sidebar: var(--df-neutral-50);
   --sidebar-primary: var(--df-neutral-900);
   --sidebar-accent-foreground: var(--df-neutral-900);
+}
+
+/* Control height scale for host data-df-density. */
+:root,
+[data-df-density="cozy"] {
+  --df-control-height-xs: calc(7 * var(--spacing-unit));
+  --df-control-height-sm: calc(8 * var(--spacing-unit));
+  --df-control-height-md: calc(9 * var(--spacing-unit));
+  --df-control-height-lg: calc(10 * var(--spacing-unit));
+  --df-control-height-xl: calc(11 * var(--spacing-unit));
+}
+
+[data-df-density="comfortable"] {
+  --df-control-height-xs: calc(8 * var(--spacing-unit));
+  --df-control-height-sm: calc(9 * var(--spacing-unit));
+  --df-control-height-md: calc(10 * var(--spacing-unit));
+  --df-control-height-lg: calc(11 * var(--spacing-unit));
+  --df-control-height-xl: calc(12 * var(--spacing-unit));
+}
+
+[data-df-density="compact"] {
+  --df-control-height-xs: calc(6 * var(--spacing-unit));
+  --df-control-height-sm: calc(7 * var(--spacing-unit));
+  --df-control-height-md: calc(8 * var(--spacing-unit));
+  --df-control-height-lg: calc(9 * var(--spacing-unit));
+  --df-control-height-xl: calc(10 * var(--spacing-unit));
 }
 
 .dark {

@@ -221,6 +221,17 @@
       ]
     },
     {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Expandable sections with single or multiple open items, dividers, sizes, and keyboard navigation.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-accordion.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-accordion.tsx" }
+      ]
+    },
+    {
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",

@@ -544,6 +544,151 @@
   border-radius: var(--radius-full);
 }
 
+:where([data-df="accordion"]) {
+  --df-accordion-bg: transparent;
+  --df-accordion-trigger-bg: transparent;
+  --df-accordion-content-bg: transparent;
+  --df-accordion-item-bg: var(--card);
+  --df-accordion-radius: 0;
+  --df-accordion-pad-inline: calc(5 * var(--spacing-unit));
+  --df-accordion-leading-offset: calc(8 * var(--spacing-unit));
+  background-color: var(--df-accordion-bg);
+  border-radius: var(--df-accordion-radius);
+}
+
+@media (min-width: 640px) { /* df-bp:sm */
+  :where([data-df="accordion"]) {
+    --df-accordion-pad-inline: calc(8 * var(--spacing-unit));
+  }
+}
+
+:where([data-df="accordion"][data-size="xs"]) {
+  --df-accordion-leading-offset: calc(5.5 * var(--spacing-unit));
+}
+:where([data-df="accordion"][data-size="sm"]) {
+  --df-accordion-leading-offset: calc(7 * var(--spacing-unit));
+}
+:where([data-df="accordion"][data-size="lg"]) {
+  --df-accordion-leading-offset: calc(8 * var(--spacing-unit));
+}
+
+:where([data-df="accordion"][data-radius="none"]) {
+  --df-accordion-radius: 0;
+}
+:where([data-df="accordion"][data-radius="sm"]) {
+  --df-accordion-radius: var(--radius-sm);
+}
+:where([data-df="accordion"][data-radius="md"]) {
+  --df-accordion-radius: var(--radius-md);
+}
+:where([data-df="accordion"][data-radius="lg"]) {
+  --df-accordion-radius: var(--radius-lg);
+}
+:where([data-df="accordion"][data-radius="xl"]) {
+  --df-accordion-radius: var(--radius-xl);
+}
+:where([data-df="accordion"][data-radius="2xl"]) {
+  --df-accordion-radius: var(--radius-2xl);
+}
+:where([data-df="accordion"][data-radius="3xl"]) {
+  --df-accordion-radius: var(--radius-3xl);
+}
+:where([data-df="accordion"][data-radius="full"]) {
+  --df-accordion-radius: var(--radius-full);
+}
+
+:where([data-df="accordion"]:not([data-radius="none"])) {
+  overflow: hidden;
+}
+
+/* Inline padding on triggers and content bodies so fills stay edge to edge. */
+:where(
+  [data-df="accordion"]:not([data-variant="separated"]) [data-df="accordion-trigger"]
+) {
+  padding-inline: var(--df-accordion-pad-inline);
+}
+
+:where(
+  [data-df="accordion"]:not([data-variant="separated"])
+    [data-df="accordion-content-body"]
+) {
+  padding-inline: var(--df-accordion-pad-inline);
+}
+
+:where(
+  [data-df="accordion"]:not([data-variant="separated"])
+    [data-df="accordion-content"][data-leading="true"]
+    [data-df="accordion-content-body"]
+) {
+  padding-inline-start: calc(
+    var(--df-accordion-pad-inline) + var(--df-accordion-leading-offset)
+  );
+}
+
+/* Block inset on open panels when contentPadding is set. */
+:where([data-df="accordion"][data-content-padding="none"]) {
+  --df-accordion-content-pad-block-start: 0;
+  --df-accordion-content-pad-block-end: 0;
+}
+:where([data-df="accordion"][data-content-padding="sm"]) {
+  --df-accordion-content-pad-block-start: calc(3 * var(--spacing-unit));
+  --df-accordion-content-pad-block-end: calc(3 * var(--spacing-unit));
+}
+:where([data-df="accordion"][data-content-padding="default"]) {
+  --df-accordion-content-pad-block-start: calc(5 * var(--spacing-unit));
+  --df-accordion-content-pad-block-end: calc(5 * var(--spacing-unit));
+}
+:where([data-df="accordion"][data-content-padding="lg"]) {
+  --df-accordion-content-pad-block-start: calc(6 * var(--spacing-unit));
+  --df-accordion-content-pad-block-end: calc(6 * var(--spacing-unit));
+}
+
+:where(
+  [data-df="accordion"][data-content-padding] [data-df="accordion-content-body"]
+) {
+  padding-block-start: var(--df-accordion-content-pad-block-start);
+  padding-block-end: var(--df-accordion-content-pad-block-end);
+}
+
+:where([data-df="accordion"][data-variant="separated"]) {
+  border-radius: 0;
+  overflow: visible;
+  gap: calc(3 * var(--spacing-unit));
+  background-color: transparent;
+}
+
+:where([data-df="accordion"][data-variant="separated"][data-size="xs"]),
+:where([data-df="accordion"][data-variant="separated"][data-size="sm"]) {
+  gap: calc(2 * var(--spacing-unit));
+}
+
+:where([data-df="accordion"][data-variant="separated"][data-size="lg"]) {
+  gap: calc(4 * var(--spacing-unit));
+}
+
+:where([data-df="accordion"][data-variant="separated"] [data-df="accordion-item"]) {
+  overflow: hidden;
+  border-radius: var(--df-accordion-radius);
+  border: var(--border-width-hairline) solid
+    color-mix(in oklch, var(--border) 80%, var(--background));
+  background-color: var(--df-accordion-item-bg);
+  padding-inline: calc(5 * var(--spacing-unit));
+}
+
+:where([data-df="accordion"][data-variant="separated"][data-size="xs"] [data-df="accordion-item"]),
+:where([data-df="accordion"][data-variant="separated"][data-size="sm"] [data-df="accordion-item"]) {
+  padding-inline: calc(4 * var(--spacing-unit));
+}
+
+:where([data-df="accordion-trigger"]) {
+  background-color: var(--df-accordion-trigger-bg);
+}
+
+:where([data-df="accordion-content"]),
+:where([data-df="accordion-content"] > div) {
+  background-color: var(--df-accordion-content-bg);
+}
+
 :where(button[data-df="badge"]),
 :where([data-df="badge"][role="button"]) {
   appearance: none;

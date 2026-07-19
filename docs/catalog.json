@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T09:00:16.710Z",
+  "generatedAt": "2026-07-19T15:58:34.706Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -32,6 +32,21 @@
     }
   ],
   "components": [
+    {
+      "slug": "accordion",
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "Expandable sections with single or multiple open items, sizes, dividers, and keyboard navigation.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-accordion",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 45
+    },
     {
       "slug": "badge",
       "name": "badge",

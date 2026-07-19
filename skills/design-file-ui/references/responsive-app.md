@@ -25,10 +25,15 @@ Redraw regions for small screens. Do not only shrink desktop typography and hope
 
 ## Touch and keyboard
 
-- Comfortable hit targets for primary controls.
-- Respect safe areas.
+- Comfortable hit targets for primary controls. Use `--df-touch-target-min` and density control heights for chrome.
+- Respect safe areas with `--df-safe-area-inset-*` and host `--df-overlay-inset-*`.
 - Account for on screen keyboard covering composers and sticky footers.
 - Swipe actions need visible alternatives for accessibility.
+
+## Kit responsive tokens
+
+- Breakpoints: `--df-breakpoint-*` with utility prefixes `sm:` to `3xl:`, `max-sm:` to `max-3xl:`, and container `@sm:` to `@3xl:` with `@container`.
+- Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-*`.
 
 ## Density on mobile
 

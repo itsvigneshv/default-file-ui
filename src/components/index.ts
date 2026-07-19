@@ -26,9 +26,15 @@ export {
 } from "./df-accordion"
 export type {
   AccordionProps,
+  AccordionSingleProps,
+  AccordionMultipleProps,
   AccordionItemProps,
   AccordionTriggerProps,
   AccordionContentProps,
+  AccordionType,
+  AccordionVariant,
+  AccordionSize,
+  AccordionRadius,
 } from "./df-accordion"
 
 export { Input } from "./df-input"
