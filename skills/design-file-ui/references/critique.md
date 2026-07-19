@@ -4,6 +4,12 @@ Score each axis `strong`, `weak`, or `missing`. Fix weak structure before polish
 
 The required output shape lives in `SKILL.md` (Critique contract). Use this file for the per axis questions only. Choose the axis set that matches the classified surface mode.
 
+## Evidence rule (required)
+
+For every axis scored `weak` or `missing`, name concrete evidence: a region, module, control, or pattern (for example "four equal KPI tiles above the agent table" or "Deploy has toast only, no busy state"). Vague scores without evidence fail the critique gate.
+
+For design or redesign tasks: if any axis is `weak` or `missing`, complete an improve pass before finishing. Scores alone are not a finish.
+
 ## Marketing axes
 
 ### 1. Brand presence
@@ -42,12 +48,14 @@ The required output shape lives in `SKILL.md` (Critique contract). Use this file
 - Scale contrast adequate?
 - Body readable?
 - User-facing copy free of hyphens, em dashes, and en dashes?
+- Is there a named authorship concept, or only a default template look?
 
 ### 8. Color
 
 - Direction coherent?
 - Contrast sufficient?
 - Accent reserved for action and emphasis?
+- Does color support a distinctive concept, or only a stock accent on generic panels?
 
 ### 9. Motion
 
@@ -87,6 +95,8 @@ The required output shape lives in `SKILL.md` (Critique contract). Use this file
 
 - Is information priority clear under real density?
 - Any decorative chrome stealing scan attention?
+- On dashboard homes: is there one monitoring question or triage entry before equal weight metric wallpaper?
+- If the primary table or canvas is sparse, was adaptive fill applied (more rows, summary, secondary panel, or deliberate empty state)?
 
 ### 4. Data scan path
 
@@ -97,6 +107,7 @@ The required output shape lives in `SKILL.md` (Critique contract). Use this file
 
 - Can users reach peer areas without guesswork?
 - Are labels present (not icons alone)?
+- Does every primary nav item open a real view or a deliberate empty state with a next action (no dead stubs)?
 
 ### 6. Primary action clarity
 
@@ -111,7 +122,7 @@ The required output shape lives in `SKILL.md` (Critique contract). Use this file
 ### 8. Type
 
 - UI type readable at tool sizes?
-- Scale steps intentional?
+- Scale steps intentional (page title, section, label, meta, numeric)?
 - Labels and other visible strings free of hyphens, em dashes, and en dashes?
 
 ### 9. Color
@@ -120,17 +131,25 @@ The required output shape lives in `SKILL.md` (Critique contract). Use this file
 - Status color has text or legend support?
 - Accent reserved for action and true emphasis?
 
-### 10. Motion (feedback)
+### 10. Visual authorship
+
+- Is there a named visual concept and signature move?
+- Does the UI avoid the default dark panels + cyan accent + flat UI type template unless requested?
+- Would removing the product name still leave a recognizable craft, or only a generic admin skin?
+
+### 11. Motion (feedback)
 
 - Does motion confirm state, drag, save, or load?
+- Do primary async actions show a busy state on the control or busy region (not toast only)?
+- For workflow graphs: is the execution path readable (completed → active → waiting → failed) with emphasized active edges?
 - Any theater delaying use?
 
-### 11. Responsive / mobileTool fitness
+### 12. Responsive / mobileTool fitness
 
 - Narrow layout redraws the shell instead of crushing it?
 - Thumb reach and tap targets acceptable?
 
-### 12. States + accessibility basics
+### 13. States + accessibility basics
 
 - Empty, loading, error designed?
 - Labels, focus, contrast, keyboard paths present?

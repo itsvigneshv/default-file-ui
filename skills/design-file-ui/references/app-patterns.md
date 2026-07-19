@@ -18,6 +18,7 @@ Rules:
 - Labels beat icon only navigation.
 - Saved views and filters are navigation, not buried settings only.
 - Do not invent a second IA that fights the product's existing nav.
+- Every primary nav destination must be a real view or a deliberate empty state with a next action. Cut the item if you cannot ship either.
 
 ## Tables and lists
 
@@ -26,6 +27,7 @@ Rules:
 - Selection checkboxes enable bulk actions; show bulk bar after selection.
 - Align numeric columns.
 - Row click vs action buttons: make the primary open behavior obvious.
+- Adaptive density: if the table leaves most of the canvas empty, raise page size, add a summary or status distribution, or pair with a justified secondary panel. Do not leave a short table stranded in void.
 
 ## Filters and search
 
@@ -45,10 +47,11 @@ Rules:
 
 ## Empty, loading, error
 
-- Empty: teach the next step (create, connect, clear filters).
-- Loading: skeletons or progress on the region that is loading.
+- Empty: teach the next step (create, connect, clear filters, or open a working peer view).
+- Loading: skeletons or progress on the region that is loading; primary actions that wait on work show an in-control busy state.
 - Error: name what failed and what to do next.
 - Never present unlabeled fake sample data as live data.
+- Never leave a nav target as a hollow stub without an empty state and next step.
 
 ## Bulk and destructive actions
 

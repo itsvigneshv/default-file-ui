@@ -2425,14 +2425,15 @@
 }
 
 /*
- * Kit-scroll panels: shell inset only (not viewport padding) so vertical air
- * stays even while scrolling. Trailing pad is 0; thumb gap uses
- * --df-option-list-scroll-thumb-gap on both sides of the track.
+ * Kit-scroll panels: shell inset on top, bottom, and start so vertical air
+ * stays even while scrolling. End shell pad stays 0 for track placement.
+ * Idle right chrome uses the same shell inset on the viewport; overflow
+ * bumps that to the track gutter below.
  */
 :where([data-df="option-list-content"][data-scroll="kit"]:not([data-stacked="true"])) {
   overflow: hidden;
   max-height: none;
-  padding: calc(1 * var(--spacing-unit, 0.25rem));
+  padding: var(--df-option-list-shell-inset);
   padding-right: 0;
 }
 
@@ -2472,6 +2473,10 @@
   flex-direction: column;
   gap: calc(1 * var(--spacing-unit, 0.25rem));
   padding: 0;
+}
+
+:where([data-df="option-list-content"][data-scroll="kit"]:not([data-stacked="true"]) [data-df="option-list-body"][data-scrollable] [data-df="scroll-area-viewport"]) {
+  padding-right: var(--df-option-list-shell-inset);
 }
 
 :where([data-df="option-list-body"][data-scrollable] [data-df="scroll-area"]:has(> [data-df="scroll-area-scrollbar"][data-orientation="vertical"][aria-hidden="false"]) > [data-df="scroll-area-viewport"]) {

@@ -6,7 +6,7 @@ Portable Agent Skill for designing, implementing, and critiquing excellent front
 
 ## UI copy rule
 
-When the skill builds frontend UI, user-facing strings must not contain hyphens, em dashes, or en dashes. See **UI copy constraints** in `SKILL.md`.
+When the skill builds frontend UI, ordinary English user-facing strings must not contain hyphens, em dashes, or en dashes. Keyboard chords, technical IDs, and code are excepted. See **UI copy constraints** in `SKILL.md`.
 
 ## Install (any Agent Skills compatible tool)
 
@@ -20,15 +20,34 @@ df-ui skills install design-file-ui
 
 Install targets depend on the consumer tool (for example `.agents/skills/`). Do not treat any one editor path as required.
 
-## Surface modes
+### After editing the skill (required)
 
-The skill must classify one mode before preflight:
+The canonical files live in this kit folder. Consumer installs (for example `.agents/skills/design-file-ui/`) can go stale.
+
+After you change `SKILL.md` or any `references/*` file:
+
+1. Reinstall or copy from this folder into the consumer skill path
+2. Confirm the install includes `references/workspace.md`, `cards.md`, `app-patterns.md`, `responsive-app.md`, and `kit.md`
+3. Fail routing checks if mode classification, brief class, or those refs are missing
+
+Local kit development: prefer reading this folder directly, or reinstall before relying on attach.
+
+## Surface modes and brief class
+
+The skill must classify mode and brief class before preflight:
 
 | Mode | Example ask |
 |---|---|
 | `marketing` | Redesign this landing page / award style pitch |
 | `workspace` | Design a SaaS billing admin / analytics dashboard |
 | `mobileTool` | Build a mobile web triage app |
+
+| Brief | Example ask |
+|---|---|
+| `spec` | Build these screens: overview, agents table, workflows… |
+| `problem` | Design a command center for operators who must catch delivery exceptions before customers complain |
+
+For `problem` briefs, require a decision model (attention, why, if ignored, action) and invented IA. Fail generic dashboard templates with no triage logic.
 
 ## Manual invoke examples
 
@@ -37,26 +56,33 @@ The skill must classify one mode before preflight:
 - "Critique this UI for brand hierarchy and CTA clarity"
 - "Design a SaaS admin for managing invoices"
 - "Critique this dashboard for task clarity and density"
-- "Build a mobile web app shell for support triage"
+- "Build a mobile web triage app for support triage"
+- "Design a command center for an autonomous delivery fleet; invent the IA yourself"
 
 ## Routing validation matrix
 
-Use these prompts in a fresh agent turn after install. Pass only if the skill attaches, mode is correct, and the output meets the gate.
+Use these prompts in a fresh agent turn after install. Pass only if the skill attaches, mode and brief class are correct, required refs load, and the output meets the gate.
 
 | Prompt type | Example | Pass if |
 |---|---|---|
-| Marketing critique | Critique this UI for brand hierarchy and CTA clarity | Mode marketing; marketing scores + top 3 structural + sequence + non goals |
-| Marketing redesign | Redesign this landing page using the Design File UI skill | Mode marketing; preflight + section map + critique contract |
-| Workspace design | Design a SaaS billing admin with invoice table and filters | Mode workspace; shell map + workspace preflight + workspace critique axes |
+| Marketing critique | Critique this UI for brand hierarchy and CTA clarity | Mode marketing; marketing scores + evidence on weak axes + top 3 structural + sequence + non goals |
+| Marketing redesign | Redesign this landing page using the Design File UI skill | Mode marketing; authorship concept + preflight + section map + critique + improve pass if any weak axis |
+| Workspace design (spec) | Design a SaaS billing admin with invoice table and filters | Mode workspace; Brief spec; shell map + workspace preflight + workspace critique axes + improve pass if needed |
+| Workspace design (problem) | Design a command center for 2500 delivery vehicles across 14 cities; invent IA; prioritize what needs attention and why | Mode workspace; Brief problem; decision model; invented IA (not a copied component list); authorship concept; critique with evidence |
 | Mobile tool | Build a mobile web triage app for support tickets | Mode mobileTool; region plan + responsive app rules |
-| Ambiguous polish | Make this page look better | Mode classified from context; finish gate blocks paint only freeform |
+| Ambiguous polish | Make this page look better | Mode and brief classified from context; finish gate blocks paint only freeform |
+| Stale install check | Any workspace prompt | Install has workspace.md, mode line, and brief line; fail if marketing-only preflight is used for admin |
 
 ## Adherence notes
 
 - Critique and redesign must load `references/critique.md` before findings.
+- Weak or missing axes need concrete evidence; design tasks need an improve pass when scores are not all strong.
 - The critique output contract is inlined in `SKILL.md` so the format cannot be skipped.
 - Composition reference is marketing only; workspace work must load `workspace.md`.
 - Cards, app patterns, and responsive app references are mandatory for those tasks.
+- Workspace motion recipes live in `motion.md`; toast-only feedback on async actions is not enough.
+- Workflow graphs need a readable execution path, not disconnected cards.
+- Visual authorship and adaptive density are finish gates for tool UI.
 - When Default File UI is present, open `references/kit.md` and discover components/tokens before inventing chrome.
 
 ## Research sources

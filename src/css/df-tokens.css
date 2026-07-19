@@ -247,6 +247,7 @@
   --df-options-panel-max-height: 520px;
   --df-menu-stacked-max-height: 16rem;
   --df-option-list-min-width: 12rem;
+  --df-option-list-shell-inset: calc(1 * var(--spacing-unit));
   --df-option-list-scroll-thumb-gap: calc(1 * var(--spacing-unit));
   --df-option-list-scroll-track-width: calc(2.5 * var(--spacing-unit));
   --df-shadow-picker-thumb: 0 0 0 1px rgb(0 0 0 / 0.45);
