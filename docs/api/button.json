@@ -5,12 +5,14 @@
   "description": "Primary actions with variants, text sizes from xs to 2xl, and matching icon sizes.",
   "chapter": "actions",
   "registryDependencies": [
-    "foundation"
+    "foundation",
+    "spinner",
+    "badge"
   ],
   "importPath": "@default-file/ui/components/df-button",
   "dependencies": [],
   "api": {
-    "description": "Primary actions with variants, sizes, and optional leading or trailing content.",
+    "description": "Primary actions with variants, sizes, optional leading or trailing content, loading state, and a corner count badge.",
     "groups": [
       {
         "id": "button",
@@ -45,6 +47,46 @@
             "description": "Content after the label, such as an icon or badge."
           },
           {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "description": "Shows a Spinner in the icon area, keeps the label, and disables the control. Unsupported on the link variant."
+          },
+          {
+            "name": "loadingPlacement",
+            "type": "\"leading\" | \"trailing\"",
+            "default": "\"leading\"",
+            "description": "Which icon slot shows the Spinner while loading. Ignored for icon-only sizes, which replace the icon child."
+          },
+          {
+            "name": "loadingAppearance",
+            "type": "\"muted\" | \"solid\"",
+            "default": "\"muted\"",
+            "description": "muted fades the whole control like disabled. solid keeps the default background, fades the label only, and leaves the Spinner at full opacity."
+          },
+          {
+            "name": "badge",
+            "type": "number | string",
+            "description": "Corner count badge anchored to the top end of the button. Hidden when empty, null, or 0. Include the count in aria-label for icon buttons."
+          },
+          {
+            "name": "badgeVariant",
+            "type": "\"default\" | \"secondary\" | \"destructive\" | \"outline\" | \"ghost\" | \"link\"",
+            "description": "Badge visual style. Defaults to secondary on the default button variant, otherwise default, so the count stays readable on dark fills."
+          },
+          {
+            "name": "badgePosition",
+            "type": "\"edge\" | \"inset\"",
+            "default": "\"edge\"",
+            "description": "edge sits on the corner. inset pulls the badge a notch inside the button."
+          },
+          {
+            "name": "badgeSide",
+            "type": "\"start\" | \"end\"",
+            "default": "\"end\"",
+            "description": "Which top corner hosts the badge. end is the trailing side (right in left to right layouts). start is the leading side."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "description": "Disables the button."
@@ -69,7 +111,7 @@
           {
             "name": "dfButtonClass",
             "type": "(opts?: { variant?, size?, className? }) => string",
-            "description": "Builds the same class string Button uses internally. For link hosts, set data-underline to hover or none to match the underline prop."
+            "description": "Builds the same class string Button uses internally. For link hosts, set the underline data attribute to hover or none to match the underline prop."
           }
         ]
       },
@@ -149,6 +191,30 @@
             "type": "CSS length",
             "description": "Default corner radius.",
             "default": "calc(var(--radius) * 2.6)"
+          },
+          {
+            "name": "--df-button-badge-size",
+            "type": "CSS length",
+            "description": "Corner badge height and minimum width.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-button-badge-pad-inline",
+            "type": "CSS length",
+            "description": "Horizontal padding inside the corner badge for longer counts.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-button-badge-inset",
+            "type": "CSS length",
+            "description": "Offset used when badgePosition is inset.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--z-raised",
+            "type": "number",
+            "description": "Stacking level for the corner badge.",
+            "default": "1"
           },
           {
             "name": "--df-corner-shape",

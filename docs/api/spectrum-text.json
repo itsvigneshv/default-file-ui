@@ -2,7 +2,7 @@
   "name": "spectrum-text",
   "slug": "spectrum-text",
   "title": "Spectrum Text",
-  "description": "Inline text with a shifting multi-stop gradient fill from kit color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
+  "description": "Inline text with a shifting multi-stop gradient fill from kit-color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
   "chapter": "text",
   "registryDependencies": [
     "foundation"
@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-spectrum-text",
   "dependencies": [],
   "api": {
-    "description": "Inline text with a shifting multi-stop gradient fill built from SVG gradient code (data URI, not an external file). Glyphs stay still; only the clipped background moves. Screen readers get a plain copy; the animated layer is aria-hidden.",
+    "description": "Inline text with a shifting multi-stop gradient fill built from SVG gradient code (data URI, not an external file). Glyphs stay still; only the clipped background moves. Screen readers get a plain copy; the animated layer is hidden from assistive tech.",
     "groups": [
       {
         "id": "spectrum-text",

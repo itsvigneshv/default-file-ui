@@ -120,7 +120,7 @@
           {
             "name": "hintId",
             "type": "string",
-            "description": "Id for the hint; pair with aria-describedby on the trigger."
+            "description": "Id for the hint; pair with the describedby ARIA attribute on the trigger."
           },
           {
             "name": "className",
@@ -148,7 +148,7 @@
           {
             "name": "className",
             "type": "string",
-            "description": "Width and shape. Examples: w-64 (fixed width), w-36 (truncate), rounded-xl / rounded-full (radius override). Default radius uses the kit --radius-4xl token."
+            "description": "Width and shape. Examples: w-64 (fixed width), w-36 (truncate), rounded-xl or rounded-full (radius override). Default radius uses the kit --radius-4xl token."
           },
           {
             "name": "id",
@@ -180,7 +180,7 @@
           {
             "name": "className",
             "type": "string",
-            "description": "Value text styles. Truncation follows a fixed-width trigger."
+            "description": "Value text styles. Truncation follows a fixed width trigger."
           }
         ]
       },
@@ -333,7 +333,7 @@
           {
             "name": "disabled",
             "type": "boolean",
-            "description": "Non-selectable row."
+            "description": "Not selectable row."
           },
           {
             "name": "leading",
@@ -354,7 +354,7 @@
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "End-of-row slot: badge counter, nested-menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
+            "description": "End of row slot: badge counter, nested menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
           },
           {
             "name": "indicator",
@@ -374,7 +374,7 @@
           {
             "name": "…div attributes",
             "type": "HTMLAttributes",
-            "description": "Native div props. Use data-highlighted for hover/open parent rows in nested menus."
+            "description": "Native div props. Use the highlighted data attribute for hover or open parent rows in nested menus."
           }
         ]
       },
@@ -387,7 +387,7 @@
             "name": "Radius",
             "type": "CSS / className",
             "default": "--radius-4xl",
-            "description": "Trigger uses the kit radius token. Override with className such as rounded-xl or rounded-full."
+            "description": "Trigger uses the kit radius token. Override with className such as rounded-xl or rounded-full utilities."
           },
           {
             "name": "Corner shape",
@@ -403,7 +403,7 @@
           {
             "name": "Text truncation",
             "type": "className on SelectTrigger",
-            "description": "Constrain width (for example w-36). SelectValue ellipsizes the selected label; the open list still hugs options unless alignItemWithTrigger is true."
+            "description": "Constrain width (for example w-36). SelectValue ellipsizes the selected label. The open list still hugs options unless alignItemWithTrigger is true."
           },
           {
             "name": "Hug content",
@@ -414,7 +414,7 @@
           {
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
-            "description": "Lock the menu to the trigger width. Useful for fixed-width multi-select fields."
+            "description": "Lock the menu to the trigger width. Useful for fixed width multi-select fields."
           },
           {
             "name": "Composition",

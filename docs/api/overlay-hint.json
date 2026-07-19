@@ -53,7 +53,7 @@
           {
             "name": "action",
             "type": "ReactNode",
-            "description": "Icon for the trailing marquee control. Renders as a kit icon-only Button (size icon-xs, variant secondary). Decorative when clickTarget is chip; interactive when clickTarget is action."
+            "description": "Icon for the trailing marquee control. Renders as a kit icon-only Button (size icon-xs, variant secondary). Decorative when clickTarget is chip. Interactive when clickTarget is action."
           },
           {
             "name": "actionLabel",
@@ -109,18 +109,18 @@
           {
             "name": "parts",
             "type": "ReactNode[]",
-            "description": "Label segments joined by separator. Prefer this for multi-part hints. When set, children is ignored."
+            "description": "Label segments joined by separator. Prefer this for multi part hints. When set, children is ignored."
           },
           {
             "name": "separator",
             "type": "ReactNode",
             "default": "OVERLAY_HINT_SEPARATOR (·)",
-            "description": "Node between parts. Defaults to the middle-dot constant. Pass a glyph, icon, or custom divider. Set null to omit."
+            "description": "Node between parts. Defaults to the middle dot constant. Pass a glyph, icon, or custom divider. Set null to omit."
           },
           {
             "name": "children",
             "type": "ReactNode",
-            "description": "Single-label hint. Use parts instead when you need a separator between segments."
+            "description": "Single label hint. Use parts instead when you need a separator between segments."
           },
           {
             "name": "leading",
@@ -162,7 +162,7 @@
           {
             "name": "OVERLAY_HINT_SEPARATOR",
             "type": "\"·\"",
-            "description": "Default middle-dot separator constant. Reuse when you want the stock separator explicitly."
+            "description": "Default middle dot separator constant. Reuse when you want the stock separator explicitly."
           },
           {
             "name": "OverlayHintSize",

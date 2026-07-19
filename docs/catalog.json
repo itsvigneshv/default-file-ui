@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T19:08:44.981Z",
+  "generatedAt": "2026-07-19T09:00:16.710Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -65,11 +65,13 @@
       "description": "Primary actions with variants, text sizes from xs to 2xl, and matching icon sizes.",
       "chapter": "actions",
       "registryDependencies": [
-        "foundation"
+        "foundation",
+        "spinner",
+        "badge"
       ],
       "importPath": "@default-file/ui/components/df-button",
       "dependencies": [],
-      "propCount": 22
+      "propCount": 33
     },
     {
       "slug": "choice-chip",
@@ -314,12 +316,25 @@
       "slug": "spectrum-text",
       "name": "spectrum-text",
       "title": "Spectrum Text",
-      "description": "Inline text with a shifting multi-stop gradient fill from kit color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
+      "description": "Inline text with a shifting multi-stop gradient fill from kit-color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
       "chapter": "text",
       "registryDependencies": [
         "foundation"
       ],
       "importPath": "@default-file/ui/components/df-spectrum-text",
+      "dependencies": [],
+      "propCount": 11
+    },
+    {
+      "slug": "spinner",
+      "name": "spinner",
+      "title": "Spinner",
+      "description": "Indeterminate circular loading indicator.",
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-spinner",
       "dependencies": [],
       "propCount": 11
     },

@@ -31,7 +31,7 @@
             "name": "variant",
             "type": "\"default\" | \"light\"",
             "default": "\"default\"",
-            "description": "default uses the dark face (neutral-920). light uses a soft white face and tinted mesh, and stays subtle white under .dark."
+            "description": "default uses the dark face (neutral-920). light uses a soft white face and tinted mesh, and stays subtle white under dark theme."
           },
           {
             "name": "backgroundColor",
@@ -108,7 +108,7 @@
             "name": "fillOpacity",
             "type": "number",
             "default": "0.5 when bloom; 0 when bloom is false",
-            "description": "Strength of the near-edge mesh fill inside the card (0 to 1)."
+            "description": "Strength of the near edge mesh fill inside the card (0 to 1)."
           },
           {
             "name": "animated",
@@ -121,7 +121,7 @@
       {
         "id": "border-glow-trace",
         "title": "Trace",
-        "description": "Hairline-only animation. Forces bloom off and no face wash. The arc expands from zero at the pointer, then follows it.",
+        "description": "Hairline only animation. Forces bloom off and no face wash. The arc expands from zero at the pointer, then follows it.",
         "props": [
           {
             "name": "trace",
@@ -169,7 +169,7 @@
             "name": "revealDuration",
             "type": "number",
             "default": "0.7",
-            "description": "Seconds for the hairline to expand from zero on enter and collapse on leave. Uses a quint ease-out."
+            "description": "Seconds for the hairline to expand from zero on enter and collapse on leave. Uses a quint ease out curve."
           },
           {
             "name": "arcFade",

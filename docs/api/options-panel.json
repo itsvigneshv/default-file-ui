@@ -54,7 +54,7 @@
       {
         "id": "options-panel-content",
         "title": "OptionsPanelContent",
-        "description": "Panel shell with options chrome defaults (content-sized width, end align, bottom side).",
+        "description": "Panel shell with options chrome defaults (content sized width, end align, bottom side).",
         "props": [
           {
             "name": "side",

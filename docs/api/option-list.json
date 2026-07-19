@@ -244,7 +244,7 @@
           {
             "name": "disabled",
             "type": "boolean",
-            "description": "Non-selectable row."
+            "description": "Not selectable row."
           },
           {
             "name": "leading",
@@ -265,7 +265,7 @@
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "End-of-row slot: badge counter, nested-menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
+            "description": "End of row slot: badge counter, nested menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
           },
           {
             "name": "indicator",
@@ -285,14 +285,14 @@
           {
             "name": "…div attributes",
             "type": "HTMLAttributes",
-            "description": "Native div props. Use data-highlighted for hover/open parent rows in nested menus."
+            "description": "Native div props. Use the highlighted data attribute for hover or open parent rows in nested menus."
           }
         ]
       },
       {
         "id": "option-list-submenu",
         "title": "OptionListSubmenu",
-        "description": "Hover-open nested branch. Wrap a trigger OptionListItem and an OptionListSubContent. Nest again inside the content for deeper levels. Motion defaults inherit from OptionList and can be overridden here.",
+        "description": "Hover open nested branch. Wrap a trigger OptionListItem and an OptionListSubContent. Nest again inside the content for deeper levels. Motion defaults inherit from OptionList and can be overridden here.",
         "props": [
           {
             "name": "open",
@@ -380,19 +380,19 @@
             "name": "animated",
             "type": "boolean",
             "default": "inherits OptionListSubmenu.animated",
-            "description": "Per-panel motion override. false makes this panel appear and disappear instantly even if parent submenus are animated."
+            "description": "Per panel motion override. false makes this panel appear and disappear instantly even if parent submenus are animated."
           },
           {
             "name": "openDuration",
             "type": "number",
             "default": "inherits OptionListSubmenu.openDuration",
-            "description": "Per-panel open duration in milliseconds. Ignored when animated is false."
+            "description": "Per panel open duration in milliseconds. Ignored when animated is false."
           },
           {
             "name": "closeDuration",
             "type": "number",
             "default": "inherits OptionListSubmenu.closeDuration",
-            "description": "Per-panel close duration in milliseconds. Ignored when animated is false."
+            "description": "Per panel close duration in milliseconds. Ignored when animated is false."
           },
           {
             "name": "className",
@@ -556,7 +556,7 @@
           {
             "name": "Instant nested menus",
             "type": "submenuAnimated={false}",
-            "description": "Disable open/close animation for every nested level from OptionList. Equivalent per-branch: OptionListSubmenu animated={false}."
+            "description": "Disable open/close animation for every nested level from OptionList. Equivalent per branch: OptionListSubmenu animated={false}."
           },
           {
             "name": "Custom nested speed",
@@ -590,7 +590,7 @@
           {
             "name": "--df-option-list-scroll-track-width",
             "type": "CSS length",
-            "description": "Track width used to reserve the option-list scroll gutter.",
+            "description": "Track width used to reserve the option list scroll gutter.",
             "default": "calc(2.5 * var(--spacing-unit))"
           },
           {

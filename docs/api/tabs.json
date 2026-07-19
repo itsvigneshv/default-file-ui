@@ -32,7 +32,7 @@
             "name": "orientation",
             "type": "\"horizontal\" | \"vertical\"",
             "default": "\"horizontal\"",
-            "description": "Layout axis. horizontal puts triggers in a row with the panel below; vertical stacks triggers in a column with the panel alongside. Arrow-key navigation switches to Up/Down."
+            "description": "Layout axis. horizontal puts triggers in a row with the panel below; vertical stacks triggers in a column with the panel alongside. Arrow key navigation switches to Up/Down."
           },
           {
             "name": "lineSide",

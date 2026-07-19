@@ -79,7 +79,7 @@
           {
             "name": "Close button",
             "type": "children",
-            "description": "Place a button with an X icon after the label. The button inherits badge color and is keyboard-focusable."
+            "description": "Place a button with an X icon after the label. The button inherits badge color and is keyboard focusable."
           },
           {
             "name": "Counter",

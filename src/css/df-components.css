@@ -34,6 +34,7 @@
 }
 
 :where([data-df="button"]) {
+  position: relative;
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -53,6 +54,61 @@
   cursor: pointer;
 }
 
+:where([data-df="button"][data-badge]) {
+  overflow: visible;
+}
+
+:where([data-df="button"] > [data-slot="badge"]),
+.df-btn > [data-slot="badge"] {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  inset-inline-start: auto;
+  z-index: var(--z-raised);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--df-button-badge-size);
+  height: var(--df-button-badge-size);
+  padding-inline: var(--df-button-badge-pad-inline);
+  pointer-events: none;
+  translate: 50% -50%;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--df-font-weight-semibold);
+  line-height: var(--df-leading-none);
+}
+
+:where([data-df="button"][data-badge-position="inset"] > [data-slot="badge"]),
+.df-btn[data-badge-position="inset"] > [data-slot="badge"] {
+  top: var(--df-button-badge-inset);
+  inset-inline-end: var(--df-button-badge-inset);
+}
+
+:where([data-df="button"][data-badge-side="start"] > [data-slot="badge"]),
+.df-btn[data-badge-side="start"] > [data-slot="badge"] {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+  translate: -50% -50%;
+}
+
+:where([data-df="button"][data-badge-side="start"][data-badge-position="inset"] > [data-slot="badge"]),
+.df-btn[data-badge-side="start"][data-badge-position="inset"] > [data-slot="badge"] {
+  inset-inline-end: auto;
+  inset-inline-start: var(--df-button-badge-inset);
+}
+
+:where(:dir(rtl) [data-df="button"][data-badge-side="end"] > [data-slot="badge"]),
+:where(:dir(rtl) .df-btn[data-badge-side="end"] > [data-slot="badge"]),
+:where(:dir(rtl) [data-df="button"]:not([data-badge-side]) > [data-slot="badge"]),
+:where(:dir(rtl) .df-btn:not([data-badge-side]) > [data-slot="badge"]) {
+  translate: -50% -50%;
+}
+
+:where(:dir(rtl) [data-df="button"][data-badge-side="start"] > [data-slot="badge"]),
+:where(:dir(rtl) .df-btn[data-badge-side="start"] > [data-slot="badge"]) {
+  translate: 50% -50%;
+}
+
 :where([data-df="button"]:focus-visible) {
   border-color: var(--ring);
   box-shadow: var(--focus-ring);
@@ -65,6 +121,22 @@
 :where([data-df="button"]:disabled),
 :where([data-df="button"][aria-disabled="true"]) {
   pointer-events: none;
+  opacity: var(--opacity-disabled);
+}
+
+:where([data-df="button"][data-loading][data-loading-appearance="solid"]:disabled),
+:where([data-df="button"][data-loading][data-loading-appearance="solid"][aria-disabled="true"]),
+.df-btn[data-loading][data-loading-appearance="solid"]:disabled,
+.df-btn[data-loading][data-loading-appearance="solid"][aria-disabled="true"] {
+  opacity: 1;
+}
+
+:where([data-df="button"][data-loading][data-loading-appearance="solid"] > [data-slot="label"]),
+:where([data-df="button"][data-loading][data-loading-appearance="solid"] > [data-slot="leading"]:not(:has([data-df="spinner"]))),
+:where([data-df="button"][data-loading][data-loading-appearance="solid"] > [data-slot="trailing"]:not(:has([data-df="spinner"]))),
+.df-btn[data-loading][data-loading-appearance="solid"] > [data-slot="label"],
+.df-btn[data-loading][data-loading-appearance="solid"] > [data-slot="leading"]:not(:has([data-df="spinner"])),
+.df-btn[data-loading][data-loading-appearance="solid"] > [data-slot="trailing"]:not(:has([data-df="spinner"])) {
   opacity: var(--opacity-disabled);
 }
 
@@ -241,6 +313,7 @@
 }
 
 .df-btn {
+  position: relative;
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -260,6 +333,9 @@
   user-select: none;
   cursor: pointer;
   text-decoration: none;
+}
+.df-btn[data-badge] {
+  overflow: visible;
 }
 .df-btn:focus-visible {
   border-color: var(--ring);
@@ -1033,6 +1109,63 @@
   line-height: var(--df-leading-none);
   font-weight: var(--df-font-weight-medium);
   user-select: none;
+}
+
+:where([data-df="spinner"]),
+.df-spinner {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+:where([data-df="spinner"] svg),
+.df-spinner svg {
+  display: block;
+  width: var(--df-spinner-size, var(--df-spinner-size-md));
+  height: var(--df-spinner-size, var(--df-spinner-size-md));
+  animation: df-spin var(--df-duration-spin) linear infinite;
+}
+
+:where([data-df="spinner"][data-size="xs"]),
+.df-spinner[data-size="xs"] {
+  --df-spinner-size: var(--df-spinner-size-xs);
+}
+
+:where([data-df="spinner"][data-size="sm"]),
+.df-spinner[data-size="sm"] {
+  --df-spinner-size: var(--df-spinner-size-sm);
+}
+
+:where([data-df="spinner"][data-size="md"]),
+.df-spinner[data-size="md"] {
+  --df-spinner-size: var(--df-spinner-size-md);
+}
+
+:where([data-df="spinner"][data-size="lg"]),
+.df-spinner[data-size="lg"] {
+  --df-spinner-size: var(--df-spinner-size-lg);
+}
+
+:where([data-df="spinner"] .df-spinner-track),
+:where([data-df="spinner"] .df-spinner-indicator),
+.df-spinner .df-spinner-track,
+.df-spinner .df-spinner-indicator {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--df-spinner-stroke);
+}
+
+:where([data-df="spinner"] .df-spinner-track),
+.df-spinner .df-spinner-track {
+  opacity: var(--df-spinner-track-opacity);
+}
+
+:where([data-df="spinner"] .df-spinner-indicator),
+.df-spinner .df-spinner-indicator {
+  stroke-linecap: round;
+  stroke-dasharray: var(--df-spinner-dasharray);
 }
 
 :where([data-df="separator"]) {

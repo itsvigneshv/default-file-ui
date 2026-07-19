@@ -27,7 +27,7 @@ df-ui skills install design-file-ui
 
 `show` and MCP `get_component` return full prop tables (name, type, default, description) from `docs/api`.
 
-The bundled `design-file-ui` skill includes `references/kit.md`, which teaches discover-then-compose with these CLI and MCP tools.
+The bundled `design-file-ui` skill routes marketing vs workspace vs mobileTool surfaces, and includes `references/kit.md` for discover then compose with these CLI and MCP tools.
 
 Open skills install:
 

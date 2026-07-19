@@ -7,7 +7,7 @@ Use this playbook when the project includes Default File UI. Discover live regis
 Treat Default File UI as present when any of these are true:
 
 - `@default-file/ui` appears in `package.json` dependencies or the app imports from `@default-file/ui/...`
-- `df.json` exists (copy-source / CLI project config)
+- `df.json` exists (copy source / CLI project config)
 - `df-ui` CLI or the Default File UI MCP server is available
 
 If none apply, skip this file and use the agnostic implementation path in `SKILL.md`.
@@ -32,8 +32,9 @@ Map each section of the UI to registry items before writing new chrome. Prefer `
 - Theme UI chrome with semantic utilities and `var(--...)` tokens from the kit. Do not hardcode design literals for surfaces, type sizes, radii, borders, or shadows.
 - Do not introduce a second component library or utility CSS stack for the same surfaces.
 - In package mode, import from `@default-file/ui/components/df-*` and ensure kit CSS is loaded (`@import "@default-file/ui/css/df-index.css"` or the project's existing kit CSS entry).
-- In copy-source mode, install missing items with `df-ui add <items>` / MCP `add_components` before recreating them by hand.
-- Keep composition and hierarchy decisions from `SKILL.md`. The kit supplies parts; it does not replace brand, hero budget, or critique rules.
+- In copy source mode, install missing items with `df-ui add <items>` / MCP `add_components` before recreating them by hand.
+- Keep composition and hierarchy decisions from `SKILL.md` for the classified surface mode. The kit supplies parts; it does not replace mode routing, marketing hero rules, workspace shell rules, or critique contracts.
+- For workspace needs, discover tables, inputs, selects, dialogs, menus, sheets, and related registry items before inventing data or form chrome.
 
 ## Import pattern
 
@@ -43,7 +44,7 @@ import { Button } from "@default-file/ui/components/df-button"
 
 Use the `importPath` from `df-ui show <name>` when unsure. Respect registry dependencies returned by `show` / `get_component`.
 
-## Anti-goals
+## Anti goals
 
 - Hardcoded hex, px, rem, or raw shadows for kit chrome
 - Recreating kit primitives under an app `components/ui` (or similar) tree

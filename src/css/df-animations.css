@@ -362,7 +362,9 @@
   .df-tab-progress.is-active,
   .df-spectrum-text-fill,
   .animate-spin,
-  .animate-pulse {
+  .animate-pulse,
+  :where([data-df="spinner"] svg),
+  .df-spinner svg {
     animation: none !important;
   }
 

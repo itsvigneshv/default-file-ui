@@ -23,11 +23,21 @@
       ]
     },
     {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "Indeterminate circular loading indicator.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-spinner.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-spinner.tsx" }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
       "description": "Default File button with variants and sizes.",
-      "registryDependencies": ["foundation"],
+      "registryDependencies": ["foundation", "spinner", "badge"],
       "files": [
         { "path": "src/components/df-button.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-button.tsx" }
       ]

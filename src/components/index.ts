@@ -3,6 +3,9 @@ export type {
   ButtonProps,
   ButtonVariant,
   ButtonSize,
+  ButtonLoadingAppearance,
+  ButtonBadgePosition,
+  ButtonBadgeSide,
 } from "./df-button"
 
 export { Badge } from "./df-badge"
@@ -31,6 +34,8 @@ export type {
 export { Input } from "./df-input"
 export { Label } from "./df-label"
 export { Separator } from "./df-separator"
+export { Spinner } from "./df-spinner"
+export type { SpinnerProps, SpinnerSize } from "./df-spinner"
 export { Switch } from "./df-switch"
 export { Slider } from "./df-slider"
 export { ToggleGroup, ToggleGroupItem } from "./df-toggle-group"

@@ -38,7 +38,7 @@
             "name": "side",
             "type": "\"left\" | \"right\" | \"top\" | \"bottom\"",
             "default": "\"right\" (vertical) / \"bottom\" (horizontal)",
-            "description": "Which edge the scrollbar sits on. The vertical bar honours `left`/`right`; the horizontal bar honours `top`/`bottom`. Pair with `edge` to flush the thumb against a leading divider, for example a right-hand table of contents whose border sits on its left."
+            "description": "Which edge the scrollbar sits on. The vertical bar honours `left`/`right`; the horizontal bar honours `top`/`bottom`. Pair with `edge` to flush the thumb against a leading divider, for example a right hand table of contents whose border sits on its left."
           },
           {
             "name": "visibility",
@@ -65,7 +65,7 @@
           {
             "name": "className",
             "type": "string",
-            "description": "Classes on the outer scroll-area root. Set a fixed height here (or via style) so content can overflow."
+            "description": "Classes on the outer scroll area root. Set a fixed height here (or via style) so content can overflow."
           },
           {
             "name": "style",

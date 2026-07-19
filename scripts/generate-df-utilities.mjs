@@ -438,7 +438,9 @@ function declsFor(utility) {
     "ease-in-out": {
       "transition-timing-function": "cubic-bezier(0.4, 0, 0.2, 1)",
     },
-    "animate-spin": { animation: "df-spin 1s linear infinite" },
+    "animate-spin": {
+      animation: "df-spin var(--df-duration-spin) linear infinite",
+    },
     "place-content-center": { "place-content": "center" },
     "aspect-square": { "aspect-ratio": "1 / 1" },
     "bg-clip-padding": { "background-clip": "padding-box" },

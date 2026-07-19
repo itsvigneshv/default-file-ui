@@ -150,7 +150,7 @@
           {
             "name": "--df-text-mark-yellow",
             "type": "CSS color",
-            "description": "Neon yellow-green marker wash for highlight (--df-yellow-green-90).",
+            "description": "Neon yellow green marker wash for highlight (--df-yellow-green-90).",
             "default": "color-mix(in oklch, var(--df-yellow-green-90) 82%, transparent)"
           },
           {

@@ -46,6 +46,9 @@
   --df-underline-offset: calc(var(--spacing-unit));
   --df-layer-promote-z: 0.01px;
   --df-badge-dismiss-inset: calc(-0.5 * var(--spacing-unit));
+  --df-button-badge-size: calc(4 * var(--spacing-unit));
+  --df-button-badge-pad-inline: calc(1 * var(--spacing-unit));
+  --df-button-badge-inset: calc(1 * var(--spacing-unit));
 
   --radius: 0.625rem;
   --radius-xxs: calc(var(--radius) * 0.2);
@@ -164,6 +167,15 @@
   --df-duration-reveal: 700ms;
   --df-duration-reveal-long: 1000ms;
   --df-duration-linger: 750ms;
+  --df-duration-spin: 1s;
+
+  --df-spinner-size-xs: calc(3 * var(--spacing-unit));
+  --df-spinner-size-sm: calc(3.5 * var(--spacing-unit));
+  --df-spinner-size-md: calc(4 * var(--spacing-unit));
+  --df-spinner-size-lg: calc(5 * var(--spacing-unit));
+  --df-spinner-stroke: var(--border-width-thick);
+  --df-spinner-track-opacity: var(--df-opacity-25);
+  --df-spinner-dasharray: 28 40;
 
   --df-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
   --df-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
