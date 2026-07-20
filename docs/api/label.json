@@ -2,7 +2,7 @@
   "name": "label",
   "slug": "label",
   "title": "Label",
-  "description": "Accessible labels with required, optional, subtext, and trailing meta.",
+  "description": "Accessible labels with required, optional, subtext, and a trailing slot for Badge or meta.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"
@@ -69,7 +69,7 @@
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "Right-aligned meta on the title row, such as a character count."
+            "description": "Right-aligned meta on the title row. Pass Badge, a character count, or any custom node."
           },
           {
             "name": "className",

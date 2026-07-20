@@ -38,6 +38,14 @@ export type {
 } from "./df-accordion"
 
 export { Input } from "./df-input"
+export type {
+  InputProps,
+  InputVariant,
+  InputSize,
+  InputLabelPosition,
+  InputFocusVariant,
+  InputRadius,
+} from "./df-input"
 export { Label } from "./df-label"
 export type { LabelMarkVariant, LabelProps } from "./df-label"
 export { Separator } from "./df-separator"

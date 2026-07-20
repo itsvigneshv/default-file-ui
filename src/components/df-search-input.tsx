@@ -96,6 +96,7 @@ function SearchInput({
         placeholder={placeholder}
         value={current}
         onChange={handleChange}
+        size={size}
         className={cn(inputClassName)}
         {...props}
       />

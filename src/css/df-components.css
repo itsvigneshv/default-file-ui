@@ -922,82 +922,717 @@
   font-size: var(--df-text-sm);
 }
 
-:where([data-df="input"]) {
-  height: var(--df-control-height-md);
+:where([data-df="input-root"]) {
+  display: flex;
   width: 100%;
   min-width: 0;
-  border-radius: var(--radius-4xl);
-  border: var(--border-width-hairline) solid var(--input);
-  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
-  padding-block: calc(1 * var(--spacing-unit, 0.25rem));
-  padding-left: calc(3 * var(--spacing-unit, 0.25rem));
-  padding-right: calc(3 * var(--spacing-unit, 0.25rem));
-  font-size: var(--df-text-base);
-  line-height: var(--df-leading-normal);
-  transition: color var(--df-duration-base), border-color var(--df-duration-base),
-    box-shadow var(--df-duration-base);
-  outline: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(2 * var(--spacing-unit, 0.25rem));
 }
 
-@media (min-width: 768px) { /* df-bp:md */
-  :where([data-df="input"]) {
-    font-size: var(--df-text-sm);
+[data-df="input-root"] [data-df="label"] {
+  color: var(--df-input-label, var(--foreground));
+}
+
+[data-df="input-root"][data-invalid-label] [data-df="label"] {
+  color: var(--df-input-error-label, var(--destructive));
+}
+
+:where([data-df="input-hint"]) {
+  color: var(--df-input-hint, var(--muted-foreground));
+  font-size: var(--df-text-13);
+  font-weight: var(--df-font-weight-normal);
+  line-height: var(--df-leading-5);
+}
+
+:where([data-df="input-field"]) {
+  --df-input-bg: var(--background);
+  --df-input-border: var(--input);
+  --df-input-border-width: var(--border-width-hairline);
+  --df-input-fg: var(--foreground);
+  --df-input-placeholder: var(--muted-foreground);
+  --df-input-focus-border: var(--foreground);
+  --df-input-error-border: var(--destructive);
+  --df-input-addon: var(--muted-foreground);
+  --df-input-radius: var(--radius-4xl);
+  --df-input-font-size: var(--df-text-sm);
+  --df-input-line-height: var(--df-leading-5);
+  --df-input-optical-shift: 1px;
+  --df-input-height: var(--df-control-height-md);
+  --df-input-floating-min-height: var(--df-control-height-xl);
+  --df-input-autofill-bg: color-mix(in oklch, var(--secondary) 45%, var(--background));
+  --df-input-autofill-fg: var(--df-input-fg);
+  --df-input-padding-top: calc(1 * var(--spacing-unit, 0.25rem));
+  --df-input-padding-right: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-input-padding-bottom: calc(1 * var(--spacing-unit, 0.25rem));
+  --df-input-padding-left: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-input-icon-size: calc(3.5 * var(--spacing-unit, 0.25rem));
+  --df-input-affordance-gap: calc(1.5 * var(--spacing-unit, 0.25rem));
+  --df-input-addon-gap: calc(1 * var(--spacing-unit, 0.25rem));
+  --df-input-floating-pad-extra-top: calc(2.5 * var(--spacing-unit, 0.25rem));
+  --df-input-floating-pad-extra-bottom: calc(0.5 * var(--spacing-unit, 0.25rem));
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  border-radius: var(--df-input-radius);
+  corner-shape: var(--df-corner-shape);
+}
+
+:where([data-df="input-field"][data-variant="secondary"]) {
+  --df-input-bg: color-mix(in oklch, var(--secondary) 55%, var(--background));
+  --df-input-border: transparent;
+  --df-input-fg: var(--secondary-foreground);
+}
+
+:where([data-df="input-field"][data-chrome="shell"]) {
+  border: var(--df-input-border-width) solid var(--df-input-border);
+  background-color: var(--df-input-bg);
+  color: var(--df-input-fg);
+  transition: color var(--df-duration-base), border-color var(--df-duration-base),
+    box-shadow var(--df-duration-base);
+}
+
+[data-df="input-field"][data-chrome="shell"][data-label-position="inside"] {
+  min-height: max(var(--df-input-height), var(--df-input-floating-min-height));
+  align-items: center;
+}
+
+:where([data-df="input-label"]) {
+  position: absolute;
+  top: 50%;
+  left: var(--df-input-padding-left);
+  z-index: var(--z-raised);
+  max-width: calc(
+    100% - var(--df-input-padding-left) - var(--df-input-padding-right)
+  );
+  overflow: hidden;
+  color: var(--df-input-label, var(--muted-foreground));
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-normal);
+  line-height: var(--df-leading-none);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transform-origin: left center;
+  transition:
+    top var(--df-duration-base) ease,
+    transform var(--df-duration-base) ease,
+    font-size var(--df-duration-base) ease,
+    color var(--df-duration-base) ease;
+}
+
+:where([data-df="input-field"][data-has-leading] [data-df="input-label"]) {
+  left: calc(
+    var(--df-input-padding-left) + var(--df-input-icon-size) +
+      var(--df-input-affordance-gap)
+  );
+}
+
+:where([data-df="input-field"][data-label-position="inside"]:focus-within [data-df="input-label"]),
+:where(
+  [data-df="input-field"][data-label-position="inside"]:not([data-empty])
+    [data-df="input-label"]
+) {
+  top: var(--df-input-padding-top);
+  font-size: var(--df-text-11);
+  font-weight: var(--df-font-weight-medium);
+  transform: translateY(0);
+}
+
+[data-df="input-field"][data-invalid-label] [data-df="input-label"] {
+  color: var(--df-input-error-label, var(--destructive));
+}
+
+:where([data-df="input-label-trailing"]) {
+  position: absolute;
+  top: var(--df-input-padding-top);
+  right: var(--df-input-padding-right);
+  z-index: var(--z-raised);
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--df-duration-base) ease;
+}
+
+:where([data-df="input-field"][data-label-position="inside"]:focus-within [data-df="input-label-trailing"]),
+:where(
+  [data-df="input-field"][data-label-position="inside"]:not([data-empty])
+    [data-df="input-label-trailing"]
+) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-df="input-label"]),
+  :where([data-df="input-label-trailing"]) {
+    transition: none;
   }
 }
 
-:where([data-df="input"]::placeholder) {
+:where([data-df="input-prefix"]),
+:where([data-df="input-suffix"]) {
+  flex-shrink: 0;
+  margin-bottom: calc(2 * var(--df-input-optical-shift));
+  color: var(--df-input-addon);
+  font-size: var(--df-text-sm);
+  line-height: var(--df-leading-none);
+  user-select: none;
+  pointer-events: none;
+}
+
+:where([data-df="input-field"][data-has-prefix] [data-df="input-prefix"]) {
+  padding-left: var(--df-input-padding-left);
+}
+
+:where([data-df="input-field"][data-has-suffix] [data-df="input-suffix"]) {
+  padding-right: var(--df-input-padding-right);
+}
+
+:where([data-df="input-icon"]) {
+  z-index: var(--z-raised);
+  display: flex;
+  width: var(--df-input-icon-size);
+  height: var(--df-input-icon-size);
+  flex-shrink: 0;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  line-height: 0;
   color: var(--muted-foreground);
 }
 
-:where([data-df="input"]:focus-visible) {
+:where([data-df="input-icon"][data-side="start"]) {
+  margin-left: var(--df-input-padding-left);
+  margin-right: var(--df-input-affordance-gap);
+  pointer-events: none;
+}
+
+:where([data-df="input-icon"][data-side="end"]) {
+  margin-left: var(--df-input-affordance-gap);
+  margin-right: var(--df-input-padding-right);
+}
+
+:where([data-df="input-icon"] svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+[data-df="input-field"][data-has-leading][data-chrome="shell"] [data-df="input"].df-input {
+  padding-left: 0;
+}
+
+[data-df="input-field"][data-has-trailing][data-chrome="shell"] [data-df="input"].df-input,
+[data-df="input-field"][data-has-clear][data-chrome="shell"] [data-df="input"].df-input {
+  padding-right: 0;
+}
+
+[data-df="input-field"][data-has-trailing][data-has-clear]
+  [data-df="input-icon"][data-side="end"] {
+  margin-right: var(--df-input-affordance-gap);
+}
+
+[data-df="input-clear"] {
+  display: inline-flex;
+  width: var(--df-control-height-2xs);
+  height: var(--df-control-height-2xs);
+  flex-shrink: 0;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  margin-left: var(--df-input-affordance-gap);
+  margin-right: var(--df-input-padding-right);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    color var(--df-duration-base),
+    background-color var(--df-duration-base);
+}
+
+[data-df="input-field"][data-has-trailing][data-has-clear] [data-df="input-clear"] {
+  margin-left: 0;
+}
+
+[data-df="input-clear"]:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+[data-df="input-clear"] svg {
+  display: block;
+  width: calc(3.5 * var(--spacing-unit, 0.25rem));
+  height: calc(3.5 * var(--spacing-unit, 0.25rem));
+}
+
+[data-df="input-action"] {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  align-self: stretch;
+  border-left: var(--border-width-hairline) solid
+    color-mix(in oklch, var(--border) 80%, transparent);
+}
+
+[data-df="input-field"][data-has-action][data-chrome="shell"] {
+  overflow: hidden;
+  padding: 0;
+}
+
+[data-df="input-field"][data-has-action][data-chrome="shell"] [data-df="input"].df-input {
+  border-radius: 0;
+  corner-shape: unset;
+  padding-left: var(--df-input-padding-left);
+  padding-right: var(--df-input-padding-right);
+}
+
+[data-df="input-field"][data-has-action][data-chrome="shell"]
+  [data-df="input-action"]
+  [data-df="button"],
+[data-df="input-field"][data-has-action][data-chrome="shell"]
+  [data-df="input-action"]
+  .df-btn {
+  height: 100%;
+  min-height: var(--df-input-height);
+  border: 0;
+  border-radius: 0;
+  corner-shape: unset;
+  box-shadow: none;
+}
+
+[data-df="input-field"][data-has-prefix][data-chrome="shell"] [data-df="input"].df-input {
+  padding-left: var(--df-input-addon-gap);
+}
+
+:where([data-df="input-field"][data-border-width="hairline"]) {
+  --df-input-border-width: var(--border-width-hairline);
+}
+:where([data-df="input-field"][data-border-width="thin"]) {
+  --df-input-border-width: var(--border-width-thin);
+}
+:where([data-df="input-field"][data-border-width="thick"]) {
+  --df-input-border-width: var(--border-width-thick);
+}
+
+:where([data-df="input-field"][data-radius="none"]) {
+  --df-input-radius: 0;
+}
+:where([data-df="input-field"][data-radius="xxs"]) {
+  --df-input-radius: var(--radius-xxs);
+}
+:where([data-df="input-field"][data-radius="xs"]) {
+  --df-input-radius: var(--radius-xs);
+}
+:where([data-df="input-field"][data-radius="sm"]) {
+  --df-input-radius: var(--radius-sm);
+}
+:where([data-df="input-field"][data-radius="md"]) {
+  --df-input-radius: var(--radius-md);
+}
+:where([data-df="input-field"][data-radius="lg"]) {
+  --df-input-radius: var(--radius-lg);
+}
+:where([data-df="input-field"][data-radius="xl"]) {
+  --df-input-radius: var(--radius-xl);
+}
+:where([data-df="input-field"][data-radius="2xl"]) {
+  --df-input-radius: var(--radius-2xl);
+}
+:where([data-df="input-field"][data-radius="3xl"]) {
+  --df-input-radius: var(--radius-3xl);
+}
+:where([data-df="input-field"][data-radius="4xl"]) {
+  --df-input-radius: var(--radius-4xl);
+}
+:where([data-df="input-field"][data-radius="full"]) {
+  --df-input-radius: var(--radius-full);
+}
+
+:where([data-df="input-field"][data-chrome="shell"]:focus-within:not([data-invalid])) {
   border-color: var(--ring);
   box-shadow: var(--focus-ring);
 }
 
-:where([data-df="input"]:disabled) {
-  pointer-events: none;
-  cursor: not-allowed;
-  opacity: var(--opacity-disabled);
+:where([data-df="input-field"][data-chrome="shell"][data-focus-variant="border"]:focus-within:not([data-invalid])) {
+  border-color: var(--df-input-focus-border);
+  box-shadow: none;
 }
 
-:where([data-df="input"][aria-invalid="true"]) {
-  border-color: var(--destructive);
+:where([data-df="input-field"][data-chrome="shell"][data-invalid]),
+:where([data-df="input-field"][data-chrome="shell"][data-invalid]:focus-within) {
+  border-color: var(--df-input-error-border);
   box-shadow: var(--focus-ring-error);
 }
 
+:where([data-df="input"]),
 .df-input {
-  height: var(--df-control-height-md);
+  --df-input-bg: var(--background);
+  --df-input-border: var(--input);
+  --df-input-border-width: var(--border-width-hairline);
+  --df-input-fg: var(--foreground);
+  --df-input-placeholder: var(--muted-foreground);
+  --df-input-focus-border: var(--foreground);
+  --df-input-error-border: var(--destructive);
+  --df-input-addon: var(--muted-foreground);
+  --df-input-radius: var(--radius-4xl);
+  --df-input-font-size: var(--df-text-sm);
+  --df-input-line-height: var(--df-leading-5);
+  --df-input-optical-shift: 1px;
+  --df-input-height: var(--df-control-height-md);
+  --df-input-autofill-bg: color-mix(in oklch, var(--secondary) 45%, var(--background));
+  --df-input-autofill-fg: var(--df-input-fg);
+  --df-input-padding-top: calc(1 * var(--spacing-unit, 0.25rem));
+  --df-input-padding-right: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-input-padding-bottom: calc(1 * var(--spacing-unit, 0.25rem));
+  --df-input-padding-left: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-input-icon-size: calc(3.5 * var(--spacing-unit, 0.25rem));
+  --df-input-affordance-gap: calc(1.5 * var(--spacing-unit, 0.25rem));
+  height: var(--df-input-height);
   width: 100%;
   min-width: 0;
-  border-radius: var(--radius-4xl);
+  border-radius: var(--df-input-radius);
   corner-shape: var(--df-corner-shape);
-  border: var(--border-width-hairline) solid var(--input);
-  background-color: color-mix(in oklch, var(--input) 30%, var(--background));
-  padding-block: calc(1 * var(--spacing-unit, 0.25rem));
-  padding-left: calc(3 * var(--spacing-unit, 0.25rem));
-  padding-right: calc(3 * var(--spacing-unit, 0.25rem));
-  font-size: var(--df-text-base);
-  line-height: var(--df-leading-normal);
+  border: var(--df-input-border-width) solid var(--df-input-border);
+  background-color: var(--df-input-bg);
+  color: var(--df-input-fg);
+  padding-top: var(--df-input-padding-top);
+  padding-right: var(--df-input-padding-right);
+  padding-bottom: calc(
+    var(--df-input-padding-bottom) + 2 * var(--df-input-optical-shift)
+  );
+  padding-left: var(--df-input-padding-left);
+  font-size: var(--df-input-font-size);
+  line-height: var(--df-input-line-height);
   transition: color var(--df-duration-base), border-color var(--df-duration-base),
     box-shadow var(--df-duration-base);
   outline: none;
 }
-@media (min-width: 768px) { /* df-bp:md */
-  .df-input {
-    font-size: var(--df-text-sm);
-  }
+
+:where([data-df="input"][data-variant="secondary"]),
+.df-input[data-variant="secondary"] {
+  --df-input-bg: color-mix(in oklch, var(--secondary) 55%, var(--background));
+  --df-input-border: transparent;
+  --df-input-fg: var(--secondary-foreground);
 }
+
+[data-df="input"][data-size="sm"],
+.df-input[data-size="sm"],
+[data-df="input-field"][data-size="sm"] {
+  --df-input-height: var(--df-control-height-sm);
+  --df-input-font-size: var(--df-text-13);
+  --df-input-line-height: var(--df-leading-5);
+}
+
+[data-df="input"][data-size="md"],
+.df-input[data-size="md"],
+[data-df="input-field"][data-size="md"] {
+  --df-input-height: var(--df-control-height-md);
+  --df-input-font-size: var(--df-text-sm);
+  --df-input-line-height: var(--df-leading-5);
+}
+
+[data-df="input"][data-size="lg"],
+.df-input[data-size="lg"],
+[data-df="input-field"][data-size="lg"] {
+  --df-input-height: var(--df-control-height-lg);
+  --df-input-font-size: var(--df-text-sm);
+  --df-input-line-height: var(--df-leading-5);
+}
+
+[data-df="input"][data-size="xl"],
+.df-input[data-size="xl"],
+[data-df="input-field"][data-size="xl"] {
+  --df-input-height: var(--df-control-height-xl);
+  --df-input-font-size: var(--df-text-base);
+  --df-input-line-height: var(--df-leading-6);
+}
+
+:where([data-df="input"][data-border-width="hairline"]),
+.df-input[data-border-width="hairline"] {
+  --df-input-border-width: var(--border-width-hairline);
+}
+:where([data-df="input"][data-border-width="thin"]),
+.df-input[data-border-width="thin"] {
+  --df-input-border-width: var(--border-width-thin);
+}
+:where([data-df="input"][data-border-width="thick"]),
+.df-input[data-border-width="thick"] {
+  --df-input-border-width: var(--border-width-thick);
+}
+
+:where([data-df="input"][data-radius="none"]),
+.df-input[data-radius="none"] {
+  --df-input-radius: 0;
+}
+:where([data-df="input"][data-radius="xxs"]),
+.df-input[data-radius="xxs"] {
+  --df-input-radius: var(--radius-xxs);
+}
+:where([data-df="input"][data-radius="xs"]),
+.df-input[data-radius="xs"] {
+  --df-input-radius: var(--radius-xs);
+}
+:where([data-df="input"][data-radius="sm"]),
+.df-input[data-radius="sm"] {
+  --df-input-radius: var(--radius-sm);
+}
+:where([data-df="input"][data-radius="md"]),
+.df-input[data-radius="md"] {
+  --df-input-radius: var(--radius-md);
+}
+:where([data-df="input"][data-radius="lg"]),
+.df-input[data-radius="lg"] {
+  --df-input-radius: var(--radius-lg);
+}
+:where([data-df="input"][data-radius="xl"]),
+.df-input[data-radius="xl"] {
+  --df-input-radius: var(--radius-xl);
+}
+:where([data-df="input"][data-radius="2xl"]),
+.df-input[data-radius="2xl"] {
+  --df-input-radius: var(--radius-2xl);
+}
+:where([data-df="input"][data-radius="3xl"]),
+.df-input[data-radius="3xl"] {
+  --df-input-radius: var(--radius-3xl);
+}
+:where([data-df="input"][data-radius="4xl"]),
+.df-input[data-radius="4xl"] {
+  --df-input-radius: var(--radius-4xl);
+}
+:where([data-df="input"][data-radius="full"]),
+.df-input[data-radius="full"] {
+  --df-input-radius: var(--radius-full);
+}
+
+:where([data-df="input"]::placeholder),
 .df-input::placeholder {
-  color: var(--muted-foreground);
+  color: var(--df-input-placeholder);
+  -webkit-text-fill-color: var(--df-input-placeholder);
+  font-size: inherit;
+  opacity: 1;
 }
+
+:where([data-df="input"]:focus-visible),
 .df-input:focus-visible {
   border-color: var(--ring);
   box-shadow: var(--focus-ring);
 }
+
+:where([data-df="input"][data-focus-variant="border"]:focus-visible),
+.df-input[data-focus-variant="border"]:focus-visible {
+  border-color: var(--df-input-focus-border);
+  box-shadow: none;
+  outline: none;
+}
+
+[data-df="input"]:disabled,
 .df-input:disabled {
   pointer-events: none;
   cursor: not-allowed;
-  opacity: var(--opacity-disabled);
+  opacity: 1;
+  --df-input-bg: var(--muted);
+  --df-input-border: var(--border);
+  --df-input-fg: var(--muted-foreground);
+  --df-input-placeholder: var(--muted-foreground);
+  border-color: var(--df-input-border);
+  background-color: var(--df-input-bg);
+  color: var(--df-input-fg);
+  -webkit-text-fill-color: var(--df-input-fg);
+  box-shadow: none;
+}
+
+[data-df="input"]:disabled::placeholder,
+.df-input:disabled::placeholder {
+  color: var(--df-input-placeholder);
+  -webkit-text-fill-color: var(--df-input-placeholder);
+  opacity: 1;
+}
+
+[data-df="input-field"][data-chrome="shell"]:has([data-df="input"]:disabled) {
+  --df-input-bg: var(--muted);
+  --df-input-border: var(--border);
+  --df-input-fg: var(--muted-foreground);
+  --df-input-placeholder: var(--muted-foreground);
+  border-color: var(--df-input-border);
+  background-color: var(--df-input-bg);
+  color: var(--df-input-fg);
+  box-shadow: none;
+}
+
+[data-df="input-field"][data-chrome="shell"]:has([data-df="input"]:disabled)
+  [data-df="input"].df-input:disabled {
+  background-color: transparent;
+}
+
+[data-df="input-root"]:has([data-df="input"]:disabled) [data-df="label"],
+[data-df="input-root"]:has([data-df="input"]:disabled) [data-df="input-hint"] {
+  color: var(--muted-foreground);
+}
+
+:where([data-df="input"]):autofill,
+:where([data-df="input"]):-webkit-autofill,
+:where([data-df="input"]):-webkit-autofill:hover,
+:where([data-df="input"]):-webkit-autofill:focus,
+:where([data-df="input"]):-webkit-autofill:active,
+.df-input:autofill,
+.df-input:-webkit-autofill,
+.df-input:-webkit-autofill:hover,
+.df-input:-webkit-autofill:focus,
+.df-input:-webkit-autofill:active {
+  border-color: var(--df-input-border);
+  -webkit-text-fill-color: var(--df-input-autofill-fg) !important;
+  caret-color: var(--df-input-autofill-fg);
+  box-shadow: inset 0 0 0 100vmax var(--df-input-autofill-bg) !important;
+  transition: background-color 99999s ease-out 0s;
+}
+
+:where([data-df="input"]):autofill:focus-visible,
+:where([data-df="input"]):-webkit-autofill:focus-visible,
+.df-input:autofill:focus-visible,
+.df-input:-webkit-autofill:focus-visible {
+  border-color: var(--ring);
+  box-shadow:
+    inset 0 0 0 100vmax var(--df-input-autofill-bg),
+    var(--focus-ring) !important;
+}
+
+:where([data-df="input"][data-focus-variant="border"]):autofill:focus-visible,
+:where([data-df="input"][data-focus-variant="border"]):-webkit-autofill:focus-visible,
+.df-input[data-focus-variant="border"]:autofill:focus-visible,
+.df-input[data-focus-variant="border"]:-webkit-autofill:focus-visible {
+  border-color: var(--df-input-focus-border);
+  box-shadow: inset 0 0 0 100vmax var(--df-input-autofill-bg) !important;
+}
+
+[data-df="input-field"][data-chrome="shell"]:has([data-df="input"]:autofill),
+[data-df="input-field"][data-chrome="shell"]:has([data-df="input"]:-webkit-autofill) {
+  --df-input-bg: var(--df-input-autofill-bg);
+  overflow: hidden;
+  background-color: var(--df-input-bg);
+  color: var(--df-input-autofill-fg);
+}
+
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input:autofill,
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input:-webkit-autofill,
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input:-webkit-autofill:hover,
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input:-webkit-autofill:focus,
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input:-webkit-autofill:active {
+  border-color: transparent;
+  background-color: transparent;
+  -webkit-text-fill-color: var(--df-input-autofill-fg) !important;
+  caret-color: var(--df-input-autofill-fg);
+  box-shadow: inset 0 0 0 100vmax var(--df-input-autofill-bg) !important;
+}
+
+[data-df="input-field"][data-chrome="shell"]:focus-within:not([data-invalid]):has(
+    [data-df="input"]:autofill
+  ),
+[data-df="input-field"][data-chrome="shell"]:focus-within:not([data-invalid]):has(
+    [data-df="input"]:-webkit-autofill
+  ) {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
+}
+
+[data-df="input-field"][data-chrome="shell"][data-focus-variant="border"]:focus-within:not(
+    [data-invalid]
+  ):has([data-df="input"]:autofill),
+[data-df="input-field"][data-chrome="shell"][data-focus-variant="border"]:focus-within:not(
+    [data-invalid]
+  ):has([data-df="input"]:-webkit-autofill) {
+  border-color: var(--df-input-focus-border);
+  box-shadow: none;
+}
+
+:where([data-df="input"][aria-invalid="true"]),
+:where([data-df="input"][data-invalid]),
+.df-input[aria-invalid="true"],
+.df-input[data-invalid] {
+  border-color: var(--df-input-error-border);
+  box-shadow: var(--focus-ring-error);
+}
+
+:where([data-df="input"][aria-invalid="true"]):autofill,
+:where([data-df="input"][aria-invalid="true"]):-webkit-autofill,
+:where([data-df="input"][data-invalid]):autofill,
+:where([data-df="input"][data-invalid]):-webkit-autofill,
+.df-input[aria-invalid="true"]:autofill,
+.df-input[aria-invalid="true"]:-webkit-autofill,
+.df-input[data-invalid]:autofill,
+.df-input[data-invalid]:-webkit-autofill {
+  border-color: var(--df-input-error-border);
+  box-shadow:
+    inset 0 0 0 100vmax var(--df-input-autofill-bg),
+    var(--focus-ring-error) !important;
+}
+
+[data-df="input-field"][data-chrome="shell"] {
+  min-height: var(--df-input-height);
+}
+
+/* Bottom inset raises the rounded text baseline onto the field midline. */
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input {
+  align-self: stretch;
+  height: 100%;
+  min-height: var(--df-input-height);
+  flex: 1 1 auto;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--df-input-fg);
+  padding-top: 0;
+  padding-bottom: calc(2 * var(--df-input-optical-shift));
+  line-height: var(--df-input-line-height);
+}
+
+[data-df="input-field"][data-chrome="shell"][data-label-position="inside"] [data-df="input"].df-input {
+  height: auto;
+  min-height: max(var(--df-input-height), var(--df-input-floating-min-height));
+  padding-top: calc(
+    var(--df-input-padding-top) + var(--df-input-floating-pad-extra-top)
+  );
+  padding-bottom: calc(
+    var(--df-input-padding-bottom) + var(--df-input-floating-pad-extra-bottom)
+  );
+  padding-left: var(--df-input-padding-left);
+  padding-right: var(--df-input-padding-right);
+  font-size: var(--df-input-font-size);
+  line-height: var(--df-input-line-height);
+}
+
+[data-df="input-field"][data-chrome="shell"][data-label-position="inside"][data-empty]:not(
+    :focus-within
+  )
+  [data-df="input"].df-input {
+  padding-top: var(--df-input-padding-top);
+  padding-bottom: var(--df-input-padding-bottom);
+}
+
+[data-df="input-field"][data-has-leading][data-chrome="shell"][data-label-position="inside"]
+  [data-df="input"].df-input {
+  padding-left: 0;
+}
+
+[data-df="input-field"][data-has-trailing][data-chrome="shell"][data-label-position="inside"]
+  [data-df="input"].df-input {
+  padding-right: 0;
+}
+
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input:focus-visible,
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input[aria-invalid="true"],
+[data-df="input-field"][data-chrome="shell"] [data-df="input"].df-input[data-invalid] {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 :where([data-df="search-input"]) {
@@ -1101,7 +1736,6 @@
 }
 
 [data-df="search-input"][data-size="sm"] [data-df="input"].df-input {
-  height: var(--df-control-height-sm);
   font-size: var(--df-text-13);
   line-height: var(--df-leading-5);
   padding-block: calc(0.5 * var(--spacing-unit, 0.25rem));
@@ -1144,13 +1778,11 @@
 }
 
 [data-df="search-input"][data-size="md"] [data-df="input"].df-input {
-  height: var(--df-control-height-md);
   font-size: var(--df-text-sm);
   line-height: var(--df-leading-5);
 }
 
 [data-df="search-input"][data-size="lg"] [data-df="input"].df-input {
-  height: var(--df-control-height-lg);
   font-size: var(--df-text-base);
   line-height: var(--df-leading-5-25);
   padding-block: calc(1.5 * var(--spacing-unit, 0.25rem));
@@ -1325,6 +1957,14 @@
   font-weight: var(--df-font-weight-normal);
   font-variant-numeric: tabular-nums;
   line-height: var(--df-leading-none);
+}
+
+[data-df="label-trailing"] [data-df="badge"] {
+  font-size: revert;
+  font-weight: revert;
+  line-height: revert;
+  font-variant-numeric: normal;
+  pointer-events: none;
 }
 
 :where([data-df="label-subtext"]) {

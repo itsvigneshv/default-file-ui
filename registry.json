@@ -55,7 +55,8 @@
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
-      "registryDependencies": ["foundation"],
+      "registryDependencies": ["foundation", "label"],
+      "dependencies": ["lucide-react"],
       "files": [
         { "path": "src/components/df-input.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-input.tsx" }
       ]

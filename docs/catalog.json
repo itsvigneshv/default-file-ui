@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T06:14:07.682Z",
+  "generatedAt": "2026-07-20T08:14:57.867Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -148,20 +148,23 @@
       "slug": "input",
       "name": "input",
       "title": "Input",
-      "description": "Single line text fields for forms and filters.",
+      "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, and validation.",
       "chapter": "inputs",
       "registryDependencies": [
-        "foundation"
+        "foundation",
+        "label"
       ],
       "importPath": "@default-file/ui/components/df-input",
-      "dependencies": [],
-      "propCount": 14
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 88
     },
     {
       "slug": "label",
       "name": "label",
       "title": "Label",
-      "description": "Accessible labels with required, optional, subtext, and trailing meta.",
+      "description": "Accessible labels with required, optional, subtext, and a trailing slot for Badge or meta.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
