@@ -4678,7 +4678,11 @@
   align-items: center;
   gap: calc(2.5 * var(--spacing-unit, 0.25rem));
   border-radius: var(--radius-xl);
-  padding: calc(2.5 * var(--spacing-unit, 0.25rem)) calc(8 * var(--spacing-unit, 0.25rem)) calc(2.5 * var(--spacing-unit, 0.25rem)) calc(3 * var(--spacing-unit, 0.25rem));
+  /* End pad matches the absolute check gutter (icon size + inset). */
+  padding: calc(2.5 * var(--spacing-unit, 0.25rem))
+    calc(6 * var(--spacing-unit, 0.25rem))
+    calc(2.5 * var(--spacing-unit, 0.25rem))
+    calc(3 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
   outline: none;
   user-select: none;

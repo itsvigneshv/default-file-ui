@@ -142,7 +142,7 @@
             "name": "alignItemWithTrigger",
             "type": "boolean",
             "default": "false",
-            "description": "When true, menu width matches the trigger. When false, the menu hugs option content (and stays at least as wide as the trigger)."
+            "description": "When true, menu width matches the trigger. When false, the menu hugs the longest option (floored at --df-menu-min-width)."
           },
           {
             "name": "side",

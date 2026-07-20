@@ -819,11 +819,11 @@ function OptionListContent({
               ...(alignItemWithTrigger
                 ? null
                 : {
-                    // Hug content; floor at trigger width via --anchor-width.
+                    // Hug the longest option. Use alignItemWithTrigger to match the field.
                     width: "max-content",
-                    minWidth: "var(--anchor-width)",
+                    minWidth: "var(--df-menu-min-width)",
                     maxWidth:
-                      "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), max(var(--anchor-width), var(--df-max-w-sm)))",
+                      "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-max-w-sm))",
                   }),
             }
           : {
@@ -832,7 +832,7 @@ function OptionListContent({
               minWidth:
                 stacked && !alignItemWithTrigger
                   ? "var(--df-submenu-min-width)"
-                  : "var(--df-option-list-min-width)",
+                  : "var(--df-menu-min-width)",
             }
       }
       {...props}
