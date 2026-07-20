@@ -2,7 +2,7 @@
   "name": "slider",
   "slug": "slider",
   "title": "Slider",
-  "description": "Continuous value selection along a track.",
+  "description": "Track scrubber with bar or line chrome, optional label, leading icon, and value readout.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"
@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-slider",
   "dependencies": [],
   "api": {
-    "description": "Value selection along a track. While scrubbing, the thumb and fill follow the pointer continuously; the committed value snaps to step.",
+    "description": "Track scrubber with bar or line chrome. Optional label, leading icon, and value readout. While scrubbing, the thumb and fill follow the pointer continuously; the committed value snaps to step.",
     "groups": [
       {
         "id": "slider",
@@ -51,10 +51,36 @@
             "description": "Called when the committed value changes. Receives stepped values while scrubbing and on keyboard input."
           },
           {
-            "name": "fillMotion",
-            "type": "\"none\" | \"sparkle\"",
-            "default": "\"sparkle\"",
-            "description": "Optional motion inside the filled range while scrubbing. sparkle shows a light particle shimmer that adapts to light and dark themes. Set none to keep a static fill. Skipped when reduced motion is preferred."
+            "name": "variant",
+            "type": "\"bar\" | \"line\"",
+            "default": "\"bar\"",
+            "description": "Track chrome. bar is a filled pill track. line is a thin mute rail with a thicker active segment and a circular thumb."
+          },
+          {
+            "name": "label",
+            "type": "React.ReactNode",
+            "description": "Optional heading text or content above the track. Wired to the thumb as the accessible name when aria-label is omitted."
+          },
+          {
+            "name": "leading",
+            "type": "React.ReactNode",
+            "description": "Optional leading content before the label, such as an icon."
+          },
+          {
+            "name": "showValue",
+            "type": "boolean",
+            "description": "Show the live value on the right of the header. Defaults to true when label, leading, or formatValue is set."
+          },
+          {
+            "name": "valueFormat",
+            "type": "\"number\" | \"percent\"",
+            "default": "\"number\"",
+            "description": "Built in readout format when formatValue is omitted. number uses step precision. percent shows the position across min to max with a percent sign."
+          },
+          {
+            "name": "formatValue",
+            "type": "(value: number) => string",
+            "description": "Custom readout and aria valuetext. Overrides valueFormat when set."
           },
           {
             "name": "disabled",
@@ -62,69 +88,108 @@
             "description": "Disabled slider."
           },
           {
+            "name": "aria-label",
+            "type": "string",
+            "description": "Accessible name applied to the slider thumb."
+          },
+          {
+            "name": "aria-labelledby",
+            "type": "string",
+            "description": "ID of a labeling element for the slider thumb. Defaults to the label element when label is set."
+          },
+          {
             "name": "className",
             "type": "string",
             "description": "Additional styles on the root."
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "description": "Inline styles on the root. Can also override Slider CSS variables directly."
           }
         ]
       },
       {
         "id": "slider-tokens",
         "title": "Tokens",
-        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "description": "variant line remaps track and range heights to the line tokens. Prop and style overrides still win.",
         "props": [
           {
             "name": "--primary",
             "type": "CSS color",
-            "description": "Filled track and thumb.",
+            "description": "Active fill (both variants) and bar thumb border.",
             "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Label text, leading icon, and line thumb border.",
+            "default": "var(--df-neutral-900)"
           },
           {
             "name": "--muted",
             "type": "CSS color",
-            "description": "Unfilled track.",
+            "description": "Bar track background.",
             "default": "var(--df-neutral-50)"
           },
           {
-            "name": "--df-slider-sparkle",
+            "name": "--muted-foreground",
             "type": "CSS color",
-            "description": "Brighter sparkle dots on the filled range while scrubbing.",
-            "default": "color-mix(in oklch, var(--background) 62%, transparent)"
+            "description": "Value readout text.",
+            "default": "var(--df-neutral-500)"
           },
           {
-            "name": "--df-slider-sparkle-soft",
+            "name": "--background",
             "type": "CSS color",
-            "description": "Softer sparkle dots on the filled range while scrubbing.",
-            "default": "color-mix(in oklch, var(--background) 34%, transparent)"
-          },
-          {
-            "name": "--df-slider-sparkle-size",
-            "type": "CSS length",
-            "description": "Sparkle particle size while scrubbing.",
-            "default": "calc(0.35 * var(--spacing-unit))"
+            "description": "Thumb fill.",
+            "default": "var(--df-neutral-0)"
           },
           {
             "name": "--df-slider-track-height",
             "type": "CSS length",
-            "description": "Track height.",
+            "description": "Bar track height.",
             "default": "calc(3 * var(--spacing-unit))"
           },
           {
-            "name": "--border",
-            "type": "CSS color",
-            "description": "Unused by current slider chrome.",
-            "default": "var(--df-neutral-100)"
+            "name": "--df-slider-line-track-height",
+            "type": "CSS length",
+            "description": "Line variant mute rail height.",
+            "default": "calc(1 * var(--spacing-unit))"
           },
           {
-            "name": "--ring",
-            "type": "CSS color",
-            "description": "Focus ring color via focus ring tokens.",
-            "default": "var(--df-neutral-400)"
+            "name": "--df-slider-line-range-height",
+            "type": "CSS length",
+            "description": "Line variant active segment height.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-header-gap",
+            "type": "CSS length",
+            "description": "Gap between the header and the track.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-label-gap",
+            "type": "CSS length",
+            "description": "Gap between leading content and the label.",
+            "default": "calc(1.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-leading-size",
+            "type": "CSS length",
+            "description": "Leading icon box size.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-affordance-size-sm",
+            "type": "CSS length",
+            "description": "Thumb size.",
+            "default": "calc(4 * var(--spacing-unit))"
           },
           {
             "name": "--spacing-unit",
             "type": "CSS length",
-            "description": "Base unit for thumb size and sparkle dots.",
+            "description": "Base unit for track, thumb, and header sizes.",
             "default": "0.25rem"
           }
         ]

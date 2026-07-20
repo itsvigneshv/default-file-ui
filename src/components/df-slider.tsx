@@ -5,11 +5,13 @@ import * as React from "react"
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
 
-type SliderFillMotion = "none" | "sparkle"
+type SliderVariant = "bar" | "line"
+
+type SliderValueFormat = "number" | "percent"
 
 type SliderProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "defaultValue" | "onChange"
+  "defaultValue" | "onChange" | "color"
 > & {
   min?: number
   max?: number
@@ -17,8 +19,13 @@ type SliderProps = Omit<
   value?: number[]
   defaultValue?: number[]
   onValueChange?: (value: number[]) => void
-  fillMotion?: SliderFillMotion
   disabled?: boolean
+  variant?: SliderVariant
+  label?: React.ReactNode
+  leading?: React.ReactNode
+  showValue?: boolean
+  valueFormat?: SliderValueFormat
+  formatValue?: (value: number) => string
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -35,6 +42,11 @@ function snapToStep(value: number, min: number, max: number, step: number) {
   return clamp(rounded, min, max)
 }
 
+function formatByStep(value: number, step: number) {
+  const digits = step >= 1 ? 0 : step >= 0.1 ? 1 : 2
+  return value.toFixed(digits)
+}
+
 function Slider({
   className,
   min = 0,
@@ -43,10 +55,18 @@ function Slider({
   value,
   defaultValue,
   onValueChange,
-  fillMotion = "sparkle",
   disabled,
+  variant = "bar",
+  label,
+  leading,
+  showValue,
+  valueFormat = "number",
+  formatValue,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
 }: SliderProps) {
+  const labelId = React.useId()
   const [values, setValues] = useControllableState({
     value,
     defaultValue: defaultValue ?? [min],
@@ -58,7 +78,24 @@ function Slider({
   const span = max - min || 1
   const valuePct = ((current - min) / span) * 100
   const visualPct = dragPct ?? valuePct
-  const dragging = dragPct != null
+
+  const resolvedShowValue =
+    showValue ??
+    (formatValue != null || label != null || leading != null)
+
+  const displayValue = React.useMemo(() => {
+    if (formatValue) return formatValue(current)
+    if (valueFormat === "percent") {
+      return `${Math.round(valuePct)}%`
+    }
+    return formatByStep(current, step)
+  }, [current, formatValue, step, valueFormat, valuePct])
+
+  const resolvedAriaLabelledBy =
+    ariaLabelledBy ?? (label != null ? labelId : undefined)
+  const resolvedAriaLabel =
+    ariaLabel ??
+    (typeof label === "string" && !resolvedAriaLabelledBy ? label : undefined)
 
   const scrub = React.useCallback(
     (clientX: number, track: HTMLElement) => {
@@ -99,18 +136,45 @@ function Slider({
     } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
       event.preventDefault()
       setValues([snapToStep(current - step, min, max, step)])
+    } else if (event.key === "Home") {
+      event.preventDefault()
+      setValues([min])
+    } else if (event.key === "End") {
+      event.preventDefault()
+      setValues([max])
     }
   }
+
+  const showHeader =
+    label != null || leading != null || resolvedShowValue
 
   return (
     <div
       data-df="slider"
+      data-variant={variant}
       data-disabled={disabled ? "" : undefined}
-      data-dragging={dragging ? "" : undefined}
-      data-fill-motion={fillMotion}
       className={cn(className)}
       {...props}
     >
+      {showHeader ? (
+        <div data-df="slider-header">
+          <div data-df="slider-heading">
+            {leading != null ? (
+              <span data-df="slider-leading" aria-hidden="true">
+                {leading}
+              </span>
+            ) : null}
+            {label != null ? (
+              <span data-df="slider-label" id={labelId}>
+                {label}
+              </span>
+            ) : null}
+          </div>
+          {resolvedShowValue ? (
+            <span data-df="slider-value">{displayValue}</span>
+          ) : null}
+        </div>
+      ) : null}
       <div data-df="slider-control" onPointerDown={onControlPointerDown}>
         <div data-df="slider-track">
           <div
@@ -122,9 +186,12 @@ function Slider({
           data-df="slider-thumb"
           role="slider"
           tabIndex={disabled ? -1 : 0}
+          aria-label={resolvedAriaLabel}
+          aria-labelledby={resolvedAriaLabelledBy}
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuenow={current}
+          aria-valuetext={displayValue}
           aria-disabled={disabled || undefined}
           style={{ left: `${visualPct}%` }}
           onKeyDown={onThumbKeyDown}
@@ -135,4 +202,4 @@ function Slider({
 }
 
 export { Slider }
-export type { SliderFillMotion }
+export type { SliderProps, SliderValueFormat, SliderVariant }

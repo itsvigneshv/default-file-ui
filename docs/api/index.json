@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T18:51:02.090Z",
+  "generatedAt": "2026-07-20T18:56:14.501Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -328,14 +328,14 @@
       "slug": "slider",
       "name": "slider",
       "title": "Slider",
-      "description": "Continuous value selection along a track.",
+      "description": "Track scrubber with bar or line chrome, optional label, leading icon, and value readout.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
       ],
       "importPath": "@default-file/ui/components/df-slider",
       "dependencies": [],
-      "propCount": 18
+      "propCount": 30
     },
     {
       "slug": "spectrum-text",

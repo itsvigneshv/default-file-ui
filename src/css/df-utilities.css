@@ -426,10 +426,6 @@
   border-radius: var(--radius-xl);
 }
 
-.select-none {
-  user-select: none;
-}
-
 .shadow-xl {
   box-shadow: var(--df-shadow-xl);
 }

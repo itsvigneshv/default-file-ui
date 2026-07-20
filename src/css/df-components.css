@@ -2147,10 +2147,12 @@
 
 :where([data-df="slider"]) {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--df-slider-header-gap);
   width: 100%;
   touch-action: none;
   user-select: none;
-  align-items: center;
 }
 
 :where([data-df="slider"][data-disabled]) {
@@ -2158,11 +2160,63 @@
   pointer-events: none;
 }
 
+:where([data-df="slider-header"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(2 * var(--spacing-unit));
+  min-width: 0;
+}
+
+:where([data-df="slider-heading"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--df-slider-label-gap);
+  min-width: 0;
+  color: var(--foreground);
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-medium);
+  line-height: 1.2;
+}
+
+:where([data-df="slider-leading"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--df-slider-leading-size);
+  height: var(--df-slider-leading-size);
+  color: var(--foreground);
+}
+
+:where([data-df="slider-leading"] svg) {
+  width: 100%;
+  height: 100%;
+}
+
+:where([data-df="slider-label"]) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-df="slider-value"]) {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-family: var(--df-font-mono);
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
 :where([data-df="slider-control"]) {
   position: relative;
   display: flex;
   width: 100%;
   align-items: center;
+  min-height: var(--df-affordance-size-sm);
   touch-action: none;
   user-select: none;
   cursor: pointer;
@@ -2180,303 +2234,10 @@
 
 :where([data-df="slider-range"]) {
   position: absolute;
-  overflow: hidden;
   background-color: var(--primary);
   height: 100%;
   border-radius: inherit;
   corner-shape: inherit;
-}
-
-:where(
-  [data-df="slider"][data-fill-motion="sparkle"][data-dragging]
-    [data-df="slider-range"]
-)::before,
-:where(
-  [data-df="slider"][data-fill-motion="sparkle"][data-dragging]
-    [data-df="slider-range"]
-)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background-repeat: no-repeat;
-  will-change: opacity, background-size;
-}
-
-:where(
-  [data-df="slider"][data-fill-motion="sparkle"][data-dragging]
-    [data-df="slider-range"]
-)::before {
-  background-image:
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    );
-  background-position:
-    6% 48%,
-    18% 62%,
-    30% 38%,
-    42% 55%,
-    54% 42%,
-    66% 60%,
-    78% 36%,
-    90% 52%;
-  background-size: 0 0;
-  animation: df-slider-sparkle-populate-a var(--df-duration-reveal-long)
-    var(--df-ease-emphasized) infinite;
-}
-
-:where(
-  [data-df="slider"][data-fill-motion="sparkle"][data-dragging]
-    [data-df="slider-range"]
-)::after {
-  background-image:
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle-soft) 0,
-      var(--df-slider-sparkle-soft) 40%,
-      transparent 68%
-    ),
-    radial-gradient(
-      circle,
-      var(--df-slider-sparkle) 0,
-      var(--df-slider-sparkle) 42%,
-      transparent 70%
-    );
-  background-position:
-    12% 58%,
-    24% 40%,
-    36% 64%,
-    48% 36%,
-    60% 58%,
-    72% 44%,
-    84% 62%,
-    96% 40%;
-  background-size: 0 0;
-  animation: df-slider-sparkle-populate-b var(--df-duration-reveal-long)
-    var(--df-ease-decelerate) infinite;
-  animation-delay: calc(var(--df-duration-reveal-long) * -0.45);
-}
-
-@keyframes df-slider-sparkle-populate-a {
-  0% {
-    opacity: var(--df-opacity-0);
-    background-size: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
-  }
-  12% {
-    opacity: var(--df-opacity-30);
-    background-size:
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  28% {
-    opacity: var(--df-opacity-40);
-    background-size:
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  48% {
-    opacity: var(--df-opacity-50);
-    background-size:
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0,
-      0 0;
-  }
-  68% {
-    opacity: var(--df-opacity-40);
-    background-size:
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size);
-  }
-  100% {
-    opacity: var(--df-opacity-0);
-    background-size:
-      0 0,
-      0 0,
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0,
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0;
-  }
-}
-
-@keyframes df-slider-sparkle-populate-b {
-  0% {
-    opacity: var(--df-opacity-0);
-    background-size: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
-  }
-  16% {
-    opacity: var(--df-opacity-25);
-    background-size:
-      0 0,
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  34% {
-    opacity: var(--df-opacity-40);
-    background-size:
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  55% {
-    opacity: var(--df-opacity-45);
-    background-size:
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      0 0,
-      0 0;
-  }
-  78% {
-    opacity: var(--df-opacity-35);
-    background-size:
-      0 0,
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size),
-      var(--df-slider-sparkle-size) var(--df-slider-sparkle-size);
-  }
-  100% {
-    opacity: var(--df-opacity-0);
-    background-size: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :where(
-    [data-df="slider"][data-fill-motion="sparkle"][data-dragging]
-      [data-df="slider-range"]
-  )::before,
-  :where(
-    [data-df="slider"][data-fill-motion="sparkle"][data-dragging]
-      [data-df="slider-range"]
-  )::after {
-    animation: none;
-    opacity: var(--df-opacity-0);
-  }
 }
 
 :where([data-df="slider-thumb"]) {
@@ -2499,6 +2260,35 @@
 
 :where([data-df="slider-thumb"]:hover),
 :where([data-df="slider-thumb"]:focus-visible) {
+  box-shadow: var(--focus-ring-lg);
+}
+
+:where([data-df="slider"][data-variant="line"] [data-df="slider-track"]) {
+  overflow: visible;
+  height: var(--df-slider-line-track-height);
+  background-color: color-mix(
+    in oklch,
+    var(--foreground) 16%,
+    transparent
+  );
+}
+
+:where([data-df="slider"][data-variant="line"] [data-df="slider-range"]) {
+  top: 50%;
+  height: var(--df-slider-line-range-height);
+  border-radius: var(--radius-full);
+  transform: translateY(-50%);
+}
+
+:where([data-df="slider"][data-variant="line"] [data-df="slider-thumb"]) {
+  border-radius: var(--radius-full);
+  border-color: var(--foreground);
+  background-color: var(--background);
+  box-shadow: none;
+}
+
+:where([data-df="slider"][data-variant="line"] [data-df="slider-thumb"]:hover),
+:where([data-df="slider"][data-variant="line"] [data-df="slider-thumb"]:focus-visible) {
   box-shadow: var(--focus-ring-lg);
 }
 

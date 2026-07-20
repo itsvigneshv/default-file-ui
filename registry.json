@@ -92,6 +92,7 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
+      "description": "Track scrubber with bar or line chrome, optional label, leading icon, and value readout.",
       "registryDependencies": ["foundation"],
       "files": [
         { "path": "src/components/df-slider.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-slider.tsx" }

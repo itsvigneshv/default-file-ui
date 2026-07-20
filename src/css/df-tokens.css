@@ -261,14 +261,6 @@
   /* Fixed #RRGGBB slot so the hex trigger width stays stable while dragging. */
   --df-color-picker-hex-width: 7ch;
 
-  --df-slider-sparkle: color-mix(in oklch, var(--background) 62%, transparent);
-  --df-slider-sparkle-soft: color-mix(
-    in oklch,
-    var(--background) 34%,
-    transparent
-  );
-  --df-slider-sparkle-size: calc(0.35 * var(--spacing-unit));
-
   --df-tick-slider-accent: var(--df-coral-430);
   --df-tick-slider-accent-foreground: var(--df-neutral-0);
   --df-tick-slider-shell-bg: color-mix(
@@ -744,6 +736,11 @@
   --df-affordance-size-sm: calc(4 * var(--spacing-unit));
   --df-affordance-size-md: calc(5 * var(--spacing-unit));
   --df-slider-track-height: calc(3 * var(--spacing-unit));
+  --df-slider-line-track-height: calc(1 * var(--spacing-unit));
+  --df-slider-line-range-height: calc(2 * var(--spacing-unit));
+  --df-slider-header-gap: calc(2 * var(--spacing-unit));
+  --df-slider-label-gap: calc(1.5 * var(--spacing-unit));
+  --df-slider-leading-size: calc(4 * var(--spacing-unit));
   --df-tabs-segment-min-height-sm: calc(6.5 * var(--spacing-unit));
   --df-tabs-segment-min-height-md: calc(7.5 * var(--spacing-unit));
   --df-switch-track-height: 18.4px;
