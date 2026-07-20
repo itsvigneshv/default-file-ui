@@ -57,13 +57,13 @@
             "name": "side",
             "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
             "default": "\"bottom\"",
-            "description": "Preferred placement side."
+            "description": "Preferred placement side. Flips when there is not enough space."
           },
           {
             "name": "align",
-            "type": "\"start\" | \"center\" | \"end\"",
+            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
             "default": "\"center\"",
-            "description": "Alignment along the side."
+            "description": "Alignment along the side. auto picks the best fit from available space (content-aware)."
           },
           {
             "name": "sideOffset",

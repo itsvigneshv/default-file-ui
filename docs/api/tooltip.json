@@ -80,7 +80,7 @@
             "name": "side",
             "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
             "default": "\"top\"",
-            "description": "Preferred placement side."
+            "description": "Preferred placement side. Flips when there is not enough space."
           },
           {
             "name": "align",

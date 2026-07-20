@@ -206,7 +206,7 @@ function TooltipContent({
   const { open, triggerRef, contentId, variant, appearance } = useTooltipContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const [present, setPresent] = React.useState(open)
-  const style = useAnchoredPosition({
+  const placement = useAnchoredPosition({
     open,
     triggerRef,
     contentRef,
@@ -215,7 +215,6 @@ function TooltipContent({
     sideOffset,
     alignOffset,
     matchTriggerWidth: false,
-    collisionAvoidance: true,
     followScroll: false,
   })
 
@@ -244,13 +243,13 @@ function TooltipContent({
       data-df="tooltip-content"
       data-variant={variant}
       data-appearance={appearance}
-      data-side={side}
-      data-align={align}
+      data-side={placement.side}
+      data-align={placement.align}
       data-state={open ? "open" : "closed"}
       data-arrow={arrow ? "true" : "false"}
       data-wrap={variant === "detailed" ? (wrapMode ? "true" : "false") : undefined}
       className={cn(className)}
-      style={style}
+      style={placement.style}
       onAnimationEnd={(event) => {
         onAnimationEnd?.(event)
         if (event.target !== event.currentTarget) return

@@ -9,6 +9,8 @@ import {
   useControllableState,
   useDismiss,
   useIsClient,
+  type Align,
+  type Side,
 } from "../hooks"
 import { cn } from "../lib/utils"
 
@@ -106,16 +108,16 @@ function PopoverContent({
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  align?: "start" | "center" | "end"
+  align?: Align
   alignOffset?: number
-  side?: "top" | "bottom" | "left" | "right"
+  side?: Side
   sideOffset?: number
   matchTriggerWidth?: boolean
   portal?: boolean
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const anchoredStyle = useAnchoredPosition({
+  const placement = useAnchoredPosition({
     open: open && portal,
     triggerRef,
     contentRef,
@@ -139,12 +141,13 @@ function PopoverContent({
     <div
       ref={contentRef}
       data-df="popover-content"
-      data-side={side}
+      data-side={placement.side}
+      data-align={placement.align}
       data-portal={portal ? "true" : "false"}
       className={cn(className)}
       style={
         portal
-          ? { ...anchoredStyle, ...styleProp }
+          ? { ...placement.style, ...styleProp }
           : { position: "relative", ...styleProp }
       }
       {...props}

@@ -5,4 +5,4 @@ export {
   useAnchoredPosition,
   useIsClient,
 } from "./df-hooks"
-export type { Align, Side } from "./df-hooks"
+export type { Align, AnchoredPlacement, Side } from "./df-hooks"

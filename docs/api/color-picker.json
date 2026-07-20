@@ -65,7 +65,7 @@
           {
             "name": "Popover editors",
             "type": "internal UI",
-            "description": "Opened panel supports hex, rgb, hsl, and hsb channel modes (not separate props)."
+            "description": "Opened panel supports hex, rgb, hsl, and hsb channel modes (not separate props). Placement flips when there is not enough space."
           }
         ]
       },

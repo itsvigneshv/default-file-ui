@@ -215,6 +215,16 @@ function readOverlayInset(name: string): number {
   return num
 }
 
+type AnchoredPlacement = {
+  style: React.CSSProperties
+  side: Side
+  align: ResolvedAlign
+}
+
+function initialAlign(align: Align): ResolvedAlign {
+  return align === "auto" ? "center" : align
+}
+
 export function useAnchoredPosition({
   open,
   triggerRef,
@@ -224,7 +234,7 @@ export function useAnchoredPosition({
   sideOffset = 4,
   alignOffset = 0,
   matchTriggerWidth = true,
-  collisionAvoidance = false,
+  collisionAvoidance = true,
   followScroll = true,
 }: {
   open: boolean
@@ -237,13 +247,17 @@ export function useAnchoredPosition({
   matchTriggerWidth?: boolean
   collisionAvoidance?: boolean
   followScroll?: boolean
-}) {
-  const [style, setStyle] = useState<React.CSSProperties>({
-    position: "fixed",
-    top: 0,
-    left: 0,
-    visibility: "hidden",
-  })
+}): AnchoredPlacement {
+  const [placement, setPlacement] = useState<AnchoredPlacement>(() => ({
+    style: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      visibility: "hidden",
+    },
+    side,
+    align: initialAlign(align),
+  }))
 
   const update = useCallback(() => {
     const trigger = triggerRef.current
@@ -319,7 +333,11 @@ export function useAnchoredPosition({
       if (left + c.width > vw - pad) {
         left = Math.max(pad, vw - c.width - pad)
       }
-      setStyle({ ...base, left, right: "auto" })
+      setPlacement({
+        style: { ...base, left, right: "auto" },
+        side: resolvedSide,
+        align: resolvedAlign,
+      })
       return
     }
 
@@ -329,7 +347,11 @@ export function useAnchoredPosition({
       if (leftEdge < pad) {
         right = Math.max(pad, vw - c.width - pad)
       }
-      setStyle({ ...base, right, left: "auto" })
+      setPlacement({
+        style: { ...base, right, left: "auto" },
+        side: resolvedSide,
+        align: resolvedAlign,
+      })
       return
     }
 
@@ -343,7 +365,11 @@ export function useAnchoredPosition({
         left = Math.max(pad, vw - c.width - pad)
       }
     }
-    setStyle({ ...base, left, right: "auto" })
+    setPlacement({
+      style: { ...base, left, right: "auto" },
+      side: resolvedSide,
+      align: resolvedAlign,
+    })
   }, [
     align,
     alignOffset,
@@ -381,7 +407,7 @@ export function useAnchoredPosition({
     }
   }, [contentRef, followScroll, open, triggerRef, update])
 
-  return style
+  return placement
 }
 
-export type { Align, Side }
+export type { Align, AnchoredPlacement, Side }

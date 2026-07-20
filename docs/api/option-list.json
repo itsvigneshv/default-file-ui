@@ -148,7 +148,7 @@
             "name": "side",
             "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
             "default": "\"bottom\"",
-            "description": "Preferred placement side."
+            "description": "Preferred placement side. Flips when there is not enough space."
           },
           {
             "name": "sideOffset",
@@ -350,7 +350,7 @@
             "name": "side",
             "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
             "default": "\"right\"",
-            "description": "Preferred placement relative to the parent row."
+            "description": "Preferred placement relative to the parent row. Flips when there is not enough space."
           },
           {
             "name": "sideOffset",

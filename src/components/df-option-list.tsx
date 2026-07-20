@@ -215,7 +215,7 @@ function OptionListSubContent({
 
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const [present, setPresent] = React.useState(open)
-  const style = useAnchoredPosition({
+  const placement = useAnchoredPosition({
     open: present && portal,
     triggerRef,
     contentRef,
@@ -223,7 +223,6 @@ function OptionListSubContent({
     align,
     sideOffset,
     alignOffset,
-    collisionAvoidance: true,
   })
 
   useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
@@ -262,8 +261,8 @@ function OptionListSubContent({
         role="menu"
         data-df="option-list-content"
         data-submenu=""
-        data-side={side}
-        data-align={align}
+        data-side={placement.side}
+        data-align={placement.align}
         data-state={open ? "open" : "closed"}
         data-animated={motion.animated ? "true" : "false"}
         data-portal={portal ? "true" : "false"}
@@ -271,7 +270,7 @@ function OptionListSubContent({
         style={
           portal
             ? {
-                ...style,
+                ...placement.style,
                 ...motionStyle,
                 width: "max-content",
                 maxWidth:
@@ -737,7 +736,7 @@ function OptionListContent({
 }: OptionListContentProps) {
   const { open, setOpen, triggerRef } = useOptionListContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const style = useAnchoredPosition({
+  const placement = useAnchoredPosition({
     open: open && portal,
     triggerRef,
     contentRef,
@@ -746,7 +745,6 @@ function OptionListContent({
     sideOffset,
     alignOffset,
     matchTriggerWidth: alignItemWithTrigger,
-    collisionAvoidance: true,
   })
 
   useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
@@ -807,7 +805,8 @@ function OptionListContent({
       ref={contentRef}
       role="listbox"
       data-df="option-list-content"
-      data-align={align}
+      data-side={placement.side}
+      data-align={placement.align}
       data-align-trigger={alignItemWithTrigger ? "true" : "false"}
       data-portal={portal ? "true" : "false"}
       data-stacked={stacked ? "true" : undefined}
@@ -816,7 +815,7 @@ function OptionListContent({
       style={
         portal
           ? {
-              ...style,
+              ...placement.style,
               ...(alignItemWithTrigger
                 ? null
                 : {
