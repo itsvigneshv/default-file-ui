@@ -18,10 +18,6 @@ type SliderProps = Omit<
   disabled?: boolean
 }
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value))
-}
-
 function Slider({
   className,
   min = 0,
@@ -39,16 +35,16 @@ function Slider({
     onChange: onValueChange,
   })
 
-  const current = clamp(values[0] ?? min, min, max)
-  const span = max - min || 1
-  const pct = ((current - min) / span) * 100
+  const current = values[0] ?? min
+  const pct = ((current - min) / (max - min || 1)) * 100
 
   const commit = (clientX: number, track: HTMLElement) => {
     const rect = track.getBoundingClientRect()
-    const ratio = clamp((clientX - rect.left) / rect.width, 0, 1)
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width))
     const raw = min + ratio * (max - min)
     const stepped = Math.round(raw / step) * step
-    setValues([clamp(stepped, min, max)])
+    const next = Math.min(max, Math.max(min, stepped))
+    setValues([next])
   }
 
   return (
@@ -91,10 +87,10 @@ function Slider({
           onKeyDown={(event) => {
             if (disabled) return
             if (event.key === "ArrowRight" || event.key === "ArrowUp") {
-              setValues([clamp(current + step, min, max)])
+              setValues([Math.min(max, current + step)])
             }
             if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
-              setValues([clamp(current - step, min, max)])
+              setValues([Math.max(min, current - step)])
             }
           }}
         />
