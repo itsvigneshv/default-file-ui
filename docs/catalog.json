@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T18:56:14.501Z",
+  "generatedAt": "2026-07-20T19:45:02.043Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -353,14 +353,15 @@
       "slug": "slider",
       "name": "slider",
       "title": "Slider",
-      "description": "Track scrubber with bar or line chrome, optional label, leading icon, and value readout.",
+      "description": "Single or dual thumb scrubber for continuous or stepped values.",
       "chapter": "inputs",
       "registryDependencies": [
-        "foundation"
+        "foundation",
+        "button"
       ],
       "importPath": "@default-file/ui/components/df-slider",
       "dependencies": [],
-      "propCount": 30
+      "propCount": 67
     },
     {
       "slug": "spectrum-text",

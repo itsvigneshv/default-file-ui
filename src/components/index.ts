@@ -54,8 +54,13 @@ export type { SpinnerProps, SpinnerSize } from "./df-spinner"
 export { Switch } from "./df-switch"
 export { Slider } from "./df-slider"
 export type {
+  SliderMark,
+  SliderMarkInput,
+  SliderOrientation,
   SliderProps,
+  SliderThickness,
   SliderValueFormat,
+  SliderValuePosition,
   SliderVariant,
 } from "./df-slider"
 export { TickSlider } from "./df-tick-slider"

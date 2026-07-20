@@ -2,15 +2,16 @@
   "name": "slider",
   "slug": "slider",
   "title": "Slider",
-  "description": "Track scrubber with bar or line chrome, optional label, leading icon, and value readout.",
+  "description": "Single or dual thumb scrubber for continuous or stepped values.",
   "chapter": "inputs",
   "registryDependencies": [
-    "foundation"
+    "foundation",
+    "button"
   ],
   "importPath": "@default-file/ui/components/df-slider",
   "dependencies": [],
   "api": {
-    "description": "Track scrubber with bar or line chrome. Optional label, leading icon, and value readout. While scrubbing, the thumb and fill follow the pointer continuously; the committed value snaps to step.",
+    "description": "Single or dual thumb scrubber with bar or line chrome, horizontal or vertical orientation, and optional label, leading icon, and value readout. Without marks, the thumb tracks the pointer smoothly while dragging and commits to step. With marks, the value snaps to the nearest mark.",
     "groups": [
       {
         "id": "slider",
@@ -32,70 +33,133 @@
             "name": "step",
             "type": "number",
             "default": "1",
-            "description": "Increment between committed values. The thumb still tracks the pointer smoothly while dragging."
+            "description": "Increment between committed values when marks are omitted. Values of 0 or less fall back to 1. With marks, step still controls readout precision unless formatValue is set."
           },
           {
             "name": "value",
             "type": "number[]",
-            "description": "Controlled value as an array (single thumb uses one entry). Values outside min to max are snapped to step and clamped for the fill and aria value."
+            "description": "Controlled value. One entry is a single thumb. Two entries enable a range with minimum and maximum thumbs. Values are snapped to step, ordered low to high, and clamped."
           },
           {
             "name": "defaultValue",
             "type": "number[]",
             "default": "[min]",
-            "description": "Uncontrolled initial value."
+            "description": "Uncontrolled initial value. Pass two numbers for a range slider."
           },
           {
             "name": "onValueChange",
             "type": "(value: number[]) => void",
-            "description": "Called when the committed value changes. Receives stepped values while scrubbing and on keyboard input."
+            "description": "Called when a committed value changes. Receives one or two stepped values."
           },
           {
             "name": "variant",
             "type": "\"bar\" | \"line\"",
             "default": "\"bar\"",
-            "description": "Track chrome. bar is a filled pill track. line is a thin mute rail with a thicker active segment and a circular thumb."
+            "description": "Track chrome. bar is a filled pill track. line is a thin mute rail with a thicker active segment and circular thumbs."
+          },
+          {
+            "name": "orientation",
+            "type": "\"horizontal\" | \"vertical\"",
+            "default": "\"horizontal\"",
+            "description": "Track direction. vertical places the minimum at the bottom and stacks the range readout under the track."
+          },
+          {
+            "name": "thickness",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"md\"",
+            "description": "Track and thumb thickness. sm is fine, md is the default, lg is a thick rail. Remaps the slider thickness tokens on the root. Style overrides of those variables still win."
+          },
+          {
+            "name": "minStepsBetween",
+            "type": "number",
+            "default": "0",
+            "description": "Minimum gap between thumbs in range mode, measured in steps (value gap is minStepsBetween times step). With marks, the gap is counted in mark indices. Use with description to explain the constraint."
+          },
+          {
+            "name": "marks",
+            "type": "Array<number | { value: number; label?: React.ReactNode }>",
+            "description": "Discrete snap stops. When set, dragging and keyboard move between marks only. Labels render beside a vertical track or under a horizontal track. Omit label to show the formatted value. Prefer a stable array reference."
+          },
+          {
+            "name": "valuePosition",
+            "type": "\"auto\" | \"header\" | \"footer\" | \"thumb\" | \"thumbs\" | \"bubble\"",
+            "default": "\"auto\"",
+            "description": "Where the label and value chrome sit. header is above the track. footer is below the track with the same label and value row. auto uses thumb for a vertical marked single thumb, footer for other vertical sliders, and header for horizontal. thumb is vertical single-thumb only; on horizontal or range it falls back to header. thumbs places a formatted value under each thumb. bubble floats a tooltip on a single thumb."
+          },
+          {
+            "name": "thumbValueOrder",
+            "type": "\"label-first\" | \"value-first\"",
+            "default": "\"label-first\"",
+            "description": "Stack order for traveling thumb meta when valuePosition is thumb. label-first puts the label above the value. value-first puts the value above the label."
+          },
+          {
+            "name": "marksSide",
+            "type": "\"start\" | \"end\"",
+            "default": "\"end\"",
+            "description": "Which side mark labels sit on for a vertical slider. end keeps marks on the right and thumb meta on the left. start swaps them. Ignored for horizontal marks, which stay under the track."
           },
           {
             "name": "label",
             "type": "React.ReactNode",
-            "description": "Optional heading text or content above the track. Wired to the thumb as the accessible name when aria-label is omitted."
+            "description": "Optional heading. In the header by default. For vertical marked sliders it travels with the thumb when valuePosition is thumb or auto."
+          },
+          {
+            "name": "description",
+            "type": "React.ReactNode",
+            "description": "Optional supporting line under the label, such as a minimum gap hint for constrained ranges."
           },
           {
             "name": "leading",
             "type": "React.ReactNode",
-            "description": "Optional leading content before the label, such as an icon."
+            "description": "Optional leading content before the label, such as an icon. Travels with the thumb when valuePosition is thumb."
+          },
+          {
+            "name": "showStepButtons",
+            "type": "boolean",
+            "default": "false",
+            "description": "Show outline icon buttons that decrease and increase the active thumb. Distance per click follows stepButtonSteps. Keyboard arrows still move one step. In range mode, buttons follow the last focused or dragged thumb."
+          },
+          {
+            "name": "stepButtonSteps",
+            "type": "number",
+            "default": "1",
+            "description": "How many step increments each step button applies. With step 1, 5 moves by 5. With marks, hops that many mark stops. Does not change keyboard step size. Values below 1 are treated as 1."
           },
           {
             "name": "showValue",
             "type": "boolean",
-            "description": "Show the live value on the right of the header. Defaults to true when label, leading, or formatValue is set."
+            "description": "Show the live value readout. Defaults to true when label, description, leading, formatValue, or formatValues is set. Set false to keep a label without a readout. Placement follows valuePosition."
           },
           {
             "name": "valueFormat",
             "type": "\"number\" | \"percent\"",
             "default": "\"number\"",
-            "description": "Built in readout format when formatValue is omitted. number uses step precision. percent shows the position across min to max with a percent sign."
+            "description": "Built in readout format when formatValue is omitted. number uses step precision. percent shows position across min to max."
           },
           {
             "name": "formatValue",
             "type": "(value: number) => string",
-            "description": "Custom readout and aria valuetext. Overrides valueFormat when set."
+            "description": "Formats each thumb value for the readout and aria valuetext. Overrides valueFormat."
+          },
+          {
+            "name": "formatValues",
+            "type": "(values: number[]) => React.ReactNode",
+            "description": "Custom readout for the full value array. Overrides the default single or range text layout."
           },
           {
             "name": "disabled",
             "type": "boolean",
-            "description": "Disabled slider."
+            "description": "Blocks pointer, keyboard, marks, and step buttons for every variant and layout."
           },
           {
             "name": "aria-label",
             "type": "string",
-            "description": "Accessible name applied to the slider thumb."
+            "description": "Accessible name. For a range, each thumb appends Minimum or Maximum."
           },
           {
             "name": "aria-labelledby",
             "type": "string",
-            "description": "ID of a labeling element for the slider thumb. Defaults to the label element when label is set."
+            "description": "ID of a labeling element. Defaults to the label element when label is set."
           },
           {
             "name": "className",
@@ -106,13 +170,18 @@
             "name": "style",
             "type": "React.CSSProperties",
             "description": "Inline styles on the root. Can also override Slider CSS variables directly."
+          },
+          {
+            "name": "ref",
+            "type": "React.Ref<HTMLDivElement>",
+            "description": "Ref to the root element."
           }
         ]
       },
       {
         "id": "slider-tokens",
         "title": "Tokens",
-        "description": "variant line remaps track and range heights to the line tokens. Prop and style overrides still win.",
+        "description": "thickness remaps track, line, and thumb variables to the sm or lg companions. variant line uses the line thickness tokens. valuePosition bubble uses the bubble tokens and reserves clearance on the rail or control. orientation vertical uses --df-slider-vertical-size for track length and --df-slider-vertical-column-gap between meta, track, and marks. Horizontal marks use --df-slider-marks-gap. Prop and style overrides still win.",
         "props": [
           {
             "name": "--primary",
@@ -147,26 +216,188 @@
           {
             "name": "--df-slider-track-height",
             "type": "CSS length",
-            "description": "Bar track height.",
+            "description": "Bar track thickness for thickness md.",
             "default": "calc(3 * var(--spacing-unit))"
           },
           {
             "name": "--df-slider-line-track-height",
             "type": "CSS length",
-            "description": "Line variant mute rail height.",
+            "description": "Line mute rail thickness for thickness md.",
             "default": "calc(1 * var(--spacing-unit))"
           },
           {
             "name": "--df-slider-line-range-height",
             "type": "CSS length",
-            "description": "Line variant active segment height.",
+            "description": "Line active segment thickness for thickness md.",
             "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-line-track-bg",
+            "type": "CSS color",
+            "description": "Mute rail fill for the line variant.",
+            "default": "color-mix(in oklch, var(--foreground) 16%, transparent)"
+          },
+          {
+            "name": "--df-slider-thumb-size",
+            "type": "CSS length",
+            "description": "Thumb size for thickness md.",
+            "default": "var(--df-affordance-size-sm)"
+          },
+          {
+            "name": "--df-slider-track-height-sm",
+            "type": "CSS length",
+            "description": "Bar track thickness for thickness sm.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-line-track-height-sm",
+            "type": "CSS length",
+            "description": "Line mute rail thickness for thickness sm.",
+            "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-line-range-height-sm",
+            "type": "CSS length",
+            "description": "Line active segment thickness for thickness sm.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-thumb-size-sm",
+            "type": "CSS length",
+            "description": "Thumb size for thickness sm.",
+            "default": "var(--df-affordance-size-xs)"
+          },
+          {
+            "name": "--df-slider-track-height-lg",
+            "type": "CSS length",
+            "description": "Bar track thickness for thickness lg.",
+            "default": "calc(5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-line-track-height-lg",
+            "type": "CSS length",
+            "description": "Line mute rail thickness for thickness lg.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-line-range-height-lg",
+            "type": "CSS length",
+            "description": "Line active segment thickness for thickness lg.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-thumb-size-lg",
+            "type": "CSS length",
+            "description": "Thumb size for thickness lg.",
+            "default": "var(--df-affordance-size-md)"
+          },
+          {
+            "name": "--df-slider-vertical-size",
+            "type": "CSS length",
+            "description": "Vertical track length.",
+            "default": "calc(48 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-marks-gap",
+            "type": "CSS length",
+            "description": "Gap between the horizontal track and the marks row.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-vertical-column-gap",
+            "type": "CSS length",
+            "description": "Gap between thumb meta, the vertical track, and mark labels.",
+            "default": "calc(5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-marks-track-height",
+            "type": "CSS length",
+            "description": "Height of the horizontal marks row.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-vertical-marks-min-width",
+            "type": "CSS length",
+            "description": "Minimum width of the vertical marks column.",
+            "default": "calc(10 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-bubble-pad-inline",
+            "type": "CSS length",
+            "description": "Horizontal padding inside the value bubble.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-bubble-pad-block",
+            "type": "CSS length",
+            "description": "Vertical padding inside the value bubble.",
+            "default": "calc(0.75 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-bubble-offset",
+            "type": "CSS length",
+            "description": "Gap between the thumb and the value bubble.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-bubble-radius",
+            "type": "CSS length",
+            "description": "Corner radius of the value bubble.",
+            "default": "var(--radius-md)"
+          },
+          {
+            "name": "--df-slider-bubble-clearance",
+            "type": "CSS length",
+            "description": "Space reserved above or beside the track for the value bubble. Scales with thumb size, bubble padding, and type size.",
+            "default": "calc(var(--df-slider-thumb-size) + var(--df-slider-bubble-offset) + var(--df-text-11) + (2 * var(--df-slider-bubble-pad-block)))"
+          },
+          {
+            "name": "--df-slider-thumb-value-clearance",
+            "type": "CSS length",
+            "description": "Height reserved under a horizontal track for per-thumb values.",
+            "default": "calc(5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-thumb-value-column",
+            "type": "CSS length",
+            "description": "Width reserved beside a vertical track for per-thumb values.",
+            "default": "calc(12 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-thumb-value-gap",
+            "type": "CSS length",
+            "description": "Gap between the track and per-thumb values.",
+            "default": "calc(1.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-step-gap",
+            "type": "CSS length",
+            "description": "Gap between step buttons and the track.",
+            "default": "calc(2.5 * var(--spacing-unit))"
           },
           {
             "name": "--df-slider-header-gap",
             "type": "CSS length",
-            "description": "Gap between the header and the track.",
+            "description": "Gap between header, track, and footer.",
             "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-header-inline-gap",
+            "type": "CSS length",
+            "description": "Gap between the heading block and the header value.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-tight-gap",
+            "type": "CSS length",
+            "description": "Tight stack gap for heading block, value stack, and thumb meta.",
+            "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-value-sep-mix",
+            "type": "CSS percentage",
+            "description": "Mix amount for the range separator against muted foreground.",
+            "default": "72%"
           },
           {
             "name": "--df-slider-label-gap",
@@ -179,18 +410,6 @@
             "type": "CSS length",
             "description": "Leading icon box size.",
             "default": "calc(4 * var(--spacing-unit))"
-          },
-          {
-            "name": "--df-affordance-size-sm",
-            "type": "CSS length",
-            "description": "Thumb size.",
-            "default": "calc(4 * var(--spacing-unit))"
-          },
-          {
-            "name": "--spacing-unit",
-            "type": "CSS length",
-            "description": "Base unit for track, thumb, and header sizes.",
-            "default": "0.25rem"
           }
         ]
       }

@@ -1,16 +1,41 @@
 "use client"
 
+import { Minus, Plus } from "lucide-react"
 import * as React from "react"
 
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
+import { Button } from "./df-button"
 
 type SliderVariant = "bar" | "line"
 
+type SliderOrientation = "horizontal" | "vertical"
+
+type SliderThickness = "sm" | "md" | "lg"
+
 type SliderValueFormat = "number" | "percent"
 
+type SliderValuePosition =
+  | "auto"
+  | "header"
+  | "footer"
+  | "thumb"
+  | "thumbs"
+  | "bubble"
+
+type SliderThumbValueOrder = "label-first" | "value-first"
+
+type SliderMarksSide = "start" | "end"
+
+type SliderMark = {
+  value: number
+  label?: React.ReactNode
+}
+
+type SliderMarkInput = number | SliderMark
+
 type SliderProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
+  React.ComponentProps<"div">,
   "defaultValue" | "onChange" | "color"
 > & {
   min?: number
@@ -21,11 +46,22 @@ type SliderProps = Omit<
   onValueChange?: (value: number[]) => void
   disabled?: boolean
   variant?: SliderVariant
+  orientation?: SliderOrientation
+  thickness?: SliderThickness
+  minStepsBetween?: number
+  marks?: SliderMarkInput[]
+  valuePosition?: SliderValuePosition
+  thumbValueOrder?: SliderThumbValueOrder
+  marksSide?: SliderMarksSide
   label?: React.ReactNode
+  description?: React.ReactNode
   leading?: React.ReactNode
+  showStepButtons?: boolean
+  stepButtonSteps?: number
   showValue?: boolean
   valueFormat?: SliderValueFormat
   formatValue?: (value: number) => string
+  formatValues?: (values: number[]) => React.ReactNode
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -33,9 +69,10 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function snapToStep(value: number, min: number, max: number, step: number) {
-  const stepped = Math.round((value - min) / step) * step + min
-  const precision = String(step).includes(".")
-    ? (String(step).split(".")[1]?.length ?? 0)
+  const safeStep = step > 0 ? step : 1
+  const stepped = Math.round((value - min) / safeStep) * safeStep + min
+  const precision = String(safeStep).includes(".")
+    ? (String(safeStep).split(".")[1]?.length ?? 0)
     : 0
   const rounded =
     precision > 0 ? Number(stepped.toFixed(precision)) : stepped
@@ -43,8 +80,119 @@ function snapToStep(value: number, min: number, max: number, step: number) {
 }
 
 function formatByStep(value: number, step: number) {
-  const digits = step >= 1 ? 0 : step >= 0.1 ? 1 : 2
+  const safeStep = step > 0 ? step : 1
+  const digits = safeStep >= 1 ? 0 : safeStep >= 0.1 ? 1 : 2
   return value.toFixed(digits)
+}
+
+function resolveMarks(
+  marks: SliderMarkInput[] | undefined,
+  min: number,
+  max: number
+): SliderMark[] {
+  if (!marks?.length) return []
+  return marks
+    .map((mark) =>
+      typeof mark === "number"
+        ? { value: mark }
+        : { value: mark.value, label: mark.label }
+    )
+    .filter((mark) => mark.value >= min && mark.value <= max)
+    .sort((a, b) => a.value - b.value)
+}
+
+function snapToMarks(value: number, marks: SliderMark[]): number {
+  if (!marks.length) return value
+  let best = marks[0]!
+  let bestDist = Math.abs(best.value - value)
+  for (let i = 1; i < marks.length; i++) {
+    const mark = marks[i]!
+    const dist = Math.abs(mark.value - value)
+    if (dist < bestDist) {
+      best = mark
+      bestDist = dist
+    }
+  }
+  return best.value
+}
+
+function markIndex(value: number, marks: SliderMark[]): number {
+  const snapped = snapToMarks(value, marks)
+  return Math.max(
+    0,
+    marks.findIndex((mark) => mark.value === snapped)
+  )
+}
+
+function normalizePair(
+  values: number[],
+  min: number,
+  max: number,
+  step: number,
+  marks: SliderMark[],
+  minStepsBetween: number
+): [number, number] {
+  const snap = (v: number) =>
+    marks.length
+      ? snapToMarks(v, marks)
+      : snapToStep(v, min, max, step)
+  let a = snap(values[0] ?? min)
+  let b = snap(values[1] ?? a)
+  if (a > b) [a, b] = [b, a]
+  if (marks.length && minStepsBetween > 0) {
+    const iA = markIndex(a, marks)
+    const iB = markIndex(b, marks)
+    if (iB - iA < minStepsBetween) {
+      const nextB = Math.min(marks.length - 1, iA + minStepsBetween)
+      const nextA = Math.max(0, nextB - minStepsBetween)
+      a = marks[nextA]!.value
+      b = marks[nextB]!.value
+    }
+  }
+  return [a, b]
+}
+
+function rangeFloorFor(
+  thumbIndex: 0 | 1,
+  low: number,
+  high: number,
+  min: number,
+  max: number,
+  step: number,
+  marks: SliderMark[],
+  minStepsBetween: number
+) {
+  if (thumbIndex === 0) return min
+  if (marks.length) {
+    return marks[
+      Math.min(
+        marks.length - 1,
+        markIndex(low, marks) + minStepsBetween
+      )
+    ]!.value
+  }
+  const gap = Math.max(0, minStepsBetween) * step
+  return snapToStep(low + gap, min, max, step)
+}
+
+function rangeCeilingFor(
+  thumbIndex: 0 | 1,
+  low: number,
+  high: number,
+  min: number,
+  max: number,
+  step: number,
+  marks: SliderMark[],
+  minStepsBetween: number
+) {
+  if (thumbIndex === 1) return max
+  if (marks.length) {
+    return marks[
+      Math.max(0, markIndex(high, marks) - minStepsBetween)
+    ]!.value
+  }
+  const gap = Math.max(0, minStepsBetween) * step
+  return snapToStep(high - gap, min, max, step)
 }
 
 function Slider({
@@ -57,67 +205,330 @@ function Slider({
   onValueChange,
   disabled,
   variant = "bar",
+  orientation = "horizontal",
+  thickness = "md",
+  minStepsBetween = 0,
+  marks,
+  valuePosition = "auto",
+  thumbValueOrder = "label-first",
+  marksSide = "end",
   label,
+  description,
   leading,
+  showStepButtons = false,
+  stepButtonSteps = 1,
   showValue,
   valueFormat = "number",
   formatValue,
+  formatValues,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
+  ref,
   ...props
 }: SliderProps) {
   const labelId = React.useId()
+  const safeStep = step > 0 ? step : 1
+  const buttonSteps = Math.max(
+    1,
+    Math.floor(Number.isFinite(stepButtonSteps) ? stepButtonSteps : 1)
+  )
+  const buttonDelta = buttonSteps * safeStep
   const [values, setValues] = useControllableState({
     value,
     defaultValue: defaultValue ?? [min],
     onChange: onValueChange,
   })
+  const [dragging, setDragging] = React.useState(false)
+  const [activeThumb, setActiveThumb] = React.useState(0)
   const [dragPct, setDragPct] = React.useState<number | null>(null)
+  const valuesRef = React.useRef(values)
+  const activeThumbRef = React.useRef(activeThumb)
 
-  const current = snapToStep(values[0] ?? min, min, max, step)
+  React.useEffect(() => {
+    valuesRef.current = values
+  }, [values])
+
+  React.useEffect(() => {
+    activeThumbRef.current = activeThumb
+  }, [activeThumb])
+
+  const resolvedMarks = React.useMemo(
+    () => resolveMarks(marks, min, max),
+    [marks, max, min]
+  )
+  const useMarks = resolvedMarks.length > 0
   const span = max - min || 1
-  const valuePct = ((current - min) / span) * 100
-  const visualPct = dragPct ?? valuePct
+  const gap = Math.max(0, minStepsBetween) * safeStep
+  const isRange =
+    (value?.length ?? 0) >= 2 ||
+    (defaultValue?.length ?? 0) >= 2 ||
+    values.length >= 2
+  const isVertical = orientation === "vertical"
+
+  const snapValue = React.useCallback(
+    (raw: number) =>
+      useMarks
+        ? snapToMarks(raw, resolvedMarks)
+        : snapToStep(raw, min, max, safeStep),
+    [max, min, resolvedMarks, safeStep, useMarks]
+  )
+
+  const single = snapValue(values[0] ?? min)
+  const pair = normalizePair(
+    values,
+    min,
+    max,
+    safeStep,
+    resolvedMarks,
+    minStepsBetween
+  )
+  const low = isRange ? pair[0] : single
+  const high = isRange ? pair[1] : single
+
+  const pctOf = React.useCallback(
+    (v: number) => ((v - min) / span) * 100,
+    [min, span]
+  )
+
+  const lowPct = pctOf(low)
+  const highPct = pctOf(high)
+  const singlePct =
+    !isRange && !useMarks && dragPct != null ? dragPct : pctOf(single)
 
   const resolvedShowValue =
     showValue ??
-    (formatValue != null || label != null || leading != null)
+    (formatValue != null ||
+      formatValues != null ||
+      label != null ||
+      description != null ||
+      leading != null)
+
+  const resolvedValuePosition = React.useMemo(() => {
+    let next = valuePosition
+    if (next === "auto") {
+      if (useMarks && isVertical && !isRange) next = "thumb"
+      else if (isVertical) next = "footer"
+      else next = "header"
+    }
+    if (next === "thumb" && !isVertical) next = "header"
+    return next
+  }, [isRange, isVertical, useMarks, valuePosition])
+
+  const formatOne = React.useCallback(
+    (v: number) => {
+      if (formatValue) return formatValue(v)
+      if (valueFormat === "percent") {
+        return `${Math.round(pctOf(v))}%`
+      }
+      return formatByStep(v, safeStep)
+    },
+    [formatValue, pctOf, safeStep, valueFormat]
+  )
 
   const displayValue = React.useMemo(() => {
-    if (formatValue) return formatValue(current)
-    if (valueFormat === "percent") {
-      return `${Math.round(valuePct)}%`
+    if (isRange) {
+      if (formatValues) return formatValues([low, high])
+      const sep = <span data-df="slider-value-sep">to</span>
+      if (isVertical && resolvedValuePosition !== "header") {
+        return (
+          <>
+            <span>{formatOne(high)}</span>
+            {sep}
+            <span>{formatOne(low)}</span>
+          </>
+        )
+      }
+      return (
+        <>
+          <span>{formatOne(low)}</span> {sep} <span>{formatOne(high)}</span>
+        </>
+      )
     }
-    return formatByStep(current, step)
-  }, [current, formatValue, step, valueFormat, valuePct])
+    if (formatValues) return formatValues([single])
+    return formatOne(single)
+  }, [
+    formatOne,
+    formatValues,
+    high,
+    isRange,
+    isVertical,
+    low,
+    resolvedValuePosition,
+    single,
+  ])
 
   const resolvedAriaLabelledBy =
     ariaLabelledBy ?? (label != null ? labelId : undefined)
-  const resolvedAriaLabel =
+  const baseName =
     ariaLabel ??
     (typeof label === "string" && !resolvedAriaLabelledBy ? label : undefined)
 
-  const scrub = React.useCallback(
-    (clientX: number, track: HTMLElement) => {
+  const thumbAria = (index: 0 | 1) => {
+    if (!isRange) {
+      return {
+        ariaLabel: baseName,
+        ariaLabelledBy: resolvedAriaLabelledBy,
+      }
+    }
+    const role = index === 0 ? "Minimum" : "Maximum"
+    return {
+      ariaLabel: baseName ? `${baseName} ${role}` : role,
+      ariaLabelledBy:
+        ariaLabelledBy ??
+        (!baseName && label != null ? labelId : undefined),
+    }
+  }
+
+  const ratioFromPointer = React.useCallback(
+    (clientX: number, clientY: number, track: HTMLElement) => {
       const rect = track.getBoundingClientRect()
-      if (rect.width <= 0) return
-      const ratio = clamp((clientX - rect.left) / rect.width, 0, 1)
-      setDragPct(ratio * 100)
-      setValues([snapToStep(min + ratio * (max - min), min, max, step)])
+      if (isVertical) {
+        if (rect.height <= 0) return 0
+        return clamp(1 - (clientY - rect.top) / rect.height, 0, 1)
+      }
+      if (rect.width <= 0) return 0
+      return clamp((clientX - rect.left) / rect.width, 0, 1)
     },
-    [max, min, setValues, step]
+    [isVertical]
+  )
+
+  const commitAtRatio = React.useCallback(
+    (index: number, ratio: number) => {
+      const raw = min + ratio * (max - min)
+
+      if (!isRange) {
+        setValues([snapValue(raw)])
+        return
+      }
+
+      const [currentLow, currentHigh] = normalizePair(
+        valuesRef.current,
+        min,
+        max,
+        safeStep,
+        resolvedMarks,
+        minStepsBetween
+      )
+
+      if (useMarks) {
+        const next = snapValue(raw)
+        const iNext = markIndex(next, resolvedMarks)
+        if (index === 0) {
+          const iHigh = markIndex(currentHigh, resolvedMarks)
+          const iLow = Math.min(iNext, Math.max(0, iHigh - minStepsBetween))
+          setValues([resolvedMarks[iLow]!.value, currentHigh])
+          return
+        }
+        const iLow = markIndex(currentLow, resolvedMarks)
+        const iHigh = Math.max(
+          iNext,
+          Math.min(resolvedMarks.length - 1, iLow + minStepsBetween)
+        )
+        setValues([currentLow, resolvedMarks[iHigh]!.value])
+        return
+      }
+
+      if (index === 0) {
+        setValues([
+          snapToStep(raw, min, Math.max(min, currentHigh - gap), safeStep),
+          currentHigh,
+        ])
+        return
+      }
+      setValues([
+        currentLow,
+        snapToStep(raw, Math.min(max, currentLow + gap), max, safeStep),
+      ])
+    },
+    [
+      gap,
+      isRange,
+      max,
+      min,
+      minStepsBetween,
+      resolvedMarks,
+      safeStep,
+      setValues,
+      snapValue,
+      useMarks,
+    ]
+  )
+
+  const pickThumbIndex = React.useCallback(
+    (ratio: number, fromThumb?: number) => {
+      if (!isRange) return 0
+      const [currentLow, currentHigh] = normalizePair(
+        valuesRef.current,
+        min,
+        max,
+        safeStep,
+        resolvedMarks,
+        minStepsBetween
+      )
+      const pointer = min + ratio * (max - min)
+      if (currentLow === currentHigh) {
+        if (pointer < currentLow) return 0
+        if (pointer > currentLow) return 1
+        if (fromThumb === 0 || fromThumb === 1) return fromThumb
+        return activeThumbRef.current === 1 ? 1 : 0
+      }
+      if (fromThumb === 0 || fromThumb === 1) return fromThumb
+      return Math.abs(pointer - currentLow) <= Math.abs(pointer - currentHigh)
+        ? 0
+        : 1
+    },
+    [isRange, max, min, minStepsBetween, resolvedMarks, safeStep]
   )
 
   const onControlPointerDown = (
     event: React.PointerEvent<HTMLDivElement>
   ) => {
     if (disabled) return
+    if (
+      (event.target as HTMLElement | null)?.closest?.(
+        "[data-df='slider-mark']"
+      )
+    ) {
+      return
+    }
     event.preventDefault()
     const track = event.currentTarget
+    const thumbAttr = (event.target as HTMLElement | null)
+      ?.closest?.("[data-df='slider-thumb']")
+      ?.getAttribute("data-index")
+    const fromThumb =
+      thumbAttr === "0" || thumbAttr === "1" ? Number(thumbAttr) : undefined
+    const ratio = ratioFromPointer(event.clientX, event.clientY, track)
+    let dragIndex = pickThumbIndex(ratio, fromThumb)
+    setActiveThumb(dragIndex)
     track.setPointerCapture(event.pointerId)
-    scrub(event.clientX, track)
-    const move = (e: PointerEvent) => scrub(e.clientX, track)
+    setDragging(true)
+    if (!isRange && !useMarks) setDragPct(ratio * 100)
+    commitAtRatio(dragIndex, ratio)
+
+    const move = (e: PointerEvent) => {
+      const nextRatio = ratioFromPointer(e.clientX, e.clientY, track)
+      if (isRange) {
+        const [currentLow, currentHigh] = normalizePair(
+          valuesRef.current,
+          min,
+          max,
+          safeStep,
+          resolvedMarks,
+          minStepsBetween
+        )
+        if (currentLow === currentHigh) {
+          const pointer = min + nextRatio * (max - min)
+          if (pointer < currentLow) dragIndex = 0
+          else if (pointer > currentLow) dragIndex = 1
+          setActiveThumb(dragIndex)
+        }
+      }
+      if (!isRange && !useMarks) setDragPct(nextRatio * 100)
+      commitAtRatio(dragIndex, nextRatio)
+    }
     const end = () => {
+      setDragging(false)
       setDragPct(null)
       window.removeEventListener("pointermove", move)
       window.removeEventListener("pointerup", end)
@@ -128,36 +539,420 @@ function Slider({
     window.addEventListener("pointercancel", end)
   }
 
-  const onThumbKeyDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+  const moveThumbByMarks = React.useCallback(
+    (index: number, deltaMarks: number) => {
+      if (!useMarks) return
+      if (!isRange) {
+        const i = clamp(
+          markIndex(single, resolvedMarks) + deltaMarks,
+          0,
+          resolvedMarks.length - 1
+        )
+        setValues([resolvedMarks[i]!.value])
+        return
+      }
+      const iLow = markIndex(low, resolvedMarks)
+      const iHigh = markIndex(high, resolvedMarks)
+      if (index === 0) {
+        const next = clamp(iLow + deltaMarks, 0, iHigh - minStepsBetween)
+        setValues([resolvedMarks[next]!.value, high])
+        return
+      }
+      const next = clamp(
+        iHigh + deltaMarks,
+        iLow + minStepsBetween,
+        resolvedMarks.length - 1
+      )
+      setValues([low, resolvedMarks[next]!.value])
+    },
+    [
+      high,
+      isRange,
+      low,
+      minStepsBetween,
+      resolvedMarks,
+      setValues,
+      single,
+      useMarks,
+    ]
+  )
+
+  const moveThumb = React.useCallback(
+    (index: number, delta: number) => {
+      if (useMarks) {
+        moveThumbByMarks(index, delta > 0 ? 1 : -1)
+        return
+      }
+      if (!isRange) {
+        setValues([snapToStep(single + delta, min, max, safeStep)])
+        return
+      }
+      const [currentLow, currentHigh] = normalizePair(
+        valuesRef.current,
+        min,
+        max,
+        safeStep,
+        resolvedMarks,
+        minStepsBetween
+      )
+      if (index === 0) {
+        setValues([
+          snapToStep(
+            currentLow + delta,
+            min,
+            currentHigh - gap,
+            safeStep
+          ),
+          currentHigh,
+        ])
+        return
+      }
+      setValues([
+        currentLow,
+        snapToStep(
+          currentHigh + delta,
+          currentLow + gap,
+          max,
+          safeStep
+        ),
+      ])
+    },
+    [
+      gap,
+      isRange,
+      max,
+      min,
+      minStepsBetween,
+      moveThumbByMarks,
+      resolvedMarks,
+      safeStep,
+      setValues,
+      single,
+      useMarks,
+    ]
+  )
+
+  const handleThumbKeyDown = (
+    index: number,
+    event: React.KeyboardEvent<HTMLSpanElement>
+  ) => {
     if (disabled) return
+    const large = useMarks
+      ? Math.max(1, Math.round(resolvedMarks.length / 10))
+      : Math.max(safeStep, span / 10)
+
+    const activate = () => setActiveThumb(index)
+
     if (event.key === "ArrowRight" || event.key === "ArrowUp") {
       event.preventDefault()
-      setValues([snapToStep(current + step, min, max, step)])
+      activate()
+      if (useMarks) moveThumbByMarks(index, 1)
+      else moveThumb(index, safeStep)
     } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
       event.preventDefault()
-      setValues([snapToStep(current - step, min, max, step)])
+      activate()
+      if (useMarks) moveThumbByMarks(index, -1)
+      else moveThumb(index, -safeStep)
+    } else if (event.key === "PageUp") {
+      event.preventDefault()
+      activate()
+      if (useMarks) moveThumbByMarks(index, large)
+      else moveThumb(index, large)
+    } else if (event.key === "PageDown") {
+      event.preventDefault()
+      activate()
+      if (useMarks) moveThumbByMarks(index, -large)
+      else moveThumb(index, -large)
     } else if (event.key === "Home") {
       event.preventDefault()
-      setValues([min])
+      activate()
+      if (!isRange) {
+        setValues([useMarks ? resolvedMarks[0]!.value : min])
+      } else if (index === 0) {
+        setValues([useMarks ? resolvedMarks[0]!.value : min, high])
+      } else {
+        setValues([
+          low,
+          rangeFloorFor(
+            1,
+            low,
+            high,
+            min,
+            max,
+            safeStep,
+            resolvedMarks,
+            minStepsBetween
+          ),
+        ])
+      }
     } else if (event.key === "End") {
       event.preventDefault()
-      setValues([max])
+      activate()
+      if (!isRange) {
+        setValues([
+          useMarks
+            ? resolvedMarks[resolvedMarks.length - 1]!.value
+            : max,
+        ])
+      } else if (index === 1) {
+        setValues([
+          low,
+          useMarks
+            ? resolvedMarks[resolvedMarks.length - 1]!.value
+            : max,
+        ])
+      } else {
+        setValues([
+          rangeCeilingFor(
+            0,
+            low,
+            high,
+            min,
+            max,
+            safeStep,
+            resolvedMarks,
+            minStepsBetween
+          ),
+          high,
+        ])
+      }
     }
   }
 
-  const showHeader =
-    label != null || leading != null || resolvedShowValue
+  const selectMark = (markValue: number) => {
+    if (disabled) return
+    if (!isRange) {
+      setValues([markValue])
+      return
+    }
+    const ratio = (markValue - min) / span
+    const index = pickThumbIndex(ratio)
+    setActiveThumb(index)
+    commitAtRatio(index, ratio)
+  }
 
-  return (
+  const thumbChrome =
+    resolvedValuePosition === "thumb" && !isRange && isVertical
+  const showThumbValue = resolvedShowValue && thumbChrome
+  const showThumbDescription = description != null && thumbChrome
+  const showThumbMeta =
+    thumbChrome &&
+    (showThumbValue ||
+      showThumbDescription ||
+      label != null ||
+      leading != null)
+  const showBubbleValue =
+    resolvedShowValue && resolvedValuePosition === "bubble" && !isRange
+  const showThumbsValue =
+    resolvedShowValue && resolvedValuePosition === "thumbs"
+  const hasChromeHeading =
+    label != null || leading != null || description != null
+  const showHeaderChrome =
+    resolvedValuePosition === "header" &&
+    (hasChromeHeading || resolvedShowValue)
+  const showFooterChrome =
+    resolvedValuePosition === "footer" &&
+    (hasChromeHeading || resolvedShowValue)
+
+  const stepThumbIndex: 0 | 1 = isRange
+    ? activeThumb === 1
+      ? 1
+      : 0
+    : 0
+  const stepValue = isRange
+    ? stepThumbIndex === 0
+      ? low
+      : high
+    : single
+  const stepFloor = !isRange
+    ? useMarks
+      ? resolvedMarks[0]!.value
+      : min
+    : rangeFloorFor(
+        stepThumbIndex,
+        low,
+        high,
+        min,
+        max,
+        safeStep,
+        resolvedMarks,
+        minStepsBetween
+      )
+  const stepCeil = !isRange
+    ? useMarks
+      ? resolvedMarks[resolvedMarks.length - 1]!.value
+      : max
+    : rangeCeilingFor(
+        stepThumbIndex,
+        low,
+        high,
+        min,
+        max,
+        safeStep,
+        resolvedMarks,
+        minStepsBetween
+      )
+  const canStepDown = !disabled && stepValue > stepFloor
+  const canStepUp = !disabled && stepValue < stepCeil
+
+  const nudgeByStep = (direction: -1 | 1) => {
+    if (disabled) return
+    if (useMarks) moveThumbByMarks(stepThumbIndex, direction * buttonSteps)
+    else moveThumb(stepThumbIndex, direction * buttonDelta)
+  }
+
+  const stepControlName =
+    (typeof label === "string" && label) ||
+    (typeof ariaLabel === "string" && ariaLabel) ||
+    "Value"
+
+  const bubbleFor = (text: string) =>
+    showBubbleValue ? (
+      <span data-df="slider-bubble" aria-hidden="true">
+        {text}
+      </span>
+    ) : null
+
+  const pctStyle = (
+    pct: number,
+    centerCrossAxis = false
+  ): React.CSSProperties =>
+    isVertical
+      ? centerCrossAxis
+        ? { bottom: `${pct}%`, left: "50%" }
+        : { bottom: `${pct}%` }
+      : { left: `${pct}%` }
+
+  const thumbsValueNode = showThumbsValue ? (
+    <div data-df="slider-thumb-values" aria-hidden="true">
+      {isRange ? (
+        <>
+          <span data-df="slider-thumb-value" style={pctStyle(lowPct)}>
+            {formatOne(low)}
+          </span>
+          <span data-df="slider-thumb-value" style={pctStyle(highPct)}>
+            {formatOne(high)}
+          </span>
+        </>
+      ) : (
+        <span data-df="slider-thumb-value" style={pctStyle(singlePct)}>
+          {formatOne(single)}
+        </span>
+      )}
+    </div>
+  ) : null
+
+  const rangeStyle = isRange
+    ? isVertical
+      ? {
+          bottom: `${Math.min(lowPct, highPct)}%`,
+          height: `${Math.abs(highPct - lowPct)}%`,
+        }
+      : {
+          left: `${Math.min(lowPct, highPct)}%`,
+          width: `${Math.abs(highPct - lowPct)}%`,
+        }
+    : isVertical
+      ? { bottom: 0, height: `${singlePct}%` }
+      : { width: `${singlePct}%` }
+
+  const thumbHeading =
+    leading != null || label != null ? (
+      <span data-df="slider-thumb-heading">
+        {leading != null ? (
+          <span data-df="slider-leading" aria-hidden="true">
+            {leading}
+          </span>
+        ) : null}
+        {label != null ? (
+          <span data-df="slider-thumb-title">{label}</span>
+        ) : null}
+      </span>
+    ) : null
+  const thumbDescriptionNode = showThumbDescription ? (
+    <span data-df="slider-description">{description}</span>
+  ) : null
+  const thumbValueNode = showThumbValue ? (
+    <span data-df="slider-value">{displayValue}</span>
+  ) : null
+  const thumbMetaContent =
+    thumbValueOrder === "value-first" ? (
+      <>
+        {thumbValueNode}
+        {thumbHeading}
+        {thumbDescriptionNode}
+      </>
+    ) : (
+      <>
+        {thumbHeading}
+        {thumbDescriptionNode}
+        {thumbValueNode}
+      </>
+    )
+
+  const activeMarkValue = isRange ? null : single
+
+  const marksNode = useMarks ? (
+    <div data-df="slider-marks" aria-hidden="true">
+      {resolvedMarks.map((mark) => {
+        const active =
+          activeMarkValue != null
+            ? mark.value === activeMarkValue
+            : mark.value === low || mark.value === high
+        return (
+          <button
+            key={mark.value}
+            type="button"
+            data-df="slider-mark"
+            data-active={active ? "" : undefined}
+            style={pctStyle(pctOf(mark.value))}
+            tabIndex={-1}
+            disabled={disabled}
+            onClick={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              selectMark(mark.value)
+            }}
+          >
+            {mark.label ?? formatOne(mark.value)}
+          </button>
+        )
+      })}
+    </div>
+  ) : null
+
+  const renderThumb = (index: 0 | 1, pct: number, now: number) => {
+    const aria = thumbAria(index)
+    return (
+      <span
+        data-df="slider-thumb"
+        data-index={String(index)}
+        role="slider"
+        tabIndex={disabled ? -1 : 0}
+        aria-label={aria.ariaLabel}
+        aria-labelledby={aria.ariaLabelledBy}
+        aria-orientation={orientation}
+        aria-valuemin={isRange ? (index === 0 ? min : low) : min}
+        aria-valuemax={isRange ? (index === 0 ? high : max) : max}
+        aria-valuenow={now}
+        aria-valuetext={String(formatOne(now))}
+        aria-disabled={disabled || undefined}
+        style={pctStyle(pct, true)}
+        onFocus={() => setActiveThumb(index)}
+        onKeyDown={(e) => handleThumbKeyDown(index, e)}
+      >
+        {bubbleFor(formatOne(now))}
+      </span>
+    )
+  }
+
+  const chromeNode = (slot: "header" | "footer") => (
     <div
-      data-df="slider"
-      data-variant={variant}
-      data-disabled={disabled ? "" : undefined}
-      className={cn(className)}
-      {...props}
+      data-df={slot === "header" ? "slider-header" : "slider-footer"}
+      data-has-description={description != null ? "" : undefined}
     >
-      {showHeader ? (
-        <div data-df="slider-header">
+      <div data-df="slider-heading-block">
+        {label != null || leading != null ? (
           <div data-df="slider-heading">
             {leading != null ? (
               <span data-df="slider-leading" aria-hidden="true">
@@ -170,36 +965,121 @@ function Slider({
               </span>
             ) : null}
           </div>
-          {resolvedShowValue ? (
-            <span data-df="slider-value">{displayValue}</span>
+        ) : null}
+        {description != null ? (
+          <span data-df="slider-description">{description}</span>
+        ) : null}
+      </div>
+      {resolvedShowValue ? (
+        <span
+          data-df="slider-value"
+          data-layout={isRange ? "stack" : undefined}
+        >
+          {displayValue}
+        </span>
+      ) : null}
+    </div>
+  )
+
+  return (
+    <div
+      ref={ref}
+      data-df="slider"
+      data-variant={variant}
+      data-orientation={orientation}
+      data-thickness={thickness}
+      data-value-position={resolvedValuePosition}
+      data-thumb-value-order={thumbChrome ? thumbValueOrder : undefined}
+      data-marks-side={isVertical ? marksSide : undefined}
+      data-range={isRange ? "" : undefined}
+      data-snap={useMarks ? "marks" : undefined}
+      data-step-buttons={showStepButtons ? "" : undefined}
+      data-dragging={dragging ? "" : undefined}
+      data-disabled={disabled ? "" : undefined}
+      className={cn(className)}
+      {...props}
+    >
+      {showHeaderChrome ? chromeNode("header") : null}
+      {!showHeaderChrome &&
+      !showFooterChrome &&
+      label != null &&
+      resolvedValuePosition === "thumb" ? (
+        <span data-df="slider-sr-only" id={labelId}>
+          {label}
+        </span>
+      ) : null}
+
+      <div data-df="slider-body">
+        {showThumbMeta ? (
+          <div data-df="slider-thumb-meta-slot">
+            <div
+              data-df="slider-thumb-meta"
+              style={{ bottom: `${singlePct}%` }}
+            >
+              {thumbMetaContent}
+            </div>
+          </div>
+        ) : null}
+
+        <div data-df="slider-rail">
+          {showStepButtons ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              disabled={!canStepDown}
+              aria-label={`Decrease ${stepControlName}`}
+              onClick={() => nudgeByStep(-1)}
+            >
+              <Minus aria-hidden="true" />
+            </Button>
+          ) : null}
+          <div data-df="slider-control" onPointerDown={onControlPointerDown}>
+            <div data-df="slider-track">
+              <div data-df="slider-range" style={rangeStyle} />
+            </div>
+            {isRange ? (
+              <>
+                {renderThumb(0, lowPct, low)}
+                {renderThumb(1, highPct, high)}
+              </>
+            ) : (
+              renderThumb(0, singlePct, single)
+            )}
+          </div>
+          {showStepButtons ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              disabled={!canStepUp}
+              aria-label={`Increase ${stepControlName}`}
+              onClick={() => nudgeByStep(1)}
+            >
+              <Plus aria-hidden="true" />
+            </Button>
           ) : null}
         </div>
-      ) : null}
-      <div data-df="slider-control" onPointerDown={onControlPointerDown}>
-        <div data-df="slider-track">
-          <div
-            data-df="slider-range"
-            style={{ width: `${visualPct}%` }}
-          />
-        </div>
-        <span
-          data-df="slider-thumb"
-          role="slider"
-          tabIndex={disabled ? -1 : 0}
-          aria-label={resolvedAriaLabel}
-          aria-labelledby={resolvedAriaLabelledBy}
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={current}
-          aria-valuetext={displayValue}
-          aria-disabled={disabled || undefined}
-          style={{ left: `${visualPct}%` }}
-          onKeyDown={onThumbKeyDown}
-        />
+
+        {thumbsValueNode}
+        {marksNode}
       </div>
+
+      {showFooterChrome ? chromeNode("footer") : null}
     </div>
   )
 }
 
 export { Slider }
-export type { SliderProps, SliderValueFormat, SliderVariant }
+export type {
+  SliderMark,
+  SliderMarkInput,
+  SliderMarksSide,
+  SliderOrientation,
+  SliderProps,
+  SliderThickness,
+  SliderThumbValueOrder,
+  SliderValueFormat,
+  SliderValuePosition,
+  SliderVariant,
+}

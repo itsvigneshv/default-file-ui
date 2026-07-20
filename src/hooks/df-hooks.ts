@@ -1,5 +1,17 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
+function isSameControllableValue<T>(a: T, b: T): boolean {
+  if (Object.is(a, b)) return true
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
+  return false
+}
+
 export function useControllableState<T>({
   value,
   defaultValue,
@@ -17,6 +29,7 @@ export function useControllableState<T>({
     (next: T | ((prev: T) => T)) => {
       const resolved =
         typeof next === "function" ? (next as (prev: T) => T)(current) : next
+      if (isSameControllableValue(resolved, current)) return
       if (!isControlled) setUncontrolled(resolved)
       onChange?.(resolved)
     },

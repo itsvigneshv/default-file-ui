@@ -738,9 +738,43 @@
   --df-slider-track-height: calc(3 * var(--spacing-unit));
   --df-slider-line-track-height: calc(1 * var(--spacing-unit));
   --df-slider-line-range-height: calc(2 * var(--spacing-unit));
+  --df-slider-line-track-bg: color-mix(
+    in oklch,
+    var(--foreground) 16%,
+    transparent
+  );
+  --df-slider-thumb-size: var(--df-affordance-size-sm);
+  --df-slider-track-height-sm: calc(2 * var(--spacing-unit));
+  --df-slider-line-track-height-sm: calc(0.5 * var(--spacing-unit));
+  --df-slider-line-range-height-sm: calc(1 * var(--spacing-unit));
+  --df-slider-thumb-size-sm: var(--df-affordance-size-xs);
+  --df-slider-track-height-lg: calc(5 * var(--spacing-unit));
+  --df-slider-line-track-height-lg: calc(2 * var(--spacing-unit));
+  --df-slider-line-range-height-lg: calc(4 * var(--spacing-unit));
+  --df-slider-thumb-size-lg: var(--df-affordance-size-md);
   --df-slider-header-gap: calc(2 * var(--spacing-unit));
+  --df-slider-header-inline-gap: calc(2 * var(--spacing-unit));
+  --df-slider-tight-gap: calc(0.5 * var(--spacing-unit));
   --df-slider-label-gap: calc(1.5 * var(--spacing-unit));
   --df-slider-leading-size: calc(4 * var(--spacing-unit));
+  --df-slider-vertical-size: calc(48 * var(--spacing-unit));
+  --df-slider-marks-gap: calc(2 * var(--spacing-unit));
+  --df-slider-vertical-column-gap: calc(5 * var(--spacing-unit));
+  --df-slider-marks-track-height: calc(4 * var(--spacing-unit));
+  --df-slider-vertical-marks-min-width: calc(10 * var(--spacing-unit));
+  --df-slider-value-sep-mix: 72%;
+  --df-slider-bubble-pad-inline: calc(2 * var(--spacing-unit));
+  --df-slider-bubble-pad-block: calc(0.75 * var(--spacing-unit));
+  --df-slider-bubble-offset: calc(2 * var(--spacing-unit));
+  --df-slider-bubble-radius: var(--radius-md);
+  --df-slider-bubble-clearance: calc(
+    var(--df-slider-thumb-size) + var(--df-slider-bubble-offset) +
+      var(--df-text-11) + (2 * var(--df-slider-bubble-pad-block))
+  );
+  --df-slider-thumb-value-clearance: calc(5 * var(--spacing-unit));
+  --df-slider-thumb-value-column: calc(12 * var(--spacing-unit));
+  --df-slider-thumb-value-gap: calc(1.5 * var(--spacing-unit));
+  --df-slider-step-gap: calc(2.5 * var(--spacing-unit));
   --df-tabs-segment-min-height-sm: calc(6.5 * var(--spacing-unit));
   --df-tabs-segment-min-height-md: calc(7.5 * var(--spacing-unit));
   --df-switch-track-height: 18.4px;
