@@ -794,8 +794,8 @@
           {
             "name": "--df-select-optical-shift",
             "type": "CSS length",
-            "description": "Upward correction for browser baseline rounding. Applied as twice this value of bottom margin on the value text so its ink shares the trigger midline with the chevron and icons. Badge values and inset labels are box centered and skip it.",
-            "default": "1px"
+            "description": "Upward correction for trigger value text with chevron and icons. Applied as twice this value of bottom margin on the value. Badge values and inset labels are box centered and skip it. Defaults to --df-control-optical-shift.",
+            "default": "var(--df-control-optical-shift)"
           },
           {
             "name": "--df-select-bg",

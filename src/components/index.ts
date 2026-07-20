@@ -66,6 +66,9 @@ export type {
 export { TickSlider } from "./df-tick-slider"
 export type {
   TickSliderBounds,
+  TickSliderBubbleSide,
+  TickSliderLabelAlign,
+  TickSliderLabelPosition,
   TickSliderRadius,
   TickSliderSize,
   TickSliderTickRenderContext,

@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-badge",
   "dependencies": [],
   "api": {
-    "description": "Compact label for status and metadata. Compose a close control, nested counter, or OptionList dropdown via children and render.",
+    "description": "Compact label for status and metadata. Label ink is optically centered to cap height. Compose a close control, nested counter, or OptionList dropdown via children and render.",
     "groups": [
       {
         "id": "badge",

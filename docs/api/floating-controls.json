@@ -11,7 +11,7 @@
   "importPath": "@default-file/ui/components/df-floating-controls",
   "dependencies": [],
   "api": {
-    "description": "Modular action bar with items, dividers, and slots. Pass children or an items array.",
+    "description": "Modular action bar with items, dividers, and slots. Item label ink is optically centered to cap height. Pass children or an items array.",
     "groups": [
       {
         "id": "floating-controls",

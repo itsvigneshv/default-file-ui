@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-content-switcher",
   "dependencies": [],
   "api": {
-    "description": "Segmented single-select for filters and view modes. Supports t-shirt sizes and optional deselect. Compose ContentSwitcher and ContentSwitcherItem.",
+    "description": "Segmented single-select for filters and view modes. Supports t-shirt sizes and optional deselect. Segment label ink is optically centered to cap height. Compose ContentSwitcher and ContentSwitcherItem.",
     "groups": [
       {
         "id": "content-switcher",

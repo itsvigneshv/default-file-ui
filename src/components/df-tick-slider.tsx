@@ -27,6 +27,14 @@ type TickSliderSize = "sm" | "md"
 
 type TickSliderFade = "start" | "end" | "both"
 
+type TickSliderLabelPosition = "header" | "footer" | "shell"
+
+type TickSliderLabelAlign = "start" | "center" | "end"
+
+type TickSliderBubbleSide = "auto" | "top" | "bottom"
+
+type TickSliderResolvedBubbleSide = "top" | "bottom"
+
 type TickSliderTickRenderContext = {
   index: number
   count: number
@@ -62,6 +70,10 @@ type TickSliderProps = Omit<
   startLabel?: React.ReactNode
   endLabel?: React.ReactNode
   bounds?: TickSliderBounds
+  label?: React.ReactNode
+  labelPosition?: TickSliderLabelPosition
+  labelAlign?: TickSliderLabelAlign
+  bubbleSide?: TickSliderBubbleSide
   formatValue?: (value: number) => string
   tickCount?: number
   showTicks?: boolean
@@ -112,6 +124,18 @@ function resolveFade(
   return undefined
 }
 
+function resolveBubbleSide(
+  bubbleSide: TickSliderBubbleSide,
+  hasLabel: boolean,
+  labelPosition: TickSliderLabelPosition
+): TickSliderResolvedBubbleSide {
+  if (bubbleSide === "top" || bubbleSide === "bottom") return bubbleSide
+  if (!hasLabel) return "top"
+  if (labelPosition === "header") return "bottom"
+  if (labelPosition === "footer") return "top"
+  return "top"
+}
+
 function TickSlider({
   className,
   style,
@@ -124,6 +148,10 @@ function TickSlider({
   startLabel,
   endLabel,
   bounds = "both",
+  label,
+  labelPosition = "header",
+  labelAlign,
+  bubbleSide = "auto",
   formatValue,
   tickCount = DEFAULT_TICK_COUNT,
   showTicks = true,
@@ -152,6 +180,7 @@ function TickSlider({
   "aria-labelledby": ariaLabelledBy,
   ...props
 }: TickSliderProps) {
+  const labelId = React.useId()
   const [rawValue, setValue] = useControllableState({
     value,
     defaultValue: defaultValue ?? min,
@@ -164,12 +193,30 @@ function TickSlider({
   const largeStep = Math.max(step, span / 10)
   const displayValue = formatValue?.(current) ?? String(current)
   const resolvedTickCount = Math.max(2, Math.floor(tickCount))
+  const hasLabel = label != null
+  const resolvedBubbleSide = resolveBubbleSide(
+    bubbleSide,
+    hasLabel,
+    labelPosition
+  )
+  const showHeaderLabel = hasLabel && labelPosition === "header"
+  const showFooterLabel = hasLabel && labelPosition === "footer"
+  const showShellLabel = hasLabel && labelPosition === "shell"
+  const resolvedLabelAlign =
+    labelAlign ?? (labelPosition === "shell" ? "center" : "start")
+  const resolvedAriaLabelledBy =
+    ariaLabelledBy ?? (hasLabel ? labelId : undefined)
 
   const shellRef = React.useRef<HTMLDivElement>(null)
   const trackRef = React.useRef<HTMLDivElement>(null)
   const bubbleRef = React.useRef<HTMLSpanElement>(null)
+  const shellLabelTextRef = React.useRef<HTMLSpanElement>(null)
   const currentRef = React.useRef(current)
   const [bubbleShift, setBubbleShift] = React.useState(0)
+  const [shellLabelTickRange, setShellLabelTickRange] = React.useState<{
+    start: number
+    end: number
+  } | null>(null)
 
   currentRef.current = current
 
@@ -235,7 +282,45 @@ function TickSlider({
     const observer = new ResizeObserver(updateShift)
     observer.observe(shell)
     return () => observer.disconnect()
-  }, [displayValue, pct, showValueBubble, bubbleLeading])
+  }, [displayValue, pct, showValueBubble, bubbleLeading, resolvedBubbleSide])
+
+  React.useLayoutEffect(() => {
+    if (!showShellLabel) {
+      setShellLabelTickRange(null)
+      return
+    }
+
+    const updateTickRange = () => {
+      const track = trackRef.current
+      const labelText = shellLabelTextRef.current
+      if (!track || !labelText) {
+        setShellLabelTickRange(null)
+        return
+      }
+
+      const trackRect = track.getBoundingClientRect()
+      const labelRect = labelText.getBoundingClientRect()
+      if (trackRect.width <= 0 || labelRect.width <= 0) {
+        setShellLabelTickRange(null)
+        return
+      }
+
+      setShellLabelTickRange({
+        start: clamp((labelRect.left - trackRect.left) / trackRect.width, 0, 1),
+        end: clamp((labelRect.right - trackRect.left) / trackRect.width, 0, 1),
+      })
+    }
+
+    updateTickRange()
+
+    const track = trackRef.current
+    const labelText = shellLabelTextRef.current
+    if (!track || !labelText || typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(updateTickRange)
+    observer.observe(track)
+    observer.observe(labelText)
+    return () => observer.disconnect()
+  }, [showShellLabel, label, size, resolvedLabelAlign])
 
   const onTrackPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (disabled) return
@@ -286,6 +371,10 @@ function TickSlider({
         const ratio =
           resolvedTickCount <= 1 ? 0 : index / (resolvedTickCount - 1)
         const active = ratio * 100 <= pct + Number.EPSILON
+        const underLabel =
+          shellLabelTickRange != null &&
+          ratio >= shellLabelTickRange.start &&
+          ratio <= shellLabelTickRange.end
         const custom = renderTick?.({
           index,
           count: resolvedTickCount,
@@ -294,17 +383,35 @@ function TickSlider({
           value: current,
         })
         if (custom != null) {
-          return <React.Fragment key={index}>{custom}</React.Fragment>
+          return (
+            <span
+              key={index}
+              data-df="tick-slider-tick-host"
+              data-under-label={underLabel ? "" : undefined}
+            >
+              {custom}
+            </span>
+          )
         }
         return (
           <span
             key={index}
             data-df="tick-slider-tick"
             data-active={active ? "" : undefined}
+            data-under-label={underLabel ? "" : undefined}
           />
         )
       })
     : null
+
+  const purposeLabel =
+    hasLabel ? (
+      <span data-df="tick-slider-label" id={labelId}>
+        {label}
+      </span>
+    ) : null
+
+  const tickSegments = Math.max(1, resolvedTickCount - 1)
 
   const rootStyle = {
     "--df-tick-slider-shell-radius": TICK_SLIDER_RADIUS_VAR[radius],
@@ -312,6 +419,7 @@ function TickSlider({
     "--df-tick-slider-thumb-radius": TICK_SLIDER_RADIUS_VAR[thumbRadius],
     "--df-tick-slider-bubble-radius": TICK_SLIDER_RADIUS_VAR[bubbleRadius],
     "--df-tick-slider-tick-radius": TICK_SLIDER_RADIUS_VAR[tickRadius],
+    "--df-tick-slider-tick-segments": String(tickSegments),
     ...(accent ? { "--df-tick-slider-accent": accent } : null),
     ...(accentForeground
       ? { "--df-tick-slider-accent-foreground": accentForeground }
@@ -330,7 +438,7 @@ function TickSlider({
   } as React.CSSProperties
 
   return (
-    <div data-df="tick-slider-host">
+    <div data-df="tick-slider-host" className={cn(className)}>
       <div
         data-df="tick-slider"
         data-disabled={disabled ? "" : undefined}
@@ -341,10 +449,13 @@ function TickSlider({
         data-thumb-radius={thumbRadius}
         data-bubble-radius={bubbleRadius}
         data-tick-radius={tickRadius}
-        className={cn(className)}
+        data-label-position={hasLabel ? labelPosition : undefined}
+        data-label-align={hasLabel ? resolvedLabelAlign : undefined}
+        data-bubble-side={showValueBubble ? resolvedBubbleSide : undefined}
         style={rootStyle}
         {...props}
       >
+        {showHeaderLabel ? purposeLabel : null}
         <div data-df="tick-slider-shell" ref={shellRef}>
           {showStart ? (
             <span data-df="tick-slider-bound" aria-hidden="true">
@@ -366,12 +477,26 @@ function TickSlider({
                 {ticks}
               </div>
             ) : null}
+            {showShellLabel ? (
+              <span data-df="tick-slider-shell-label" id={labelId}>
+                <span
+                  ref={shellLabelTextRef}
+                  data-df="tick-slider-shell-label-text"
+                >
+                  <span
+                    data-df="tick-slider-shell-label-wash"
+                    aria-hidden="true"
+                  />
+                  <span data-df="tick-slider-shell-label-copy">{label}</span>
+                </span>
+              </span>
+            ) : null}
             <span
               data-df="tick-slider-thumb"
               role="slider"
               tabIndex={disabled ? -1 : 0}
               aria-label={ariaLabel}
-              aria-labelledby={ariaLabelledBy}
+              aria-labelledby={resolvedAriaLabelledBy}
               aria-valuemin={min}
               aria-valuemax={max}
               aria-valuenow={current}
@@ -406,6 +531,7 @@ function TickSlider({
             </span>
           ) : null}
         </div>
+        {showFooterLabel ? purposeLabel : null}
       </div>
     </div>
   )
@@ -414,6 +540,9 @@ function TickSlider({
 export { TickSlider }
 export type {
   TickSliderBounds,
+  TickSliderBubbleSide,
+  TickSliderLabelAlign,
+  TickSliderLabelPosition,
   TickSliderRadius,
   TickSliderSize,
   TickSliderTickRenderContext,

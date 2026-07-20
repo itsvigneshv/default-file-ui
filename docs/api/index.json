@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T19:45:02.043Z",
+  "generatedAt": "2026-07-20T21:07:43.851Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -409,14 +409,14 @@
       "slug": "tick-slider",
       "name": "tick-slider",
       "title": "Tick Slider",
-      "description": "Pill shell with bound labels, a tick gauge, and a floating value bubble.",
+      "description": "Bound labels, tick gauge, optional purpose title, and floating value bubble.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
       ],
       "importPath": "@default-file/ui/components/df-tick-slider",
       "dependencies": [],
-      "propCount": 81
+      "propCount": 97
     },
     {
       "slug": "toast",

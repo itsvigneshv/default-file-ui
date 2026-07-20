@@ -417,8 +417,8 @@
           {
             "name": "--df-input-optical-shift",
             "type": "CSS length",
-            "description": "Upward correction for browser baseline rounding. Applied as twice this value of bottom inset so text ink shares the field midline with icons.",
-            "default": "1px"
+            "description": "Upward correction for field text with icons. Applied as twice this value of bottom inset so value ink shares the field midline with prefix, suffix, and icons. Defaults to --df-control-optical-shift.",
+            "default": "var(--df-control-optical-shift)"
           },
           {
             "name": "--df-input-floating-min-height",

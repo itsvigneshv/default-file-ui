@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-tabs",
   "dependencies": [],
   "api": {
-    "description": "Panel switcher with pill, line, and segment variants in horizontal or vertical orientation. Compose Tabs, TabsList, TabsTrigger, and TabsContent.",
+    "description": "Panel switcher with pill, line, and segment variants in horizontal or vertical orientation. Trigger label ink is optically centered to cap height. Compose Tabs, TabsList, TabsTrigger, and TabsContent.",
     "groups": [
       {
         "id": "tabs",

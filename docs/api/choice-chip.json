@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-choice-chip",
   "dependencies": [],
   "api": {
-    "description": "Compact selectable chip for filters and quick choices.",
+    "description": "Compact selectable chip for filters and quick choices. Label ink is optically centered to cap height in the pill.",
     "groups": [
       {
         "id": "choice-chip",
