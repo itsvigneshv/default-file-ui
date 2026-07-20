@@ -13,6 +13,8 @@ type ScrollAreaSpace = "auto" | "none"
 
 type ScrollAreaProps = React.ComponentProps<"div"> & {
   viewportClassName?: string
+  /** Ref to the element that owns overflow scrolling. */
+  viewportRef?: React.Ref<HTMLDivElement>
   variant?: ScrollAreaVariant
   thumbShape?: ScrollAreaThumbShape
   orientation?: ScrollAreaOrientation
@@ -25,6 +27,11 @@ type ScrollAreaProps = React.ComponentProps<"div"> & {
    */
   space?: ScrollAreaSpace
   width?: number
+}
+
+function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
+  if (typeof ref === "function") ref(value)
+  else if (ref) (ref as React.MutableRefObject<T | null>).current = value
 }
 
 type ThumbState = { size: number; offset: number; visible: boolean }
@@ -63,6 +70,7 @@ function ScrollArea({
   className,
   children,
   viewportClassName,
+  viewportRef: viewportRefProp,
   variant = "default",
   thumbShape = "rounded",
   orientation = "vertical",
@@ -73,6 +81,13 @@ function ScrollArea({
   ...props
 }: ScrollAreaProps) {
   const viewportRef = React.useRef<HTMLDivElement>(null)
+  const setViewportRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      viewportRef.current = node
+      assignRef(viewportRefProp, node)
+    },
+    [viewportRefProp]
+  )
   const vTrackRef = React.useRef<HTMLDivElement>(null)
   const hTrackRef = React.useRef<HTMLDivElement>(null)
   const vThumbRef = React.useRef<HTMLDivElement>(null)
@@ -224,7 +239,7 @@ function ScrollArea({
       }}
     >
       <div
-        ref={viewportRef}
+        ref={setViewportRef}
         data-df="scroll-area-viewport"
         className={cn(viewportClassName)}
       >

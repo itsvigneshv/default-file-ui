@@ -211,7 +211,7 @@
             "name": "scrollMaxHeight",
             "type": "string | number",
             "default": "\"min(60vh, 24rem)\"",
-            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem). When the panel opens, the selected option scrolls into view while list order stays the same."
+            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem). When the panel opens, the selected option scrolls into the list scrollport while list order stays the same."
           },
           {
             "name": "scrollThumbGap",
@@ -249,7 +249,7 @@
           {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
-            "description": "Leading control. Use \"checkbox\" for multi-select rows."
+            "description": "Leading slot before the label. Works with inline and stacked layouts. On stacked rows, the icon aligns to the title line. Pass an icon or other node; use \"checkbox\" for multi-select, \"check\" for a leading selected mark, or false to omit."
           },
           {
             "name": "secondary",
@@ -260,7 +260,7 @@
             "name": "layout",
             "type": "\"inline\" | \"stacked\"",
             "default": "\"inline\"",
-            "description": "inline places secondary beside the label; stacked places it underneath."
+            "description": "inline places secondary beside the label; stacked places it underneath. With leading, the icon aligns to the title line. Select mirrors stacked layout in the trigger value."
           },
           {
             "name": "trailing",

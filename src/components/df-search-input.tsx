@@ -88,6 +88,7 @@ function SearchInput({
       data-clearable={clearable ? "" : undefined}
       data-has-icon={showIcon ? "" : undefined}
       data-has-trailing={showTrailingActions ? "" : undefined}
+      data-disabled={disabled ? "" : undefined}
     >
       {searchIcon}
 

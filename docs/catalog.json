@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T08:14:57.867Z",
+  "generatedAt": "2026-07-20T11:46:10.555Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -131,6 +131,23 @@
       "propCount": 17
     },
     {
+      "slug": "dock-panel",
+      "name": "dock-panel",
+      "title": "Dock Panel",
+      "description": "Collapsible edge-docked inspector with a kit scrollbar body.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation",
+        "button",
+        "scroll-area"
+      ],
+      "importPath": "@default-file/ui/components/df-dock-panel",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 72
+    },
+    {
       "slug": "floating-controls",
       "name": "floating-controls",
       "title": "Floating Controls",
@@ -142,7 +159,7 @@
       ],
       "importPath": "@default-file/ui/components/df-floating-controls",
       "dependencies": [],
-      "propCount": 29
+      "propCount": 38
     },
     {
       "slug": "input",
@@ -158,7 +175,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 88
+      "propCount": 92
     },
     {
       "slug": "label",
@@ -269,7 +286,7 @@
       ],
       "importPath": "@default-file/ui/components/df-scroll-area",
       "dependencies": [],
-      "propCount": 17
+      "propCount": 18
     },
     {
       "slug": "search-input",
@@ -302,7 +319,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 75
+      "propCount": 141
     },
     {
       "slug": "separator",

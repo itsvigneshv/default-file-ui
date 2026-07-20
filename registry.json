@@ -212,6 +212,17 @@
       ]
     },
     {
+      "name": "dock-panel",
+      "type": "registry:ui",
+      "title": "Dock Panel",
+      "description": "Collapsible edge-docked inspector with optional header, custom icons, and a body that owns the kit scrollbar.",
+      "registryDependencies": ["foundation", "button", "scroll-area"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        { "path": "src/components/df-dock-panel.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-dock-panel.tsx" }
+      ]
+    },
+    {
       "name": "search-input",
       "type": "registry:ui",
       "title": "Search Input",

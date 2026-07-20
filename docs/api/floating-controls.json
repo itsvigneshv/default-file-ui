@@ -24,6 +24,18 @@
             "description": "Bar surface treatment."
           },
           {
+            "name": "padding",
+            "type": "\"none\" | \"sm\" | \"default\" | \"lg\" | \"2xl\"",
+            "default": "\"default\"",
+            "description": "Inner inset around the bar."
+          },
+          {
+            "name": "radius",
+            "type": "\"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"full\"",
+            "default": "\"xl\"",
+            "description": "Corner radius of the bar. Maps to a --radius-* token."
+          },
+          {
             "name": "items",
             "type": "FloatingControlsEntry[]",
             "description": "Declarative entries (item, divider, slot). Ignored when children are passed."
@@ -131,6 +143,48 @@
         "title": "Tokens",
         "description": "Theme defaults live on :root. Override these globally or on a local host.",
         "props": [
+          {
+            "name": "--df-floating-controls-padding",
+            "type": "CSS length",
+            "description": "Active bar inset. Resolved from the padding prop scale.",
+            "default": "var(--df-floating-controls-padding-default)"
+          },
+          {
+            "name": "--df-floating-controls-radius",
+            "type": "CSS length",
+            "description": "Active bar corner radius. Resolved from the radius prop.",
+            "default": "var(--radius-xl)"
+          },
+          {
+            "name": "--df-floating-controls-padding-none",
+            "type": "CSS length",
+            "description": "Bar inset for padding none.",
+            "default": "0"
+          },
+          {
+            "name": "--df-floating-controls-padding-sm",
+            "type": "CSS length",
+            "description": "Bar inset for padding sm.",
+            "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-floating-controls-padding-default",
+            "type": "CSS length",
+            "description": "Bar inset for padding default.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-floating-controls-padding-lg",
+            "type": "CSS length",
+            "description": "Bar inset for padding lg.",
+            "default": "calc(1.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-floating-controls-padding-2xl",
+            "type": "CSS length",
+            "description": "Bar inset for padding 2xl.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
           {
             "name": "--overlay-bg",
             "type": "CSS color",

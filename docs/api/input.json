@@ -361,6 +361,18 @@
             "default": "var(--muted-foreground)"
           },
           {
+            "name": "--df-input-autofill-bg",
+            "type": "CSS color",
+            "description": "Browser autofill fill. Applied to the field shell so the wash follows the field radius, including under leading and trailing icons.",
+            "default": "color-mix(in oklch, var(--secondary) 45%, var(--background))"
+          },
+          {
+            "name": "--df-input-autofill-fg",
+            "type": "CSS color",
+            "description": "Browser autofill value text color.",
+            "default": "var(--df-input-fg)"
+          },
+          {
             "name": "--df-input-hint",
             "type": "CSS color",
             "description": "Hint line color.",
@@ -391,10 +403,22 @@
             "default": "var(--df-control-height-md)"
           },
           {
+            "name": "--df-input-font-size",
+            "type": "CSS length",
+            "description": "Value and placeholder font size. Defaults to --df-text-sm. Size steps override this token.",
+            "default": "var(--df-text-sm)"
+          },
+          {
             "name": "--df-input-line-height",
-            "type": "CSS length or number",
-            "description": "Shell single-line text leading. Matches --df-input-height so value text shares the adornment midline. Inside labels use normal leading.",
-            "default": "var(--df-input-height)"
+            "type": "CSS length",
+            "description": "Value and placeholder leading. Paired with the size step as an even pixel value so single-line text centers without sub-pixel drift.",
+            "default": "var(--df-leading-5)"
+          },
+          {
+            "name": "--df-input-optical-shift",
+            "type": "CSS length",
+            "description": "Upward correction for browser baseline rounding. Applied as twice this value of bottom inset so text ink shares the field midline with icons.",
+            "default": "1px"
           },
           {
             "name": "--df-input-floating-min-height",

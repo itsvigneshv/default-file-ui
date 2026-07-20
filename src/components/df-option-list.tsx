@@ -16,6 +16,7 @@ import {
 import { cn } from "../lib/utils"
 
 type SelectionMode = "single" | "multiple"
+type OptionListItemLayout = "inline" | "stacked"
 
 type OptionListContextValue = {
   selectionMode: SelectionMode
@@ -28,7 +29,14 @@ type OptionListContextValue = {
   setOpen: (open: boolean) => void
   triggerRef: React.RefObject<HTMLElement | null>
   labelFor: (value: string | null) => React.ReactNode
+  secondaryFor: (value: string | null) => React.ReactNode | null
+  layoutFor: (value: string | null) => OptionListItemLayout
   registerLabel: (value: string, label: React.ReactNode) => void
+  registerSecondary: (
+    value: string,
+    secondary: React.ReactNode | null | undefined,
+    layout?: OptionListItemLayout
+  ) => void
   closeOnSelect: boolean
   searchQuery: string
   setSearchQuery: (query: string) => void
@@ -350,6 +358,8 @@ function OptionList({
   const [, setLabelsVersion] = React.useState(0)
   const triggerRef = React.useRef<HTMLElement | null>(null)
   const labels = React.useRef(new Map<string, React.ReactNode>())
+  const secondaries = React.useRef(new Map<string, React.ReactNode | null>())
+  const layouts = React.useRef(new Map<string, OptionListItemLayout>())
 
   const resolvedCloseOnSelect =
     closeOnSelect ?? selectionMode === "single"
@@ -363,9 +373,38 @@ function OptionList({
     []
   )
 
+  const registerSecondary = React.useCallback(
+    (
+      itemValue: string,
+      secondary: React.ReactNode | null | undefined,
+      layout: OptionListItemLayout = "inline"
+    ) => {
+      const nextSecondary = secondary ?? null
+      const nextLayout = nextSecondary == null ? "inline" : layout
+      const secondaryUnchanged =
+        secondaries.current.get(itemValue) === nextSecondary
+      const layoutUnchanged = layouts.current.get(itemValue) === nextLayout
+      if (secondaryUnchanged && layoutUnchanged) return
+      secondaries.current.set(itemValue, nextSecondary)
+      layouts.current.set(itemValue, nextLayout)
+      setLabelsVersion((n) => n + 1)
+    },
+    []
+  )
+
   const labelFor = React.useCallback((itemValue: string | null) => {
     if (!itemValue) return null
     return labels.current.get(itemValue) ?? itemValue
+  }, [])
+
+  const secondaryFor = React.useCallback((itemValue: string | null) => {
+    if (!itemValue) return null
+    return secondaries.current.get(itemValue) ?? null
+  }, [])
+
+  const layoutFor = React.useCallback((itemValue: string | null) => {
+    if (!itemValue) return "inline" as const
+    return layouts.current.get(itemValue) ?? "inline"
   }, [])
 
   const isSelected = React.useCallback(
@@ -406,7 +445,10 @@ function OptionList({
         setOpen: setIsOpen,
         triggerRef,
         labelFor,
+        secondaryFor,
+        layoutFor,
         registerLabel,
+        registerSecondary,
         closeOnSelect: resolvedCloseOnSelect,
         searchQuery,
         setSearchQuery,
@@ -649,6 +691,29 @@ function containsSubmenu(node: React.ReactNode): boolean {
   return found
 }
 
+function scrollSelectedIntoListViewport(
+  selected: HTMLElement,
+  root: HTMLElement
+) {
+  const body = root.querySelector<HTMLElement>(
+    '[data-df="option-list-body"][data-scrollable]'
+  )
+  if (!body || !body.contains(selected)) return
+
+  const viewport = body.querySelector<HTMLElement>(
+    '[data-df="scroll-area-viewport"]'
+  )
+  if (!viewport) return
+
+  const itemRect = selected.getBoundingClientRect()
+  const portRect = viewport.getBoundingClientRect()
+  if (itemRect.top < portRect.top) {
+    viewport.scrollTop -= portRect.top - itemRect.top
+  } else if (itemRect.bottom > portRect.bottom) {
+    viewport.scrollTop += itemRect.bottom - portRect.bottom
+  }
+}
+
 function OptionListContent({
   className,
   children,
@@ -699,7 +764,7 @@ function OptionListContent({
       ? "var(--df-menu-stacked-max-height)"
       : "min(60vh, var(--df-menu-max-height))")
 
-  // Keep list order; when the panel opens, bring the selected option into view.
+  // Keep list order; reveal the selected option in the list scrollport.
   React.useLayoutEffect(() => {
     if (!open || !mounted) return
     const root = contentRef.current
@@ -708,7 +773,7 @@ function OptionListContent({
       '[data-df="option-list-item"][data-state="selected"]'
     )
     if (!selected) return
-    selected.scrollIntoView({ block: "nearest", inline: "nearest" })
+    scrollSelectedIntoListViewport(selected, root)
   }, [open, mounted])
 
   if (!mounted) {
@@ -806,8 +871,6 @@ function OptionListLabel({
 
 type OptionListItemLeading = "checkbox" | "check" | React.ReactNode | false
 
-type OptionListItemLayout = "inline" | "stacked"
-
 type OptionListItemProps = React.HTMLAttributes<HTMLDivElement> & {
   value: string
   disabled?: boolean
@@ -846,6 +909,7 @@ function OptionListItem({
     toggleValue,
     setOpen,
     registerLabel,
+    registerSecondary,
     closeOnSelect,
     searchQuery,
     selectionMode,
@@ -871,7 +935,8 @@ function OptionListItem({
 
   React.useLayoutEffect(() => {
     registerLabel(value, children)
-  }, [children, registerLabel, value])
+    registerSecondary(value, secondary, copyLayout)
+  }, [children, copyLayout, registerLabel, registerSecondary, secondary, value])
 
   const query = searchQuery.trim().toLowerCase()
   if (query) {

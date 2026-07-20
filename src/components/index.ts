@@ -201,6 +201,31 @@ export { NumberSlider } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
 export type { ChoiceChipProps, ChoiceChipSize } from "./df-choice-chip"
 export { PanelSection } from "./df-panel-section"
+export {
+  DockPanel,
+  DockPanelRail,
+  DockPanelHeader,
+  DockPanelTitle,
+  DockPanelSubtitle,
+  DockPanelCollapseTrigger,
+  DockPanelExpandTrigger,
+  DockPanelBody,
+  DockPanelFooter,
+} from "./df-dock-panel"
+export type {
+  DockPanelProps,
+  DockPanelRailProps,
+  DockPanelHeaderProps,
+  DockPanelTitleProps,
+  DockPanelSubtitleProps,
+  DockPanelCollapseTriggerProps,
+  DockPanelExpandTriggerProps,
+  DockPanelBodyProps,
+  DockPanelFooterProps,
+  DockPanelSize,
+  DockPanelMobileMaxHeight,
+  DockPanelCollapsedAlign,
+} from "./df-dock-panel"
 export { SearchInput, SearchBar } from "./df-search-input"
 export type {
   SearchInputProps,

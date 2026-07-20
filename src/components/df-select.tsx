@@ -18,29 +18,106 @@ import {
 import { cn } from "../lib/utils"
 
 type SelectSize = "sm" | "md" | "lg"
+type SelectVariant = "primary" | "secondary"
+type SelectLabelPosition = "outside" | "overlap" | "inset"
+
+type SelectTriggerProps = Omit<React.HTMLAttributes<HTMLDivElement>, "disabled"> & {
+  size?: SelectSize | "default"
+  variant?: SelectVariant
+  disabled?: boolean
+  invalid?: boolean
+  leadingIcon?: React.ReactNode
+  background?: string
+  borderColor?: string
+  errorBorderColor?: string
+  padding?: string
+  paddingX?: string
+  paddingY?: string
+  paddingTop?: string
+  paddingRight?: string
+  paddingBottom?: string
+  paddingLeft?: string
+}
+
+type SelectFieldProps = React.HTMLAttributes<HTMLDivElement> & {
+  label?: React.ReactNode
+  labelPosition?: SelectLabelPosition
+  subtext?: React.ReactNode
+  required?: boolean
+  help?: React.ReactNode
+  hint?: React.ReactNode
+  hintColor?: string
+  hintClassName?: string
+  htmlFor?: string
+  hintId?: string
+  labelColor?: string
+  labelClassName?: string
+  invalidLabel?: boolean
+  errorLabelColor?: string
+  overlapLabelBackground?: string
+  overlapInset?: string
+  overlapLabelPadding?: string
+  overlapLabelSize?: string
+  insetLabelSize?: string
+  insetGap?: string
+}
 
 type SelectValueRenderContext = {
   selectionMode: "single" | "multiple"
   value: string | null
   values: string[]
   labelFor: (value: string | null) => React.ReactNode
+  secondaryFor: (value: string | null) => React.ReactNode | null
+  layoutFor: (value: string | null) => "inline" | "stacked"
   toggleValue: (value: string) => void
 }
 
 type SelectExtrasContextValue = {
   disabled: boolean
+  invalid: boolean
+}
+
+type SelectInsetLabelContextValue = {
+  label: React.ReactNode | null
+  required: boolean
+  help: React.ReactNode | null
+  labelClassName?: string
+  htmlFor?: string
 }
 
 const SelectExtrasContext = React.createContext<SelectExtrasContextValue>({
   disabled: false,
+  invalid: false,
 })
+
+const SelectInsetLabelContext =
+  React.createContext<SelectInsetLabelContextValue>({
+    label: null,
+    required: false,
+    help: null,
+  })
 
 function useSelectExtras() {
   return React.useContext(SelectExtrasContext)
 }
 
+function useSelectInsetLabel() {
+  return React.useContext(SelectInsetLabelContext)
+}
+
 function resolveSelectSize(size: SelectSize | "default"): SelectSize {
   return size === "default" ? "md" : size
+}
+
+function focusSelectTriggerFromLabel(
+  event: React.MouseEvent<HTMLLabelElement>,
+  htmlFor?: string
+) {
+  if (event.defaultPrevented || !htmlFor) return
+  const control = document.getElementById(htmlFor)
+  if (control?.getAttribute("data-df") !== "select-trigger") return
+  event.preventDefault()
+  control.focus()
 }
 
 function Select({
@@ -56,6 +133,7 @@ function Select({
   onOpenChange,
   closeOnSelect,
   disabled = false,
+  invalid = false,
   children,
 }: {
   selectionMode?: "single" | "multiple"
@@ -70,6 +148,7 @@ function Select({
   onOpenChange?: (open: boolean) => void
   closeOnSelect?: boolean
   disabled?: boolean
+  invalid?: boolean
   children: React.ReactNode
 }) {
   return (
@@ -86,7 +165,7 @@ function Select({
       onOpenChange={onOpenChange}
       closeOnSelect={closeOnSelect}
     >
-      <SelectExtrasContext.Provider value={{ disabled }}>
+      <SelectExtrasContext.Provider value={{ disabled, invalid }}>
         <SelectDisabledSync disabled={disabled} />
         {children}
       </SelectExtrasContext.Provider>
@@ -104,45 +183,152 @@ function SelectDisabledSync({ disabled }: { disabled: boolean }) {
 
 function SelectField({
   className,
+  style,
   children,
   label,
+  labelPosition = "outside",
+  subtext,
   required,
   help,
   hint,
+  hintColor,
+  hintClassName,
   htmlFor,
   hintId,
+  labelColor,
+  labelClassName,
+  invalidLabel = true,
+  errorLabelColor,
+  overlapLabelBackground,
+  overlapInset,
+  overlapLabelPadding,
+  overlapLabelSize,
+  insetLabelSize,
+  insetGap,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & {
-  label?: React.ReactNode
-  required?: boolean
-  help?: React.ReactNode
-  hint?: React.ReactNode
-  htmlFor?: string
-  hintId?: string
-}) {
-  const { disabled } = useSelectExtras()
+}: SelectFieldProps) {
+  const { disabled, invalid } = useSelectExtras()
+  const showInvalidLabel = invalid && invalidLabel && !disabled
+  const isOverlap = labelPosition === "overlap" && label != null
+  const isInset = labelPosition === "inset" && label != null
+  const showOutsideLabel = !isOverlap && !isInset && (label != null || subtext != null)
+  const labelHtmlFor = disabled ? undefined : htmlFor
+  const labelPositionAttr = isOverlap
+    ? "overlap"
+    : isInset
+      ? "inset"
+      : undefined
 
-  return (
-    <div
-      data-df="select-field"
-      data-disabled={disabled ? "" : undefined}
-      className={cn(className)}
-      {...props}
-    >
-      {label != null ? (
-        <SelectFieldLabel
-          htmlFor={disabled ? undefined : htmlFor}
+  const insetLabelValue: SelectInsetLabelContextValue = isInset
+    ? {
+        label,
+        required: Boolean(required),
+        help: help ?? null,
+        labelClassName,
+        htmlFor: labelHtmlFor,
+      }
+    : {
+        label: null,
+        required: false,
+        help: null,
+      }
+
+  const control = isOverlap ? (
+    <div data-df="select-overlap">
+      <span data-df="select-overlap-label">
+        <Label
+          htmlFor={labelHtmlFor}
           required={required}
-          help={help}
+          className={cn(labelClassName)}
+          onClick={(event) => focusSelectTriggerFromLabel(event, labelHtmlFor)}
         >
           {label}
-        </SelectFieldLabel>
-      ) : null}
+        </Label>
+        {help != null ? (
+          <span data-df="select-field-help">{help}</span>
+        ) : null}
+      </span>
       {children}
-      {hint != null ? (
-        <SelectFieldHint id={hintId}>{hint}</SelectFieldHint>
-      ) : null}
     </div>
+  ) : (
+    children
+  )
+
+  return (
+    <SelectInsetLabelContext.Provider value={insetLabelValue}>
+      <div
+        data-df="select-field"
+        data-label-position={labelPositionAttr}
+        data-disabled={disabled ? "" : undefined}
+        data-invalid={invalid ? "" : undefined}
+        data-invalid-label={showInvalidLabel ? "" : undefined}
+        className={cn(className)}
+        style={{
+          ...(labelColor != null
+            ? ({ "--df-select-label": labelColor } as React.CSSProperties)
+            : null),
+          ...(errorLabelColor != null
+            ? ({
+                "--df-select-error-label": errorLabelColor,
+              } as React.CSSProperties)
+            : null),
+          ...(hintColor != null
+            ? ({ "--df-select-hint": hintColor } as React.CSSProperties)
+            : null),
+          ...(overlapLabelBackground != null
+            ? ({
+                "--df-select-overlap-label-bg": overlapLabelBackground,
+              } as React.CSSProperties)
+            : null),
+          ...(overlapInset != null
+            ? ({
+                "--df-select-overlap-inset": overlapInset,
+              } as React.CSSProperties)
+            : null),
+          ...(overlapLabelPadding != null
+            ? ({
+                "--df-select-overlap-label-pad": overlapLabelPadding,
+              } as React.CSSProperties)
+            : null),
+          ...(overlapLabelSize != null
+            ? ({
+                "--df-select-overlap-label-size": overlapLabelSize,
+              } as React.CSSProperties)
+            : null),
+          ...(insetLabelSize != null
+            ? ({
+                "--df-select-inset-label-size": insetLabelSize,
+              } as React.CSSProperties)
+            : null),
+          ...(insetGap != null
+            ? ({ "--df-select-inset-gap": insetGap } as React.CSSProperties)
+            : null),
+          ...style,
+        }}
+        {...props}
+      >
+        {showOutsideLabel ? (
+          <SelectFieldLabel
+            htmlFor={labelHtmlFor}
+            required={required}
+            help={help}
+            subtext={subtext}
+            className={labelClassName}
+          >
+            {label}
+          </SelectFieldLabel>
+        ) : null}
+        {(isOverlap || isInset) && subtext != null ? (
+          <p data-df="select-field-aside-subtext">{subtext}</p>
+        ) : null}
+        {control}
+        {hint != null ? (
+          <SelectFieldHint id={hintId} className={hintClassName}>
+            {hint}
+          </SelectFieldHint>
+        ) : null}
+      </div>
+    </SelectInsetLabelContext.Provider>
   )
 }
 
@@ -165,11 +351,7 @@ function SelectFieldLabel({
         className={cn(className)}
         onClick={(event) => {
           onClick?.(event)
-          if (event.defaultPrevented || !htmlFor) return
-          const control = document.getElementById(htmlFor)
-          if (control?.getAttribute("data-df") !== "select-trigger") return
-          event.preventDefault()
-          control.focus()
+          focusSelectTriggerFromLabel(event, htmlFor)
         }}
         {...props}
       >
@@ -185,6 +367,8 @@ function SelectFieldLabel({
 function SelectFieldHelp({
   className,
   label = "More information",
+  onClick,
+  onPointerDown,
   ...props
 }: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   label?: string
@@ -196,6 +380,14 @@ function SelectFieldHelp({
       aria-label={label}
       className={cn(className)}
       {...props}
+      onClick={(event) => {
+        event.stopPropagation()
+        onClick?.(event)
+      }}
+      onPointerDown={(event) => {
+        event.stopPropagation()
+        onPointerDown?.(event)
+      }}
     >
       <CircleHelp aria-hidden />
     </button>
@@ -204,15 +396,25 @@ function SelectFieldHelp({
 
 function SelectFieldHint({
   className,
+  style,
   children,
   id,
+  color,
   ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
+}: Omit<React.HTMLAttributes<HTMLParagraphElement>, "color"> & {
+  color?: string
+}) {
   return (
     <p
       data-df="select-field-hint"
       id={id}
       className={cn(className)}
+      style={{
+        ...(color != null
+          ? ({ "--df-select-hint": color } as React.CSSProperties)
+          : null),
+        ...style,
+      }}
       {...props}
     >
       {children}
@@ -231,11 +433,34 @@ function SelectValue({
     | React.ReactNode
     | ((ctx: SelectValueRenderContext) => React.ReactNode)
 }) {
-  const { value, values, selectionMode, labelFor, toggleValue } =
-    useOptionListContext()
+  const {
+    value,
+    values,
+    selectionMode,
+    labelFor,
+    secondaryFor,
+    layoutFor,
+    toggleValue,
+  } = useOptionListContext()
 
   const empty =
     selectionMode === "multiple" ? values.length === 0 : value == null
+  const selectedSecondary =
+    selectionMode === "single" && !empty ? secondaryFor(value) : null
+  const stackedValue =
+    selectionMode === "single" &&
+    !empty &&
+    layoutFor(value) === "stacked" &&
+    selectedSecondary != null
+
+  const defaultSingleValue = stackedValue ? (
+    <span data-df="select-value-stack">
+      <span data-df="select-value-title">{labelFor(value)}</span>
+      <span data-df="select-value-secondary">{selectedSecondary}</span>
+    </span>
+  ) : (
+    (labelFor(value) ?? placeholder)
+  )
 
   const content =
     typeof children === "function"
@@ -244,6 +469,8 @@ function SelectValue({
           value,
           values,
           labelFor,
+          secondaryFor,
+          layoutFor,
           toggleValue,
         })
       : (children ??
@@ -251,12 +478,13 @@ function SelectValue({
           ? empty
             ? placeholder
             : values.map((v) => labelFor(v)).join(", ")
-          : (labelFor(value) ?? placeholder)))
+          : defaultSingleValue))
 
   return (
     <span
       data-df="select-value"
       data-empty={empty ? "" : undefined}
+      data-layout={stackedValue ? "stacked" : undefined}
       className={cn(className)}
       {...props}
     >
@@ -341,45 +569,134 @@ function SelectValueBadge({
 
 function SelectTrigger({
   className,
+  style,
   size = "md",
+  variant = "primary",
   children,
   disabled: disabledProp,
+  invalid: invalidProp,
   onClick,
   onKeyDown,
+  leadingIcon,
+  background,
+  borderColor,
+  errorBorderColor,
+  padding,
+  paddingX,
+  paddingY,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  "aria-invalid": ariaInvalidProp,
   ...props
-}: Omit<React.HTMLAttributes<HTMLDivElement>, "disabled"> & {
-  size?: SelectSize | "default"
-  disabled?: boolean
-}) {
-  const { open, setOpen, triggerRef, value, values, selectionMode } =
-    useOptionListContext()
-  const { disabled: disabledFromSelect } = useSelectExtras()
+}: SelectTriggerProps) {
+  const {
+    open,
+    setOpen,
+    triggerRef,
+    value,
+    values,
+    selectionMode,
+    layoutFor,
+    secondaryFor,
+  } = useOptionListContext()
+  const {
+    disabled: disabledFromSelect,
+    invalid: invalidFromSelect,
+  } = useSelectExtras()
+  const insetLabel = useSelectInsetLabel()
   const disabled = disabledProp ?? disabledFromSelect
+  const invalid =
+    (invalidProp ?? invalidFromSelect) ||
+    ariaInvalidProp === true ||
+    ariaInvalidProp === "true"
+  const hasInsetLabel = insetLabel.label != null
   const resolvedSize = resolveSelectSize(size)
 
   const empty =
     selectionMode === "multiple" ? values.length === 0 : value == null
+  const valueLayout =
+    selectionMode === "single" &&
+    !empty &&
+    layoutFor(value) === "stacked" &&
+    secondaryFor(value) != null
+      ? "stacked"
+      : undefined
+
+  const resolvedPaddingTop = paddingTop ?? paddingY ?? padding
+  const resolvedPaddingRight = paddingRight ?? paddingX ?? padding
+  const resolvedPaddingBottom = paddingBottom ?? paddingY ?? padding
+  const resolvedPaddingLeft = paddingLeft ?? paddingX ?? padding
+  const chromeStyle = {
+    ...(background != null ? { "--df-select-bg": background } : null),
+    ...(borderColor != null ? { "--df-select-border": borderColor } : null),
+    ...(errorBorderColor != null
+      ? { "--df-select-error-border": errorBorderColor }
+      : null),
+    ...(resolvedPaddingTop != null
+      ? { "--df-select-padding-top": resolvedPaddingTop }
+      : null),
+    ...(resolvedPaddingRight != null
+      ? { "--df-select-padding-right": resolvedPaddingRight }
+      : null),
+    ...(resolvedPaddingBottom != null
+      ? { "--df-select-padding-bottom": resolvedPaddingBottom }
+      : null),
+    ...(resolvedPaddingLeft != null
+      ? { "--df-select-padding-left": resolvedPaddingLeft }
+      : null),
+  } as React.CSSProperties
 
   const toggleOpen = () => {
     if (disabled) return
     setOpen(!open)
   }
 
+  const valueContent = hasInsetLabel ? (
+    <span data-df="select-trigger-stack">
+      <span data-df="select-inset-label">
+        <Label
+          htmlFor={insetLabel.htmlFor}
+          required={insetLabel.required}
+          className={cn(insetLabel.labelClassName)}
+          onClick={(event) =>
+            focusSelectTriggerFromLabel(event, insetLabel.htmlFor)
+          }
+        >
+          {insetLabel.label}
+        </Label>
+        {insetLabel.help != null ? (
+          <span data-df="select-field-help">{insetLabel.help}</span>
+        ) : null}
+      </span>
+      {children}
+    </span>
+  ) : (
+    children
+  )
+
   return (
     <div
       ref={triggerRef as React.RefObject<HTMLDivElement>}
       data-df="select-trigger"
       data-size={resolvedSize}
+      data-variant={variant}
       data-selection-mode={selectionMode}
+      data-value-layout={valueLayout}
+      data-label-position={hasInsetLabel ? "inset" : undefined}
       data-placeholder={empty ? "" : undefined}
       data-disabled={disabled ? "" : undefined}
+      data-invalid={invalid ? "" : undefined}
       className={cn(className)}
+      style={{ ...chromeStyle, ...style }}
       {...props}
       role="combobox"
       tabIndex={disabled ? -1 : 0}
       aria-expanded={open}
       aria-haspopup="listbox"
       aria-disabled={disabled || undefined}
+      aria-invalid={invalid || undefined}
       onClick={(event) => {
         onClick?.(event)
         if (event.defaultPrevented || disabled) return
@@ -411,8 +728,13 @@ function SelectTrigger({
         }
       }}
     >
-      {children}
-      <ChevronDown className="pointer-events-none size-4 shrink-0 text-muted-foreground" />
+      {leadingIcon != null ? (
+        <span data-df="select-trigger-icon" aria-hidden>
+          {leadingIcon}
+        </span>
+      ) : null}
+      {valueContent}
+      <ChevronDown data-df="select-trigger-chevron" aria-hidden />
     </div>
   )
 }
@@ -443,4 +765,11 @@ export {
   SelectValueBadge,
   SelectValueSummary,
 }
-export type { SelectSize, SelectValueRenderContext }
+export type {
+  SelectFieldProps,
+  SelectLabelPosition,
+  SelectSize,
+  SelectTriggerProps,
+  SelectVariant,
+  SelectValueRenderContext,
+}

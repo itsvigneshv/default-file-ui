@@ -19,7 +19,7 @@
       {
         "id": "select-root",
         "title": "Select",
-        "description": "Root state for single or multi choice, open state, and disabled.",
+        "description": "Root state for single or multi choice, open state, disabled, and validation.",
         "props": [
           {
             "name": "selectionMode",
@@ -83,19 +83,36 @@
             "name": "disabled",
             "type": "boolean",
             "default": "false",
-            "description": "Non-interactive field; keeps the menu closed."
+            "description": "Non-interactive state with a muted fill, hairline border, and muted value text. Keeps the menu closed."
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "default": "false",
+            "description": "Validation state. Sets aria-invalid on the trigger and applies the destructive border with --focus-ring-error. Hint text stays muted."
           }
         ]
       },
       {
         "id": "select-field",
         "title": "SelectField",
-        "description": "Optional outside label and hint. Omit any prop to hide that piece.",
+        "description": "Optional label, subtext, and hint. Labels can sit above the control, overlap the top border, or stack inside the trigger.",
         "props": [
           {
             "name": "label",
             "type": "ReactNode",
-            "description": "Label above the control. Omit to hide the label row."
+            "description": "Field title. outside renders above the control. overlap sits on the top border with a notch. inset stacks above the value inside the trigger."
+          },
+          {
+            "name": "labelPosition",
+            "type": "\"outside\" | \"overlap\" | \"inset\"",
+            "default": "\"outside\"",
+            "description": "outside places the label above the field. overlap pins a compact label on the top border with a surface-colored notch. inset stacks a muted label above the value inside the trigger chrome."
+          },
+          {
+            "name": "subtext",
+            "type": "ReactNode",
+            "description": "Secondary supporting line. With outside, uses the kit Label subtext slot under the title. With overlap or inset, renders above the control. Pass a string or any custom node."
           },
           {
             "name": "required",
@@ -105,22 +122,83 @@
           {
             "name": "help",
             "type": "ReactNode",
-            "description": "Help control after the label (for example SelectFieldHelp inside a Tooltip)."
+            "description": "Help control after the label (for example SelectFieldHelp inside a Tooltip). With overlap or inset, sits beside the field title."
           },
           {
             "name": "hint",
             "type": "ReactNode",
-            "description": "Supporting text below the control. Omit to hide."
+            "description": "Supporting text below the control. Pass a string or any custom node. Omit to hide. Stays muted in the invalid state."
           },
           {
-            "name": "htmlFor",
+            "name": "hintColor",
             "type": "string",
-            "description": "Associates the label with the trigger id."
+            "description": "Hint color. Prefer tokens such as var(--muted-foreground). Sets --df-select-hint."
+          },
+          {
+            "name": "hintClassName",
+            "type": "string",
+            "description": "Additional classes on the hint line."
           },
           {
             "name": "hintId",
             "type": "string",
             "description": "Id for the hint; pair with the describedby ARIA attribute on the trigger."
+          },
+          {
+            "name": "labelColor",
+            "type": "string",
+            "description": "Owned label color. Prefer tokens such as var(--foreground) or var(--muted-foreground). Sets --df-select-label. Overlap and inset default to muted-foreground."
+          },
+          {
+            "name": "labelClassName",
+            "type": "string",
+            "description": "Additional classes on the owned Label."
+          },
+          {
+            "name": "invalidLabel",
+            "type": "boolean",
+            "default": "true",
+            "description": "When Select invalid is true, tint the owned label with the error color. Set false to keep the label at its normal color."
+          },
+          {
+            "name": "errorLabelColor",
+            "type": "string",
+            "description": "Owned label color when invalid and invalidLabel are true. Prefer tokens such as var(--destructive). Sets --df-select-error-label."
+          },
+          {
+            "name": "overlapLabelBackground",
+            "type": "string",
+            "description": "Notch fill behind the overlap label. Match the surface behind the field. Prefer tokens such as var(--background). Sets --df-select-overlap-label-bg."
+          },
+          {
+            "name": "overlapInset",
+            "type": "string",
+            "description": "Distance from the trigger leading edge to the overlap label. Prefer spacing tokens. Align with trigger paddingLeft. Sets --df-select-overlap-inset."
+          },
+          {
+            "name": "overlapLabelPadding",
+            "type": "string",
+            "description": "Horizontal padding on the overlap label chip so the border notch clears the text. Prefer spacing tokens. Sets --df-select-overlap-label-pad."
+          },
+          {
+            "name": "overlapLabelSize",
+            "type": "string",
+            "description": "Overlap label font size. Prefer type tokens such as var(--df-text-11). Sets --df-select-overlap-label-size."
+          },
+          {
+            "name": "insetLabelSize",
+            "type": "string",
+            "description": "Inset label font size. Prefer type tokens such as var(--df-text-11). Sets --df-select-inset-label-size."
+          },
+          {
+            "name": "insetGap",
+            "type": "string",
+            "description": "Vertical gap between the inset label and the value. Prefer spacing tokens. Sets --df-select-inset-gap."
+          },
+          {
+            "name": "htmlFor",
+            "type": "string",
+            "description": "Associates the label with the trigger id."
           },
           {
             "name": "className",
@@ -132,8 +210,14 @@
       {
         "id": "select-trigger",
         "title": "SelectTrigger",
-        "description": "Combobox host for the visible control. Sizes, width, radius, and truncation are configured here.",
+        "description": "Combobox host for the visible control. Variant, sizes, padding, width, radius, and truncation are configured here.",
         "props": [
+          {
+            "name": "variant",
+            "type": "\"primary\" | \"secondary\"",
+            "default": "\"primary\"",
+            "description": "primary is a surface fill with a hairline border. secondary is a soft secondary wash with secondary-foreground value text and a transparent border."
+          },
           {
             "name": "size",
             "type": "\"sm\" | \"md\" | \"lg\" | \"default\"",
@@ -141,9 +225,69 @@
             "description": "T-shirt height and type size. \"default\" is an alias for \"md\"."
           },
           {
+            "name": "padding",
+            "type": "string",
+            "description": "Padding on all sides. Prefer spacing tokens such as calc(2 * var(--spacing-unit)). Sets each --df-select-padding-* side. Inset label position uses a roomier default recipe; these props override it."
+          },
+          {
+            "name": "paddingX",
+            "type": "string",
+            "description": "Horizontal padding. Sets --df-select-padding-left and --df-select-padding-right. Overrides padding on those sides."
+          },
+          {
+            "name": "paddingY",
+            "type": "string",
+            "description": "Vertical padding. Sets --df-select-padding-top and --df-select-padding-bottom. Overrides padding on those sides."
+          },
+          {
+            "name": "paddingTop",
+            "type": "string",
+            "description": "Top padding. Prefer spacing tokens. Sets --df-select-padding-top and wins over paddingY and padding."
+          },
+          {
+            "name": "paddingRight",
+            "type": "string",
+            "description": "Right padding. Prefer spacing tokens. Sets --df-select-padding-right and wins over paddingX and padding."
+          },
+          {
+            "name": "paddingBottom",
+            "type": "string",
+            "description": "Bottom padding. Prefer spacing tokens. Sets --df-select-padding-bottom and wins over paddingY and padding."
+          },
+          {
+            "name": "paddingLeft",
+            "type": "string",
+            "description": "Left padding. Prefer spacing tokens. Sets --df-select-padding-left and wins over paddingX and padding."
+          },
+          {
+            "name": "leadingIcon",
+            "type": "ReactNode",
+            "description": "Decorative icon at the start of the trigger, before SelectValue."
+          },
+          {
+            "name": "background",
+            "type": "string",
+            "description": "Trigger fill. Prefer tokens such as var(--background). Sets --df-select-bg and overrides the variant recipe."
+          },
+          {
+            "name": "borderColor",
+            "type": "string",
+            "description": "Trigger border color. Prefer tokens such as var(--input). Sets --df-select-border."
+          },
+          {
+            "name": "errorBorderColor",
+            "type": "string",
+            "description": "Invalid border color. Prefer tokens such as var(--destructive). Sets --df-select-error-border."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "description": "Overrides Select disabled when set on the trigger."
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "description": "Overrides Select invalid when set on the trigger. Also accepts aria-invalid."
           },
           {
             "name": "className",
@@ -159,13 +303,18 @@
             "name": "aria-describedby",
             "type": "string",
             "description": "Point at SelectField hintId when a hint is shown."
+          },
+          {
+            "name": "aria-invalid",
+            "type": "boolean | \"true\" | \"false\"",
+            "description": "Native invalid flag. Merged with Select invalid and the trigger invalid prop."
           }
         ]
       },
       {
         "id": "select-value",
         "title": "SelectValue",
-        "description": "Shows the placeholder, selected label, or a custom render (summary / badges).",
+        "description": "Shows the placeholder, selected label, or a custom render. When the selected SelectItem uses layout stacked with secondary, the trigger mirrors that stack. Compose kit Badge beside the label in SelectItem children to show a status pill in the trigger and list.",
         "props": [
           {
             "name": "placeholder",
@@ -175,7 +324,7 @@
           {
             "name": "children",
             "type": "ReactNode | ((ctx) => ReactNode)",
-            "description": "Static content or a render function with selectionMode, value, values, labelFor, and toggleValue."
+            "description": "Static content or a render function with selectionMode, value, values, labelFor, secondaryFor, layoutFor, and toggleValue. Omit to use the label registered from SelectItem, including any Badge composed into that label. Default single-select render stacks title and description only when the selected item layout is stacked."
           },
           {
             "name": "className",
@@ -187,7 +336,7 @@
       {
         "id": "select-value-helpers",
         "title": "SelectValueSummary & SelectValueBadge",
-        "description": "Multi-select value displays used inside SelectValue.",
+        "description": "Multi-select value displays used inside SelectValue. For a status pill on a single selection, compose Badge inside SelectItem children instead.",
         "props": [
           {
             "name": "SelectValueSummary.count",
@@ -300,7 +449,7 @@
             "name": "scrollMaxHeight",
             "type": "string | number",
             "default": "\"min(60vh, 24rem)\"",
-            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem). When the panel opens, the selected option scrolls into view while list order stays the same."
+            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem). When the panel opens, the selected option scrolls into the list scrollport while list order stays the same."
           },
           {
             "name": "scrollThumbGap",
@@ -323,7 +472,7 @@
       {
         "id": "select-item",
         "title": "SelectItem",
-        "description": "Option row. Same API as OptionListItem, including trailing badges and nested chevrons.",
+        "description": "Option row. Same API as OptionListItem, including leading icons, trailing badges, and nested chevrons.",
         "props": [
           {
             "name": "value",
@@ -338,7 +487,7 @@
           {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
-            "description": "Leading control. Use \"checkbox\" for multi-select rows."
+            "description": "Option List leading slot. Pass an icon or other node for row icons; works with layout stacked. Use \"checkbox\" for multi-select. Pair with SelectTrigger leadingIcon when the trigger should mirror the selected icon."
           },
           {
             "name": "secondary",
@@ -349,7 +498,7 @@
             "name": "layout",
             "type": "\"inline\" | \"stacked\"",
             "default": "\"inline\"",
-            "description": "inline places secondary beside the label; stacked places it underneath."
+            "description": "inline places secondary beside the label; stacked places it underneath. With leading, the icon aligns to the title line. Select mirrors stacked layout in the trigger value."
           },
           {
             "name": "trailing",
@@ -364,7 +513,7 @@
           {
             "name": "children",
             "type": "ReactNode",
-            "description": "Primary label registered for SelectValue."
+            "description": "Primary label registered for SelectValue. Compose a kit Badge beside a text span to show a status pill in the list and trigger."
           },
           {
             "name": "className",
@@ -375,6 +524,111 @@
             "name": "…div attributes",
             "type": "HTMLAttributes",
             "description": "Native div props. Use the highlighted data attribute for hover or open parent rows in nested menus."
+          }
+        ]
+      },
+      {
+        "id": "select-field-parts",
+        "title": "Field composition parts",
+        "description": "Use these when composing a field outside SelectField, or when placing SelectFieldHelp inside a Tooltip.",
+        "props": [
+          {
+            "name": "SelectFieldLabel.children",
+            "type": "ReactNode",
+            "description": "Label title content."
+          },
+          {
+            "name": "SelectFieldLabel.subtext",
+            "type": "ReactNode",
+            "description": "Secondary supporting line under the title. Same as Label subtext."
+          },
+          {
+            "name": "SelectFieldLabel.htmlFor",
+            "type": "string",
+            "description": "Associates the label with the SelectTrigger id."
+          },
+          {
+            "name": "SelectFieldLabel.required",
+            "type": "boolean",
+            "description": "Shows the required mark on the label."
+          },
+          {
+            "name": "SelectFieldLabel.help",
+            "type": "ReactNode",
+            "description": "Trailing help control after the label (typically SelectFieldHelp)."
+          },
+          {
+            "name": "SelectFieldLabel.className",
+            "type": "string",
+            "description": "Additional classes on the Label root."
+          },
+          {
+            "name": "SelectFieldHelp.label",
+            "type": "string",
+            "default": "\"More information\"",
+            "description": "Accessible name for the help button."
+          },
+          {
+            "name": "SelectFieldHelp.className",
+            "type": "string",
+            "description": "Additional classes on the help button."
+          },
+          {
+            "name": "SelectFieldHelp.…button attributes",
+            "type": "ButtonHTMLAttributes",
+            "description": "Native button attributes (onClick, type, and others)."
+          },
+          {
+            "name": "SelectFieldHint.children",
+            "type": "ReactNode",
+            "description": "Supporting text below the control. Pass a string or any custom node."
+          },
+          {
+            "name": "SelectFieldHint.color",
+            "type": "string",
+            "description": "Hint color. Prefer tokens such as var(--muted-foreground). Sets --df-select-hint."
+          },
+          {
+            "name": "SelectFieldHint.id",
+            "type": "string",
+            "description": "Hint id. Pair with aria-describedby on SelectTrigger."
+          },
+          {
+            "name": "SelectFieldHint.className",
+            "type": "string",
+            "description": "Additional classes on the hint."
+          },
+          {
+            "name": "SelectFieldHint.style",
+            "type": "CSSProperties",
+            "description": "Inline styles on the hint. Can also set --df-select-hint for color."
+          }
+        ]
+      },
+      {
+        "id": "select-list-parts",
+        "title": "List composition parts",
+        "description": "Option List aliases for grouping rows inside SelectContent.",
+        "props": [
+          {
+            "name": "SelectGroup",
+            "type": "div attrs",
+            "description": "Groups related items. Same as OptionListGroup."
+          },
+          {
+            "name": "SelectLabel",
+            "type": "div attrs",
+            "description": "Muted group heading inside the panel. Same as OptionListLabel."
+          },
+          {
+            "name": "SelectSeparator",
+            "type": "separator",
+            "description": "Horizontal rule between sections. Same as OptionListSeparator."
+          },
+          {
+            "name": "SelectScrollUpButton / SelectScrollDownButton",
+            "type": "button",
+            "description": "Optional scroll affordances for long lists. Same as OptionList scroll buttons."
           }
         ]
       },
@@ -415,11 +669,6 @@
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
             "description": "Lock the menu to the trigger width. Useful for fixed width multi-select fields."
-          },
-          {
-            "name": "Composition",
-            "type": "parts",
-            "description": "Also available: SelectGroup, SelectLabel, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton, SelectFieldLabel, SelectFieldHint, SelectFieldHelp."
           }
         ]
       },
@@ -441,15 +690,135 @@
             "default": "24rem"
           },
           {
+            "name": "--df-select-padding-top",
+            "type": "CSS length",
+            "description": "Top content padding. Set by padding, paddingY, or paddingTop. Inset label defaults to calc(3 * var(--spacing-unit)).",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-padding-right",
+            "type": "CSS length",
+            "description": "Right content padding. Set by padding, paddingX, or paddingRight. Inset label defaults to calc(3.5 * var(--spacing-unit)).",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-padding-bottom",
+            "type": "CSS length",
+            "description": "Bottom content padding. Set by padding, paddingY, or paddingBottom. Inset label defaults to calc(3 * var(--spacing-unit)).",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-padding-left",
+            "type": "CSS length",
+            "description": "Left content padding. Set by padding, paddingX, or paddingLeft. Inset label defaults to calc(3.5 * var(--spacing-unit)).",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-hint",
+            "type": "CSS color",
+            "description": "Hint line color. Set by SelectField hintColor or SelectFieldHint color.",
+            "default": "var(--muted-foreground)"
+          },
+          {
+            "name": "--df-select-label",
+            "type": "CSS color",
+            "description": "Owned label color. Set by SelectField labelColor. Overlap defaults to muted-foreground.",
+            "default": "var(--foreground)"
+          },
+          {
+            "name": "--df-select-error-label",
+            "type": "CSS color",
+            "description": "Owned label color when invalidLabel is active. Set by SelectField errorLabelColor.",
+            "default": "var(--destructive)"
+          },
+          {
+            "name": "--df-select-overlap-label-bg",
+            "type": "CSS color",
+            "description": "Notch fill for overlap labels. Set by SelectField overlapLabelBackground.",
+            "default": "var(--background)"
+          },
+          {
+            "name": "--df-select-overlap-inset",
+            "type": "CSS length",
+            "description": "Leading inset for the overlap label. Set by SelectField overlapInset.",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-overlap-label-pad",
+            "type": "CSS length",
+            "description": "Horizontal padding on the overlap label chip. Set by SelectField overlapLabelPadding.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-overlap-label-size",
+            "type": "CSS length",
+            "description": "Overlap label font size. Set by SelectField overlapLabelSize.",
+            "default": "var(--df-text-11)"
+          },
+          {
+            "name": "--df-select-inset-label-size",
+            "type": "CSS length",
+            "description": "Inset label font size. Set by SelectField insetLabelSize.",
+            "default": "var(--df-text-11)"
+          },
+          {
+            "name": "--df-select-inset-gap",
+            "type": "CSS length",
+            "description": "Gap between inset label and value. Set by SelectField insetGap.",
+            "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-error-border",
+            "type": "CSS color",
+            "description": "Invalid trigger border. Set by SelectTrigger errorBorderColor.",
+            "default": "var(--destructive)"
+          },
+          {
+            "name": "--focus-ring-error",
+            "type": "box-shadow",
+            "description": "Invalid focus ring recipe shared with Input.",
+            "default": "0 0 0 3px color-mix(in oklch, var(--destructive) 20%, transparent)"
+          },
+          {
+            "name": "--df-select-icon-size",
+            "type": "CSS length",
+            "description": "Leading icon box size on SelectTrigger. Scales with size.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-select-line-height",
+            "type": "CSS length",
+            "description": "Value and placeholder leading. Paired with the size step as an even pixel value so single-line text centers without sub-pixel drift.",
+            "default": "var(--df-leading-5)"
+          },
+          {
+            "name": "--df-select-optical-shift",
+            "type": "CSS length",
+            "description": "Upward correction for browser baseline rounding. Applied as twice this value of bottom margin on the value text so its ink shares the trigger midline with the chevron and icons. Badge values and inset labels are box centered and skip it.",
+            "default": "1px"
+          },
+          {
+            "name": "--df-select-bg",
+            "type": "CSS color",
+            "description": "Trigger fill. Set by variant or the background prop.",
+            "default": "var(--background)"
+          },
+          {
+            "name": "--df-select-border",
+            "type": "CSS color",
+            "description": "Trigger border. Set by variant or the borderColor prop.",
+            "default": "var(--input)"
+          },
+          {
             "name": "--border",
             "type": "CSS color",
-            "description": "Trigger and panel border.",
+            "description": "Panel and shared border token.",
             "default": "var(--df-neutral-100)"
           },
           {
             "name": "--background",
             "type": "CSS color",
-            "description": "Trigger fill.",
+            "description": "Primary fill default.",
             "default": "var(--df-neutral-0)"
           },
           {

@@ -6,6 +6,16 @@ import { Separator } from "./df-separator"
 import { cn } from "../lib/utils"
 
 type FloatingControlsVariant = "surface" | "overlay"
+type FloatingControlsPadding = "none" | "sm" | "default" | "lg" | "2xl"
+type FloatingControlsRadius =
+  | "none"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "3xl"
+  | "full"
 
 type FloatingControlsItemEntry = {
   type?: "item"
@@ -42,12 +52,16 @@ type FloatingControlsEntry =
 
 type FloatingControlsProps = React.HTMLAttributes<HTMLDivElement> & {
   variant?: FloatingControlsVariant
+  padding?: FloatingControlsPadding
+  radius?: FloatingControlsRadius
   items?: FloatingControlsEntry[]
 }
 
 function FloatingControls({
   className,
   variant = "surface",
+  padding = "default",
+  radius = "xl",
   items,
   children,
   ...props
@@ -111,6 +125,8 @@ function FloatingControls({
       role="toolbar"
       data-df="floating-controls"
       data-variant={variant}
+      data-padding={padding}
+      data-radius={radius}
       className={cn("df-floating-controls", className)}
       {...props}
     >
@@ -229,6 +245,8 @@ export type {
   FloatingControlsDividerProps,
   FloatingControlsSlotProps,
   FloatingControlsVariant,
+  FloatingControlsPadding,
+  FloatingControlsRadius,
   FloatingControlsEntry,
   FloatingControlsItemEntry,
   FloatingControlsDividerEntry,
