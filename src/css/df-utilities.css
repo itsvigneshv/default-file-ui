@@ -29,6 +29,10 @@
   background-color: color-mix(in oklch, var(--border) 50%, var(--background));
 }
 
+.bg-muted\/40 {
+  background-color: color-mix(in oklch, var(--muted) 40%, var(--background));
+}
+
 .bg-neutral-50 {
   background-color: var(--df-neutral-50);
 }
@@ -64,6 +68,10 @@
   border-color: color-mix(in oklch, var(--border) 80%, var(--background));
 }
 
+.border-dashed {
+  border-style: dashed;
+}
+
 .border-neutral-200 {
   border-color: var(--df-neutral-200);
 }
@@ -93,6 +101,22 @@
   cursor: pointer;
 }
 
+.data-\[active\=true\]\:bg-primary\/5[data-active=true] {
+  background-color: color-mix(in oklch, var(--primary) 5%, var(--background));
+}
+
+.data-\[active\=true\]\:border-primary[data-active=true] {
+  border-color: var(--primary);
+}
+
+.data-\[disabled\=true\]\:opacity-50[data-disabled=true] {
+  opacity: 0.5;
+}
+
+.data-\[disabled\=true\]\:pointer-events-none[data-disabled=true] {
+  pointer-events: none;
+}
+
 .disabled\:opacity-50:disabled {
   opacity: 0.5;
 }
@@ -119,6 +143,10 @@
 
 .flex-col {
   flex-direction: column;
+}
+
+.focus-within\:shadow-\[var\(--focus-ring\)\]:focus-within {
+  box-shadow: var(--focus-ring);
 }
 
 .font-medium {
@@ -177,12 +205,20 @@
   height: var(--spacing-px);
 }
 
+.hover\:bg-muted\/60:hover {
+  background-color: color-mix(in oklch, var(--muted) 60%, var(--background));
+}
+
 .hover\:bg-neutral-200:hover {
   background-color: var(--df-neutral-200);
 }
 
 .hover\:border-neutral-300:hover {
   border-color: var(--df-neutral-300);
+}
+
+.hover\:border-primary\/40:hover {
+  border-color: color-mix(in oklch, var(--primary) 40%, var(--background));
 }
 
 .hover\:scale-105:hover {
@@ -374,6 +410,10 @@
   box-shadow: 0 0 0 var(--ring-width) var(--border);
 }
 
+.rounded-\[var\(--radius-lg\)\] {
+  border-radius: var(--radius-lg);
+}
+
 .rounded-full {
   border-radius: var(--radius-full);
 }
@@ -447,6 +487,14 @@
   line-height: var(--df-leading-6);
 }
 
+.text-center {
+  text-align: center;
+}
+
+.text-foreground {
+  color: var(--foreground);
+}
+
 .text-foreground\/40 {
   color: color-mix(in oklch, var(--foreground) 40%, var(--background));
 }
@@ -466,6 +514,10 @@
 
 .text-muted-foreground {
   color: var(--muted-foreground);
+}
+
+.text-muted-foreground\/80 {
+  color: color-mix(in oklch, var(--muted-foreground) 80%, var(--background));
 }
 
 .text-neutral-400 {
@@ -538,6 +590,10 @@
 
 .w-max {
   width: max-content;
+}
+
+.z-10 {
+  z-index: 10;
 }
 
 @media (min-width: 640px) {

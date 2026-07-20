@@ -201,6 +201,8 @@ export { NumberSlider } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
 export type { ChoiceChipProps, ChoiceChipSize } from "./df-choice-chip"
 export { PanelSection } from "./df-panel-section"
+export { ImageDropzone } from "./df-image-dropzone"
+export type { ImageDropzoneProps } from "./df-image-dropzone"
 export {
   DockPanel,
   DockPanelRail,

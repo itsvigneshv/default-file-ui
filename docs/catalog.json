@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T11:46:10.555Z",
+  "generatedAt": "2026-07-20T12:23:59.743Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -160,6 +160,21 @@
       "importPath": "@default-file/ui/components/df-floating-controls",
       "dependencies": [],
       "propCount": 38
+    },
+    {
+      "slug": "image-dropzone",
+      "name": "image-dropzone",
+      "title": "Image Dropzone",
+      "description": "Click, drag, or paste target for image files with consumer-owned validation.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-image-dropzone",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 16
     },
     {
       "slug": "input",

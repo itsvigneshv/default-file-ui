@@ -1,0 +1,116 @@
+{
+  "name": "image-dropzone",
+  "slug": "image-dropzone",
+  "title": "Image Dropzone",
+  "description": "Click, drag, or paste target for image files with consumer-owned validation.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-image-dropzone",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Click, drag, or paste target for image files. Validation and copy stay with the consumer.",
+    "groups": [
+      {
+        "id": "image-dropzone",
+        "title": "ImageDropzone",
+        "props": [
+          {
+            "name": "onFile",
+            "type": "(file: File) => void",
+            "description": "Called when a file passes validation (required)."
+          },
+          {
+            "name": "validateFile",
+            "type": "(file: File) => string | null",
+            "description": "Return an error message to reject the file, or null to accept."
+          },
+          {
+            "name": "onReject",
+            "type": "(message: string) => void",
+            "description": "Called with the rejection message from validateFile."
+          },
+          {
+            "name": "accept",
+            "type": "string",
+            "default": "image/png,image/jpeg,image/webp,image/gif",
+            "description": "File input accept attribute."
+          },
+          {
+            "name": "enablePaste",
+            "type": "boolean",
+            "default": "true",
+            "description": "Listen for image paste on the window while mounted."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "description": "Disable interaction and paste handling."
+          },
+          {
+            "name": "title",
+            "type": "ReactNode",
+            "description": "Primary label inside the dropzone."
+          },
+          {
+            "name": "description",
+            "type": "ReactNode",
+            "description": "Secondary line under the title."
+          },
+          {
+            "name": "hint",
+            "type": "ReactNode",
+            "description": "Optional tertiary hint (formats, size limits)."
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "description": "Leading icon. Defaults to ImagePlus."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the button shell."
+          }
+        ]
+      },
+      {
+        "id": "image-dropzone-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-image-dropzone-min-height",
+            "type": "CSS length",
+            "description": "Minimum dropzone height.",
+            "default": "calc(30 * var(--spacing-unit))"
+          },
+          {
+            "name": "--radius-lg",
+            "type": "CSS length",
+            "description": "Dropzone corner radius."
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Dashed border color."
+          },
+          {
+            "name": "--muted",
+            "type": "CSS color",
+            "description": "Idle fill."
+          },
+          {
+            "name": "--primary",
+            "type": "CSS color",
+            "description": "Active and hover accent."
+          }
+        ]
+      }
+    ]
+  }
+}

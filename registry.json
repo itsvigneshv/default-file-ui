@@ -193,6 +193,16 @@
       ]
     },
     {
+      "name": "image-dropzone",
+      "type": "registry:ui",
+      "title": "Image Dropzone",
+      "registryDependencies": ["foundation"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        { "path": "src/components/df-image-dropzone.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-image-dropzone.tsx" }
+      ]
+    },
+    {
       "name": "panel-section",
       "type": "registry:ui",
       "title": "Panel Section",

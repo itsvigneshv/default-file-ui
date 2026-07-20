@@ -493,6 +493,10 @@
     radial-gradient(ellipse 80% 60% at 50% 40%, rgb(255 255 255 / 0.04), transparent 70%),
     radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0);
   --stage-void-grid: auto, 22px 22px;
+  --stage-artboard: #000000;
+  --stage-artboard-border: rgb(255 255 255 / 0.1);
+  --df-tool-stage-min-height: 52vh;
+  --df-overlay-text-shadow: 0 2px 18px rgb(0 0 0 / 0.45);
   --stage-surface-dot: radial-gradient(
     circle at 1px 1px,
     rgb(15 23 42 / 0.14) 1px,
@@ -513,6 +517,7 @@
   --df-dock-mobile-max-height-sm: 38vh;
   --df-dock-mobile-max-height-md: 42vh;
   --df-dock-mobile-max-height-lg: 46vh;
+  --df-image-dropzone-min-height: calc(30 * var(--spacing-unit));
   --df-leading-code: 1.7;
 
   --success: oklch(0.55 0.14 145);
