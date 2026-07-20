@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T14:51:16.507Z",
+  "generatedAt": "2026-07-20T18:51:02.090Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -360,7 +360,7 @@
       ],
       "importPath": "@default-file/ui/components/df-slider",
       "dependencies": [],
-      "propCount": 13
+      "propCount": 18
     },
     {
       "slug": "spectrum-text",
@@ -428,6 +428,19 @@
         "rough-notation"
       ],
       "propCount": 25
+    },
+    {
+      "slug": "tick-slider",
+      "name": "tick-slider",
+      "title": "Tick Slider",
+      "description": "Pill shell with bound labels, a tick gauge, and a floating value bubble.",
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-tick-slider",
+      "dependencies": [],
+      "propCount": 81
     },
     {
       "slug": "toast",

@@ -98,6 +98,17 @@
       ]
     },
     {
+      "name": "tick-slider",
+      "type": "registry:ui",
+      "title": "Tick Slider",
+      "description": "Pill shell with bound labels, tick gauge, and a floating value bubble.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-tick-slider.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-tick-slider.tsx" },
+        { "path": "src/lib/df-tick-sound.ts", "type": "registry:lib", "target": "default-file-ui/lib/df-tick-sound.ts" }
+      ]
+    },
+    {
       "name": "toggle-group",
       "type": "registry:ui",
       "title": "Toggle Group",

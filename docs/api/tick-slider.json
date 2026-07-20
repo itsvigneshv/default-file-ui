@@ -1,0 +1,493 @@
+{
+  "name": "tick-slider",
+  "slug": "tick-slider",
+  "title": "Tick Slider",
+  "description": "Pill shell with bound labels, a tick gauge, and a floating value bubble.",
+  "chapter": "inputs",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-tick-slider",
+  "dependencies": [],
+  "api": {
+    "description": "Scrubber with bound labels, a tick gauge, and a floating value bubble.",
+    "groups": [
+      {
+        "id": "tick-slider",
+        "title": "TickSlider",
+        "props": [
+          {
+            "name": "min",
+            "type": "number",
+            "default": "0",
+            "description": "Minimum value."
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "description": "Maximum value (required)."
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "default": "1",
+            "description": "Increment between values."
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "description": "Controlled value. Values outside min to max are snapped to step and clamped for the thumb, ticks, bubble, and aria value."
+          },
+          {
+            "name": "defaultValue",
+            "type": "number",
+            "default": "min",
+            "description": "Uncontrolled initial value."
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: number) => void",
+            "description": "Called when the value changes."
+          },
+          {
+            "name": "startLabel",
+            "type": "React.ReactNode",
+            "description": "Content for the left bound label. Omit to hide the bound."
+          },
+          {
+            "name": "endLabel",
+            "type": "React.ReactNode",
+            "description": "Content for the right bound label. Omit to hide the bound."
+          },
+          {
+            "name": "bounds",
+            "type": "\"both\" | \"start\" | \"end\" | \"none\"",
+            "default": "\"both\"",
+            "description": "Which bound labels to show. Hidden sides fade the tick gauge at that end. Use none to hide both labels and fade both ends."
+          },
+          {
+            "name": "formatValue",
+            "type": "(value: number) => string",
+            "description": "Formats the bubble text and aria valuetext. Defaults to String(value)."
+          },
+          {
+            "name": "tickCount",
+            "type": "number",
+            "default": "22",
+            "description": "Number of vertical tick bars across the track (minimum 2)."
+          },
+          {
+            "name": "showTicks",
+            "type": "boolean",
+            "default": "true",
+            "description": "Show the vertical tick bars."
+          },
+          {
+            "name": "tickActive",
+            "type": "string",
+            "description": "Fill color for ticks at or left of the current value. Prefer a kit color token."
+          },
+          {
+            "name": "tickMuted",
+            "type": "string",
+            "description": "Fill color for ticks right of the current value. Prefer a kit color token."
+          },
+          {
+            "name": "tickWidth",
+            "type": "string",
+            "description": "Tick bar width. Prefer a kit length token such as var(--border-width-thick)."
+          },
+          {
+            "name": "tickHeight",
+            "type": "string",
+            "description": "Tick bar height. Prefer a kit length token such as calc(6 * var(--spacing-unit))."
+          },
+          {
+            "name": "tickRadius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"full\"",
+            "description": "Corner radius of each tick bar."
+          },
+          {
+            "name": "tickGap",
+            "type": "string",
+            "description": "Minimum gap between tick bars. Ticks still span the full track from start to end."
+          },
+          {
+            "name": "thumbWidth",
+            "type": "string",
+            "description": "Accent thumb width. Prefer a kit length token such as var(--border-width-thick)."
+          },
+          {
+            "name": "thumbHeight",
+            "type": "string",
+            "description": "Accent thumb height. Prefer a kit length token such as calc(6 * var(--spacing-unit)). Overrides the sm density thumb height when set."
+          },
+          {
+            "name": "renderTick",
+            "type": "(tick: { index: number; count: number; active: boolean; ratio: number; value: number }) => React.ReactNode",
+            "description": "Replace each default tick bar with custom content for full control of each mark."
+          },
+          {
+            "name": "showValueBubble",
+            "type": "boolean",
+            "default": "true",
+            "description": "Show the floating value bubble above the thumb."
+          },
+          {
+            "name": "bubbleLeading",
+            "type": "React.ReactNode",
+            "description": "Optional leading content inside the value bubble."
+          },
+          {
+            "name": "tickSound",
+            "type": "boolean",
+            "default": "true",
+            "description": "Play a short mechanical tick on each stepped value change while scrubbing or using the keyboard. Skipped when the document is hidden or reduced motion is preferred."
+          },
+          {
+            "name": "accent",
+            "type": "string",
+            "description": "Accent fill for the thumb and value bubble. Pass a CSS color, preferably a kit token such as var(--df-blue-450)."
+          },
+          {
+            "name": "accentForeground",
+            "type": "string",
+            "description": "Text color on the value bubble. Pass a CSS color, preferably a kit token."
+          },
+          {
+            "name": "boundForeground",
+            "type": "string",
+            "description": "Text color on the bound labels. Pass a CSS color, preferably a kit token."
+          },
+          {
+            "name": "radius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"full\"",
+            "description": "Corner radius of the outer shell."
+          },
+          {
+            "name": "boundRadius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"full\"",
+            "description": "Corner radius of the bound labels."
+          },
+          {
+            "name": "thumbRadius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"full\"",
+            "description": "Corner radius of the accent thumb tick."
+          },
+          {
+            "name": "bubbleRadius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"full\"",
+            "description": "Corner radius of the floating value bubble."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\"",
+            "default": "\"md\"",
+            "description": "Overall density. The sm size is compact for shell, bounds, ticks, thumb, bubble, and top clearance. Containers under 22rem apply the same density automatically. Appearance props and CSS variables still override."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disabled control."
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "description": "Accessible name applied to the slider thumb."
+          },
+          {
+            "name": "aria-labelledby",
+            "type": "string",
+            "description": "ID of a labeling element for the slider thumb."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the root."
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "description": "Inline styles on the root. Can also override TickSlider CSS variables directly."
+          }
+        ]
+      },
+      {
+        "id": "tick-slider-tokens",
+        "title": "Tokens",
+        "description": "Appearance props map onto these CSS variables. The sm size and shells under 22rem remap base variables to the sm companion tokens. Prop and style overrides still win.",
+        "props": [
+          {
+            "name": "--df-tick-slider-accent",
+            "type": "CSS color",
+            "description": "Active thumb tick and value bubble.",
+            "default": "var(--df-coral-430)"
+          },
+          {
+            "name": "--df-tick-slider-accent-foreground",
+            "type": "CSS color",
+            "description": "Bubble text and leading content.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--df-tick-slider-shell-bg",
+            "type": "CSS color",
+            "description": "Pill shell background.",
+            "default": "color-mix(in oklch, var(--muted) 88%, var(--background))"
+          },
+          {
+            "name": "--df-tick-slider-shell-border",
+            "type": "CSS color",
+            "description": "Pill shell border.",
+            "default": "var(--border)"
+          },
+          {
+            "name": "--df-tick-slider-shell-radius",
+            "type": "CSS length",
+            "description": "Outer shell corner radius.",
+            "default": "var(--radius-full)"
+          },
+          {
+            "name": "--df-tick-slider-shell-height",
+            "type": "CSS length",
+            "description": "Minimum shell height.",
+            "default": "calc(14 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-shell-pad",
+            "type": "CSS length",
+            "description": "Shell padding around bounds and track.",
+            "default": "calc(1.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-gap",
+            "type": "CSS length",
+            "description": "Gap between bound labels and the track.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bound-bg",
+            "type": "CSS color",
+            "description": "Bound label fill.",
+            "default": "color-mix(in oklch, var(--background) 72%, transparent)"
+          },
+          {
+            "name": "--df-tick-slider-bound-border",
+            "type": "CSS color",
+            "description": "Bound label border.",
+            "default": "var(--border)"
+          },
+          {
+            "name": "--df-tick-slider-bound-foreground",
+            "type": "CSS color",
+            "description": "Bound label text.",
+            "default": "var(--foreground)"
+          },
+          {
+            "name": "--df-tick-slider-bound-radius",
+            "type": "CSS length",
+            "description": "Bound label corner radius.",
+            "default": "var(--radius-full)"
+          },
+          {
+            "name": "--df-tick-slider-bound-min-width",
+            "type": "CSS length",
+            "description": "Minimum width of each bound label.",
+            "default": "calc(18 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bound-pad-inline",
+            "type": "CSS length",
+            "description": "Horizontal padding inside each bound label.",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bound-pad-block",
+            "type": "CSS length",
+            "description": "Vertical padding inside each bound label.",
+            "default": "calc(1.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-tick-active",
+            "type": "CSS color",
+            "description": "Ticks at or left of the current value.",
+            "default": "var(--foreground)"
+          },
+          {
+            "name": "--df-tick-slider-tick-muted",
+            "type": "CSS color",
+            "description": "Ticks right of the current value.",
+            "default": "color-mix(in oklch, var(--foreground) 22%, transparent)"
+          },
+          {
+            "name": "--df-tick-slider-tick-width",
+            "type": "CSS length",
+            "description": "Tick bar width.",
+            "default": "var(--border-width-hairline)"
+          },
+          {
+            "name": "--df-tick-slider-tick-height",
+            "type": "CSS length",
+            "description": "Tick bar height.",
+            "default": "calc(5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-tick-radius",
+            "type": "CSS length",
+            "description": "Tick bar corner radius.",
+            "default": "var(--radius-full)"
+          },
+          {
+            "name": "--df-tick-slider-tick-gap",
+            "type": "CSS length",
+            "description": "Minimum gap between tick bars when tickGap is set.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-thumb-width",
+            "type": "CSS length",
+            "description": "Accent thumb width.",
+            "default": "var(--border-width-thick)"
+          },
+          {
+            "name": "--df-tick-slider-thumb-height",
+            "type": "CSS length",
+            "description": "Accent thumb height.",
+            "default": "calc(6 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-thumb-radius",
+            "type": "CSS length",
+            "description": "Accent thumb corner radius.",
+            "default": "var(--radius-full)"
+          },
+          {
+            "name": "--df-tick-slider-bubble-pad-inline",
+            "type": "CSS length",
+            "description": "Horizontal padding inside the value bubble.",
+            "default": "calc(2.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bubble-pad-block",
+            "type": "CSS length",
+            "description": "Vertical padding inside the value bubble.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bubble-offset",
+            "type": "CSS length",
+            "description": "Gap between the thumb and the value bubble.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bubble-radius",
+            "type": "CSS length",
+            "description": "Value bubble corner radius.",
+            "default": "var(--radius-full)"
+          },
+          {
+            "name": "--df-tick-slider-root-pad-top",
+            "type": "CSS length",
+            "description": "Top clearance for the floating value bubble.",
+            "default": "calc(9 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-fade-size",
+            "type": "CSS length",
+            "description": "Edge fade length when a bound label is hidden.",
+            "default": "calc(6 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-shell-height-sm",
+            "type": "CSS length",
+            "description": "Compact shell height for size sm.",
+            "default": "calc(11 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-shell-pad-sm",
+            "type": "CSS length",
+            "description": "Compact shell padding for size sm.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-gap-sm",
+            "type": "CSS length",
+            "description": "Compact bound to track gap for size sm.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bound-min-width-sm",
+            "type": "CSS length",
+            "description": "Compact bound minimum width for size sm.",
+            "default": "calc(14 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bound-pad-inline-sm",
+            "type": "CSS length",
+            "description": "Compact bound horizontal padding for size sm.",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bound-pad-block-sm",
+            "type": "CSS length",
+            "description": "Compact bound vertical padding for size sm.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-tick-height-sm",
+            "type": "CSS length",
+            "description": "Compact tick bar height for size sm.",
+            "default": "calc(3.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-thumb-height-sm",
+            "type": "CSS length",
+            "description": "Compact accent thumb height for size sm.",
+            "default": "calc(4.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bubble-pad-inline-sm",
+            "type": "CSS length",
+            "description": "Compact bubble horizontal padding for size sm.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bubble-pad-block-sm",
+            "type": "CSS length",
+            "description": "Compact bubble vertical padding for size sm.",
+            "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-bubble-offset-sm",
+            "type": "CSS length",
+            "description": "Compact bubble offset for size sm.",
+            "default": "calc(1.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-root-pad-top-sm",
+            "type": "CSS length",
+            "description": "Compact top clearance for size sm.",
+            "default": "calc(7 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-tick-slider-fade-size-sm",
+            "type": "CSS length",
+            "description": "Compact edge fade length for size sm.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--spacing-unit",
+            "type": "CSS length",
+            "description": "Base unit for shell, tick, and bubble sizes.",
+            "default": "0.25rem"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -260,6 +260,70 @@
   --df-color-picker-height: 220px;
   /* Fixed #RRGGBB slot so the hex trigger width stays stable while dragging. */
   --df-color-picker-hex-width: 7ch;
+
+  --df-slider-sparkle: color-mix(in oklch, var(--background) 62%, transparent);
+  --df-slider-sparkle-soft: color-mix(
+    in oklch,
+    var(--background) 34%,
+    transparent
+  );
+  --df-slider-sparkle-size: calc(0.35 * var(--spacing-unit));
+
+  --df-tick-slider-accent: var(--df-coral-430);
+  --df-tick-slider-accent-foreground: var(--df-neutral-0);
+  --df-tick-slider-shell-bg: color-mix(
+    in oklch,
+    var(--muted) 88%,
+    var(--background)
+  );
+  --df-tick-slider-shell-border: var(--border);
+  --df-tick-slider-shell-radius: var(--radius-full);
+  --df-tick-slider-bound-bg: color-mix(
+    in oklch,
+    var(--background) 72%,
+    transparent
+  );
+  --df-tick-slider-bound-border: var(--border);
+  --df-tick-slider-bound-foreground: var(--foreground);
+  --df-tick-slider-bound-radius: var(--radius-full);
+  --df-tick-slider-bound-pad-inline: calc(3 * var(--spacing-unit));
+  --df-tick-slider-bound-pad-block: calc(1.5 * var(--spacing-unit));
+  --df-tick-slider-bound-min-width: calc(18 * var(--spacing-unit));
+  --df-tick-slider-bound-min-width-sm: calc(14 * var(--spacing-unit));
+  --df-tick-slider-bound-pad-inline-sm: calc(3 * var(--spacing-unit));
+  --df-tick-slider-bound-pad-block-sm: calc(1 * var(--spacing-unit));
+  --df-tick-slider-shell-height-sm: calc(11 * var(--spacing-unit));
+  --df-tick-slider-shell-pad-sm: calc(1 * var(--spacing-unit));
+  --df-tick-slider-gap-sm: calc(1 * var(--spacing-unit));
+  --df-tick-slider-tick-height-sm: calc(3.5 * var(--spacing-unit));
+  --df-tick-slider-thumb-height-sm: calc(4.5 * var(--spacing-unit));
+  --df-tick-slider-bubble-pad-inline-sm: calc(2 * var(--spacing-unit));
+  --df-tick-slider-bubble-pad-block-sm: calc(0.5 * var(--spacing-unit));
+  --df-tick-slider-bubble-offset-sm: calc(1.5 * var(--spacing-unit));
+  --df-tick-slider-root-pad-top-sm: calc(7 * var(--spacing-unit));
+  --df-tick-slider-fade-size-sm: calc(4 * var(--spacing-unit));
+  --df-tick-slider-tick-active: var(--foreground);
+  --df-tick-slider-tick-muted: color-mix(
+    in oklch,
+    var(--foreground) 22%,
+    transparent
+  );
+  --df-tick-slider-shell-height: calc(14 * var(--spacing-unit));
+  --df-tick-slider-shell-pad: calc(1.5 * var(--spacing-unit));
+  --df-tick-slider-gap: calc(2 * var(--spacing-unit));
+  --df-tick-slider-tick-height: calc(5 * var(--spacing-unit));
+  --df-tick-slider-tick-width: var(--border-width-hairline);
+  --df-tick-slider-tick-radius: var(--radius-full);
+  --df-tick-slider-tick-gap: calc(1 * var(--spacing-unit));
+  --df-tick-slider-thumb-width: var(--border-width-thick);
+  --df-tick-slider-thumb-height: calc(6 * var(--spacing-unit));
+  --df-tick-slider-thumb-radius: var(--radius-full);
+  --df-tick-slider-bubble-pad-inline: calc(2.5 * var(--spacing-unit));
+  --df-tick-slider-bubble-pad-block: calc(1 * var(--spacing-unit));
+  --df-tick-slider-bubble-offset: calc(2 * var(--spacing-unit));
+  --df-tick-slider-bubble-radius: var(--radius-full);
+  --df-tick-slider-fade-size: calc(6 * var(--spacing-unit));
+  --df-tick-slider-root-pad-top: calc(9 * var(--spacing-unit));
   --df-options-panel-max-height: 520px;
   --df-menu-stacked-max-height: 16rem;
   --df-option-list-min-width: 12rem;
@@ -686,6 +750,9 @@
   --df-switch-track-width: 32px;
   --df-switch-track-height-sm: 14px;
   --df-switch-track-width-sm: 24px;
+  --df-tick-slider-shell-height: calc(14 * var(--spacing-unit));
+  --df-tick-slider-tick-height: calc(5 * var(--spacing-unit));
+  --df-tick-slider-thumb-height: calc(6 * var(--spacing-unit));
 }
 
 [data-df-density="comfortable"] {
@@ -777,4 +844,19 @@
   --df-text-mark-blue: var(--df-blue-320);
   --df-text-mark: var(--df-text-mark-yellow);
   --df-text-mark-foreground: var(--foreground);
+  --df-tick-slider-shell-bg: color-mix(
+    in oklch,
+    var(--muted) 70%,
+    var(--background)
+  );
+  --df-tick-slider-bound-bg: color-mix(
+    in oklch,
+    var(--background) 55%,
+    transparent
+  );
+  --df-tick-slider-tick-muted: color-mix(
+    in oklch,
+    var(--foreground) 28%,
+    transparent
+  );
 }

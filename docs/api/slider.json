@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-slider",
   "dependencies": [],
   "api": {
-    "description": "Continuous value selection along a track.",
+    "description": "Value selection along a track. While scrubbing, the thumb and fill follow the pointer continuously; the committed value snaps to step.",
     "groups": [
       {
         "id": "slider",
@@ -32,12 +32,12 @@
             "name": "step",
             "type": "number",
             "default": "1",
-            "description": "Increment between values."
+            "description": "Increment between committed values. The thumb still tracks the pointer smoothly while dragging."
           },
           {
             "name": "value",
             "type": "number[]",
-            "description": "Controlled value as an array (single thumb uses one entry). Values outside min to max are clamped for the thumb, fill, and aria value."
+            "description": "Controlled value as an array (single thumb uses one entry). Values outside min to max are snapped to step and clamped for the fill and aria value."
           },
           {
             "name": "defaultValue",
@@ -48,12 +48,18 @@
           {
             "name": "onValueChange",
             "type": "(value: number[]) => void",
-            "description": "Called when the value changes."
+            "description": "Called when the committed value changes. Receives stepped values while scrubbing and on keyboard input."
+          },
+          {
+            "name": "fillMotion",
+            "type": "\"none\" | \"sparkle\"",
+            "default": "\"sparkle\"",
+            "description": "Optional motion inside the filled range while scrubbing. sparkle shows a light particle shimmer that adapts to light and dark themes. Set none to keep a static fill. Skipped when reduced motion is preferred."
           },
           {
             "name": "disabled",
             "type": "boolean",
-            "description": "Non-interactive slider."
+            "description": "Disabled slider."
           },
           {
             "name": "className",
@@ -80,21 +86,45 @@
             "default": "var(--df-neutral-50)"
           },
           {
+            "name": "--df-slider-sparkle",
+            "type": "CSS color",
+            "description": "Brighter sparkle dots on the filled range while scrubbing.",
+            "default": "color-mix(in oklch, var(--background) 62%, transparent)"
+          },
+          {
+            "name": "--df-slider-sparkle-soft",
+            "type": "CSS color",
+            "description": "Softer sparkle dots on the filled range while scrubbing.",
+            "default": "color-mix(in oklch, var(--background) 34%, transparent)"
+          },
+          {
+            "name": "--df-slider-sparkle-size",
+            "type": "CSS length",
+            "description": "Sparkle particle size while scrubbing.",
+            "default": "calc(0.35 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-slider-track-height",
+            "type": "CSS length",
+            "description": "Track height.",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
             "name": "--border",
             "type": "CSS color",
-            "description": "Thumb border.",
+            "description": "Unused by current slider chrome.",
             "default": "var(--df-neutral-100)"
           },
           {
             "name": "--ring",
             "type": "CSS color",
-            "description": "Focus ring color.",
+            "description": "Focus ring color via focus ring tokens.",
             "default": "var(--df-neutral-400)"
           },
           {
             "name": "--spacing-unit",
             "type": "CSS length",
-            "description": "Base unit for thumb size and offsets.",
+            "description": "Base unit for thumb size and sparkle dots.",
             "default": "0.25rem"
           }
         ]

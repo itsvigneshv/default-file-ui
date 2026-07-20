@@ -53,6 +53,14 @@ export { Spinner } from "./df-spinner"
 export type { SpinnerProps, SpinnerSize } from "./df-spinner"
 export { Switch } from "./df-switch"
 export { Slider } from "./df-slider"
+export type { SliderFillMotion } from "./df-slider"
+export { TickSlider } from "./df-tick-slider"
+export type {
+  TickSliderBounds,
+  TickSliderRadius,
+  TickSliderSize,
+  TickSliderTickRenderContext,
+} from "./df-tick-slider"
 export { ToggleGroup, ToggleGroupItem } from "./df-toggle-group"
 export {
   Tabs,
