@@ -29,7 +29,10 @@ type InputRadius =
   | "4xl"
   | "full"
 
-type InputProps = Omit<React.ComponentProps<"input">, "prefix" | "size"> & {
+type InputProps = Omit<
+  React.ComponentProps<"input">,
+  "prefix" | "size" | "height"
+> & {
   variant?: InputVariant
   size?: InputSize
   height?: string

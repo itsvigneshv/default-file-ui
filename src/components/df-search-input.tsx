@@ -12,7 +12,7 @@ type SearchInputIconPosition = "start" | "end"
 
 type SearchInputProps = Omit<
   React.ComponentProps<"input">,
-  "className" | "size"
+  "className" | "size" | "height"
 > & {
   className?: string
   inputClassName?: string
