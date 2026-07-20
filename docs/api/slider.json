@@ -37,7 +37,7 @@
           {
             "name": "value",
             "type": "number[]",
-            "description": "Controlled value as an array (single thumb uses one entry)."
+            "description": "Controlled value as an array (single thumb uses one entry). Values outside min to max are clamped for the thumb, fill, and aria value."
           },
           {
             "name": "defaultValue",
