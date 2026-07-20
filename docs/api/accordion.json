@@ -2,7 +2,7 @@
   "name": "accordion",
   "slug": "accordion",
   "title": "Accordion",
-  "description": "Expandable sections with single or multiple open items, sizes, dividers, and keyboard navigation.",
+  "description": "Expandable sections with single or multiple open items.",
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

@@ -2,7 +2,7 @@
   "name": "options-panel",
   "slug": "options-panel",
   "title": "Options Panel",
-  "description": "Anchored panel chrome with titled header and open body/footer slots for tool options.",
+  "description": "Anchored panel with header, body, and footer slots.",
   "chapter": "overlays",
   "registryDependencies": [
     "foundation",
@@ -135,6 +135,18 @@
             "type": "CSS length",
             "description": "Maximum panel height before scrolling.",
             "default": "520px"
+          },
+          {
+            "name": "--popover",
+            "type": "CSS color",
+            "description": "Panel fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--popover-foreground",
+            "type": "CSS color",
+            "description": "Panel text color.",
+            "default": "var(--df-neutral-900)"
           }
         ]
       }

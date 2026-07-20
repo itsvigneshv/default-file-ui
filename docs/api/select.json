@@ -2,7 +2,7 @@
   "name": "select",
   "slug": "select",
   "title": "Select",
-  "description": "Field control for single or multi choice: label, hint, sizes, disabled, and value display.",
+  "description": "Single or multi choice field with label and sizes.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -449,14 +449,32 @@
           {
             "name": "--background",
             "type": "CSS color",
-            "description": "Trigger and panel fill.",
+            "description": "Trigger fill.",
             "default": "var(--df-neutral-0)"
           },
           {
-            "name": "--muted",
+            "name": "--popover",
             "type": "CSS color",
-            "description": "Hover row fill.",
+            "description": "Open panel fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--popover-foreground",
+            "type": "CSS color",
+            "description": "Open panel text color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--accent",
+            "type": "CSS color",
+            "description": "Hover and highlight row fill.",
             "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--accent-foreground",
+            "type": "CSS color",
+            "description": "Hover and highlight row text.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
           },
           {
             "name": "--df-corner-shape",

@@ -21,12 +21,14 @@ function NumberSlider({
   const digits = step >= 1 ? 0 : step >= 0.1 ? 1 : 2
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <Label className="text-xs text-muted-foreground">{label}</Label>
-        <span className="font-mono text-11 text-muted-foreground">
-          {value.toFixed(digits)}
-        </span>
-      </div>
+      <Label
+        className="text-xs text-muted-foreground"
+        trailing={
+          <span className="font-mono text-11">{value.toFixed(digits)}</span>
+        }
+      >
+        {label}
+      </Label>
       <Slider
         min={min}
         max={max}

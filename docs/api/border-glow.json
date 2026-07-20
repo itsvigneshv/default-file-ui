@@ -2,7 +2,7 @@
   "name": "border-glow",
   "slug": "border-glow",
   "title": "Border Glow",
-  "description": "Card chrome with a pointer-directed border, optional soft bloom, and a hairline trace mode.",
+  "description": "Pointer directed border glow with optional soft bloom.",
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

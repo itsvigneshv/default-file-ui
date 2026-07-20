@@ -2,7 +2,7 @@
   "name": "overlay-hint",
   "slug": "overlay-hint",
   "title": "Overlay Hint",
-  "description": "Tokenized instruction pill with default frosted glass, a muted chip, and a marquee variant with scrolling text, trailing icon action, and sm or md density.",
+  "description": "Frosted instruction pill with muted and marquee variants.",
   "chapter": "feedback",
   "registryDependencies": [
     "foundation"
@@ -221,66 +221,79 @@
           {
             "name": "--overlay-hint-default-bg",
             "type": "CSS color",
+            "default": "color-mix(in oklch, white 78%, transparent)",
             "description": "Default frosted fill on light surfaces."
           },
           {
             "name": "--overlay-hint-default-border",
             "type": "CSS color",
+            "default": "color-mix(in oklch, black 10%, transparent)",
             "description": "Default frosted border on light surfaces."
           },
           {
             "name": "--overlay-hint-default-fg",
             "type": "CSS color",
+            "default": "color-mix(in oklch, black 72%, transparent)",
             "description": "Default frosted label on light surfaces."
           },
           {
             "name": "--overlay-hint-default-shadow",
             "type": "CSS shadow",
+            "default": "0 10px 28px color-mix(in oklch, black 10%, transparent)",
             "description": "Default frosted shadow on light surfaces."
           },
           {
             "name": "--overlay-hint-default-blur",
             "type": "CSS length",
+            "default": "var(--overlay-blur)",
             "description": "Default frosted blur on light surfaces."
           },
           {
             "name": "--overlay-hint-default-dark-bg",
             "type": "CSS color",
+            "default": "var(--overlay-bg)",
             "description": "Default frosted fill on .dark surfaces."
           },
           {
             "name": "--overlay-hint-default-dark-border",
             "type": "CSS color",
+            "default": "var(--overlay-border)",
             "description": "Default frosted border on .dark surfaces."
           },
           {
             "name": "--overlay-hint-default-dark-fg",
             "type": "CSS color",
+            "default": "var(--overlay-item-fg)",
             "description": "Default frosted label on .dark surfaces."
           },
           {
             "name": "--overlay-hint-default-dark-shadow",
             "type": "CSS shadow",
+            "default": "var(--overlay-shadow)",
             "description": "Default frosted shadow on .dark surfaces."
           },
           {
             "name": "--overlay-hint-default-dark-blur",
             "type": "CSS length",
+            "default": "var(--overlay-blur)",
             "description": "Default frosted blur on .dark surfaces."
           },
           {
             "name": "--overlay-hint-muted-bg",
             "type": "CSS color",
+            "default": "var(--muted)",
             "description": "Muted variant fill."
           },
           {
             "name": "--overlay-hint-muted-border",
             "type": "CSS color",
+            "default": "var(--border)",
             "description": "Muted variant border."
           },
           {
             "name": "--overlay-hint-muted-fg",
             "type": "CSS color",
+            "default": "var(--muted-foreground)",
             "description": "Muted variant label."
           },
           {
@@ -310,11 +323,13 @@
           {
             "name": "--overlay-hint-marquee-bg",
             "type": "CSS color",
+            "default": "color-mix(in oklch, white 88%, transparent)",
             "description": "Marquee fill on light surfaces."
           },
           {
             "name": "--overlay-hint-marquee-dark-bg",
             "type": "CSS color",
+            "default": "var(--overlay-bg)",
             "description": "Marquee fill on dark surfaces."
           },
           {
@@ -326,7 +341,7 @@
           {
             "name": "--overlay-hint-marquee-fade",
             "type": "CSS length",
-            "default": "1.5rem",
+            "default": "0.75rem",
             "description": "Soft edge fade depth for the scrolling label, on both sides."
           }
         ]

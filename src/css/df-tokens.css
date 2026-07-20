@@ -18,6 +18,7 @@
   --accent: var(--df-neutral-50);
   --accent-foreground: var(--df-neutral-850, var(--df-neutral-900));
   --destructive: var(--df-destructive);
+  --label-required: var(--destructive);
   --border: var(--df-neutral-100);
   --input: var(--df-neutral-100);
   --ring: var(--df-neutral-400);
@@ -712,6 +713,7 @@
   --accent: var(--df-neutral-800);
   --accent-foreground: var(--df-neutral-0);
   --destructive: var(--df-destructive-bright);
+  --label-required: var(--destructive);
   --border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --input: color-mix(in oklch, var(--df-neutral-0) 15%, transparent);
   --ring: var(--df-neutral-500);

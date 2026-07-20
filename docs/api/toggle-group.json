@@ -2,7 +2,7 @@
   "name": "toggle-group",
   "slug": "toggle-group",
   "title": "Toggle Group",
-  "description": "Grouped options for single-select choices.",
+  "description": "Grouped options for single select choices.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"

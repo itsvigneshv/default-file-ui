@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T15:58:34.706Z",
+  "generatedAt": "2026-07-20T06:14:07.682Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -11,7 +11,7 @@
       "slug": "accordion",
       "name": "accordion",
       "title": "Accordion",
-      "description": "Expandable sections with single or multiple open items, sizes, dividers, and keyboard navigation.",
+      "description": "Expandable sections with single or multiple open items.",
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -39,7 +39,7 @@
       "slug": "border-glow",
       "name": "border-glow",
       "title": "Border Glow",
-      "description": "Card chrome with a pointer-directed border, optional soft bloom, and a hairline trace mode.",
+      "description": "Pointer directed border glow with optional soft bloom.",
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -52,7 +52,7 @@
       "slug": "button",
       "name": "button",
       "title": "Button",
-      "description": "Primary actions with variants, text sizes from xs to 2xl, and matching icon sizes.",
+      "description": "Primary actions with variants and sizes from xs to 2xl.",
       "chapter": "actions",
       "registryDependencies": [
         "foundation",
@@ -80,7 +80,7 @@
       "slug": "color-picker",
       "name": "color-picker",
       "title": "Color Picker",
-      "description": "Pill swatch trigger with hex or clear trailing, and channel editors in a popover.",
+      "description": "Swatch trigger with hex trailing and channel editors.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -96,7 +96,7 @@
       "slug": "content-switcher",
       "name": "content-switcher",
       "title": "Content Switcher",
-      "description": "Segmented single-select for filters and view modes, with size and deselect options.",
+      "description": "Segmented single select for filters and view modes.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -109,7 +109,7 @@
       "slug": "floating-controls",
       "name": "floating-controls",
       "title": "Floating Controls",
-      "description": "Modular action bar with configurable slots and dividers for toolbars and docks.",
+      "description": "Modular action bar for toolbars and docks.",
       "chapter": "toolbars",
       "registryDependencies": [
         "foundation",
@@ -123,7 +123,7 @@
       "slug": "input",
       "name": "input",
       "title": "Input",
-      "description": "Single-line text fields for forms and filters.",
+      "description": "Single line text fields for forms and filters.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -136,14 +136,14 @@
       "slug": "label",
       "name": "label",
       "title": "Label",
-      "description": "Accessible labels for form controls.",
+      "description": "Accessible labels with required, optional, subtext, and trailing meta.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
       ],
       "importPath": "@default-file/ui/components/df-label",
       "dependencies": [],
-      "propCount": 6
+      "propCount": 25
     },
     {
       "slug": "number-slider",
@@ -164,7 +164,7 @@
       "slug": "option-list",
       "name": "option-list",
       "title": "Option List",
-      "description": "Open panel and option rows: search, checkboxes, secondary text, scroll, and footer actions.",
+      "description": "Option rows with search, checkboxes, and footer actions.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -175,13 +175,13 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 96
+      "propCount": 106
     },
     {
       "slug": "options-panel",
       "name": "options-panel",
       "title": "Options Panel",
-      "description": "Anchored panel chrome with titled header and open body/footer slots for tool options.",
+      "description": "Anchored panel with header, body, and footer slots.",
       "chapter": "overlays",
       "registryDependencies": [
         "foundation",
@@ -189,13 +189,13 @@
       ],
       "importPath": "@default-file/ui/components/df-options-panel",
       "dependencies": [],
-      "propCount": 17
+      "propCount": 19
     },
     {
       "slug": "overlay-hint",
       "name": "overlay-hint",
       "title": "Overlay Hint",
-      "description": "Tokenized instruction pill with default frosted glass, a muted chip, and a marquee variant with scrolling text, trailing icon action, and sm or md density.",
+      "description": "Frosted instruction pill with muted and marquee variants.",
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
@@ -241,13 +241,13 @@
       ],
       "importPath": "@default-file/ui/components/df-scroll-area",
       "dependencies": [],
-      "propCount": 15
+      "propCount": 17
     },
     {
       "slug": "search-input",
       "name": "search-input",
       "title": "Search Input",
-      "description": "Search fields with clear control, pill shape, and start or end icon placement.",
+      "description": "Search field with clear control and icon placement.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -263,7 +263,7 @@
       "slug": "select",
       "name": "select",
       "title": "Select",
-      "description": "Field control for single or multi choice: label, hint, sizes, disabled, and value display.",
+      "description": "Single or multi choice field with label and sizes.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -274,7 +274,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 72
+      "propCount": 75
     },
     {
       "slug": "separator",
@@ -306,7 +306,7 @@
       "slug": "spectrum-text",
       "name": "spectrum-text",
       "title": "Spectrum Text",
-      "description": "Inline text with a shifting multi-stop gradient fill from kit-color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
+      "description": "Inline text with a shifting multi stop gradient fill.",
       "chapter": "text",
       "registryDependencies": [
         "foundation"
@@ -358,7 +358,7 @@
       "slug": "text-mark",
       "name": "text-mark",
       "title": "Text Mark",
-      "description": "Animated hand-drawn marks for inline text: marker wash, sketchy underline, or scribble circle. Configurable shape, color, iterations, padding, and active state.",
+      "description": "Animated hand drawn marks for highlighting inline text.",
       "chapter": "text",
       "registryDependencies": [
         "foundation"
@@ -388,7 +388,7 @@
       "slug": "toggle-group",
       "name": "toggle-group",
       "title": "Toggle Group",
-      "description": "Grouped options for single-select choices.",
+      "description": "Grouped options for single select choices.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -408,7 +408,7 @@
       ],
       "importPath": "@default-file/ui/components/df-tooltip",
       "dependencies": [],
-      "propCount": 21
+      "propCount": 24
     }
   ]
 }

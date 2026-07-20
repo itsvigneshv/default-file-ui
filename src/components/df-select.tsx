@@ -155,13 +155,13 @@ function SelectFieldLabel({
   onClick,
   ...props
 }: React.ComponentProps<typeof Label> & {
-  required?: boolean
   help?: React.ReactNode
 }) {
   return (
     <div data-df="select-field-label">
       <Label
         htmlFor={htmlFor}
+        required={required}
         className={cn(className)}
         onClick={(event) => {
           onClick?.(event)
@@ -173,12 +173,7 @@ function SelectFieldLabel({
         }}
         {...props}
       >
-        <span data-df="select-field-label-text">{children}</span>
-        {required ? (
-          <span data-df="select-field-required" aria-hidden="true">
-            *
-          </span>
-        ) : null}
+        {children}
       </Label>
       {help != null ? (
         <span data-df="select-field-help">{help}</span>

@@ -2,7 +2,7 @@
   "name": "button",
   "slug": "button",
   "title": "Button",
-  "description": "Primary actions with variants, text sizes from xs to 2xl, and matching icon sizes.",
+  "description": "Primary actions with variants and sizes from xs to 2xl.",
   "chapter": "actions",
   "registryDependencies": [
     "foundation",

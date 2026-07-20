@@ -39,6 +39,7 @@ export type {
 
 export { Input } from "./df-input"
 export { Label } from "./df-label"
+export type { LabelMarkVariant, LabelProps } from "./df-label"
 export { Separator } from "./df-separator"
 export { Spinner } from "./df-spinner"
 export type { SpinnerProps, SpinnerSize } from "./df-spinner"

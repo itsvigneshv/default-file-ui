@@ -2,7 +2,7 @@
   "name": "search-input",
   "slug": "search-input",
   "title": "Search Input",
-  "description": "Search fields with clear control, pill shape, and start or end icon placement.",
+  "description": "Search field with clear control and icon placement.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",

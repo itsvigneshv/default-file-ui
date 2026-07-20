@@ -2,7 +2,7 @@
   "name": "text-mark",
   "slug": "text-mark",
   "title": "Text Mark",
-  "description": "Animated hand-drawn marks for inline text: marker wash, sketchy underline, or scribble circle. Configurable shape, color, iterations, padding, and active state.",
+  "description": "Animated hand drawn marks for highlighting inline text.",
   "chapter": "text",
   "registryDependencies": [
     "foundation"

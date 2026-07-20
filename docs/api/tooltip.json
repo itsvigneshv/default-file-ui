@@ -152,6 +152,24 @@
             "type": "CSS shadow",
             "description": "Drop shadow that includes the arrow silhouette.",
             "default": "drop-shadow(0 4px 6px rgb(0 0 0 / 0.1)) drop-shadow(0 2px 3px rgb(0 0 0 / 0.08))"
+          },
+          {
+            "name": "--popover",
+            "type": "CSS color",
+            "description": "Tip fill. Remapped by appearance (inverse, light, or dark).",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--popover-foreground",
+            "type": "CSS color",
+            "description": "Tip text color. Remapped by appearance.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Used for the tip border mix. Remapped by appearance.",
+            "default": "var(--df-neutral-0)"
           }
         ]
       }

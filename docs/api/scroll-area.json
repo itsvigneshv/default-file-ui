@@ -112,6 +112,18 @@
             "type": "CSS length",
             "description": "Default thumb thickness for the edge variant.",
             "default": "3px"
+          },
+          {
+            "name": "--border",
+            "type": "CSS color",
+            "description": "Default variant thumb fill.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Edge variant thumb mix base.",
+            "default": "var(--df-neutral-900)"
           }
         ]
       }

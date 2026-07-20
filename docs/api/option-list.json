@@ -2,7 +2,7 @@
   "name": "option-list",
   "slug": "option-list",
   "title": "Option List",
-  "description": "Open panel and option rows: search, checkboxes, secondary text, scroll, and footer actions.",
+  "description": "Option rows with search, checkboxes, and footer actions.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -622,6 +622,66 @@
             "type": "CSS length",
             "description": "Maximum nested submenu height.",
             "default": "28rem"
+          },
+          {
+            "name": "--popover",
+            "type": "CSS color",
+            "description": "Panel fill.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--popover-foreground",
+            "type": "CSS color",
+            "description": "Panel text color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--foreground",
+            "type": "CSS color",
+            "description": "Option label color.",
+            "default": "var(--df-neutral-900)"
+          },
+          {
+            "name": "--muted-foreground",
+            "type": "CSS color",
+            "description": "Secondary label and muted chrome.",
+            "default": "var(--df-neutral-500)"
+          },
+          {
+            "name": "--accent",
+            "type": "CSS color",
+            "description": "Hover and highlight row fill.",
+            "default": "var(--df-neutral-50)"
+          },
+          {
+            "name": "--accent-foreground",
+            "type": "CSS color",
+            "description": "Hover and highlight row text.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--primary",
+            "type": "CSS color",
+            "description": "Checked checkbox fill and border.",
+            "default": "var(--df-neutral-850, var(--df-neutral-900))"
+          },
+          {
+            "name": "--primary-foreground",
+            "type": "CSS color",
+            "description": "Checked checkbox glyph color.",
+            "default": "var(--df-neutral-0)"
+          },
+          {
+            "name": "--input",
+            "type": "CSS color",
+            "description": "Checkbox border.",
+            "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--background",
+            "type": "CSS color",
+            "description": "Checkbox unchecked fill.",
+            "default": "var(--df-neutral-0)"
           }
         ]
       }

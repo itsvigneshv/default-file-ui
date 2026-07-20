@@ -2,7 +2,7 @@
   "name": "color-picker",
   "slug": "color-picker",
   "title": "Color Picker",
-  "description": "Pill swatch trigger with hex or clear trailing, and channel editors in a popover.",
+  "description": "Swatch trigger with hex trailing and channel editors.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",

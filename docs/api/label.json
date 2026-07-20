@@ -2,7 +2,7 @@
   "name": "label",
   "slug": "label",
   "title": "Label",
-  "description": "Accessible labels for form controls.",
+  "description": "Accessible labels with required, optional, subtext, and trailing meta.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"
@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-label",
   "dependencies": [],
   "api": {
-    "description": "Accessible label for form controls.",
+    "description": "Accessible label for form controls. Supports required and optional marks, subtext, and a trailing meta slot.",
     "groups": [
       {
         "id": "label",
@@ -24,17 +24,113 @@
           {
             "name": "children",
             "type": "ReactNode",
-            "description": "Label text or content."
+            "description": "Label title content."
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "default": "false",
+            "description": "Shows a decorative required mark after the title. Wins over optional when both are set."
+          },
+          {
+            "name": "requiredVariant",
+            "type": "\"asterisk\" | \"text\"",
+            "default": "\"asterisk\"",
+            "description": "Required mark style. \"asterisk\" shows *. \"text\" shows required or (required). Both use --label-required."
+          },
+          {
+            "name": "requiredColor",
+            "type": "string",
+            "description": "Required mark color. Prefer tokens such as var(--destructive). Sets --label-required on this label."
+          },
+          {
+            "name": "optional",
+            "type": "boolean",
+            "default": "false",
+            "description": "Shows a decorative optional mark after the title. Ignored when required is true."
+          },
+          {
+            "name": "optionalVariant",
+            "type": "\"asterisk\" | \"text\"",
+            "default": "\"text\"",
+            "description": "Optional mark style. \"text\" shows optional or (optional). \"asterisk\" shows *."
+          },
+          {
+            "name": "brackets",
+            "type": "boolean",
+            "default": "true",
+            "description": "Wraps text marks in parentheses: (required) and (optional). Set false for required or optional without brackets. No effect on asterisk marks."
+          },
+          {
+            "name": "subtext",
+            "type": "ReactNode",
+            "description": "Secondary supporting line under the title row."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "Right-aligned meta on the title row, such as a character count."
           },
           {
             "name": "className",
             "type": "string",
-            "description": "Additional styles."
+            "description": "Additional styles on the label root."
+          },
+          {
+            "name": "style",
+            "type": "CSSProperties",
+            "description": "Inline styles. Can also set --label-required for the required mark color."
           },
           {
             "name": "…label attributes",
             "type": "ComponentProps<\"label\">",
             "description": "All native label props."
+          }
+        ]
+      },
+      {
+        "id": "label-parts",
+        "title": "Parts",
+        "props": [
+          {
+            "name": "data-df=\"label\"",
+            "type": "part",
+            "description": "Root label element."
+          },
+          {
+            "name": "data-df=\"label-row\"",
+            "type": "part",
+            "description": "Title row that hosts the title group and trailing slot."
+          },
+          {
+            "name": "data-df=\"label-title\"",
+            "type": "part",
+            "description": "Title group with label text and required or optional mark."
+          },
+          {
+            "name": "data-df=\"label-text\"",
+            "type": "part",
+            "description": "Primary label text."
+          },
+          {
+            "name": "data-df=\"label-required\"",
+            "type": "part",
+            "description": "Required mark. Uses --label-required. data-variant is asterisk or text."
+          },
+          {
+            "name": "data-df=\"label-optional\"",
+            "type": "part",
+            "description": "Optional mark. data-variant is asterisk or text."
+          },
+          {
+            "name": "data-df=\"label-trailing\"",
+            "type": "part",
+            "description": "Trailing meta slot on the title row."
+          },
+          {
+            "name": "data-df=\"label-subtext\"",
+            "type": "part",
+            "description": "Supporting line under the title row."
           }
         ]
       },
@@ -46,14 +142,26 @@
           {
             "name": "--foreground",
             "type": "CSS color",
-            "description": "Label text color.",
+            "description": "Label title color.",
             "default": "var(--df-neutral-900)"
           },
           {
             "name": "--muted-foreground",
             "type": "CSS color",
-            "description": "Disabled label text color.",
+            "description": "Optional mark, subtext, and trailing color.",
             "default": "var(--df-neutral-500)"
+          },
+          {
+            "name": "--label-required",
+            "type": "CSS color",
+            "description": "Required mark color for asterisk and text variants. Override globally or via requiredColor.",
+            "default": "var(--destructive)"
+          },
+          {
+            "name": "--destructive",
+            "type": "CSS color",
+            "description": "Default source for --label-required.",
+            "default": "var(--df-destructive)"
           }
         ]
       }

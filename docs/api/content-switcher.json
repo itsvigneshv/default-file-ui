@@ -2,7 +2,7 @@
   "name": "content-switcher",
   "slug": "content-switcher",
   "title": "Content Switcher",
-  "description": "Segmented single-select for filters and view modes, with size and deselect options.",
+  "description": "Segmented single select for filters and view modes.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"

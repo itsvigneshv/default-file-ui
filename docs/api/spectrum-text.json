@@ -2,7 +2,7 @@
   "name": "spectrum-text",
   "slug": "spectrum-text",
   "title": "Spectrum Text",
-  "description": "Inline text with a shifting multi-stop gradient fill from kit-color tokens. Glyphs stay still; only the clipped background moves. Configurable colors and speed.",
+  "description": "Inline text with a shifting multi stop gradient fill.",
   "chapter": "text",
   "registryDependencies": [
     "foundation"
