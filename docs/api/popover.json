@@ -90,6 +90,12 @@
             "description": "When false, render the panel inline (docs demos). Default portals to document.body."
           },
           {
+            "name": "dismissOnScroll",
+            "type": "boolean",
+            "default": "true",
+            "description": "Close when the page or an ancestor scrolls. Set false for panels with sliders or other controls that can move focus without intending to dismiss."
+          },
+          {
             "name": "className",
             "type": "string",
             "description": "Additional styles on the panel."

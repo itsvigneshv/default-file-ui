@@ -63,23 +63,35 @@ function PopoverTrigger({
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()
 
-  const shared = {
-    ref: triggerRef as React.Ref<HTMLButtonElement>,
-    "data-df-popover-trigger": "",
-    "aria-expanded": open,
-    "aria-haspopup": "dialog" as const,
-    onClick: (event: React.MouseEvent<HTMLElement>) => {
-      props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-      setOpen(!open)
-    },
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (render) {
+      const renderOnClick = (
+        render.props as {
+          onClick?: (event: React.MouseEvent<HTMLElement>) => void
+        }
+      ).onClick
+      renderOnClick?.(event)
+    }
+    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
+    if (event.defaultPrevented) return
+    setOpen(!open)
   }
 
   if (render) {
     return React.cloneElement(render, {
       ...props,
-      ...shared,
-      className: cn(className, (render.props as { className?: string }).className),
-      children: children ?? (render.props as { children?: React.ReactNode }).children,
+      ref: triggerRef as React.Ref<HTMLButtonElement>,
+      "data-df-popover-trigger": "",
+      "aria-expanded": open,
+      "aria-haspopup": "dialog",
+      onClick: handleClick,
+      className: cn(
+        className,
+        (render.props as { className?: string }).className
+      ),
+      children:
+        children ??
+        (render.props as { children?: React.ReactNode }).children,
     } as never)
   }
 
@@ -87,9 +99,13 @@ function PopoverTrigger({
     <button
       type="button"
       data-df="popover-trigger"
-      className={cn(className)}
-      {...shared}
       {...props}
+      ref={triggerRef as React.Ref<HTMLButtonElement>}
+      data-df-popover-trigger=""
+      aria-expanded={open}
+      aria-haspopup="dialog"
+      className={cn(className)}
+      onClick={handleClick}
     >
       {children}
     </button>
@@ -105,6 +121,7 @@ function PopoverContent({
   sideOffset = 4,
   matchTriggerWidth = false,
   portal = true,
+  dismissOnScroll = true,
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
@@ -114,6 +131,7 @@ function PopoverContent({
   sideOffset?: number
   matchTriggerWidth?: boolean
   portal?: boolean
+  dismissOnScroll?: boolean
 }) {
   const { open, setOpen, triggerRef } = usePopoverContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
@@ -130,6 +148,7 @@ function PopoverContent({
 
   useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
     excludeSelectors: DISMISS_NESTED_LAYER_SELECTORS,
+    dismissOnScroll,
   })
 
   const mounted = useIsClient()

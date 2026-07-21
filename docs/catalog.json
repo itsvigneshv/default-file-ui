@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T19:52:55.758Z",
+  "generatedAt": "2026-07-21T21:09:02.871Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -288,7 +288,7 @@
       ],
       "importPath": "@default-file/ui/components/df-popover",
       "dependencies": [],
-      "propCount": 23
+      "propCount": 24
     },
     {
       "slug": "scroll-area",
