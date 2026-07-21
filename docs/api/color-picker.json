@@ -2,7 +2,7 @@
   "name": "color-picker",
   "slug": "color-picker",
   "title": "Color Picker",
-  "description": "Swatch trigger with hex trailing and channel editors.",
+  "description": "Swatch trigger with hex trailing, hover border, and channel editors.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -13,7 +13,7 @@
   "importPath": "@default-file/ui/components/df-color-picker",
   "dependencies": [],
   "api": {
-    "description": "Pill swatch trigger with optional hex or clear trailing, and channel editors in a popover.",
+    "description": "Pill swatch trigger with optional hex or clear trailing, hover border controls, and channel editors in a popover.",
     "groups": [
       {
         "id": "color-picker",
@@ -38,7 +38,7 @@
           {
             "name": "trailing",
             "type": "\"hex\" | \"clear\"",
-            "description": "Optional trailing control: show hex text, or a clear action."
+            "description": "Optional trailing control: show hex text, or a clear action. Pill triggers use the hover border contract."
           },
           {
             "name": "onClear",
@@ -52,9 +52,40 @@
             "description": "Accessible label for the clear control."
           },
           {
+            "name": "hoverBorder",
+            "type": "boolean",
+            "description": "Instance hover border on pill triggers (hex or clear). Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on. Dot only triggers do not use this contract."
+          },
+          {
+            "name": "hoverBorderColor",
+            "type": "string",
+            "description": "Hover border color when hover is active. Prefer tokens such as var(--foreground). Sets --df-color-picker-hover-border."
+          },
+          {
             "name": "className",
             "type": "string",
-            "description": "Additional styles on the root."
+            "description": "Additional styles on the pill trigger or swatch root."
+          }
+        ]
+      },
+      {
+        "id": "color-picker-parts",
+        "title": "Parts",
+        "props": [
+          {
+            "name": "data-df=\"color-picker-trigger\"",
+            "type": "part",
+            "description": "Pill shell for trailing hex or clear. Owns resting and hover border chrome."
+          },
+          {
+            "name": "data-hover-border",
+            "type": "part attribute",
+            "description": "true or false when hoverBorder is set. Omit to inherit data-df-hover-border from the host."
+          },
+          {
+            "name": "data-trailing",
+            "type": "part attribute",
+            "description": "hex or clear on the pill trigger."
           }
         ]
       },
@@ -91,6 +122,30 @@
             "type": "CSS length",
             "description": "Fixed width for the hex label on the pill trigger so it does not reflow while dragging.",
             "default": "7ch"
+          },
+          {
+            "name": "--df-color-picker-border",
+            "type": "CSS color",
+            "description": "Resting border on the pill trigger.",
+            "default": "var(--input)"
+          },
+          {
+            "name": "--df-hover-border",
+            "type": "CSS keyword",
+            "description": "Theme field hover border. on paints the ink hover border; off keeps the resting border. Runtime gating uses data-df-hover-border on html. Set with df-ui init --hover-border. Default on.",
+            "default": "on"
+          },
+          {
+            "name": "--df-color-picker-hover-border",
+            "type": "CSS color",
+            "description": "Hover border when the theme or instance enables hover. Defaults to the ink foreground. Override with hoverBorderColor.",
+            "default": "var(--foreground)"
+          },
+          {
+            "name": "--df-color-picker-bg",
+            "type": "CSS color",
+            "description": "Pill trigger fill.",
+            "default": "var(--muted)"
           },
           {
             "name": "--df-shadow-picker-thumb",

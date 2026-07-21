@@ -14,7 +14,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Open panel and option rows for pickers. Select composes this list for its menu.",
+    "description": "Open panel and option rows for pickers. Select composes this list for its menu. Full keyboard support: arrow keys, Home and End, Enter, typeahead, and focus return to the trigger on close.",
     "groups": [
       {
         "id": "option-list-root",
@@ -567,6 +567,48 @@
             "name": "Item spacing",
             "type": "CSS",
             "description": "Rows use kit gap and hover/selected/disabled states via data attributes."
+          }
+        ]
+      },
+      {
+        "id": "option-list-keyboard",
+        "title": "Keyboard & accessibility",
+        "description": "Applies to portaled panels. Inline panels (portal={false}) keep the page focus flow unchanged.",
+        "props": [
+          {
+            "name": "Open & focus",
+            "type": "built-in",
+            "description": "Opening moves focus into the panel, or the search field when one is present. Closing by keyboard or selection returns focus to the trigger."
+          },
+          {
+            "name": "Arrow keys",
+            "type": "ArrowUp / ArrowDown",
+            "description": "Move the active option with wrap around the ends. Home and End jump to the first and last option."
+          },
+          {
+            "name": "Select",
+            "type": "Enter / Space",
+            "description": "Enter selects the active option. Space selects when focus is on the panel; inside the search field Space types a space."
+          },
+          {
+            "name": "Typeahead",
+            "type": "printable keys",
+            "description": "Jump to the first option that starts with the typed query, then to any option that contains it. The buffer clears after a short pause. Disabled while a search field is present."
+          },
+          {
+            "name": "Submenus",
+            "type": "ArrowRight",
+            "description": "Opens the submenu when the active row is a submenu trigger."
+          },
+          {
+            "name": "ARIA",
+            "type": "listbox",
+            "description": "The panel is a listbox with aria-activedescendant on the active option. The trigger exposes aria-controls to the panel while open."
+          },
+          {
+            "name": "High contrast",
+            "type": "forced-colors",
+            "description": "Under forced-colors, selected and active rows use the system Highlight and HighlightText colors."
           }
         ]
       },

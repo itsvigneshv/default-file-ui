@@ -134,6 +134,19 @@ function PopoverContent({
 
   const mounted = useIsClient()
 
+  // Return focus to the trigger when the panel closes by keyboard or dismissal.
+  const wasOpenRef = React.useRef(false)
+  React.useEffect(() => {
+    if (open) {
+      wasOpenRef.current = true
+      return
+    }
+    if (!wasOpenRef.current) return
+    wasOpenRef.current = false
+    const active = document.activeElement
+    if (active == null || active === document.body) triggerRef.current?.focus?.()
+  }, [open, triggerRef])
+
   if (!mounted) return null
   if (!open) return null
 

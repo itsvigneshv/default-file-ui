@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react"
 import { X } from "lucide-react"
 
 import { Input } from "./df-input"
@@ -10,6 +16,10 @@ import {
   PopoverTrigger,
 } from "./df-popover"
 import { Tabs, TabsList, TabsTrigger } from "./df-tabs"
+import {
+  dfHoverBorderAttr,
+  dfHoverBorderColorStyle,
+} from "../lib/hover-border"
 import { cn } from "../lib/utils"
 
 type ColorMode = "hex" | "rgb" | "hsl" | "hsb"
@@ -202,6 +212,8 @@ type ColorPickerProps = {
   trailing?: ColorPickerTrailing
   onClear?: () => void
   clearLabel?: string
+  hoverBorder?: boolean
+  hoverBorderColor?: string
 }
 
 function SwatchDot({
@@ -235,6 +247,8 @@ export function ColorPicker({
   trailing,
   onClear,
   clearLabel = "Remove color",
+  hoverBorder,
+  hoverBorderColor,
 }: ColorPickerProps) {
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<ColorMode>("hex")
@@ -242,6 +256,15 @@ export function ColorPicker({
   const [hexDraft, setHexDraft] = useState(value.toUpperCase())
   const svRef = useRef<HTMLDivElement>(null)
   const hueRef = useRef<HTMLDivElement>(null)
+
+  const hoverBorderAttr = dfHoverBorderAttr(hoverBorder)
+  const pillChromeStyle = {
+    ...dfHoverBorderColorStyle(
+      "--df-color-picker-hover-border",
+      hoverBorder,
+      hoverBorderColor
+    ),
+  } as CSSProperties
 
   useEffect(() => {
     if (open) return
@@ -514,10 +537,14 @@ export function ColorPicker({
             <button
               type="button"
               aria-label={label}
+              data-df="color-picker-trigger"
+              data-trailing="hex"
+              data-hover-border={hoverBorderAttr}
               className={cn(
-                "inline-flex h-8 w-fit shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 pl-1.5 pr-2.5 text-left leading-none transition-colors hover:border-neutral-300",
+                "inline-flex h-8 w-fit shrink-0 cursor-pointer items-center gap-1.5 rounded-full pl-1.5 pr-2.5 text-left leading-none",
                 className
               )}
+              style={pillChromeStyle}
             />
           }
         >
@@ -538,10 +565,14 @@ export function ColorPicker({
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <div
+          data-df="color-picker-trigger"
+          data-trailing="clear"
+          data-hover-border={hoverBorderAttr}
           className={cn(
-            "inline-flex h-8 w-fit shrink-0 items-center gap-1 rounded-full border border-neutral-200 bg-neutral-50 pl-1.5 pr-0.5",
+            "inline-flex h-8 w-fit shrink-0 items-center gap-1 rounded-full pl-1.5 pr-0.5",
             className
           )}
+          style={pillChromeStyle}
         >
           <PopoverTrigger
             render={

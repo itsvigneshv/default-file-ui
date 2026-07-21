@@ -28,6 +28,10 @@ type OptionListContextValue = {
   open: boolean
   setOpen: (open: boolean) => void
   triggerRef: React.RefObject<HTMLElement | null>
+  listboxId: string
+  activeValue: string | null
+  setActiveValue: (value: string | null) => void
+  optionDomId: (value: string) => string
   labelFor: (value: string | null) => React.ReactNode
   secondaryFor: (value: string | null) => React.ReactNode | null
   layoutFor: (value: string | null) => OptionListItemLayout
@@ -354,8 +358,16 @@ function OptionList({
     onChange: onOpenChange,
   })
   const [searchQuery, setSearchQuery] = React.useState("")
+  const [activeValue, setActiveValue] = React.useState<string | null>(null)
   const [, setLabelsVersion] = React.useState(0)
   const triggerRef = React.useRef<HTMLElement | null>(null)
+  const reactId = React.useId()
+  const listboxId = `df-option-list-${reactId.replace(/:/g, "")}`
+  const optionDomId = React.useCallback(
+    (itemValue: string) =>
+      `${listboxId}-opt-${itemValue.replace(/[^a-zA-Z0-9_-]/g, "-")}`,
+    [listboxId]
+  )
   const labels = React.useRef(new Map<string, React.ReactNode>())
   const secondaries = React.useRef(new Map<string, React.ReactNode | null>())
   const layouts = React.useRef(new Map<string, OptionListItemLayout>())
@@ -443,6 +455,10 @@ function OptionList({
         open: isOpen,
         setOpen: setIsOpen,
         triggerRef,
+        listboxId,
+        activeValue,
+        setActiveValue,
+        optionDomId,
         labelFor,
         secondaryFor,
         layoutFor,
@@ -471,7 +487,7 @@ function OptionListTrigger({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   render?: React.ReactElement
 }) {
-  const { open, setOpen, triggerRef } = useOptionListContext()
+  const { open, setOpen, triggerRef, listboxId } = useOptionListContext()
 
   const toggleOpen = () => setOpen(!open)
 
@@ -505,6 +521,7 @@ function OptionListTrigger({
       "data-df-option-list-trigger": "",
       "aria-expanded": open,
       "aria-haspopup": "listbox",
+      "aria-controls": open ? listboxId : undefined,
       role: (render.props as { role?: string }).role ?? "button",
       tabIndex: (render.props as { tabIndex?: number }).tabIndex ?? 0,
       className: cn(
@@ -527,6 +544,7 @@ function OptionListTrigger({
       data-df="option-list-trigger"
       aria-expanded={open}
       aria-haspopup="listbox"
+      aria-controls={open ? listboxId : undefined}
       onClick={onTriggerClick}
       onKeyDown={onTriggerKeyDown}
     >
@@ -713,6 +731,24 @@ function scrollSelectedIntoListViewport(
   }
 }
 
+function navigableOptions(root: HTMLElement): HTMLElement[] {
+  const items = Array.from(
+    root.querySelectorAll<HTMLElement>(
+      '[data-df="option-list-item"]:not([data-disabled])'
+    )
+  )
+  return items.filter(
+    (item) => item.closest('[data-df="option-list-content"]') === root
+  )
+}
+
+function optionText(item: HTMLElement): string {
+  const label = item.querySelector<HTMLElement>(
+    '[data-df="option-list-item-label"]'
+  )
+  return (label?.textContent ?? item.textContent ?? "").trim().toLowerCase()
+}
+
 function OptionListContent({
   className,
   children,
@@ -734,8 +770,22 @@ function OptionListContent({
   footer,
   ...props
 }: OptionListContentProps) {
-  const { open, setOpen, triggerRef } = useOptionListContext()
+  const {
+    open,
+    setOpen,
+    triggerRef,
+    listboxId,
+    activeValue,
+    setActiveValue,
+    optionDomId,
+    value,
+    values,
+  } = useOptionListContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
+  const typeaheadRef = React.useRef<{ query: string; timer: number | null }>({
+    query: "",
+    timer: null,
+  })
   const placement = useAnchoredPosition({
     open: open && portal,
     triggerRef,
@@ -774,6 +824,149 @@ function OptionListContent({
     scrollSelectedIntoListViewport(selected, root)
   }, [open, mounted])
 
+  const moveActiveTo = React.useCallback(
+    (item: HTMLElement | undefined) => {
+      if (!item) return
+      const next = item.getAttribute("data-value")
+      if (next == null) return
+      setActiveValue(next)
+      const root = contentRef.current
+      if (root) scrollSelectedIntoListViewport(item, root)
+      else item.scrollIntoView({ block: "nearest" })
+    },
+    [setActiveValue]
+  )
+
+  // Set the initial active option and move focus into the list on open.
+  // The guard keeps focus stable while selections change during interaction.
+  const initializedRef = React.useRef(false)
+  React.useEffect(() => {
+    if (!open || !mounted || !portal) {
+      initializedRef.current = false
+      return
+    }
+    if (initializedRef.current) return
+    initializedRef.current = true
+    const root = contentRef.current
+    if (!root) return
+    const items = navigableOptions(root)
+    const preferred = value ?? values[0] ?? null
+    const initial =
+      items.find((item) => item.getAttribute("data-value") === preferred) ??
+      items[0]
+    setActiveValue(initial?.getAttribute("data-value") ?? null)
+    const searchInput = root.querySelector<HTMLInputElement>(
+      '[data-df="option-list-search"] input'
+    )
+    if (searchInput) searchInput.focus()
+    else root.focus()
+    if (initial) scrollSelectedIntoListViewport(initial, root)
+  }, [open, mounted, portal, setActiveValue, value, values])
+
+  // Return focus to the trigger when the list closes by keyboard or selection.
+  const wasOpenRef = React.useRef(false)
+  React.useEffect(() => {
+    if (!portal) return
+    if (open) {
+      wasOpenRef.current = true
+      return
+    }
+    if (!wasOpenRef.current) return
+    wasOpenRef.current = false
+    setActiveValue(null)
+    const active = document.activeElement
+    if (active == null || active === document.body) {
+      triggerRef.current?.focus?.()
+    }
+  }, [open, portal, setActiveValue, triggerRef])
+
+  React.useEffect(() => {
+    const typeahead = typeaheadRef.current
+    return () => {
+      if (typeahead.timer != null) window.clearTimeout(typeahead.timer)
+    }
+  }, [])
+
+  const handleListKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    props.onKeyDown?.(event)
+    if (event.defaultPrevented) return
+    const root = contentRef.current
+    if (!root) return
+    const items = navigableOptions(root)
+    if (items.length === 0) return
+
+    const inSearch = Boolean(
+      (event.target as HTMLElement | null)?.closest(
+        '[data-df="option-list-search"]'
+      )
+    )
+    const currentIndex = items.findIndex(
+      (item) => item.getAttribute("data-value") === activeValue
+    )
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault()
+      const base = currentIndex === -1 ? -1 : currentIndex
+      moveActiveTo(items[(base + 1 + items.length) % items.length])
+      return
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault()
+      const base = currentIndex === -1 ? 0 : currentIndex
+      moveActiveTo(items[(base - 1 + items.length) % items.length])
+      return
+    }
+    if (event.key === "Home") {
+      event.preventDefault()
+      moveActiveTo(items[0])
+      return
+    }
+    if (event.key === "End") {
+      event.preventDefault()
+      moveActiveTo(items[items.length - 1])
+      return
+    }
+    if (event.key === "Enter" || (event.key === " " && !inSearch)) {
+      if (currentIndex === -1) return
+      event.preventDefault()
+      items[currentIndex]?.click()
+      return
+    }
+    if (event.key === "ArrowRight" && currentIndex !== -1) {
+      const item = items[currentIndex]
+      if (item.getAttribute("data-submenu-trigger") != null) {
+        event.preventDefault()
+        item.click()
+      }
+      return
+    }
+
+    if (
+      inSearch ||
+      event.key.length !== 1 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.altKey
+    ) {
+      return
+    }
+    const typeahead = typeaheadRef.current
+    if (typeahead.timer != null) window.clearTimeout(typeahead.timer)
+    typeahead.query += event.key.toLowerCase()
+    const query = typeahead.query
+    const match =
+      items.find((item) => optionText(item).startsWith(query)) ??
+      items.find((item) => optionText(item).includes(query))
+    if (match) {
+      event.preventDefault()
+      moveActiveTo(match)
+    }
+    typeahead.timer = window.setTimeout(() => {
+      typeahead.query = ""
+      typeahead.timer = null
+    }, 500)
+  }
+
   if (!mounted) {
     return (
       <div hidden aria-hidden data-df="option-list-label-registry">
@@ -804,6 +997,11 @@ function OptionListContent({
     <div
       ref={contentRef}
       role="listbox"
+      id={listboxId}
+      tabIndex={-1}
+      aria-activedescendant={
+        activeValue != null ? optionDomId(activeValue) : undefined
+      }
       data-df="option-list-content"
       data-side={placement.side}
       data-align={placement.align}
@@ -836,6 +1034,7 @@ function OptionListContent({
             }
       }
       {...props}
+      onKeyDown={handleListKeyDown}
     >
       {search ? (
         <OptionListSearch
@@ -900,24 +1099,30 @@ function OptionListItem({
   layout = "inline",
   trailing,
   indicator,
+  id: idProp,
   onClick,
+  onMouseEnter,
   ...props
 }: OptionListItemProps) {
   const {
     isSelected,
     toggleValue,
     setOpen,
+    setActiveValue,
     registerLabel,
     registerSecondary,
     closeOnSelect,
     searchQuery,
     selectionMode,
+    activeValue,
+    optionDomId,
   } = useOptionListContext()
   const submenu = React.useContext(OptionListSubmenuStateContext)
   const inTriggerZone = React.useContext(OptionListSubmenuTriggerZoneContext)
   const isSubmenuTrigger = Boolean(submenu && inTriggerZone)
 
   const selected = isSelected(value)
+  const keyboardActive = !disabled && !isSubmenuTrigger && activeValue === value
   const showCheckbox = leading === "checkbox"
   const showTrailingIndicator =
     indicator ??
@@ -984,11 +1189,14 @@ function OptionListItem({
     <div
       {...props}
       ref={setItemRef}
+      id={idProp ?? (isSubmenuTrigger ? undefined : optionDomId(value))}
       role={isSubmenuTrigger ? "menuitem" : "option"}
       aria-selected={isSubmenuTrigger ? undefined : selected}
       aria-haspopup={isSubmenuTrigger ? "menu" : undefined}
       aria-expanded={isSubmenuTrigger ? submenu?.open : undefined}
       data-df="option-list-item"
+      data-value={value}
+      data-active={keyboardActive ? "" : undefined}
       data-state={
         isSubmenuTrigger
           ? submenu?.open
@@ -1005,6 +1213,10 @@ function OptionListItem({
       data-submenu-trigger={isSubmenuTrigger ? "" : undefined}
       data-highlighted={highlighted ? "" : undefined}
       className={cn(className)}
+      onMouseEnter={(event) => {
+        onMouseEnter?.(event)
+        if (!disabled && !isSubmenuTrigger) setActiveValue(value)
+      }}
       onClick={(event) => {
         onClick?.(event)
         if (disabled || event.defaultPrevented) return

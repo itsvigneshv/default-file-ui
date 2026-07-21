@@ -2,7 +2,7 @@
   "name": "search-input",
   "slug": "search-input",
   "title": "Search Input",
-  "description": "Search field with clear control and icon placement.",
+  "description": "Search field with clear control, icon placement, and hover border.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -13,7 +13,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Search field with clear control, sizes, and start or end icon placement. SearchBar is an alias.",
+    "description": "Search field with clear control, sizes, icon placement, and Input hover border controls. SearchBar is an alias.",
     "groups": [
       {
         "id": "search-input",
@@ -59,6 +59,16 @@
             "description": "Called when the clear control is activated."
           },
           {
+            "name": "hoverBorder",
+            "type": "boolean",
+            "description": "Forwards to Input. Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on."
+          },
+          {
+            "name": "hoverBorderColor",
+            "type": "string",
+            "description": "Forwards to Input. Hover border color when hover is active. Prefer tokens such as var(--foreground). Sets --df-input-hover-border."
+          },
+          {
             "name": "inputClassName",
             "type": "string",
             "description": "Classes on the inner input element."
@@ -91,6 +101,18 @@
             "type": "CSS color",
             "description": "Fallback border.",
             "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--df-hover-border",
+            "type": "CSS keyword",
+            "description": "Theme field hover border. on paints the ink hover border; off keeps the resting border. Runtime gating uses data-df-hover-border on html. Set with df-ui init --hover-border. Default on.",
+            "default": "on"
+          },
+          {
+            "name": "--df-input-hover-border",
+            "type": "CSS color",
+            "description": "Hover border on the inner Input when the theme or instance enables hover. Defaults to the ink foreground. Override with hoverBorderColor.",
+            "default": "var(--foreground)"
           },
           {
             "name": "--muted-foreground",

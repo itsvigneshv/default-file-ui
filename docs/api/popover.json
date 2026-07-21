@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-popover",
   "dependencies": [],
   "api": {
-    "description": "Anchored floating panel. Compose Popover, PopoverTrigger, PopoverContent, and optional header parts.",
+    "description": "Anchored floating panel. Compose Popover, PopoverTrigger, PopoverContent, and optional header parts. Escape and outside clicks dismiss; closing by keyboard returns focus to the trigger.",
     "groups": [
       {
         "id": "popover",
@@ -120,6 +120,28 @@
             "name": "PopoverDescription",
             "type": "p attrs",
             "description": "Supporting description."
+          }
+        ]
+      },
+      {
+        "id": "popover-keyboard",
+        "title": "Keyboard & accessibility",
+        "description": "Applies to portaled panels.",
+        "props": [
+          {
+            "name": "Dismiss",
+            "type": "Escape / outside click",
+            "description": "Closes the panel. When focus was inside the panel, it returns to the trigger so the tab order is preserved."
+          },
+          {
+            "name": "Role",
+            "type": "dialog",
+            "description": "The panel is a dialog anchored to the trigger. Add a title with PopoverTitle for an accessible name."
+          },
+          {
+            "name": "High contrast",
+            "type": "forced-colors",
+            "description": "Under forced-colors, the panel keeps a visible border and the trigger keeps a focus outline."
           }
         ]
       },

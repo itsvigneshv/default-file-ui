@@ -85,6 +85,7 @@
   --df-corner-shape-round: round;
   --df-corner-shape-smooth: squircle;
   --df-corner-shape: var(--df-corner-shape-round);
+  --df-hover-border: on;
 
   --df-text-9: 0.5625rem;
   --df-text-2xs: 0.625rem;
@@ -255,6 +256,9 @@
   --df-scrollbar-thickness: 3px;
   --df-scrollbar-min-thumb: 24px;
   --df-scrollbar-min-thumb-edge: 20px;
+  /* Keeps thumbs inside rounded overflow shells at the track ends. */
+  --df-scrollbar-track-inset: calc(2 * var(--spacing-unit, 0.25rem));
+  --df-scrollbar-track-size: calc(2.5 * var(--spacing-unit, 0.25rem));
   --df-tabs-indicator-thickness: var(--border-width-thick);
   --df-color-picker-width: 300px;
   --df-color-picker-height: 220px;
@@ -363,6 +367,7 @@
   --home-tool-preview-mesh-gradient: #fcf5f0;
   --home-tool-preview-color-lab: #fcf5f0;
   --home-tool-preview-design-extractor: #fef7f2;
+  --home-tool-preview-markdown-preview: #f7f8fa;
   --home-showcase-radius: calc(var(--radius) * 3.4);
   --home-hero-collage-gap: calc(28 * var(--spacing-unit, 0.25rem));
   --home-hero-stage-perspective: 87.5rem;

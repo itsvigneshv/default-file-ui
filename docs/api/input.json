@@ -2,7 +2,7 @@
   "name": "input",
   "slug": "input",
   "title": "Input",
-  "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, and validation.",
+  "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, hover and focus borders, and validation.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -13,7 +13,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Single-line text field with primary and secondary variants, size, height, padding, and border width control, outside or inside labels, chrome overrides, focus recipes, icons, clearable trailing control, prefix and suffix addons, an attached action for input groups, and validation state.",
+    "description": "Single-line text field with primary and secondary variants, size, height, padding, and border width control, outside or inside labels, chrome overrides, hover and focus border recipes, icons, clearable trailing control, prefix and suffix addons, an attached action for input groups, and validation state.",
     "groups": [
       {
         "id": "input",
@@ -107,6 +107,16 @@
             "type": "\"hairline\" | \"thin\" | \"thick\"",
             "default": "\"hairline\"",
             "description": "Field border width step. Maps to --border-width-hairline, --border-width-thin, or --border-width-thick via --df-input-border-width."
+          },
+          {
+            "name": "hoverBorder",
+            "type": "boolean",
+            "description": "Instance hover border. Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on."
+          },
+          {
+            "name": "hoverBorderColor",
+            "type": "string",
+            "description": "Hover border color when hover is active. Prefer tokens such as var(--foreground). Sets --df-input-hover-border. Focus and invalid borders take priority."
           },
           {
             "name": "foreground",
@@ -304,6 +314,11 @@
             "name": "data-border-width",
             "type": "part attribute",
             "description": "Border width step on the field shell and native input: hairline, thin, or thick."
+          },
+          {
+            "name": "data-hover-border",
+            "type": "part attribute",
+            "description": "true or false when hoverBorder is set. Omit to inherit data-df-hover-border from the host."
           }
         ]
       },
@@ -449,6 +464,18 @@
             "type": "CSS length",
             "description": "Left content padding. Set by padding, paddingX, or paddingLeft. Icons and floating labels follow this inset.",
             "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-hover-border",
+            "type": "CSS keyword",
+            "description": "Theme field hover border. on paints the ink hover border; off keeps the resting border. Runtime gating uses data-df-hover-border on html. Set with df-ui init --hover-border. Default on.",
+            "default": "on"
+          },
+          {
+            "name": "--df-input-hover-border",
+            "type": "CSS color",
+            "description": "Hover border when the theme or instance enables hover. Defaults to the ink foreground. Override with hoverBorderColor.",
+            "default": "var(--foreground)"
           },
           {
             "name": "--df-input-focus-border",

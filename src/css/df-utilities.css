@@ -1,11 +1,11 @@
 .-translate-x-1\/2 {
   --df-translate-x: calc(50% * -1);
-  transform: translate(var(--df-translate-x, 0), var(--df-translate-y, 0));
+  transform: translate(var(--df-translate-x, 0), var(--df-translate-y, 0)) rotate(var(--df-rotate, 0deg)) scale(var(--df-scale, 1));
 }
 
 .-translate-y-1\/2 {
   --df-translate-y: calc(50% * -1);
-  transform: translate(var(--df-translate-x, 0), var(--df-translate-y, 0));
+  transform: translate(var(--df-translate-x, 0), var(--df-translate-y, 0)) rotate(var(--df-rotate, 0deg)) scale(var(--df-scale, 1));
 }
 
 .\@container {
@@ -31,10 +31,6 @@
 
 .bg-muted\/40 {
   background-color: color-mix(in oklch, var(--muted) 40%, var(--background));
-}
-
-.bg-neutral-50 {
-  background-color: var(--df-neutral-50);
 }
 
 .bg-transparent {
@@ -70,10 +66,6 @@
 
 .border-dashed {
   border-style: dashed;
-}
-
-.border-neutral-200 {
-  border-color: var(--df-neutral-200);
 }
 
 .border-t {
@@ -213,16 +205,13 @@
   background-color: var(--df-neutral-200);
 }
 
-.hover\:border-neutral-300:hover {
-  border-color: var(--df-neutral-300);
-}
-
 .hover\:border-primary\/40:hover {
   border-color: color-mix(in oklch, var(--primary) 40%, var(--background));
 }
 
 .hover\:scale-105:hover {
-  transform: scale(1.05);
+  --df-scale: 1.05;
+  transform: translate(var(--df-translate-x, 0), var(--df-translate-y, 0)) rotate(var(--df-rotate, 0deg)) scale(var(--df-scale, 1));
 }
 
 .hover\:text-neutral-700:hover {

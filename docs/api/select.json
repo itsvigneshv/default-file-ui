@@ -2,7 +2,7 @@
   "name": "select",
   "slug": "select",
   "title": "Select",
-  "description": "Single or multi choice field with label and sizes.",
+  "description": "Single or multi choice field with label, sizes, and hover border.",
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -14,7 +14,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Select composes Option List for the open panel. Configure the root, field chrome, trigger, value display, content, and items below.",
+    "description": "Select composes Option List for the open panel. Configure the root, field chrome, trigger, value display, content, and items below. The trigger is a combobox with full keyboard support inherited from Option List.",
     "groups": [
       {
         "id": "select-root",
@@ -273,6 +273,21 @@
             "name": "borderColor",
             "type": "string",
             "description": "Trigger border color. Prefer tokens such as var(--input). Sets --df-select-border."
+          },
+          {
+            "name": "hoverBorder",
+            "type": "boolean",
+            "description": "Instance hover border. Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on."
+          },
+          {
+            "name": "hoverBorderColor",
+            "type": "string",
+            "description": "Hover border color when hover is active. Prefer tokens such as var(--foreground). Sets --df-select-hover-border. Focus and invalid borders take priority."
+          },
+          {
+            "name": "data-hover-border",
+            "type": "part attribute",
+            "description": "true or false when hoverBorder is set. Omit to inherit data-df-hover-border from the host."
           },
           {
             "name": "errorBorderColor",
@@ -673,6 +688,38 @@
         ]
       },
       {
+        "id": "select-keyboard",
+        "title": "Keyboard & accessibility",
+        "description": "The trigger is a combobox that owns open state and value display; the open list is an Option List panel.",
+        "props": [
+          {
+            "name": "Open",
+            "type": "Enter / Space / ArrowDown",
+            "description": "Open the list from the focused trigger. Focus moves into the panel and lands on the selected option."
+          },
+          {
+            "name": "Navigate",
+            "type": "ArrowUp / ArrowDown / Home / End",
+            "description": "Move the active option with wrap. Type to jump by label (typeahead) when the list has no search field."
+          },
+          {
+            "name": "Commit & dismiss",
+            "type": "Enter / Escape",
+            "description": "Enter selects the active option. Escape closes the list and returns focus to the trigger."
+          },
+          {
+            "name": "ARIA",
+            "type": "combobox + listbox",
+            "description": "The trigger sets aria-expanded, aria-haspopup=\"listbox\", and aria-controls to the panel. Pair a label via SelectField or aria-describedby for hints."
+          },
+          {
+            "name": "High contrast",
+            "type": "forced-colors",
+            "description": "Under forced-colors, the trigger keeps a border and selected or active rows use the system Highlight colors."
+          }
+        ]
+      },
+      {
         "id": "select-tokens",
         "title": "Tokens",
         "description": "Theme defaults live on :root. Override these globally or on a local host.",
@@ -808,6 +855,18 @@
             "type": "CSS color",
             "description": "Trigger border. Set by variant or the borderColor prop.",
             "default": "var(--input)"
+          },
+          {
+            "name": "--df-hover-border",
+            "type": "CSS keyword",
+            "description": "Theme field hover border. on paints the ink hover border; off keeps the resting border. Runtime gating uses data-df-hover-border on html. Set with df-ui init --hover-border. Default on.",
+            "default": "on"
+          },
+          {
+            "name": "--df-select-hover-border",
+            "type": "CSS color",
+            "description": "Hover border when the theme or instance enables hover. Defaults to the ink foreground. Override with hoverBorderColor.",
+            "default": "var(--foreground)"
           },
           {
             "name": "--border",

@@ -11,7 +11,7 @@
   "importPath": "@default-file/ui/components/df-options-panel",
   "dependencies": [],
   "api": {
-    "description": "Anchored options panel chrome with a titled header and open body/footer slots. Compose any sections or actions inside the slots. Nothing is hardcoded.",
+    "description": "Anchored options panel chrome with a titled header and open body/footer slots. Compose any sections or actions inside the slots. Nothing is hardcoded. Shares Popover behavior: Escape and outside clicks dismiss, and closing by keyboard returns focus to the trigger.",
     "groups": [
       {
         "id": "options-panel",

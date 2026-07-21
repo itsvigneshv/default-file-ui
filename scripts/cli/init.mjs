@@ -5,13 +5,16 @@ import {
   COLOR_SCALES,
   CORNER_SHAPES,
   DEFAULT_CORNER_SHAPE,
+  DEFAULT_HOVER_BORDER,
   DEFAULT_RADIUS,
   FRAMEWORKS,
+  HOVER_BORDERS,
   INSTALL_MODES,
   frameworkLabel,
   isColorScale,
   isCornerShape,
   isFramework,
+  isHoverBorder,
   isInstallMode,
   isRadius,
 } from "./constants.mjs"
@@ -48,6 +51,11 @@ export async function initCommand(args) {
       `Unknown --corner-shape "${options.cornerShape}". Use one of: ${CORNER_SHAPES.join(", ")}`
     )
   }
+  if (options.hoverBorder && !isHoverBorder(options.hoverBorder)) {
+    throw new Error(
+      `Unknown --hover-border "${options.hoverBorder}". Use one of: ${HOVER_BORDERS.join(", ")}`
+    )
+  }
 
   if (options.template) {
     if (!isFramework(options.template)) {
@@ -68,6 +76,7 @@ export async function initCommand(args) {
     const result = applyKit(projectDir, options.template, {
       radius: options.radius,
       cornerShape: options.cornerShape,
+      hoverBorder: options.hoverBorder,
     })
     finalizeConfig(projectDir, options.template, options, result)
     console.log(`\nNext:\n  cd ${name}\n  npm run dev\n`)
@@ -96,17 +105,20 @@ export async function initCommand(args) {
   const result = applyKit(cwd, framework, {
     radius: options.radius,
     cornerShape: options.cornerShape,
+    hoverBorder: options.hoverBorder,
   })
   finalizeConfig(cwd, framework, options, result)
 }
 
 function finalizeConfig(cwd, framework, options, result) {
   const colorScale = options.colorScale ?? "detailed"
+  const hoverBorder = options.hoverBorder ?? DEFAULT_HOVER_BORDER
   const config = buildDfConfig(cwd, framework, {
     installMode: options.installMode ?? "package",
     colorScale,
     radius: options.radius ?? DEFAULT_RADIUS,
     cornerShape: options.cornerShape ?? DEFAULT_CORNER_SHAPE,
+    hoverBorder,
     css: result?.css?.path ? path.relative(cwd, result.css.path) : null,
   })
   const file = writeDfConfig(cwd, config)
@@ -117,6 +129,11 @@ function finalizeConfig(cwd, framework, options, result) {
     )
     console.log(
       `Both --df-*-detailed-* and --df-*-compact-* remain defined.`
+    )
+  }
+  if (hoverBorder !== DEFAULT_HOVER_BORDER) {
+    console.log(
+      `Set data-df-hover-border="${hoverBorder}" on <html> so field hover borders follow the theme.`
     )
   }
 }
@@ -130,6 +147,7 @@ function parseInitArgs(args) {
     installMode: null,
     radius: null,
     cornerShape: null,
+    hoverBorder: null,
     cwd: process.cwd(),
     help: false,
   }
@@ -151,6 +169,8 @@ function parseInitArgs(args) {
       options.radius = args[++i] ?? null
     } else if (arg === "--corner-shape") {
       options.cornerShape = args[++i] ?? null
+    } else if (arg === "--hover-border") {
+      options.hoverBorder = args[++i] ?? null
     } else if (arg === "--cwd") {
       options.cwd = args[++i] ?? process.cwd()
     } else if (arg.startsWith("-")) {
@@ -186,6 +206,7 @@ Options:
       --install-mode <m>    ${INSTALL_MODES.join(" | ")} (default: package)
       --radius <len>        Corner radius token, e.g. 0, 0.375rem, 1rem (default: ${DEFAULT_RADIUS})
       --corner-shape <s>    ${CORNER_SHAPES.join(" | ")} (default: ${DEFAULT_CORNER_SHAPE})
+      --hover-border <s>    ${HOVER_BORDERS.join(" | ")} (default: ${DEFAULT_HOVER_BORDER})
 
 Laravel: create the Inertia + React app first, then run init in that folder.
 
@@ -194,6 +215,7 @@ Examples:
   df-ui init -t vite --color-scale compact
   df-ui init -t next --radius 1rem
   df-ui init -t next --corner-shape smooth
+  df-ui init -t next --hover-border off
   df-ui init --framework astro
 `)
 }

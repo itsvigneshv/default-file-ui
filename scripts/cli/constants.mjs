@@ -30,6 +30,12 @@ export const CORNER_SHAPES = ["round", "smooth"]
 /** Classic circular arcs. Matches kit `--df-corner-shape` default. */
 export const DEFAULT_CORNER_SHAPE = "round"
 
+/** Field hover border theme. Maps to `--df-hover-border` and host `data-df-hover-border`. */
+export const HOVER_BORDERS = ["on", "off"]
+
+/** Matches kit `--df-hover-border` default. */
+export const DEFAULT_HOVER_BORDER = "on"
+
 export function isColorScale(value) {
   return COLOR_SCALES.includes( (value))
 }
@@ -44,6 +50,10 @@ export function isRadius(value) {
 
 export function isCornerShape(value) {
   return CORNER_SHAPES.includes(String(value))
+}
+
+export function isHoverBorder(value) {
+  return HOVER_BORDERS.includes(String(value))
 }
 
 /** CSS value written into the host stylesheet for `--df-corner-shape`. */

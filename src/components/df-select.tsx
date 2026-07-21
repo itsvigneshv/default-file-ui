@@ -15,6 +15,10 @@ import {
   OptionListSeparator,
   useOptionListContext,
 } from "./df-option-list"
+import {
+  dfHoverBorderAttr,
+  dfHoverBorderColorStyle,
+} from "../lib/hover-border"
 import { cn } from "../lib/utils"
 
 type SelectSize = "sm" | "md" | "lg"
@@ -29,6 +33,8 @@ type SelectTriggerProps = Omit<React.HTMLAttributes<HTMLDivElement>, "disabled">
   leadingIcon?: React.ReactNode
   background?: string
   borderColor?: string
+  hoverBorder?: boolean
+  hoverBorderColor?: string
   errorBorderColor?: string
   padding?: string
   paddingX?: string
@@ -580,6 +586,8 @@ function SelectTrigger({
   leadingIcon,
   background,
   borderColor,
+  hoverBorder,
+  hoverBorderColor,
   errorBorderColor,
   padding,
   paddingX,
@@ -595,6 +603,7 @@ function SelectTrigger({
     open,
     setOpen,
     triggerRef,
+    listboxId,
     value,
     values,
     selectionMode,
@@ -628,9 +637,15 @@ function SelectTrigger({
   const resolvedPaddingRight = paddingRight ?? paddingX ?? padding
   const resolvedPaddingBottom = paddingBottom ?? paddingY ?? padding
   const resolvedPaddingLeft = paddingLeft ?? paddingX ?? padding
+  const hoverBorderAttr = dfHoverBorderAttr(hoverBorder)
   const chromeStyle = {
     ...(background != null ? { "--df-select-bg": background } : null),
     ...(borderColor != null ? { "--df-select-border": borderColor } : null),
+    ...dfHoverBorderColorStyle(
+      "--df-select-hover-border",
+      hoverBorder,
+      hoverBorderColor
+    ),
     ...(errorBorderColor != null
       ? { "--df-select-error-border": errorBorderColor }
       : null),
@@ -688,6 +703,7 @@ function SelectTrigger({
       data-placeholder={empty ? "" : undefined}
       data-disabled={disabled ? "" : undefined}
       data-invalid={invalid ? "" : undefined}
+      data-hover-border={hoverBorderAttr}
       className={cn(className)}
       style={{ ...chromeStyle, ...style }}
       {...props}
@@ -695,6 +711,7 @@ function SelectTrigger({
       tabIndex={disabled ? -1 : 0}
       aria-expanded={open}
       aria-haspopup="listbox"
+      aria-controls={open ? listboxId : undefined}
       aria-disabled={disabled || undefined}
       aria-invalid={invalid || undefined}
       onClick={(event) => {

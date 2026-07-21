@@ -317,7 +317,7 @@ export function getDocs(topic = "overview") {
       title: "Install",
       body: [
         "Scaffold: npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next",
-        "Existing app: df-ui init (writes df.json; supports --framework, --color-scale, --radius, --corner-shape, --install-mode)",
+        "Existing app: df-ui init (writes df.json; supports --framework, --color-scale, --radius, --corner-shape, --hover-border, --install-mode)",
         "Add components: df-ui add button select",
         "Agent skill: npx skills add itsvigneshv/default-file-ui --skill design-file-ui (or df-ui skills install design-file-ui)",
         "Package mode peers: react, react-dom, lucide-react",
@@ -352,6 +352,7 @@ export function getDocs(topic = "overview") {
         "Primitives use --df-* names (color, type, space, radius, shadow, motion, opacity, z-index, control sizes).",
         "Semantic tokens (--background, --border, --brand-ink, ...) point at primitives.",
         "Color scale modes: data-df-color-scale=\"detailed\" (default) or \"compact\" on <html>.",
+        "Field hover border: data-df-hover-border=\"on\" (default) or \"off\" on <html>; df-ui init --hover-border.",
         "Use df-ui tokens to list machine-readable token names from the kit CSS.",
       ].join("\n"),
     },

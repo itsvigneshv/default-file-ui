@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Search, X } from "lucide-react"
 
-import { Input } from "./df-input"
+import { Input, type InputProps } from "./df-input"
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
 
@@ -13,17 +13,18 @@ type SearchInputIconPosition = "start" | "end"
 type SearchInputProps = Omit<
   React.ComponentProps<"input">,
   "className" | "size" | "height"
-> & {
-  className?: string
-  inputClassName?: string
-  leadingIcon?: React.ReactNode | false
-  iconPosition?: SearchInputIconPosition
-  trailing?: React.ReactNode
-  clearable?: boolean
-  onClear?: () => void
-  variant?: "default" | "pill"
-  size?: SearchInputSize
-}
+> &
+  Pick<InputProps, "hoverBorder" | "hoverBorderColor"> & {
+    className?: string
+    inputClassName?: string
+    leadingIcon?: React.ReactNode | false
+    iconPosition?: SearchInputIconPosition
+    trailing?: React.ReactNode
+    clearable?: boolean
+    onClear?: () => void
+    variant?: "default" | "pill"
+    size?: SearchInputSize
+  }
 
 function SearchInput({
   className,

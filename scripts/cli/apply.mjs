@@ -4,6 +4,7 @@ import {
   CSS_IMPORT,
   CSS_IMPORT_JS,
   DEFAULT_CORNER_SHAPE,
+  DEFAULT_HOVER_BORDER,
   DEFAULT_RADIUS,
   PACKAGE_SPEC,
   cornerShapeCssValue,
@@ -60,6 +61,19 @@ export function applyKit(cwd, framework, options = {}) {
     if (cornerResult.changed) {
       console.log(
         `Corner shape: set --df-corner-shape to ${options.cornerShape} in ${path.relative(cwd, css.path)}`
+      )
+    }
+  }
+
+  if (
+    options.hoverBorder &&
+    options.hoverBorder !== DEFAULT_HOVER_BORDER &&
+    css.path
+  ) {
+    const hoverResult = ensureHoverBorderOverride(css.path, options.hoverBorder)
+    if (hoverResult.changed) {
+      console.log(
+        `Hover border: set --df-hover-border to ${options.hoverBorder} in ${path.relative(cwd, css.path)}`
       )
     }
   }
@@ -189,6 +203,12 @@ function ensureCornerShapeOverride(cssPath, cornerShape) {
   const marker = "/* df-ui:corner-shape */"
   const value = cornerShapeCssValue(cornerShape)
   const block = `${marker}\n:root {\n  --df-corner-shape: ${value};\n}`
+  return ensureMarkedRootBlock(cssPath, marker, block)
+}
+
+function ensureHoverBorderOverride(cssPath, hoverBorder) {
+  const marker = "/* df-ui:hover-border */"
+  const block = `${marker}\n:root {\n  --df-hover-border: ${hoverBorder};\n}`
   return ensureMarkedRootBlock(cssPath, marker, block)
 }
 

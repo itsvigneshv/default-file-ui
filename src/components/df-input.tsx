@@ -8,6 +8,10 @@ import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
+import {
+  dfHoverBorderAttr,
+  dfHoverBorderColorStyle,
+} from "../lib/hover-border"
 import { cn } from "../lib/utils"
 import { Label } from "./df-label"
 
@@ -50,6 +54,8 @@ type InputProps = Omit<
   background?: string
   borderColor?: string
   borderWidth?: InputBorderWidth
+  hoverBorder?: boolean
+  hoverBorderColor?: string
   foreground?: string
   placeholderColor?: string
   hint?: React.ReactNode
@@ -96,6 +102,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       background,
       borderColor,
       borderWidth = "hairline",
+      hoverBorder,
+      hoverBorderColor,
       foreground,
       placeholderColor,
       hint,
@@ -206,6 +214,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ...(placeholderColor != null
         ? { "--df-input-placeholder": placeholderColor }
         : null),
+      ...dfHoverBorderColorStyle(
+        "--df-input-hover-border",
+        hoverBorder,
+        hoverBorderColor
+      ),
       ...(focusBorderColor != null
         ? { "--df-input-focus-border": focusBorderColor }
         : null),
@@ -235,6 +248,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const hasRootTone =
       labelColor != null || errorLabelColor != null || hintColor != null
+    const hoverBorderAttr = dfHoverBorderAttr(hoverBorder)
 
     const fieldStyle = shellOwnsChrome
       ? surfaceStyle
@@ -268,6 +282,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         data-radius={radius}
         data-focus-variant={focusVariant}
         data-corner-shape={cornerShape}
+        data-hover-border={hoverBorderAttr}
         data-invalid={isInvalid ? "" : undefined}
         aria-invalid={isInvalid || undefined}
         aria-describedby={describedBy}
@@ -291,6 +306,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         data-radius={radius}
         data-focus-variant={focusVariant}
         data-corner-shape={cornerShape}
+        data-hover-border={hoverBorderAttr}
         data-label-position={hasInsideLabel ? "inside" : undefined}
         data-empty={hasInsideLabel && isEmpty ? "" : undefined}
         data-has-leading={hasLeading ? "" : undefined}

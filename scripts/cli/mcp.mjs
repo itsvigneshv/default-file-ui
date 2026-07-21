@@ -332,6 +332,7 @@ export async function startMcpServer() {
         colorScale: z.enum(["detailed", "compact"]).optional(),
         radius: z.string().optional(),
         cornerShape: z.enum(["round", "smooth"]).optional(),
+        hoverBorder: z.enum(["on", "off"]).optional(),
         installMode: z.enum(["package", "registry"]).optional(),
       },
       annotations: {
@@ -348,6 +349,7 @@ export async function startMcpServer() {
         if (args.colorScale) argv.push("--color-scale", args.colorScale)
         if (args.radius) argv.push("--radius", args.radius)
         if (args.cornerShape) argv.push("--corner-shape", args.cornerShape)
+        if (args.hoverBorder) argv.push("--hover-border", args.hoverBorder)
         if (args.installMode) argv.push("--install-mode", args.installMode)
         const result = await captureCommand(() => initCommand(argv))
         return jsonResult(result)

@@ -2,6 +2,7 @@ import path from "node:path"
 
 import {
   DEFAULT_CORNER_SHAPE,
+  DEFAULT_HOVER_BORDER,
   DEFAULT_RADIUS,
   DF_JSON,
 } from "./constants.mjs"
@@ -35,6 +36,7 @@ export function buildDfConfig(cwd, framework, options = {}) {
     colorScale: options.colorScale ?? "detailed",
     radius: options.radius ?? DEFAULT_RADIUS,
     cornerShape: options.cornerShape ?? DEFAULT_CORNER_SHAPE,
+    hoverBorder: options.hoverBorder ?? DEFAULT_HOVER_BORDER,
     baseDir,
     aliases: {
       ui: "@/default-file-ui",

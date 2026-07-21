@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-scroll-area",
   "dependencies": [],
   "api": {
-    "description": "Scrollable region with a custom overlay thumb. By default the thumb appears on hover or while scrolling and hides when idle; set visibility to always to keep it on whenever the content overflows. Track inset follows space: auto reserves it only when that axis overflows. space none overlays without inset, except on the default variant with hover where auto is forced so the wider bar cannot jerk the layout.",
+    "description": "Scrollable region with a custom overlay thumb. By default the thumb appears on hover or while scrolling and hides when idle; set visibility to always to keep it on whenever the content overflows. Track inset follows space: auto reserves it only when that axis overflows. space none overlays without inset, except on the default variant with hover where auto is forced so the wider bar cannot jerk the layout. Track ends stay inset so thumbs are not clipped by rounded overflow shells.",
     "groups": [
       {
         "id": "scroll-area",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T22:34:06.891Z",
+  "generatedAt": "2026-07-21T19:52:55.758Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -80,7 +80,7 @@
       "slug": "color-picker",
       "name": "color-picker",
       "title": "Color Picker",
-      "description": "Swatch trigger with hex trailing and channel editors.",
+      "description": "Swatch trigger with hex trailing, hover border, and channel editors.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -90,7 +90,7 @@
       ],
       "importPath": "@default-file/ui/components/df-color-picker",
       "dependencies": [],
-      "propCount": 13
+      "propCount": 22
     },
     {
       "slug": "content-switcher",
@@ -155,7 +155,7 @@
       "slug": "input",
       "name": "input",
       "title": "Input",
-      "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, and validation.",
+      "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, hover and focus borders, and validation.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -165,7 +165,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 92
+      "propCount": 97
     },
     {
       "slug": "label",
@@ -210,7 +210,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 106
+      "propCount": 113
     },
     {
       "slug": "options-panel",
@@ -263,7 +263,7 @@
       ],
       "importPath": "@default-file/ui/components/df-popover",
       "dependencies": [],
-      "propCount": 20
+      "propCount": 23
     },
     {
       "slug": "scroll-area",
@@ -282,7 +282,7 @@
       "slug": "search-input",
       "name": "search-input",
       "title": "Search Input",
-      "description": "Search field with clear control and icon placement.",
+      "description": "Search field with clear control, icon placement, and hover border.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -292,13 +292,13 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 15
+      "propCount": 19
     },
     {
       "slug": "select",
       "name": "select",
       "title": "Select",
-      "description": "Single or multi choice field with label and sizes.",
+      "description": "Single or multi choice field with label, sizes, and hover border.",
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -309,7 +309,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 141
+      "propCount": 151
     },
     {
       "slug": "separator",

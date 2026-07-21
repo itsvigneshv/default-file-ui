@@ -25,6 +25,7 @@ export function infoCommand(args) {
     console.log(`    colorScale:  ${config.colorScale}`)
     console.log(`    radius:      ${config.radius ?? "n/a"}`)
     console.log(`    cornerShape: ${config.cornerShape ?? "n/a"}`)
+    console.log(`    hoverBorder: ${config.hoverBorder ?? "n/a"}`)
     console.log(`    baseDir:     ${config.baseDir}`)
     console.log(`    css:         ${config.css ?? "n/a"}`)
   } else {
