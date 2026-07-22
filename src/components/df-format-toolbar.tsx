@@ -468,6 +468,19 @@ function FormatToolbar({
             sideOffset={8}
             className="w-44 rounded-xl border border-border bg-card p-1.5 shadow-[var(--df-shadow-panel)]"
           >
+            <Button
+              type="button"
+              variant={controller.isActive("callout") ? "ghost" : "secondary"}
+              size="sm"
+              className="w-full justify-start"
+              onClick={() => {
+                if (editLocked) return
+                controller.unsetCallout()
+                setCalloutOpen(false)
+              }}
+            >
+              None
+            </Button>
             {FORMAT_TOOLBAR_CALLOUT_TYPES.map((type) => (
               <Button
                 key={type}
@@ -481,11 +494,7 @@ function FormatToolbar({
                 className="w-full justify-start"
                 onClick={() => {
                   if (editLocked) return
-                  if (controller.isActive("callout", { type })) {
-                    controller.unsetCallout()
-                  } else {
-                    controller.setCallout(type)
-                  }
+                  controller.setCallout(type)
                   setCalloutOpen(false)
                 }}
               >

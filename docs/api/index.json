@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T18:07:53.352Z",
+  "generatedAt": "2026-07-22T18:18:05.788Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -33,7 +33,7 @@
       ],
       "importPath": "@default-file/ui/components/df-badge",
       "dependencies": [],
-      "propCount": 24
+      "propCount": 27
     },
     {
       "slug": "border-glow",
@@ -490,7 +490,7 @@
       ],
       "importPath": "@default-file/ui/components/df-tooltip",
       "dependencies": [],
-      "propCount": 24
+      "propCount": 27
     }
   ]
 }

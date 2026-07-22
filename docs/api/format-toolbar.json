@@ -17,7 +17,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Rich text formatting toolbar for editor surfaces. Hosts own document state through a controller. Supports headings, marks, lists, quote, callout, code, rule, and table actions.",
+    "description": "Rich text formatting toolbar for editor surfaces. Hosts own document state through a controller. Supports headings, marks, lists, quote, callout (with None to clear), code, rule, and table actions.",
     "groups": [
       {
         "id": "format-toolbar",
