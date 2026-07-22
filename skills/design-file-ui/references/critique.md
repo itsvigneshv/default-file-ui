@@ -4,15 +4,15 @@ Score each axis `strong`, `weak`, or `missing`. Fix weak structure before polish
 
 The required output shape lives in `SKILL.md` (Critique contract). Use this file for the per axis questions only. Choose the axis set that matches the classified surface mode.
 
-## Enterprise professional findings (required)
+## Professional findings (required)
 
-Write findings as an enterprise product and UX review. Each weak or missing axis needs:
+Write findings like a senior frontend product review. This is about clarity of critique, not limiting the skill to enterprise apps. Each weak or missing axis needs:
 
 1. **Observation** — concrete UI evidence
-2. **Impact** — effect on task completion, decision speed, risk, trust, or operability
+2. **Impact** — why it matters for this surface (marketing: brand, CTA, trust; workspace/mobileTool: task, scan path, error risk)
 3. **Recommendation** — the next structural change
 
-Prefer operational language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating operator or business impact. Marketing brand and CTA issues should be framed as go to market clarity and trust, not contest styling.
+Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Keep expressive marketing and creative frontend work fully in scope when that is the brief.
 
 ## Evidence rule (required)
 

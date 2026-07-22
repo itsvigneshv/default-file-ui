@@ -1,6 +1,6 @@
 # Design File UI skill
 
-Portable Agent Skill for designing, implementing, and critiquing excellent frontend UI. Covers marketing and promotional surfaces and workspace tools (dashboards, admin, data UI, mobile tool shells). Tool agnostic and stack agnostic. When Default File UI is present in a project, prefer kit discovery before inventing chrome.
+Portable Agent Skill for designing, implementing, and critiquing excellent frontend UI. Build what the user asks for across marketing, promotional, portfolio, SaaS, admin, data UI, and mobile tool surfaces. Tool agnostic and stack agnostic. When Default File UI is present in a project, prefer kit discovery before inventing chrome.
 
 **Canonical source for publish:** this folder (`skills/design-file-ui/` inside `@default-file/ui`).
 
@@ -76,7 +76,8 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 ## Adherence notes
 
 - Critique and redesign must load `references/critique.md` before findings.
-- Findings must use an enterprise professional voice: observation, impact, recommendation. No taste only or gallery style commentary.
+- Findings use a clear professional voice: observation, impact, recommendation. This improves review quality; it does not limit the skill to enterprise dashboards.
+- Keep the skill frontend first and open to any UI brief the user wants (creative marketing included).
 - Weak or missing axes need concrete evidence; design tasks need an improve pass when scores are not all strong.
 - The critique output contract is inlined in `SKILL.md` so the format cannot be skipped.
 - Composition reference is marketing only; workspace work must load `workspace.md`.

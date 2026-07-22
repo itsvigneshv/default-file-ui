@@ -16,6 +16,8 @@ description: >-
 
 Build and critique frontend interfaces that feel intentional, branded, and human. This skill is stack agnostic and tool agnostic. Prefer principles over fashion. Do not clone a specific external showcase site.
 
+**Scope:** This is a frontend focused skill. Build what the user asks for: marketing pages, portfolios, product sites, SaaS tools, admin screens, data UI, mobile web apps, and mixed surfaces. Do not narrow the brief to enterprise dashboards only. Mode routing chooses the right rules for the surface; it does not limit what the user may request.
+
 Project or user hard rules may already cover composition principles. This skill still owns mode routing, the critique workflow, and the output contract. Follow that contract even when principles feel familiar.
 
 Read this file immediately when the skill applies, then follow the task path below. Do not improvise a generic review format.
@@ -40,10 +42,11 @@ If unsure whether a string is English UI copy or a technical token, prefer space
 
 ## When to use
 
-- New UI from a brief or rough idea
+- New frontend UI from a brief or rough idea (any product or brand surface the user wants)
 - Redesign or visual upgrade of an existing screen
 - Critique of hierarchy, brand strength, task clarity, motion, or UX clarity
 - Choosing layout, type, color, and interaction patterns for a frontend surface
+- Marketing and promotional pages, portfolios, and product launches
 - SaaS dashboards, admin tools, tables, filters, settings, and mobile tool UI
 
 ## When not to use
@@ -287,7 +290,7 @@ If the kit is absent, skip `kit.md` and use the agnostic implementation path abo
 2. MUST open [references/critique.md](references/critique.md) before writing findings.
 3. Score every axis for that mode `strong`, `weak`, or `missing` using the contract below.
 4. For every `weak` or `missing` axis, cite concrete evidence (region, module, or pattern), not a vague adjective.
-5. Write findings from an **enterprise professional** perspective (see voice rules below).
+5. Write findings in a **clear professional** voice (see voice rules below). This shapes how reviews are written; it does not shrink what you can design or build.
 6. Propose a redesign plan that fixes the weakest structure or task issues first.
 7. Do not start with decorative recoloring if structure scores are weak.
 8. For redesign asks: implement the first improve pass, or list exact file-level changes if code is out of scope.
@@ -296,24 +299,30 @@ If the kit is absent, skip `kit.md` and use the agnostic implementation path abo
 
 Use the axis set for the classified mode. Score each axis `strong`, `weak`, or `missing`.
 
-### Enterprise professional findings voice (required)
+### Professional findings voice (required)
 
-Critique findings, structural issues, quick wins, and improve pass notes must read like an enterprise product and UX review, not a portfolio or design gallery comment.
+Critique findings, structural issues, quick wins, and improve pass notes must be clear and useful, like a senior frontend product review. Not vague taste commentary, and not a design gallery caption.
+
+This voice applies to **how findings are written**. It does **not** limit the skill to enterprise apps. Keep building expressive marketing, portfolios, campaigns, and creative frontend work when the brief asks for them.
 
 Write each finding as:
 
 1. **Observation** — what is present or missing in the UI (concrete region or pattern)
-2. **Impact** — effect on task completion, decision speed, risk, trust, or operability
+2. **Impact** — why it matters for this surface (match the mode)
 3. **Recommendation** — the structural change to make next
+
+Impact by mode:
+
+- **marketing:** brand clarity, first impression, CTA confidence, trust, section purpose
+- **workspace / mobileTool:** task completion, scan path, decision speed, error risk, empty and loading recovery
 
 Voice rules:
 
-- Prefer operational language: triage, scan path, primary action, ownership, empty and error recovery, accessibility, consistency with the system
-- Tie issues to business or operator outcomes when relevant (time to action, missed exception, ambiguous status, blocked workflow)
-- Keep tone calm, specific, and decisive. No hype, no taste only judgments, no showcase or trend chasing
-- Do not frame success as looking trendy, viral, or gallery ready. Frame success as clear hierarchy, reliable task flow, and branded craft that still serves work
-- Marketing mode still covers brand and CTA, but judge them as go to market clarity and trust, not as contest styling
-- Workspace and mobileTool findings prioritize task clarity, density, states, and risk of operator error over decorative authorship alone
+- Keep tone calm, specific, and decisive. No hype, no taste only judgments, no trend chasing
+- Do not frame success as looking trendy or viral. Frame success as clear hierarchy, strong craft, and a frontend that serves the user's goal
+- Marketing mode still owns brand presence, hero composition, visual authorship, and expressive type or motion
+- Workspace and mobileTool findings prioritize task clarity, density, states, and operator error risk, while still allowing distinctive visual authorship
+- Never refuse a frontend brief because it is creative, branded, or non enterprise. Route it to the correct mode and build it
 
 ### Marketing axes
 
@@ -364,12 +373,12 @@ spec | problem : <one line rationale>
 | … | … |
 
 ### Top 3 structural issues
-1. <issue>. Evidence: <region or pattern>. Impact: <task, risk, or decision effect>.
+1. <issue>. Evidence: <region or pattern>. Impact: <mode matched effect on clarity, trust, task, or risk>.
 2.
 3.
 
 ### Top 3 quick wins
-1. <change> — <why it improves operability or clarity>
+1. <change> — <why it improves clarity or the user goal>
 2.
 3.
 
@@ -395,16 +404,17 @@ When designing or redesigning, provide:
 4. Section map (marketing) or shell map (workspace / mobileTool)
 5. Key UI decisions (type ladder, color, motion, primary action, table vs card, adaptive density when relevant)
 6. Implementation (code or concrete component changes)
-7. The critique contract above, including enterprise professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
+7. The critique contract above, including professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
 
-Keep prose short and enterprise professional. Prefer decisive recommendations over option piles unless the user asks for alternatives.
+Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives. Stay frontend focused: invent and implement the UI the user wants within the classified mode.
 
 ## Before finishing
 
 - **Mode and Brief:** Classified and stated. Marketing rules not applied to workspace; dashboard chrome not applied to marketing heroes.
 - **Problem briefs:** Decision model present; IA invented from the job, not a generic component shopping list.
 - **Visual authorship:** Concept and signature move named; default dark cyan SaaS template rejected unless requested.
-- **Critique tasks:** Do not send a final answer without scored axes for the correct mode, evidence on each weak/missing axis, enterprise professional findings (observation, impact, recommendation), top 3 structural issues, redesign sequence, and non goals.
+- **Critique tasks:** Do not send a final answer without scored axes for the correct mode, evidence on each weak/missing axis, professional findings (observation, impact, recommendation), top 3 structural issues, redesign sequence, and non goals.
+- **Build scope:** Do not shrink a user brief to an enterprise dashboard template. Deliver the frontend surface they asked for.
 - **Design or redesign tasks:** Matching preflight answered; section or shell map present; critique contract filled; at least one improve pass applied when any axis is weak or missing.
 - **Multi section IA:** No dead nav destinations; stubs must be real empty states with a next action, or the item must be removed from nav.
 - **Adaptive density:** Primary canvas does not leave a large empty void without a deliberate fill choice.
@@ -415,7 +425,8 @@ Keep prose short and enterprise professional. Prefer decisive recommendations ov
 ## Anti goals
 
 - Fashion cloning from external showcase galleries
-- Taste only or trend based findings with no task, risk, or operability impact
+- Taste only or trend based findings with no clear impact for the surface
+- Treating this skill as enterprise dashboard only and refusing creative or marketing frontend work
 - Stack religion (no required framework)
 - Generic AI template aesthetics (marketing or workspace flavors)
 - Default dark enterprise dashboard with cyan accent and flat type as the whole identity

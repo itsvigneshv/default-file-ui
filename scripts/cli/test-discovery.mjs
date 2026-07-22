@@ -89,8 +89,21 @@ async function testHelpers() {
     "skill markdown must stay agnostic"
   )
   assert.ok(
-    /enterprise professional/i.test(designSkill.skillMarkdown),
-    "skill markdown must require enterprise professional findings"
+    /Professional findings voice/i.test(designSkill.skillMarkdown),
+    "skill markdown must require professional findings voice"
+  )
+  assert.ok(
+    /frontend focused/i.test(designSkill.skillMarkdown),
+    "skill markdown must stay frontend focused"
+  )
+  assert.ok(
+    /does\s*\**not\**\s*limit the skill to enterprise/i.test(
+      designSkill.skillMarkdown
+    ) ||
+      /Do not narrow the brief to enterprise dashboards only/i.test(
+        designSkill.skillMarkdown
+      ),
+    "skill markdown must not narrow build scope to enterprise only"
   )
   assert.ok(
     /observation/i.test(designSkill.skillMarkdown) &&
@@ -104,8 +117,12 @@ async function testHelpers() {
   )
   assert.ok(critiqueRef, "expected critique.md reference")
   assert.ok(
-    /enterprise professional findings/i.test(critiqueRef.content),
-    "critique.md must require enterprise professional findings"
+    /Professional findings/i.test(critiqueRef.content),
+    "critique.md must require professional findings"
+  )
+  assert.ok(
+    /creative frontend work fully in scope/i.test(critiqueRef.content),
+    "critique.md must keep creative frontend work in scope"
   )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
