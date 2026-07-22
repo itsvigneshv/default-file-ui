@@ -156,6 +156,20 @@
   --df-leading-9: 2.25rem;
   --df-leading-10: 2.5rem;
 
+  /* Cast strength for shadows that mix a color with transparent. */
+  --df-shadow-intensity-2xs: 5%;
+  --df-shadow-intensity-xs: 6%;
+  --df-shadow-intensity-sm: 8%;
+  --df-shadow-intensity-md: 10%;
+  --df-shadow-intensity-lg: 12%;
+  --df-shadow-intensity-xl: 16%;
+  --df-shadow-intensity-2xl: 20%;
+  --df-shadow-intensity-3xl: 28%;
+  --df-shadow-intensity-4xl: 35%;
+  --df-shadow-intensity-subtle: var(--df-shadow-intensity-xs);
+  --df-shadow-intensity-default: var(--df-shadow-intensity-lg);
+  --df-shadow-intensity-strong: var(--df-shadow-intensity-2xl);
+
   --df-shadow-2xs: 0 1px rgb(0 0 0 / 0.05);
   --df-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --df-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -166,10 +180,26 @@
   --df-shadow-tooltip:
     drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))
     drop-shadow(0 2px 3px rgb(0 0 0 / 0.08));
-  --df-shadow-overlay: 0 10px 28px color-mix(in oklch, black 35%, transparent);
-  --df-shadow-tabs-indicator: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
-  --df-shadow-ring: 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
-  --df-shadow-ring-subtle: 0 0 0 1px color-mix(in oklch, var(--foreground) 5%, transparent);
+  --df-shadow-overlay: 0 10px 28px
+    color-mix(in oklch, black var(--df-shadow-intensity-4xl), transparent);
+  --df-shadow-tabs-indicator: 0 1px 2px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-shadow-intensity-lg),
+      transparent
+    );
+  --df-shadow-ring: 0 0 0 1px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-shadow-intensity-md),
+      transparent
+    );
+  --df-shadow-ring-subtle: 0 0 0 1px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-shadow-intensity-2xs),
+      transparent
+    );
 
   --df-blur-2xs: 2px;
   --df-blur-xs: 4px;
@@ -634,14 +664,48 @@
   --df-dock-mobile-max-height-sm: 38vh;
   --df-dock-mobile-max-height-md: 42vh;
   --df-dock-mobile-max-height-lg: 46vh;
-  /* Fixed icon-over-label edge rail (NavRail). Wider than dock collapsed chips. */
   --df-nav-rail-width: calc(16 * var(--spacing-unit));
+  --df-nav-rail-bg: var(--background);
+  --df-nav-rail-border: var(--border);
+  --df-nav-rail-fg: var(--muted-foreground);
+  --df-nav-rail-fg-hover: var(--foreground);
+  --df-nav-rail-item-hover-bg: var(--muted);
   --df-nav-rail-item-active-bg: color-mix(
     in oklch,
     var(--df-brand-500) 14%,
     transparent
   );
   --df-nav-rail-item-active-fg: var(--df-brand-500);
+  --df-nav-rail-separator: var(--border);
+  --df-nav-rail-shadow: none;
+  --df-nav-rail-shadow-intensity: var(--df-shadow-intensity-default);
+  --df-nav-rail-shadow-edge-left: 4px 0 16px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-nav-rail-shadow-intensity),
+      transparent
+    );
+  --df-nav-rail-shadow-edge-right: -4px 0 16px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-nav-rail-shadow-intensity),
+      transparent
+    );
+  --df-nav-rail-shadow-edge-top: 0 4px 16px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-nav-rail-shadow-intensity),
+      transparent
+    );
+  --df-nav-rail-shadow-edge-bottom: 0 -4px 16px
+    color-mix(
+      in oklch,
+      var(--foreground) var(--df-nav-rail-shadow-intensity),
+      transparent
+    );
+  --df-nav-rail-radius: 0;
+  --df-nav-rail-item-radius: var(--radius-lg);
+  --df-demo-stage-height: calc(112 * var(--spacing-unit));
   --df-image-dropzone-min-height: calc(30 * var(--spacing-unit));
   --df-leading-code: 1.7;
 
@@ -712,7 +776,7 @@
   --overlay-hint-default-border: color-mix(in oklch, black 10%, transparent);
   --overlay-hint-default-fg: color-mix(in oklch, black 72%, transparent);
   --overlay-hint-default-shadow: 0 10px 28px
-    color-mix(in oklch, black 10%, transparent);
+    color-mix(in oklch, black var(--df-shadow-intensity-md), transparent);
   --overlay-hint-default-blur: var(--overlay-blur);
   --overlay-hint-default-dark-bg: var(--overlay-bg);
   --overlay-hint-default-dark-border: var(--overlay-border);
@@ -728,7 +792,7 @@
   --overlay-hint-marquee-border: color-mix(in oklch, black 10%, transparent);
   --overlay-hint-marquee-fg: color-mix(in oklch, black 62%, transparent);
   --overlay-hint-marquee-shadow: 0 10px 28px
-    color-mix(in oklch, black 10%, transparent);
+    color-mix(in oklch, black var(--df-shadow-intensity-md), transparent);
   --overlay-hint-marquee-blur: var(--overlay-blur);
   --overlay-hint-marquee-action-bg: color-mix(in oklch, black 8%, transparent);
   --overlay-hint-marquee-action-fg: color-mix(in oklch, black 72%, transparent);
@@ -763,6 +827,19 @@
   --spectrum-text-background-size: 200% auto;
 
   --df-popover-width: 18rem;
+  --df-popover-width-safe: min(
+    var(--df-popover-width),
+    calc(100vw - 8 * var(--spacing-unit))
+  );
+  --df-dialog-width: min(
+    36rem,
+    calc(100vw - 8 * var(--spacing-unit))
+  );
+  --df-dialog-max-height: min(
+    40rem,
+    calc(100vh - 8 * var(--spacing-unit))
+  );
+  --df-dialog-scrim: color-mix(in oklch, black 45%, transparent);
   --df-tooltip-max-width: 16rem;
   --df-tooltip-max-width-detailed: 18rem;
   --df-menu-min-width: 9rem;

@@ -1,0 +1,382 @@
+"use client"
+
+import * as React from "react"
+import { createPortal } from "react-dom"
+import { X } from "lucide-react"
+
+import { useControllableState, useIsClient } from "../hooks"
+import { cn } from "../lib/utils"
+import { Button } from "./df-button"
+
+type DialogContextValue = {
+  open: boolean
+  setOpen: (open: boolean) => void
+  triggerRef: React.RefObject<HTMLElement | null>
+  titleId: string
+  descriptionId: string
+  hasDescription: boolean
+  setHasDescription: (value: boolean) => void
+}
+
+const DialogContext = React.createContext<DialogContextValue | null>(null)
+
+function useDialogContext() {
+  const ctx = React.useContext(DialogContext)
+  if (!ctx) throw new Error("Dialog components must be used within Dialog")
+  return ctx
+}
+
+function Dialog({
+  open,
+  defaultOpen = false,
+  onOpenChange,
+  children,
+}: {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  children: React.ReactNode
+}) {
+  const [isOpen, setOpen] = useControllableState({
+    value: open,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  })
+  const triggerRef = React.useRef<HTMLElement | null>(null)
+  const titleId = React.useId()
+  const descriptionId = React.useId()
+  const [hasDescription, setHasDescription] = React.useState(false)
+
+  return (
+    <DialogContext.Provider
+      value={{
+        open: isOpen,
+        setOpen,
+        triggerRef,
+        titleId,
+        descriptionId,
+        hasDescription,
+        setHasDescription,
+      }}
+    >
+      {children}
+    </DialogContext.Provider>
+  )
+}
+
+function DialogTrigger({
+  children,
+  render,
+  className,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  render?: React.ReactElement
+}) {
+  const { open, setOpen, triggerRef } = useDialogContext()
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (render) {
+      const renderOnClick = (
+        render.props as {
+          onClick?: (event: React.MouseEvent<HTMLElement>) => void
+        }
+      ).onClick
+      renderOnClick?.(event)
+    }
+    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
+    if (event.defaultPrevented) return
+    setOpen(true)
+  }
+
+  if (render) {
+    return React.cloneElement(render, {
+      ...props,
+      ref: triggerRef as React.Ref<HTMLButtonElement>,
+      "data-df-dialog-trigger": "",
+      "aria-expanded": open,
+      "aria-haspopup": "dialog",
+      onClick: handleClick,
+      className: cn(
+        className,
+        (render.props as { className?: string }).className
+      ),
+      children:
+        children ??
+        (render.props as { children?: React.ReactNode }).children,
+    } as never)
+  }
+
+  return (
+    <button
+      type="button"
+      data-df="dialog-trigger"
+      {...props}
+      ref={triggerRef as React.Ref<HTMLButtonElement>}
+      data-df-dialog-trigger=""
+      aria-expanded={open}
+      aria-haspopup="dialog"
+      className={cn(className)}
+      onClick={handleClick}
+    >
+      {children}
+    </button>
+  )
+}
+
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "textarea:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",")
+
+function DialogContent({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const {
+    open,
+    setOpen,
+    triggerRef,
+    titleId,
+    descriptionId,
+    hasDescription,
+  } = useDialogContext()
+  const panelRef = React.useRef<HTMLDivElement | null>(null)
+  const previousFocusRef = React.useRef<HTMLElement | null>(null)
+  const mounted = useIsClient()
+  const wasOpenRef = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!open) {
+      if (wasOpenRef.current) {
+        wasOpenRef.current = false
+        const restore =
+          triggerRef.current ?? previousFocusRef.current ?? null
+        previousFocusRef.current = null
+        restore?.focus?.()
+      }
+      return
+    }
+
+    wasOpenRef.current = true
+    const active = document.activeElement
+    previousFocusRef.current =
+      active instanceof HTMLElement ? active : null
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    const panel = panelRef.current
+    const focusables = panel
+      ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
+      : []
+    const initial = focusables[0] ?? panel
+    initial?.focus?.()
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [open, triggerRef])
+
+  React.useEffect(() => {
+    if (!open) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        setOpen(false)
+        return
+      }
+      if (event.key !== "Tab") return
+      const panel = panelRef.current
+      if (!panel) return
+      const focusables = Array.from(
+        panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      )
+      if (focusables.length === 0) {
+        event.preventDefault()
+        panel.focus()
+        return
+      }
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [open, setOpen])
+
+  if (!mounted || !open) return null
+
+  return createPortal(
+    <div data-df="dialog-root">
+      <div
+        data-df="dialog-scrim"
+        aria-hidden
+        onClick={() => setOpen(false)}
+      />
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={hasDescription ? descriptionId : undefined}
+        data-df="dialog-content"
+        tabIndex={-1}
+        className={cn(className)}
+        {...props}
+      >
+        {children}
+      </div>
+    </div>,
+    document.body
+  )
+}
+
+function DialogHeader({
+  className,
+  children,
+  showClose = true,
+  ...props
+}: React.ComponentProps<"div"> & {
+  showClose?: boolean
+}) {
+  return (
+    <div data-df="dialog-header" className={cn(className)} {...props}>
+      <div data-df="dialog-header-copy">{children}</div>
+      {showClose ? (
+        <DialogClose
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Close"
+            >
+              <X className="size-4" />
+            </Button>
+          }
+        />
+      ) : null}
+    </div>
+  )
+}
+
+function DialogTitle({ className, ...props }: React.ComponentProps<"h2">) {
+  const { titleId } = useDialogContext()
+  return (
+    <h2
+      id={titleId}
+      data-df="dialog-title"
+      className={cn(className)}
+      {...props}
+    />
+  )
+}
+
+function DialogDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  const { descriptionId, setHasDescription } = useDialogContext()
+
+  React.useLayoutEffect(() => {
+    setHasDescription(true)
+    return () => setHasDescription(false)
+  }, [setHasDescription])
+
+  return (
+    <p
+      id={descriptionId}
+      data-df="dialog-description"
+      className={cn(className)}
+      {...props}
+    />
+  )
+}
+
+function DialogBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div data-df="dialog-body" className={cn(className)} {...props} />
+  )
+}
+
+function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div data-df="dialog-footer" className={cn(className)} {...props} />
+  )
+}
+
+function DialogClose({
+  children,
+  render,
+  className,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  render?: React.ReactElement
+}) {
+  const { setOpen } = useDialogContext()
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (render) {
+      const renderOnClick = (
+        render.props as {
+          onClick?: (event: React.MouseEvent<HTMLElement>) => void
+        }
+      ).onClick
+      renderOnClick?.(event)
+    }
+    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
+    if (event.defaultPrevented) return
+    setOpen(false)
+  }
+
+  if (render) {
+    return React.cloneElement(render, {
+      ...props,
+      "data-df-dialog-close": "",
+      onClick: handleClick,
+      className: cn(
+        className,
+        (render.props as { className?: string }).className
+      ),
+      children:
+        children ??
+        (render.props as { children?: React.ReactNode }).children,
+    } as never)
+  }
+
+  return (
+    <button
+      type="button"
+      data-df="dialog-close"
+      {...props}
+      className={cn(className)}
+      onClick={handleClick}
+    >
+      {children}
+    </button>
+  )
+}
+
+export {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+}

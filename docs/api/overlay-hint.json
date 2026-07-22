@@ -245,7 +245,7 @@
           {
             "name": "--overlay-hint-default-shadow",
             "type": "CSS shadow",
-            "default": "0 10px 28px color-mix(in oklch, black 10%, transparent)",
+            "default": "0 10px 28px color-mix(in oklch, black var(--df-shadow-intensity-md), transparent)",
             "description": "Default frosted shadow on light surfaces."
           },
           {

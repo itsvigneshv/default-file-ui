@@ -22,7 +22,7 @@
             "name": "variant",
             "type": "\"default\" | \"outline\" | \"secondary\" | \"ghost\" | \"destructive\" | \"link\" | \"plain\"",
             "default": "\"default\"",
-            "description": "Visual style of the button. plain is icon-only chrome with no resting plate; hover and focus expand a soft pad around the glyph without shifting layout. Use ghost for labeled transparent actions on UI chrome. Prefer plain on media, gradients, and dense overlays. Give plain buttons an aria-label."
+            "description": "Visual style of the button. plain is icon-only chrome with no resting plate; hover and focus expand a soft pad around the glyph without shifting layout. Use ghost for labeled transparent actions on UI chrome. Prefer plain on media, gradients, and dense overlays. Give plain buttons an aria-label. link is inline text with no control height or horizontal padding."
           },
           {
             "name": "size",

@@ -50,7 +50,7 @@
             "name": "space",
             "type": "\"auto\" | \"none\"",
             "default": "\"auto\"",
-            "description": "Whether the viewport reserves track inset. auto adds inset only when that axis overflows. none overlays the thumb with no inset. Ignored for the default variant with visibility hover (forced to auto) so the wider bar cannot appear by stealing layout and jerking content. Use none with the edge variant, or with visibility always, where overlay is safe."
+            "description": "Whether the viewport reserves track inset. auto adds inset when that axis overflows, and for the default variant with visibility hover so the wider bar does not jerk layout when it appears. none overlays the thumb with no inset, which keeps the viewport and overlay layers the same client size."
           },
           {
             "name": "width",
@@ -66,6 +66,16 @@
             "name": "viewportRef",
             "type": "Ref<HTMLDivElement>",
             "description": "Ref to the scrollable viewport. Use this for imperative scroll control when the area owns page or panel scroll."
+          },
+          {
+            "name": "overlay",
+            "type": "ReactNode",
+            "description": "Optional layer painted above the viewport and below scrollbar thumbs. Use for interactive surfaces that must share the scrollport box, such as a transparent editor textarea over highlighted content."
+          },
+          {
+            "name": "overlayClassName",
+            "type": "string",
+            "description": "Classes on the overlay layer wrapper."
           },
           {
             "name": "className",

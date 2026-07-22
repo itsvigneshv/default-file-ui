@@ -2,9 +2,10 @@
 
 import * as React from "react"
 import {
+  BetweenHorizontalEnd,
+  BetweenVerticalEnd,
   Bold,
   Code,
-  Columns3,
   Heading1,
   Heading2,
   Heading3,
@@ -15,11 +16,11 @@ import {
   ListOrdered,
   MessageSquareWarning,
   Minus,
-  Rows3,
   SquareCode,
   Strikethrough,
   Table,
-  TableCellsMerge,
+  TableColumnsSplit,
+  TableRowsSplit,
   Trash2,
   Quote,
 } from "lucide-react"
@@ -97,6 +98,7 @@ export type FormatToolbarController = {
   addTableRow: () => void
   addTableColumn: () => void
   deleteTableRow: () => void
+  deleteTableColumn: () => void
   deleteTable: () => void
   subscribe: (listener: () => void) => () => void
 }
@@ -214,7 +216,8 @@ function FormatToolbar({
     return (
       <div
         className={cn(
-          "flex h-11 shrink-0 items-center border-b border-border px-2",
+          "flex shrink-0 flex-wrap items-center gap-0.5 border-b border-border",
+          "bg-card px-2 py-1.5",
           className
         )}
       />
@@ -224,6 +227,7 @@ function FormatToolbar({
   const busy = Boolean(disabled)
   const editLocked = Boolean(locked) && !busy
   const inTable = controller.isActive("table")
+  const blockDisabled = busy || inTable
 
   const applyLink = () => {
     if (editLocked) return
@@ -257,7 +261,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Heading 1"
         active={controller.isActive("heading", { level: 1 })}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleHeading(1)}
       >
@@ -266,7 +270,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Heading 2"
         active={controller.isActive("heading", { level: 2 })}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleHeading(2)}
       >
@@ -275,7 +279,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Heading 3"
         active={controller.isActive("heading", { level: 3 })}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleHeading(3)}
       >
@@ -356,7 +360,8 @@ function FormatToolbar({
           <PopoverContent
             align="start"
             sideOffset={8}
-            className="w-[min(20rem,calc(100vw-2rem))] rounded-xl border border-border bg-card p-3 shadow-[var(--df-shadow-panel)]"
+            className="rounded-xl border border-border bg-card p-3 shadow-[var(--df-shadow-panel)]"
+            style={{ width: "var(--df-popover-width-safe)" }}
           >
             <p className="mb-2 text-xs font-medium text-foreground">Link URL</p>
             <Input
@@ -375,20 +380,21 @@ function FormatToolbar({
               <Button
                 type="button"
                 size="sm"
-                className="flex-1"
-                disabled={!isValidHref(linkHref.trim())}
-                onClick={applyLink}
-              >
-                Apply
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
+                variant="destructive"
+                className="min-w-0 flex-1"
                 disabled={!controller.isActive("link")}
                 onClick={removeLink}
               >
                 Remove
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                className="min-w-0 flex-1"
+                disabled={!isValidHref(linkHref.trim())}
+                onClick={applyLink}
+              >
+                Apply
               </Button>
             </div>
           </PopoverContent>
@@ -400,7 +406,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Bullet list"
         active={controller.isActive("bulletList")}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleBulletList()}
       >
@@ -409,7 +415,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Ordered list"
         active={controller.isActive("orderedList")}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleOrderedList()}
       >
@@ -418,7 +424,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Task list"
         active={controller.isActive("taskList")}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleTaskList()}
       >
@@ -430,7 +436,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Blockquote"
         active={controller.isActive("blockquote")}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleBlockquote()}
       >
@@ -439,9 +445,9 @@ function FormatToolbar({
 
       <ToolbarTooltip label="Callout">
         <Popover
-          open={editLocked ? false : calloutOpen}
+          open={editLocked || inTable ? false : calloutOpen}
           onOpenChange={(open) => {
-            if (editLocked) {
+            if (editLocked || inTable) {
               setCalloutOpen(false)
               return
             }
@@ -454,7 +460,7 @@ function FormatToolbar({
                 type="button"
                 variant={controller.isActive("callout") ? "secondary" : "ghost"}
                 size="icon-sm"
-                disabled={busy}
+                disabled={blockDisabled}
                 aria-label="Callout"
                 aria-pressed={controller.isActive("callout")}
               >
@@ -507,7 +513,7 @@ function FormatToolbar({
       <ToolbarButton
         label="Code block"
         active={controller.isActive("codeBlock")}
-        disabled={busy}
+        disabled={blockDisabled}
         locked={editLocked}
         onClick={() => controller.toggleCodeBlock()}
       >
@@ -526,7 +532,6 @@ function FormatToolbar({
 
       <ToolbarButton
         label="Insert table"
-        active={inTable}
         disabled={busy}
         locked={editLocked}
         onClick={() => controller.insertTable()}
@@ -539,7 +544,7 @@ function FormatToolbar({
         locked={editLocked}
         onClick={() => controller.addTableRow()}
       >
-        <Rows3 className="size-4" />
+        <BetweenHorizontalEnd className="size-4" />
       </ToolbarButton>
       <ToolbarButton
         label="Add column"
@@ -547,7 +552,7 @@ function FormatToolbar({
         locked={editLocked}
         onClick={() => controller.addTableColumn()}
       >
-        <Columns3 className="size-4" />
+        <BetweenVerticalEnd className="size-4" />
       </ToolbarButton>
       <ToolbarButton
         label="Delete row"
@@ -555,7 +560,15 @@ function FormatToolbar({
         locked={editLocked}
         onClick={() => controller.deleteTableRow()}
       >
-        <TableCellsMerge className="size-4" />
+        <TableRowsSplit className="size-4" />
+      </ToolbarButton>
+      <ToolbarButton
+        label="Delete column"
+        disabled={busy || !inTable}
+        locked={editLocked}
+        onClick={() => controller.deleteTableColumn()}
+      >
+        <TableColumnsSplit className="size-4" />
       </ToolbarButton>
       <ToolbarButton
         label="Delete table"

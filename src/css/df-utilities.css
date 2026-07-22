@@ -201,10 +201,6 @@
   gap: calc(4 * var(--spacing-unit, 0.25rem));
 }
 
-.h-11 {
-  height: calc(11 * var(--spacing-unit, 0.25rem));
-}
-
 .h-5 {
   height: calc(5 * var(--spacing-unit, 0.25rem));
 }
@@ -621,10 +617,6 @@
 
 .w-44 {
   width: calc(44 * var(--spacing-unit, 0.25rem));
-}
-
-.w-\[min\(20rem\,calc\(100vw-2rem\)\)\] {
-  width: min(20rem,calc(100vw-2rem));
 }
 
 .w-fit {

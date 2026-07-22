@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T18:25:43.114Z",
+  "generatedAt": "2026-07-22T20:02:52.507Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -131,6 +131,22 @@
       "propCount": 18
     },
     {
+      "slug": "dialog",
+      "name": "dialog",
+      "title": "Dialog",
+      "description": "Center modal with scrim, focus trap, Escape to close, and scroll lock.",
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation",
+        "button"
+      ],
+      "importPath": "@default-file/ui/components/df-dialog",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 16
+    },
+    {
       "slug": "dock-panel",
       "name": "dock-panel",
       "title": "Dock Panel",
@@ -165,7 +181,7 @@
       "slug": "format-toolbar",
       "name": "format-toolbar",
       "title": "Format Toolbar",
-      "description": "Rich text formatting toolbar with headings, marks, lists, callouts, and tables.",
+      "description": "Rich text formatting toolbar with headings, marks, lists, callouts, and table row and column actions.",
       "chapter": "toolbars",
       "registryDependencies": [
         "foundation",
@@ -179,7 +195,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 11
+      "propCount": 35
     },
     {
       "slug": "image-dropzone",
@@ -224,19 +240,6 @@
       "importPath": "@default-file/ui/components/df-label",
       "dependencies": [],
       "propCount": 25
-    },
-    {
-      "slug": "nav-rail",
-      "name": "nav-rail",
-      "title": "Nav Rail",
-      "description": "Fixed icon-over-label edge rail for switching modes or destinations.",
-      "chapter": "structure",
-      "registryDependencies": [
-        "foundation"
-      ],
-      "importPath": "@default-file/ui/components/df-nav-rail",
-      "dependencies": [],
-      "propCount": 15
     },
     {
       "slug": "number-slider",
@@ -347,7 +350,7 @@
       ],
       "importPath": "@default-file/ui/components/df-scroll-area",
       "dependencies": [],
-      "propCount": 18
+      "propCount": 20
     },
     {
       "slug": "search-input",
@@ -516,6 +519,19 @@
       "importPath": "@default-file/ui/components/df-toggle-group",
       "dependencies": [],
       "propCount": 23
+    },
+    {
+      "slug": "nav-rail",
+      "name": "nav-rail",
+      "title": "Tool Rail",
+      "description": "Fixed icon-over-label edge rail for switching tools or modes.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-nav-rail",
+      "dependencies": [],
+      "propCount": 65
     },
     {
       "slug": "tooltip",

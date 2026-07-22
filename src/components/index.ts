@@ -17,6 +17,16 @@ export type {
 } from "./df-badge"
 export type { DfCornerShape } from "../lib/corner-shape"
 export { DF_CORNER_SHAPE_VAR, dfCornerShapeStyle } from "../lib/corner-shape"
+export type {
+  DfShadowIntensity,
+  DfShadowIntensityAlias,
+  DfShadowIntensityScaleStep,
+  DfShadowIntensityStep,
+} from "../lib/shadow-intensity"
+export {
+  DF_SHADOW_INTENSITY_BY_STEP,
+  resolveDfShadowIntensity,
+} from "../lib/shadow-intensity"
 
 export {
   Accordion,
@@ -271,6 +281,9 @@ export type {
   NavRailItemProps,
   NavRailSeparatorProps,
   NavRailSide,
+  NavRailRadius,
+  NavRailShadowIntensity,
+  NavRailShadowIntensityStep,
 } from "./df-nav-rail"
 export { SearchInput, SearchBar } from "./df-search-input"
 export type {

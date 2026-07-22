@@ -13,8 +13,13 @@ type ScrollAreaSpace = "auto" | "none"
 
 type ScrollAreaProps = React.ComponentProps<"div"> & {
   viewportClassName?: string
-  /** Ref to the element that owns overflow scrolling. */
   viewportRef?: React.Ref<HTMLDivElement>
+  /**
+   * Layer above the viewport and below scrollbar thumbs.
+   * Use for interactive surfaces that must share the scrollport geometry.
+   */
+  overlay?: React.ReactNode
+  overlayClassName?: string
   variant?: ScrollAreaVariant
   thumbShape?: ScrollAreaThumbShape
   orientation?: ScrollAreaOrientation
@@ -23,7 +28,7 @@ type ScrollAreaProps = React.ComponentProps<"div"> & {
   /**
    * Track inset. `auto` reserves a gutter so the bar can appear without
    * shifting content. `none` overlays with no inset. Defaults to `none` for
-   * edge, `auto` otherwise. Explicit values always win.
+   * edge, `auto` otherwise.
    */
   space?: ScrollAreaSpace
   width?: number
@@ -71,6 +76,8 @@ function ScrollArea({
   children,
   viewportClassName,
   viewportRef: viewportRefProp,
+  overlay,
+  overlayClassName,
   variant = "default",
   thumbShape = "rounded",
   orientation = "vertical",
@@ -106,7 +113,6 @@ function ScrollArea({
       : readCssPx("--df-scrollbar-min-thumb", 24)
   const verticalSide = side === "left" ? "left" : "right"
   const horizontalSide = side === "top" ? "top" : "bottom"
-  // Explicit space wins. Edge overlays; other variants reserve a stable inset.
   const resolvedSpace = space ?? (variant === "edge" ? "none" : "auto")
 
   const syncThumb = React.useCallback(() => {
@@ -159,23 +165,30 @@ function ScrollArea({
   React.useLayoutEffect(() => {
     const el = viewportRef.current
     if (!el) return
-    syncThumb()
     const onScroll = () => {
       syncThumb()
       markScrolling()
     }
     const ro = new ResizeObserver(syncThumb)
-    ro.observe(el)
-    if (el.firstElementChild) ro.observe(el.firstElementChild)
-    if (vTrackRef.current) ro.observe(vTrackRef.current)
-    if (hTrackRef.current) ro.observe(hTrackRef.current)
+    const observeTargets = () => {
+      ro.disconnect()
+      ro.observe(el)
+      if (el.firstElementChild) ro.observe(el.firstElementChild)
+      if (vTrackRef.current) ro.observe(vTrackRef.current)
+      if (hTrackRef.current) ro.observe(hTrackRef.current)
+      syncThumb()
+    }
+    observeTargets()
+    const mo = new MutationObserver(observeTargets)
+    mo.observe(el, { childList: true })
     el.addEventListener("scroll", onScroll, { passive: true })
     return () => {
+      mo.disconnect()
       ro.disconnect()
       el.removeEventListener("scroll", onScroll)
       if (hideTimerRef.current != null) window.clearTimeout(hideTimerRef.current)
     }
-  }, [syncThumb, markScrolling, children])
+  }, [syncThumb, markScrolling])
 
   const startDrag =
     (axis: "x" | "y") => (event: React.PointerEvent<HTMLDivElement>) => {
@@ -245,6 +258,14 @@ function ScrollArea({
       >
         {children}
       </div>
+      {overlay != null ? (
+        <div
+          data-df="scroll-area-overlay"
+          className={cn(overlayClassName)}
+        >
+          {overlay}
+        </div>
+      ) : null}
       {trackVertical && (
         <div
           ref={vTrackRef}
