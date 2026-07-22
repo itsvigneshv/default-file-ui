@@ -1,0 +1,120 @@
+{
+  "name": "nav-rail",
+  "slug": "nav-rail",
+  "title": "Nav Rail",
+  "description": "Fixed icon-over-label edge rail for switching modes or destinations.",
+  "chapter": "structure",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-nav-rail",
+  "dependencies": [],
+  "api": {
+    "description": "Fixed icon-over-label edge rail for switching modes or destinations. Width is locked; items do not expand into an inspector. Compose NavRail, NavRailItem, and optional NavRailSeparator. Use asChild on items to render a link host.",
+    "groups": [
+      {
+        "id": "nav-rail",
+        "title": "NavRail",
+        "description": "Full-height edge strip. Place on the left or right of a workspace shell.",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"left\" | \"right\"",
+            "default": "\"left\"",
+            "description": "Which edge the rail sits on. Draws the inner border on the opposite side of the edge."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "NavRailItem and NavRailSeparator children."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the rail root."
+          },
+          {
+            "name": "…nav attributes",
+            "type": "HTMLAttributes",
+            "description": "Native nav attributes on the rail root."
+          }
+        ]
+      },
+      {
+        "id": "nav-rail-item",
+        "title": "NavRailItem",
+        "description": "Centered icon with a short label underneath. Set active for the current destination. With asChild, pass a single element child (for example a link) and put the label text inside that child.",
+        "props": [
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "description": "Glyph shown above the label."
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "default": "false",
+            "description": "Marks the current destination and styles the icon plate."
+          },
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "description": "Merge item props onto a single child element. The child becomes the interactive root; icon and label render inside it."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Short label when asChild is false. When asChild is true, a single element whose children are the label text."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the item root."
+          },
+          {
+            "name": "…button attributes",
+            "type": "ButtonHTMLAttributes",
+            "description": "Native button attributes when asChild is false. With asChild, compatible props merge onto the child."
+          }
+        ]
+      },
+      {
+        "id": "nav-rail-separator",
+        "title": "NavRailSeparator",
+        "description": "Hairline divider between item groups.",
+        "props": [
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the separator."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div attributes on the separator."
+          }
+        ]
+      },
+      {
+        "id": "Tokens-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-nav-rail-width",
+            "type": "Fixed rail width sized for icon plus short label."
+          },
+          {
+            "name": "--df-nav-rail-item-active-bg",
+            "type": "Active icon plate fill."
+          },
+          {
+            "name": "--df-nav-rail-item-active-fg",
+            "type": "Active icon and label color."
+          }
+        ]
+      }
+    ]
+  }
+}

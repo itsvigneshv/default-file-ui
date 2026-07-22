@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T18:22:56.387Z",
+  "generatedAt": "2026-07-22T18:25:43.114Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -199,6 +199,19 @@
       "importPath": "@default-file/ui/components/df-label",
       "dependencies": [],
       "propCount": 25
+    },
+    {
+      "slug": "nav-rail",
+      "name": "nav-rail",
+      "title": "Nav Rail",
+      "description": "Fixed icon-over-label edge rail for switching modes or destinations.",
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-nav-rail",
+      "dependencies": [],
+      "propCount": 15
     },
     {
       "slug": "number-slider",
