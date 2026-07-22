@@ -2,7 +2,7 @@
   "name": "button",
   "slug": "button",
   "title": "Button",
-  "description": "Primary actions with variants and sizes from xs to 2xl.",
+  "description": "Primary actions with variants, text sizes, icon sizes, and a plain icon-only style.",
   "chapter": "actions",
   "registryDependencies": [
     "foundation",
@@ -12,7 +12,7 @@
   "importPath": "@default-file/ui/components/df-button",
   "dependencies": [],
   "api": {
-    "description": "Primary actions with variants, sizes, optional leading or trailing content, loading state, and a corner count badge.",
+    "description": "Primary actions with variants, text and icon sizes, optional leading or trailing content, loading state, and a corner count badge. plain is the icon-only variant with no resting plate. Use glyphShadow to control the plain icon drop shadow on busy surfaces.",
     "groups": [
       {
         "id": "button",
@@ -20,21 +20,27 @@
         "props": [
           {
             "name": "variant",
-            "type": "\"default\" | \"outline\" | \"secondary\" | \"ghost\" | \"destructive\" | \"link\"",
+            "type": "\"default\" | \"outline\" | \"secondary\" | \"ghost\" | \"destructive\" | \"link\" | \"plain\"",
             "default": "\"default\"",
-            "description": "Visual style of the button."
+            "description": "Visual style of the button. plain is icon-only chrome with no resting plate; hover and focus expand a soft pad around the glyph without shifting layout. Use ghost for labeled transparent actions on UI chrome. Prefer plain on media, gradients, and dense overlays. Give plain buttons an aria-label."
           },
           {
             "name": "size",
-            "type": "\"default\" | \"xs\" | \"sm\" | \"lg\" | \"xl\" | \"2xl\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | \"icon-xl\" | \"icon-2xl\"",
+            "type": "\"default\" | \"xs\" | \"sm\" | \"lg\" | \"xl\" | \"2xl\" | \"icon\" | \"icon-2xs\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | \"icon-xl\" | \"icon-2xl\"",
             "default": "\"default\"",
-            "description": "Text sizes use padding (xs to 2xl). Icon sizes are square controls (icon-xs to icon-2xl). Leading and trailing work on every text size, including xs."
+            "description": "Text sizes use padding (xs to 2xl). Icon sizes are square controls (icon-2xs to icon-2xl). plain requires an icon size; the resting box matches the glyph for that step. If plain is paired with a text size, size falls back to icon-xs."
           },
           {
             "name": "underline",
             "type": "boolean",
             "default": "true",
             "description": "Link variant only. When true, show underline on hover. Set false to keep the label plain on hover."
+          },
+          {
+            "name": "glyphShadow",
+            "type": "boolean",
+            "default": "true",
+            "description": "Plain icon only. When true, apply the glyph drop shadow to the icon so light glyphs stay readable on busy surfaces such as media and gradients. Set false to turn the shadow off (data-glyph-shadow=off). Customize the filter with --df-button-plain-glyph-filter when the shadow is on. Ignored on non-plain variants."
           },
           {
             "name": "leading",
@@ -50,7 +56,7 @@
             "name": "loading",
             "type": "boolean",
             "default": "false",
-            "description": "Shows a Spinner in the icon area, keeps the label, and disables the control. Unsupported on the link variant."
+            "description": "Shows a Spinner in the icon area, keeps the label, and disables the control. Unsupported on the link variant. Supported on plain icon sizes."
           },
           {
             "name": "loadingPlacement",
@@ -111,7 +117,7 @@
           {
             "name": "dfButtonClass",
             "type": "(opts?: { variant?, size?, className? }) => string",
-            "description": "Builds the same class string Button uses internally. For link hosts, set the underline data attribute to hover or none to match the underline prop."
+            "description": "Builds the same class string Button uses internally. Resolves plain with a non-icon size to icon-xs, matching Button. For link hosts, set the underline data attribute to hover or none to match the underline prop. For plain icon hosts without glyph shadow, set data-glyph-shadow to off."
           }
         ]
       },
@@ -173,6 +179,36 @@
             "type": "CSS color",
             "description": "Focus ring color.",
             "default": "var(--df-neutral-400)"
+          },
+          {
+            "name": "--df-button-plain-hover-outset",
+            "type": "CSS length",
+            "description": "How far the plain icon hover pad expands beyond the glyph.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-button-plain-hover-fill",
+            "type": "CSS color",
+            "description": "Plain icon hover pad fill.",
+            "default": "color-mix(in oklch, var(--foreground) 14%, transparent)"
+          },
+          {
+            "name": "--df-button-plain-hover-radius",
+            "type": "CSS length",
+            "description": "Corner radius of the plain icon hover pad.",
+            "default": "var(--radius-md)"
+          },
+          {
+            "name": "--df-button-plain-glyph-filter",
+            "type": "CSS filter",
+            "description": "Glyph elevation for plain icons when glyphShadow is true. Set glyphShadow to false to disable without changing this token.",
+            "default": "drop-shadow(0 1px 1px rgb(0 0 0 / 0.35))"
+          },
+          {
+            "name": "--df-affordance-size-2xs",
+            "type": "CSS length",
+            "description": "Glyph size for icon-2xs and plain icon-2xs.",
+            "default": "calc(2.5 * var(--spacing-unit))"
           },
           {
             "name": "--df-press-offset",

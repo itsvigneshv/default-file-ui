@@ -173,6 +173,13 @@
 :where([data-df="button"]:active:not([aria-haspopup])) {
   transform: translateY(var(--df-press-offset));
 }
+:where(
+    [data-df="button"][data-variant="plain"][data-size^="icon"]:active:not(
+        [aria-haspopup]
+      )
+  ) {
+  transform: none;
+}
 
 :where([data-df="button"]:disabled),
 :where([data-df="button"][aria-disabled="true"]) {
@@ -246,6 +253,54 @@
   color: var(--foreground);
 }
 
+:where([data-df="button"][data-variant="plain"]) {
+  border-color: transparent;
+  background-color: transparent;
+  isolation: isolate;
+}
+:where([data-df="button"][data-variant="plain"][data-size^="icon"]) {
+  border-radius: var(--df-button-plain-hover-radius);
+  overflow: visible;
+}
+:where([data-df="button"][data-variant="plain"][data-size^="icon"] svg) {
+  filter: var(--df-button-plain-glyph-filter);
+}
+:where(
+    [data-df="button"][data-variant="plain"][data-size^="icon"][data-glyph-shadow="off"]
+      svg
+  ) {
+  filter: none;
+}
+:where([data-df="button"][data-variant="plain"][data-size^="icon"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: transparent;
+  transition:
+    inset var(--df-duration-base),
+    background-color var(--df-duration-base);
+}
+:where([data-df="button"][data-variant="plain"][data-size^="icon"]:hover)::before,
+:where(
+    [data-df="button"][data-variant="plain"][data-size^="icon"][aria-expanded="true"]
+  )::before {
+  inset: calc(-1 * var(--df-button-plain-hover-outset));
+  background-color: var(--df-button-plain-hover-fill);
+}
+:where([data-df="button"][data-variant="plain"][data-size^="icon"]:focus-visible) {
+  border-color: transparent;
+  box-shadow: none;
+}
+:where(
+    [data-df="button"][data-variant="plain"][data-size^="icon"]:focus-visible
+  )::before {
+  inset: calc(-1 * var(--df-button-plain-hover-outset));
+  background-color: var(--df-button-plain-hover-fill);
+  box-shadow: var(--focus-ring);
+}
+
 :where([data-df="button"][data-variant="destructive"]) {
   background-color: color-mix(in oklch, var(--destructive) 10%, var(--background));
   color: var(--destructive);
@@ -307,6 +362,15 @@
   height: var(--df-control-height-md);
   padding: 0;
 }
+:where([data-df="button"][data-size="icon-2xs"]) {
+  width: var(--df-control-height-2xs);
+  height: var(--df-control-height-2xs);
+  padding: 0;
+}
+:where([data-df="button"][data-size="icon-2xs"] svg) {
+  width: var(--df-affordance-size-2xs);
+  height: var(--df-affordance-size-2xs);
+}
 :where([data-df="button"][data-size="icon-xs"]) {
   width: var(--df-control-height-xs);
   height: var(--df-control-height-xs);
@@ -335,6 +399,51 @@
   width: var(--df-control-height-2xl);
   height: var(--df-control-height-2xl);
   padding: 0;
+}
+
+:where([data-df="button"][data-variant="plain"][data-size="icon-2xs"]) {
+  width: var(--df-affordance-size-2xs);
+  height: var(--df-affordance-size-2xs);
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-2xs"] svg) {
+  width: 100%;
+  height: 100%;
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-xs"]) {
+  width: var(--df-affordance-size-xs);
+  height: var(--df-affordance-size-xs);
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-xs"] svg) {
+  width: 100%;
+  height: 100%;
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-sm"]) {
+  width: calc(3.5 * var(--spacing-unit, 0.25rem));
+  height: calc(3.5 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon"]) {
+  width: var(--df-affordance-size-sm);
+  height: var(--df-affordance-size-sm);
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-lg"]) {
+  width: var(--df-affordance-size-md);
+  height: var(--df-affordance-size-md);
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-xl"]) {
+  width: calc(5.5 * var(--spacing-unit, 0.25rem));
+  height: calc(5.5 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-2xl"]) {
+  width: calc(6 * var(--spacing-unit, 0.25rem));
+  height: calc(6 * var(--spacing-unit, 0.25rem));
+}
+:where([data-df="button"][data-variant="plain"][data-size="icon-sm"] svg),
+:where([data-df="button"][data-variant="plain"][data-size="icon"] svg),
+:where([data-df="button"][data-variant="plain"][data-size="icon-lg"] svg),
+:where([data-df="button"][data-variant="plain"][data-size="icon-xl"] svg),
+:where([data-df="button"][data-variant="plain"][data-size="icon-2xl"] svg) {
+  width: 100%;
+  height: 100%;
 }
 
 :where([data-df="button"]:has([data-icon="inline-end"])) {
@@ -403,6 +512,14 @@
   border-color: var(--ring);
   box-shadow: var(--focus-ring);
 }
+.df-btn:active:not([aria-haspopup]) {
+  transform: translateY(var(--df-press-offset));
+}
+.df-btn:disabled,
+.df-btn[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: var(--opacity-disabled);
+}
 .df-btn svg {
   pointer-events: none;
   flex-shrink: 0;
@@ -439,6 +556,103 @@
 :where(.df-btn-outline[aria-expanded="true"]) {
   background-color: var(--muted);
   color: var(--foreground);
+}
+.df-btn-plain {
+  border-color: transparent;
+  background-color: transparent;
+  isolation: isolate;
+}
+.df-btn-plain.df-btn-icon,
+.df-btn-plain.df-btn-icon-2xs,
+.df-btn-plain.df-btn-icon-xs,
+.df-btn-plain.df-btn-icon-sm,
+.df-btn-plain.df-btn-icon-lg,
+.df-btn-plain.df-btn-icon-xl,
+.df-btn-plain.df-btn-icon-2xl {
+  border-radius: var(--df-button-plain-hover-radius);
+  overflow: visible;
+}
+.df-btn-plain.df-btn-icon svg,
+.df-btn-plain.df-btn-icon-2xs svg,
+.df-btn-plain.df-btn-icon-xs svg,
+.df-btn-plain.df-btn-icon-sm svg,
+.df-btn-plain.df-btn-icon-lg svg,
+.df-btn-plain.df-btn-icon-xl svg,
+.df-btn-plain.df-btn-icon-2xl svg {
+  filter: var(--df-button-plain-glyph-filter);
+}
+.df-btn-plain.df-btn-icon[data-glyph-shadow="off"] svg,
+.df-btn-plain.df-btn-icon-2xs[data-glyph-shadow="off"] svg,
+.df-btn-plain.df-btn-icon-xs[data-glyph-shadow="off"] svg,
+.df-btn-plain.df-btn-icon-sm[data-glyph-shadow="off"] svg,
+.df-btn-plain.df-btn-icon-lg[data-glyph-shadow="off"] svg,
+.df-btn-plain.df-btn-icon-xl[data-glyph-shadow="off"] svg,
+.df-btn-plain.df-btn-icon-2xl[data-glyph-shadow="off"] svg {
+  filter: none;
+}
+.df-btn-plain.df-btn-icon:active,
+.df-btn-plain.df-btn-icon-2xs:active,
+.df-btn-plain.df-btn-icon-xs:active,
+.df-btn-plain.df-btn-icon-sm:active,
+.df-btn-plain.df-btn-icon-lg:active,
+.df-btn-plain.df-btn-icon-xl:active,
+.df-btn-plain.df-btn-icon-2xl:active {
+  transform: none;
+}
+.df-btn-plain.df-btn-icon::before,
+.df-btn-plain.df-btn-icon-2xs::before,
+.df-btn-plain.df-btn-icon-xs::before,
+.df-btn-plain.df-btn-icon-sm::before,
+.df-btn-plain.df-btn-icon-lg::before,
+.df-btn-plain.df-btn-icon-xl::before,
+.df-btn-plain.df-btn-icon-2xl::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: transparent;
+  transition:
+    inset var(--df-duration-base),
+    background-color var(--df-duration-base);
+}
+.df-btn-plain.df-btn-icon:hover::before,
+.df-btn-plain.df-btn-icon-2xs:hover::before,
+.df-btn-plain.df-btn-icon-xs:hover::before,
+.df-btn-plain.df-btn-icon-sm:hover::before,
+.df-btn-plain.df-btn-icon-lg:hover::before,
+.df-btn-plain.df-btn-icon-xl:hover::before,
+.df-btn-plain.df-btn-icon-2xl:hover::before,
+.df-btn-plain.df-btn-icon[aria-expanded="true"]::before,
+.df-btn-plain.df-btn-icon-2xs[aria-expanded="true"]::before,
+.df-btn-plain.df-btn-icon-xs[aria-expanded="true"]::before,
+.df-btn-plain.df-btn-icon-sm[aria-expanded="true"]::before,
+.df-btn-plain.df-btn-icon-lg[aria-expanded="true"]::before,
+.df-btn-plain.df-btn-icon-xl[aria-expanded="true"]::before,
+.df-btn-plain.df-btn-icon-2xl[aria-expanded="true"]::before {
+  inset: calc(-1 * var(--df-button-plain-hover-outset));
+  background-color: var(--df-button-plain-hover-fill);
+}
+.df-btn-plain.df-btn-icon:focus-visible,
+.df-btn-plain.df-btn-icon-2xs:focus-visible,
+.df-btn-plain.df-btn-icon-xs:focus-visible,
+.df-btn-plain.df-btn-icon-sm:focus-visible,
+.df-btn-plain.df-btn-icon-lg:focus-visible,
+.df-btn-plain.df-btn-icon-xl:focus-visible,
+.df-btn-plain.df-btn-icon-2xl:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+}
+.df-btn-plain.df-btn-icon:focus-visible::before,
+.df-btn-plain.df-btn-icon-2xs:focus-visible::before,
+.df-btn-plain.df-btn-icon-xs:focus-visible::before,
+.df-btn-plain.df-btn-icon-sm:focus-visible::before,
+.df-btn-plain.df-btn-icon-lg:focus-visible::before,
+.df-btn-plain.df-btn-icon-xl:focus-visible::before,
+.df-btn-plain.df-btn-icon-2xl:focus-visible::before {
+  inset: calc(-1 * var(--df-button-plain-hover-outset));
+  background-color: var(--df-button-plain-hover-fill);
+  box-shadow: var(--focus-ring);
 }
 .df-btn-destructive {
   background-color: color-mix(in oklch, var(--destructive) 10%, var(--background));
@@ -492,10 +706,27 @@
   height: var(--df-control-height-md);
   padding: 0;
 }
+.df-btn-icon-2xs {
+  width: var(--df-control-height-2xs);
+  height: var(--df-control-height-2xs);
+  padding: 0;
+}
+.df-btn-icon-2xs svg {
+  width: var(--df-affordance-size-2xs);
+  height: var(--df-affordance-size-2xs);
+}
 .df-btn-icon-xs {
   width: var(--df-control-height-xs);
   height: var(--df-control-height-xs);
   padding: 0;
+}
+.df-btn-icon-xs svg {
+  width: calc(3 * var(--spacing-unit, 0.25rem));
+  height: calc(3 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-xs svg {
+  width: calc(3 * var(--spacing-unit, 0.25rem));
+  height: calc(3 * var(--spacing-unit, 0.25rem));
 }
 .df-btn-icon-sm {
   width: var(--df-control-height-sm);
@@ -516,6 +747,50 @@
   width: var(--df-control-height-2xl);
   height: var(--df-control-height-2xl);
   padding: 0;
+}
+.df-btn-plain.df-btn-icon-2xs {
+  width: var(--df-affordance-size-2xs);
+  height: var(--df-affordance-size-2xs);
+}
+.df-btn-plain.df-btn-icon-2xs svg {
+  width: 100%;
+  height: 100%;
+}
+.df-btn-plain.df-btn-icon-xs {
+  width: var(--df-affordance-size-xs);
+  height: var(--df-affordance-size-xs);
+}
+.df-btn-plain.df-btn-icon-xs svg {
+  width: 100%;
+  height: 100%;
+}
+.df-btn-plain.df-btn-icon-sm {
+  width: calc(3.5 * var(--spacing-unit, 0.25rem));
+  height: calc(3.5 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-plain.df-btn-icon {
+  width: var(--df-affordance-size-sm);
+  height: var(--df-affordance-size-sm);
+}
+.df-btn-plain.df-btn-icon-lg {
+  width: var(--df-affordance-size-md);
+  height: var(--df-affordance-size-md);
+}
+.df-btn-plain.df-btn-icon-xl {
+  width: calc(5.5 * var(--spacing-unit, 0.25rem));
+  height: calc(5.5 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-plain.df-btn-icon-2xl {
+  width: calc(6 * var(--spacing-unit, 0.25rem));
+  height: calc(6 * var(--spacing-unit, 0.25rem));
+}
+.df-btn-plain.df-btn-icon-sm svg,
+.df-btn-plain.df-btn-icon svg,
+.df-btn-plain.df-btn-icon-lg svg,
+.df-btn-plain.df-btn-icon-xl svg,
+.df-btn-plain.df-btn-icon-2xl svg {
+  width: 100%;
+  height: 100%;
 }
 
 .df-btn:has([data-icon="inline-end"]) {

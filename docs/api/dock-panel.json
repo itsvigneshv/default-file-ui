@@ -14,7 +14,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Collapsible edge-docked inspector. Compose a rail of panels with optional header text, custom icons, and a body that owns the kit ScrollArea. Panel content is unrestricted.",
+    "description": "Collapsible edge-docked inspector. Compose a rail of panels with optional header text, custom icons, and a body that owns the kit ScrollArea. Use dismissible for temporary tune panels that leave the rail when closed. Panel content is unrestricted.",
     "groups": [
       {
         "id": "dock-panel-rail",
@@ -99,19 +99,25 @@
             "description": "Accessible name for collapse and expand controls when title or subtitle is not a string."
           },
           {
+            "name": "dismissible",
+            "type": "boolean",
+            "default": "false",
+            "description": "When true, closing removes the panel from the rail instead of showing the collapsed expand chip. Defaults the header control to a close icon and Close {label}. Use for temporary tune panels opened from another surface."
+          },
+          {
             "name": "collapseIcon",
             "type": "ReactNode",
-            "description": "Icon for the collapse control. Defaults to PanelLeft."
+            "description": "Icon for the collapse or dismiss control. Defaults to X when dismissible, otherwise PanelLeft."
           },
           {
             "name": "expandIcon",
             "type": "ReactNode",
-            "description": "Icon for the collapsed expand control. Defaults to collapseIcon, then PanelLeft."
+            "description": "Icon for the collapsed expand control. Defaults to collapseIcon, then PanelLeft. Ignored when dismissible, because closed panels leave the rail."
           },
           {
             "name": "collapseLabel",
             "type": "string",
-            "description": "Accessible name for the collapse control. Defaults to Collapse {label}."
+            "description": "Accessible name for the collapse or dismiss control. Defaults to Close {label} when dismissible, otherwise Collapse {label}."
           },
           {
             "name": "expandLabel",

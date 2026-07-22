@@ -54,6 +54,7 @@
   --df-safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
   --df-safe-area-inset-left: env(safe-area-inset-left, 0px);
 
+  --border-width-fine: 0.5px;
   --border-width-hairline: 1px;
   --border-width-thin: 1.5px;
   --border-width-thick: 2px;
@@ -69,6 +70,14 @@
   --df-button-badge-size: calc(4 * var(--spacing-unit));
   --df-button-badge-pad-inline: calc(1 * var(--spacing-unit));
   --df-button-badge-inset: calc(1 * var(--spacing-unit));
+  --df-button-plain-hover-outset: calc(1 * var(--spacing-unit));
+  --df-button-plain-hover-fill: color-mix(
+    in oklch,
+    var(--foreground) 14%,
+    transparent
+  );
+  --df-button-plain-hover-radius: var(--radius-md);
+  --df-button-plain-glyph-filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.35));
 
   --radius: 0.625rem;
   --radius-xxs: calc(var(--radius) * 0.2);
@@ -776,6 +785,7 @@
   --df-control-height-lg: calc(10 * var(--spacing-unit));
   --df-control-height-xl: calc(11 * var(--spacing-unit));
   --df-control-height-2xl: calc(12 * var(--spacing-unit));
+  --df-affordance-size-2xs: calc(2.5 * var(--spacing-unit));
   --df-affordance-size-xs: calc(3 * var(--spacing-unit));
   --df-affordance-size-sm: calc(4 * var(--spacing-unit));
   --df-affordance-size-md: calc(5 * var(--spacing-unit));

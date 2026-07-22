@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T12:41:55.591Z",
+  "generatedAt": "2026-07-22T16:07:34.347Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -52,7 +52,7 @@
       "slug": "button",
       "name": "button",
       "title": "Button",
-      "description": "Primary actions with variants and sizes from xs to 2xl.",
+      "description": "Primary actions with variants, text sizes, icon sizes, and a plain icon-only style.",
       "chapter": "actions",
       "registryDependencies": [
         "foundation",
@@ -61,7 +61,7 @@
       ],
       "importPath": "@default-file/ui/components/df-button",
       "dependencies": [],
-      "propCount": 34
+      "propCount": 40
     },
     {
       "slug": "choice-chip",
@@ -120,7 +120,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 72
+      "propCount": 73
     },
     {
       "slug": "floating-controls",

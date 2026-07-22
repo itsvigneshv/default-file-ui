@@ -36,7 +36,7 @@
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
-      "description": "Default File button with variants and sizes.",
+      "description": "Button with variants, text and icon sizes, and a plain icon-only style.",
       "registryDependencies": ["foundation", "spinner", "badge"],
       "files": [
         { "path": "src/components/df-button.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-button.tsx" }

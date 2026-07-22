@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, X } from "lucide-react"
 
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
@@ -65,6 +65,11 @@ type DockPanelProps = Omit<React.ComponentProps<"aside">, "title"> & {
   titleVisible?: boolean
   subtitleVisible?: boolean
   label?: string
+  /**
+   * When true, closing removes the panel from the rail instead of showing the
+   * collapsed expand chip. Defaults the header control to a close icon.
+   */
+  dismissible?: boolean
   collapseIcon?: React.ReactNode
   expandIcon?: React.ReactNode
   collapseLabel?: string
@@ -105,6 +110,7 @@ function DockPanel({
   titleVisible = true,
   subtitleVisible = true,
   label,
+  dismissible = false,
   collapseIcon,
   expandIcon,
   collapseLabel,
@@ -128,8 +134,10 @@ function DockPanel({
   })
 
   const resolvedLabel = resolveLabel(label, title, subtitle)
-  const collapseNode = collapseIcon ?? <PanelLeft />
+  const collapseNode = collapseIcon ?? (dismissible ? <X /> : <PanelLeft />)
   const expandNode = expandIcon ?? collapseNode
+  const resolvedCollapseLabel =
+    collapseLabel ?? (dismissible ? `Close ${resolvedLabel}` : undefined)
   const showTitle = title != null && titleVisible
   const showSubtitle = subtitle != null && subtitleVisible
   const composeHeader = title != null || subtitle != null
@@ -171,6 +179,10 @@ function DockPanel({
       children
     )
 
+  if (dismissible && !isOpen) {
+    return null
+  }
+
   return (
     <DockPanelContext.Provider
       value={{
@@ -179,7 +191,7 @@ function DockPanel({
         label: resolvedLabel,
         collapseIcon: collapseNode,
         expandIcon: expandNode,
-        collapseLabel,
+        collapseLabel: resolvedCollapseLabel,
         expandLabel,
         collapsedLabelVisible,
         collapsedAlign,
@@ -188,6 +200,7 @@ function DockPanel({
       <aside
         data-df="dock-panel"
         data-state={isOpen ? "open" : "closed"}
+        data-dismissible={dismissible ? "" : undefined}
         data-size={size}
         data-mobile-max-height={mobileMaxHeight}
         data-collapsed-label={collapsedLabelVisible ? "visible" : "hidden"}
