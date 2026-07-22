@@ -4,6 +4,16 @@ Score each axis `strong`, `weak`, or `missing`. Fix weak structure before polish
 
 The required output shape lives in `SKILL.md` (Critique contract). Use this file for the per axis questions only. Choose the axis set that matches the classified surface mode.
 
+## Enterprise professional findings (required)
+
+Write findings as an enterprise product and UX review. Each weak or missing axis needs:
+
+1. **Observation** — concrete UI evidence
+2. **Impact** — effect on task completion, decision speed, risk, trust, or operability
+3. **Recommendation** — the next structural change
+
+Prefer operational language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating operator or business impact. Marketing brand and CTA issues should be framed as go to market clarity and trust, not contest styling.
+
 ## Evidence rule (required)
 
 For every axis scored `weak` or `missing`, name concrete evidence: a region, module, control, or pattern (for example "four equal KPI tiles above the agent table" or "Deploy has toast only, no busy state"). Vague scores without evidence fail the critique gate.

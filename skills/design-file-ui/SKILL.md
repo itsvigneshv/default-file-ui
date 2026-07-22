@@ -3,7 +3,7 @@ name: design-file-ui
 description: >-
   Designs, implements, and critiques distinctive frontend UI with strong visual
   hierarchy and light UX judgment. Use when building or redesigning landing pages,
-  marketing sites, portfolios, product pages, award style pitches, SaaS dashboards,
+  marketing sites, portfolios, product pages, brand campaigns, SaaS dashboards,
   admin tools, app shells, data tables, filters, settings, or mobile web apps; when
   the user asks for UI polish, visual direction, layout help, or more excellent
   interface design; when the user asks to critique UI, review UI, do a UX review,
@@ -60,7 +60,7 @@ Before preflight, classify exactly one primary mode. Emit it as a single line:
 
 | Mode | Choose when the surface being built is |
 |---|---|
-| `marketing` | Landing, pitch, portfolio, brand campaign, award style promotional page |
+| `marketing` | Landing, pitch, portfolio, brand campaign, or promotional product page |
 | `workspace` | SaaS dashboard, admin, analytics, CRM, settings, data tool, desktop app shell |
 | `mobileTool` | Mobile web app, thumb first tool UI, or responsive tool shell as the deliverable |
 
@@ -74,7 +74,7 @@ If the brief mixes modes (for example a marketing page that embeds a product scr
 
 Misclassification checks:
 
-- "Award winning landing" → `marketing`
+- "Brand campaign landing" → `marketing`
 - "SaaS billing admin" → `workspace`
 - "Mobile web triage app" → `mobileTool`
 
@@ -287,13 +287,33 @@ If the kit is absent, skip `kit.md` and use the agnostic implementation path abo
 2. MUST open [references/critique.md](references/critique.md) before writing findings.
 3. Score every axis for that mode `strong`, `weak`, or `missing` using the contract below.
 4. For every `weak` or `missing` axis, cite concrete evidence (region, module, or pattern), not a vague adjective.
-5. Propose a redesign plan that fixes the weakest structure or task issues first.
-6. Do not start with decorative recoloring if structure scores are weak.
-7. For redesign asks: implement the first improve pass, or list exact file-level changes if code is out of scope.
+5. Write findings from an **enterprise professional** perspective (see voice rules below).
+6. Propose a redesign plan that fixes the weakest structure or task issues first.
+7. Do not start with decorative recoloring if structure scores are weak.
+8. For redesign asks: implement the first improve pass, or list exact file-level changes if code is out of scope.
 
 ## Critique contract (required)
 
 Use the axis set for the classified mode. Score each axis `strong`, `weak`, or `missing`.
+
+### Enterprise professional findings voice (required)
+
+Critique findings, structural issues, quick wins, and improve pass notes must read like an enterprise product and UX review, not a portfolio or design gallery comment.
+
+Write each finding as:
+
+1. **Observation** — what is present or missing in the UI (concrete region or pattern)
+2. **Impact** — effect on task completion, decision speed, risk, trust, or operability
+3. **Recommendation** — the structural change to make next
+
+Voice rules:
+
+- Prefer operational language: triage, scan path, primary action, ownership, empty and error recovery, accessibility, consistency with the system
+- Tie issues to business or operator outcomes when relevant (time to action, missed exception, ambiguous status, blocked workflow)
+- Keep tone calm, specific, and decisive. No hype, no taste only judgments, no showcase or trend chasing
+- Do not frame success as looking trendy, viral, or gallery ready. Frame success as clear hierarchy, reliable task flow, and branded craft that still serves work
+- Marketing mode still covers brand and CTA, but judge them as go to market clarity and trust, not as contest styling
+- Workspace and mobileTool findings prioritize task clarity, density, states, and risk of operator error over decorative authorship alone
 
 ### Marketing axes
 
@@ -344,12 +364,12 @@ spec | problem : <one line rationale>
 | … | … |
 
 ### Top 3 structural issues
-1. <issue>. Evidence: <region or pattern>
+1. <issue>. Evidence: <region or pattern>. Impact: <task, risk, or decision effect>.
 2.
 3.
 
 ### Top 3 quick wins
-1.
+1. <change> — <why it improves operability or clarity>
 2.
 3.
 
@@ -375,16 +395,16 @@ When designing or redesigning, provide:
 4. Section map (marketing) or shell map (workspace / mobileTool)
 5. Key UI decisions (type ladder, color, motion, primary action, table vs card, adaptive density when relevant)
 6. Implementation (code or concrete component changes)
-7. The critique contract above, including evidence on weak axes and an improve pass when scores are not all strong
+7. The critique contract above, including enterprise professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
 
-Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives.
+Keep prose short and enterprise professional. Prefer decisive recommendations over option piles unless the user asks for alternatives.
 
 ## Before finishing
 
 - **Mode and Brief:** Classified and stated. Marketing rules not applied to workspace; dashboard chrome not applied to marketing heroes.
 - **Problem briefs:** Decision model present; IA invented from the job, not a generic component shopping list.
 - **Visual authorship:** Concept and signature move named; default dark cyan SaaS template rejected unless requested.
-- **Critique tasks:** Do not send a final answer without scored axes for the correct mode, evidence on each weak/missing axis, top 3 structural issues, redesign sequence, and non goals.
+- **Critique tasks:** Do not send a final answer without scored axes for the correct mode, evidence on each weak/missing axis, enterprise professional findings (observation, impact, recommendation), top 3 structural issues, redesign sequence, and non goals.
 - **Design or redesign tasks:** Matching preflight answered; section or shell map present; critique contract filled; at least one improve pass applied when any axis is weak or missing.
 - **Multi section IA:** No dead nav destinations; stubs must be real empty states with a next action, or the item must be removed from nav.
 - **Adaptive density:** Primary canvas does not leave a large empty void without a deliberate fill choice.
@@ -395,6 +415,7 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 ## Anti goals
 
 - Fashion cloning from external showcase galleries
+- Taste only or trend based findings with no task, risk, or operability impact
 - Stack religion (no required framework)
 - Generic AI template aesthetics (marketing or workspace flavors)
 - Default dark enterprise dashboard with cyan accent and flat type as the whole identity
@@ -403,6 +424,6 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - Overbuilding layout systems for a simple page
 - Freeform UI opinions that skip the critique contract
 - Inventing parallel chrome when Default File UI already covers the need
-- Using an award landing as a template for a logged in admin
+- Using a promotional landing as a template for a logged in admin
 - Using a dense admin as a template for a brand campaign hero
 - Treating a problem brief as a prompt to copy a generic dashboard template

@@ -88,7 +88,25 @@ async function testHelpers() {
     !/award|awwward|awards-ui/i.test(designSkill.skillMarkdown),
     "skill markdown must stay agnostic"
   )
+  assert.ok(
+    /enterprise professional/i.test(designSkill.skillMarkdown),
+    "skill markdown must require enterprise professional findings"
+  )
+  assert.ok(
+    /observation/i.test(designSkill.skillMarkdown) &&
+      /impact/i.test(designSkill.skillMarkdown) &&
+      /recommendation/i.test(designSkill.skillMarkdown),
+    "skill markdown must define observation, impact, recommendation"
+  )
   assert.ok(designSkill.references.length >= 3)
+  const critiqueRef = designSkill.referenceContents.find(
+    (ref) => ref.name === "critique.md"
+  )
+  assert.ok(critiqueRef, "expected critique.md reference")
+  assert.ok(
+    /enterprise professional findings/i.test(critiqueRef.content),
+    "critique.md must require enterprise professional findings"
+  )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
 

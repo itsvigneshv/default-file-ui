@@ -38,7 +38,7 @@ The skill must classify mode and brief class before preflight:
 
 | Mode | Example ask |
 |---|---|
-| `marketing` | Redesign this landing page / award style pitch |
+| `marketing` | Redesign this landing page / brand campaign pitch |
 | `workspace` | Design a SaaS billing admin / analytics dashboard |
 | `mobileTool` | Build a mobile web triage app |
 
@@ -76,6 +76,7 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 ## Adherence notes
 
 - Critique and redesign must load `references/critique.md` before findings.
+- Findings must use an enterprise professional voice: observation, impact, recommendation. No taste only or gallery style commentary.
 - Weak or missing axes need concrete evidence; design tasks need an improve pass when scores are not all strong.
 - The critique output contract is inlined in `SKILL.md` so the format cannot be skipped.
 - Composition reference is marketing only; workspace work must load `workspace.md`.
@@ -87,5 +88,5 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 
 ## Research sources
 
-- Marketing corpus: `research/awards-ui/` (in the UX Tools app repo when developing locally)
-- Workspace corpus: `research/workspace-ui/`
+- Marketing corpus: promotional and brand campaign UI research (in the UX Tools app repo when developing locally)
+- Workspace corpus: enterprise workspace and admin UI research (in the UX Tools app repo when developing locally)
