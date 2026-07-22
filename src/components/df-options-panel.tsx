@@ -84,7 +84,7 @@ function OptionsPanelBody({
     <div
       data-df="options-panel-body"
       className={cn(
-        "flex w-max flex-col gap-4 overflow-y-auto px-4 py-4",
+        "flex w-max min-w-0 max-w-full flex-col gap-4 overflow-y-auto px-4 py-4",
         className
       )}
       style={{

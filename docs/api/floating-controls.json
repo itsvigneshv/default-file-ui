@@ -11,7 +11,7 @@
   "importPath": "@default-file/ui/components/df-floating-controls",
   "dependencies": [],
   "api": {
-    "description": "Modular action bar with items, dividers, and slots. Item label ink is optically centered to cap height. Pass children or an items array.",
+    "description": "Modular action bar with items, dividers, and slots. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Pass children or an items array.",
     "groups": [
       {
         "id": "floating-controls",
@@ -262,6 +262,12 @@
             "type": "CSS color",
             "description": "Divider color between items.",
             "default": "color-mix(in oklch, white 15%, transparent)"
+          },
+          {
+            "name": "--df-label-line-height",
+            "type": "CSS line-height",
+            "description": "Line box for label flex centering. Defaults to --df-leading-none. When text-box is unavailable and the cap unit is supported, the kit sets this to 1cap so flex centering matches cap-height ink.",
+            "default": "var(--df-leading-none)"
           }
         ]
       }

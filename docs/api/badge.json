@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-badge",
   "dependencies": [],
   "api": {
-    "description": "Compact label for status and metadata. Label ink is optically centered to cap height. Compose a close control, nested counter, or OptionList dropdown via children and render.",
+    "description": "Compact label for status and metadata. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Compose a close control, nested counter, or OptionList dropdown via children and render.",
     "groups": [
       {
         "id": "badge",
@@ -182,6 +182,12 @@
             "type": "CSS corner-shape",
             "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
             "default": "var(--df-corner-shape-round)"
+          },
+          {
+            "name": "--df-label-line-height",
+            "type": "CSS line-height",
+            "description": "Line box for label flex centering. Defaults to --df-leading-none. When text-box is unavailable and the cap unit is supported, the kit sets this to 1cap so flex centering matches cap-height ink.",
+            "default": "var(--df-leading-none)"
           }
         ]
       }

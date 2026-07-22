@@ -2,7 +2,7 @@
   "name": "options-panel",
   "slug": "options-panel",
   "title": "Options Panel",
-  "description": "Anchored panel with header, body, and footer slots.",
+  "description": "Anchored panel with header, body, and footer slots. Hugs content up to a tokenized max width.",
   "chapter": "overlays",
   "registryDependencies": [
     "foundation",
@@ -11,7 +11,7 @@
   "importPath": "@default-file/ui/components/df-options-panel",
   "dependencies": [],
   "api": {
-    "description": "Anchored options panel chrome with a titled header and open body/footer slots. Compose any sections or actions inside the slots. Nothing is hardcoded. Shares Popover behavior: Escape and outside clicks dismiss, and closing by keyboard returns focus to the trigger.",
+    "description": "Anchored options panel chrome with a titled header and open body/footer slots. Width hugs content up to the panel max-width token and the viewport. Compose any sections or actions inside the slots. Shares Popover behavior: Escape and outside clicks dismiss, and closing by keyboard returns focus to the trigger.",
     "groups": [
       {
         "id": "options-panel",
@@ -54,7 +54,7 @@
       {
         "id": "options-panel-content",
         "title": "OptionsPanelContent",
-        "description": "Panel shell with options chrome defaults (content sized width, end align, bottom side).",
+        "description": "Panel shell. Sizes to content, capped by --df-options-panel-max-width and the viewport. Defaults to end align and bottom side.",
         "props": [
           {
             "name": "side",
@@ -78,7 +78,7 @@
             "name": "matchTriggerWidth",
             "type": "boolean",
             "default": "false",
-            "description": "Lock the panel to the trigger width. Off by default so the panel sizes to its content."
+            "description": "Lock the panel to the trigger width. Off by default so the panel sizes to its content within the max-width cap."
           },
           {
             "name": "portal",
@@ -89,7 +89,7 @@
           {
             "name": "className",
             "type": "string",
-            "description": "Override or extend the panel chrome styles."
+            "description": "Override or extend panel chrome. Use width or max-width utilities when a call site needs a different size than the token default."
           },
           {
             "name": "children",
@@ -116,7 +116,7 @@
           {
             "name": "OptionsPanelBody",
             "type": "div attrs",
-            "description": "Scrollable body slot. Fully swappable for sections, selects, and custom nodes."
+            "description": "Scrollable body slot. Hugs content width and stays within the panel shell so long copy wraps instead of clipping."
           },
           {
             "name": "OptionsPanelFooter",
@@ -130,6 +130,12 @@
         "title": "Tokens",
         "description": "Theme defaults live on :root. Override these globally or on a local host.",
         "props": [
+          {
+            "name": "--df-options-panel-max-width",
+            "type": "CSS length",
+            "description": "Maximum panel width before content wraps. Combined with a viewport clamp on the shell.",
+            "default": "var(--df-max-w-xs)"
+          },
           {
             "name": "--df-options-panel-max-height",
             "type": "CSS length",

@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-choice-chip",
   "dependencies": [],
   "api": {
-    "description": "Compact selectable chip for filters and quick choices. Label ink is optically centered to cap height in the pill.",
+    "description": "Compact selectable chip for filters and quick choices. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise.",
     "groups": [
       {
         "id": "choice-chip",
@@ -83,6 +83,12 @@
             "type": "CSS length",
             "description": "Base unit for padding and gap.",
             "default": "0.25rem"
+          },
+          {
+            "name": "--df-label-line-height",
+            "type": "CSS line-height",
+            "description": "Line box for label flex centering. Defaults to --df-leading-none. When text-box is unavailable and the cap unit is supported, the kit sets this to 1cap so flex centering matches cap-height ink.",
+            "default": "var(--df-leading-none)"
           }
         ]
       }

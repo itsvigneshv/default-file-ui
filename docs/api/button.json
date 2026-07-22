@@ -67,7 +67,7 @@
           {
             "name": "badge",
             "type": "number | string",
-            "description": "Corner count badge anchored to the top end of the button. Hidden when empty, null, or 0. Include the count in aria-label for icon buttons."
+            "description": "Corner count badge anchored to the top end of the button. Count ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Hidden when empty, null, or 0. Include the count in aria-label for icon buttons."
           },
           {
             "name": "badgeVariant",
@@ -215,6 +215,12 @@
             "type": "number",
             "description": "Stacking level for the corner badge.",
             "default": "1"
+          },
+          {
+            "name": "--df-label-line-height",
+            "type": "CSS line-height",
+            "description": "Line box for label flex centering. Defaults to --df-leading-none. When text-box is unavailable and the cap unit is supported, the kit sets this to 1cap so flex centering matches cap-height ink.",
+            "default": "var(--df-leading-none)"
           },
           {
             "name": "--df-corner-shape",

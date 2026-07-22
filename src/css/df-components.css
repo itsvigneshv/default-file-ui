@@ -14,7 +14,7 @@
   --df-corner-shape: var(--df-corner-shape-smooth);
 }
 
-/* Cap-height trim for leading-none flex labels. Unsupported engines keep the metric box. */
+/* Cap-height label centering for leading-none flex chrome. */
 :where(
   [data-df="badge"],
   [data-df="choice-chip"],
@@ -29,7 +29,46 @@
 .df-floating-controls-item,
 .df-overlay-hint,
 .df-btn > [data-slot="badge"] {
-  text-box: trim-both cap alphabetic;
+  --df-label-line-height: var(--df-leading-none);
+  line-height: var(--df-label-line-height);
+}
+
+@supports (height: 1cap) and (not (text-box-trim: trim-both)) {
+  :where(
+    [data-df="badge"],
+    [data-df="choice-chip"],
+    [data-df="content-switcher-item"],
+    [data-df="tabs-trigger"],
+    [data-df="floating-controls-item"],
+    [data-df="overlay-hint"],
+    [data-df="button"] > [data-slot="badge"]
+  ),
+  .df-content-switcher-item,
+  .df-tabs-trigger,
+  .df-floating-controls-item,
+  .df-overlay-hint,
+  .df-btn > [data-slot="badge"] {
+    --df-label-line-height: 1cap;
+  }
+}
+
+@supports (text-box-trim: trim-both) {
+  :where(
+    [data-df="badge"],
+    [data-df="choice-chip"],
+    [data-df="content-switcher-item"],
+    [data-df="tabs-trigger"],
+    [data-df="floating-controls-item"],
+    [data-df="overlay-hint"],
+    [data-df="button"] > [data-slot="badge"]
+  ),
+  .df-content-switcher-item,
+  .df-tabs-trigger,
+  .df-floating-controls-item,
+  .df-overlay-hint,
+  .df-btn > [data-slot="badge"] {
+    text-box: trim-both cap alphabetic;
+  }
 }
 
 @supports (corner-shape: squircle) {
@@ -93,7 +132,6 @@
   translate: 50% -50%;
   font-variant-numeric: tabular-nums;
   font-weight: var(--df-font-weight-semibold);
-  line-height: var(--df-leading-none);
 }
 
 :where([data-df="button"][data-badge-position="inset"] > [data-slot="badge"]),
@@ -536,7 +574,6 @@
   border: var(--border-width-hairline) solid transparent;
   font-weight: var(--df-font-weight-medium);
   white-space: nowrap;
-  line-height: var(--df-leading-none);
   transition: color var(--df-duration-base), border-color var(--df-duration-base);
 }
 
@@ -724,7 +761,6 @@
   appearance: none;
   margin: 0;
   font: inherit;
-  line-height: var(--df-leading-none);
   cursor: pointer;
   text-align: inherit;
 }
@@ -848,7 +884,6 @@
   border-width: 0;
   font-weight: var(--df-font-weight-semibold);
   font-variant-numeric: tabular-nums;
-  line-height: var(--df-leading-none);
 }
 
 :where([data-df="badge"][data-size="md"] > [data-df="badge"]) {
@@ -898,7 +933,6 @@
   color: var(--muted-foreground);
   font: inherit;
   font-weight: var(--df-font-weight-medium);
-  line-height: var(--df-leading-none);
   white-space: nowrap;
   cursor: pointer;
   transition: color var(--df-duration-base);
@@ -3868,7 +3902,10 @@
   z-index: var(--z-overlay);
   display: flex;
   width: fit-content;
-  max-width: calc(100vw - 8 * var(--spacing-unit, 0.25rem));
+  max-width: min(
+    var(--df-options-panel-max-width),
+    calc(100vw - 8 * var(--spacing-unit, 0.25rem))
+  );
   flex-direction: column;
   gap: 0;
   overflow: hidden;
@@ -5310,7 +5347,6 @@
   color: var(--muted-foreground);
   font: inherit;
   font-weight: var(--df-font-weight-medium);
-  line-height: var(--df-leading-none);
   white-space: nowrap;
   cursor: pointer;
   transition:
@@ -5683,7 +5719,6 @@
   font: inherit;
   font-size: var(--df-text-sm);
   font-weight: var(--df-font-weight-medium);
-  line-height: var(--df-leading-none);
   white-space: nowrap;
   cursor: pointer;
   box-shadow: none;
@@ -5884,7 +5919,6 @@
   font: inherit;
   font-size: var(--df-text-13);
   font-weight: var(--df-font-weight-medium);
-  line-height: var(--df-leading-none);
   white-space: nowrap;
   cursor: pointer;
   transition: color var(--df-duration-base) ease;
@@ -6046,7 +6080,6 @@
   -webkit-backdrop-filter: blur(var(--overlay-hint-blur));
   font-size: var(--df-text-11);
   font-weight: var(--df-font-weight-normal);
-  line-height: var(--df-leading-none);
   letter-spacing: var(--df-tracking-wide);
   white-space: nowrap;
 }

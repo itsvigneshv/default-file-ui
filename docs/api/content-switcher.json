@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-content-switcher",
   "dependencies": [],
   "api": {
-    "description": "Segmented single-select for filters and view modes. Supports t-shirt sizes and optional deselect. Segment label ink is optically centered to cap height. Compose ContentSwitcher and ContentSwitcherItem.",
+    "description": "Segmented single-select for filters and view modes. Supports t-shirt sizes and optional deselect. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Compose ContentSwitcher and ContentSwitcherItem.",
     "groups": [
       {
         "id": "content-switcher",
@@ -122,6 +122,12 @@
             "type": "CSS length",
             "description": "Base unit for padding and gap.",
             "default": "0.25rem"
+          },
+          {
+            "name": "--df-label-line-height",
+            "type": "CSS line-height",
+            "description": "Line box for label flex centering. Defaults to --df-leading-none. When text-box is unavailable and the cap unit is supported, the kit sets this to 1cap so flex centering matches cap-height ink.",
+            "default": "var(--df-leading-none)"
           }
         ]
       }

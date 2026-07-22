@@ -118,6 +118,19 @@ export const LEADING = {
 }
 
 export const MAX_W = {
+  "1rem": "var(--df-max-w-1rem)",
+  "2rem": "var(--df-max-w-2rem)",
+  "3rem": "var(--df-max-w-3rem)",
+  "4rem": "var(--df-max-w-4rem)",
+  "5rem": "var(--df-max-w-5rem)",
+  "6rem": "var(--df-max-w-6rem)",
+  "7rem": "var(--df-max-w-7rem)",
+  "8rem": "var(--df-max-w-8rem)",
+  "9rem": "var(--df-max-w-9rem)",
+  "10rem": "var(--df-max-w-10rem)",
+  "11rem": "var(--df-max-w-11rem)",
+  "5xs": "var(--df-max-w-5xs)",
+  "4xs": "var(--df-max-w-4xs)",
   "3xs": "var(--df-max-w-3xs)",
   "2xs": "var(--df-max-w-2xs)",
   xs: "var(--df-max-w-xs)",

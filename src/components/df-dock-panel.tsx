@@ -361,7 +361,7 @@ function DockPanelBody({
   orientation = "vertical",
   side,
   visibility,
-  space = "none",
+  space,
   width,
   ...props
 }: DockPanelBodyProps) {

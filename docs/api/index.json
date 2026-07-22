@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T21:09:02.871Z",
+  "generatedAt": "2026-07-22T12:41:55.591Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -33,7 +33,7 @@
       ],
       "importPath": "@default-file/ui/components/df-badge",
       "dependencies": [],
-      "propCount": 26
+      "propCount": 27
     },
     {
       "slug": "border-glow",
@@ -61,7 +61,7 @@
       ],
       "importPath": "@default-file/ui/components/df-button",
       "dependencies": [],
-      "propCount": 33
+      "propCount": 34
     },
     {
       "slug": "choice-chip",
@@ -74,7 +74,7 @@
       ],
       "importPath": "@default-file/ui/components/df-choice-chip",
       "dependencies": [],
-      "propCount": 11
+      "propCount": 12
     },
     {
       "slug": "color-picker",
@@ -103,7 +103,7 @@
       ],
       "importPath": "@default-file/ui/components/df-content-switcher",
       "dependencies": [],
-      "propCount": 17
+      "propCount": 18
     },
     {
       "slug": "dock-panel",
@@ -134,7 +134,7 @@
       ],
       "importPath": "@default-file/ui/components/df-floating-controls",
       "dependencies": [],
-      "propCount": 38
+      "propCount": 39
     },
     {
       "slug": "image-dropzone",
@@ -216,7 +216,7 @@
       "slug": "options-panel",
       "name": "options-panel",
       "title": "Options Panel",
-      "description": "Anchored panel with header, body, and footer slots.",
+      "description": "Anchored panel with header, body, and footer slots. Hugs content up to a tokenized max width.",
       "chapter": "overlays",
       "registryDependencies": [
         "foundation",
@@ -224,7 +224,7 @@
       ],
       "importPath": "@default-file/ui/components/df-options-panel",
       "dependencies": [],
-      "propCount": 19
+      "propCount": 20
     },
     {
       "slug": "overlay-hint",
@@ -237,7 +237,7 @@
       ],
       "importPath": "@default-file/ui/components/df-overlay-hint",
       "dependencies": [],
-      "propCount": 57
+      "propCount": 58
     },
     {
       "slug": "panel-section",
@@ -388,7 +388,7 @@
       ],
       "importPath": "@default-file/ui/components/df-tabs",
       "dependencies": [],
-      "propCount": 39
+      "propCount": 40
     },
     {
       "slug": "text-mark",

@@ -10,7 +10,7 @@
   "importPath": "@default-file/ui/components/df-overlay-hint",
   "dependencies": [],
   "api": {
-    "description": "Instruction or status pill for tool chrome. Default is frosted glass that follows light and dark surfaces. Muted is a solid chip. Marquee scrolls the label with an optional trailing icon action and sm or md density. Chrome is tokenized via --overlay-hint-*.",
+    "description": "Instruction or status pill for tool chrome. Default is frosted glass that follows light and dark surfaces. Muted is a solid chip. Marquee scrolls the label with an optional trailing icon action and sm or md density. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Chrome is tokenized via --overlay-hint-*.",
     "groups": [
       {
         "id": "overlay-hint",
@@ -192,6 +192,12 @@
             "type": "CSS corner-shape",
             "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
             "default": "var(--df-corner-shape-round)"
+          },
+          {
+            "name": "--df-label-line-height",
+            "type": "CSS line-height",
+            "description": "Line box for label flex centering. Defaults to --df-leading-none. When text-box is unavailable and the cap unit is supported, the kit sets this to 1cap so flex centering matches cap-height ink.",
+            "default": "var(--df-leading-none)"
           },
           {
             "name": "--overlay-hint-bg",
