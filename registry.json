@@ -256,6 +256,16 @@
       ]
     },
     {
+      "name": "nav-rail",
+      "type": "registry:ui",
+      "title": "Nav Rail",
+      "description": "Fixed icon-over-label edge rail for switching modes or destinations. Does not expand into an inspector.",
+      "registryDependencies": ["foundation"],
+      "files": [
+        { "path": "src/components/df-nav-rail.tsx", "type": "registry:ui", "target": "default-file-ui/components/df-nav-rail.tsx" }
+      ]
+    },
+    {
       "name": "search-input",
       "type": "registry:ui",
       "title": "Search Input",

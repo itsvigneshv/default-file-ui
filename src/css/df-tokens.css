@@ -634,6 +634,14 @@
   --df-dock-mobile-max-height-sm: 38vh;
   --df-dock-mobile-max-height-md: 42vh;
   --df-dock-mobile-max-height-lg: 46vh;
+  /* Fixed icon-over-label edge rail (NavRail). Wider than dock collapsed chips. */
+  --df-nav-rail-width: calc(16 * var(--spacing-unit));
+  --df-nav-rail-item-active-bg: color-mix(
+    in oklch,
+    var(--df-brand-500) 14%,
+    transparent
+  );
+  --df-nav-rail-item-active-fg: var(--df-brand-500);
   --df-image-dropzone-min-height: calc(30 * var(--spacing-unit));
   --df-leading-code: 1.7;
 
@@ -925,6 +933,12 @@
   --sidebar-accent-foreground: var(--df-neutral-0);
   --sidebar-border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --sidebar-ring: var(--df-neutral-500);
+  --df-nav-rail-item-active-bg: color-mix(
+    in oklch,
+    var(--df-brand-400) 22%,
+    transparent
+  );
+  --df-nav-rail-item-active-fg: var(--df-brand-300);
   --df-text-mark-yellow: color-mix(
     in oklch,
     var(--df-yellow-green-90) 70%,

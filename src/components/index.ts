@@ -261,6 +261,17 @@ export type {
   DockPanelMobileMaxHeight,
   DockPanelCollapsedAlign,
 } from "./df-dock-panel"
+export {
+  NavRail,
+  NavRailItem,
+  NavRailSeparator,
+} from "./df-nav-rail"
+export type {
+  NavRailProps,
+  NavRailItemProps,
+  NavRailSeparatorProps,
+  NavRailSide,
+} from "./df-nav-rail"
 export { SearchInput, SearchBar } from "./df-search-input"
 export type {
   SearchInputProps,
