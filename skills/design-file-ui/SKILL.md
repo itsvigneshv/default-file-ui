@@ -1,26 +1,45 @@
 ---
 name: design-file-ui
 description: >-
-  Designs, implements, and critiques distinctive frontend UI with strong visual
-  hierarchy and light UX judgment. Use when building or redesigning landing pages,
-  marketing sites, portfolios, product pages, brand campaigns, SaaS dashboards,
-  admin tools, app shells, data tables, filters, settings, or mobile web apps; when
-  the user asks for UI polish, visual direction, layout help, or more excellent
-  interface design; when the user asks to critique UI, review UI, do a UX review,
-  assess brand presence, hierarchy, CTA clarity, task clarity, or density; and when
-  composing with Default File UI components, tokens, or kit CLI discovery in a project
-  that uses the kit.
+  Designs, implements, and critiques distinctive frontend UI at a senior industry
+  craft level with strong visual hierarchy and light UX judgment. Use when building
+  or redesigning landing pages, marketing sites, portfolios, product pages, brand
+  campaigns, SaaS dashboards, admin tools, app shells, data tables, filters, settings,
+  or mobile web apps; when the user asks for UI polish, visual direction, layout help,
+  or higher quality interface design; when the user asks to critique UI, review UI,
+  do a UX review, assess brand presence, hierarchy, CTA clarity, task clarity, or
+  density; and when composing with Default File UI components, tokens, or kit CLI
+  discovery in a project that uses the kit.
 ---
 
 # Design File UI
 
 Build and critique frontend interfaces that feel intentional, branded, and human. This skill is **usage agnostic**, stack agnostic, and tool agnostic. Prefer principles over fashion. Do not clone a specific external showcase site.
 
+Operate at a **senior industry craft level**: the bar of a principal product designer and senior frontend craftsperson working together. Ship work that is clear, distinctive, usable, accessible, and ready for real users. Do not settle for average template UI.
+
 **Scope:** Frontend focused, usage open. Follow the user's request. Do not lock the work to mobile, dashboard, admin, marketing, or any other fixed product category. Those labels are only examples. Mode names below are internal routing for composition rules after you read the brief; they are not a menu of allowed app types, and they must not rewrite the user's ask into a different product.
 
 **Design thinking freedom:** Contracts, modes, and professional findings improve judgment. They must not flatten invention. Keep the ability to think the UI differently: invent IA, layout metaphors, hierarchy, interaction patterns, type, color, motion, and visual authorship that fit the brief. Prefer a named distinctive concept over a safe generic template. Do not copy one default admin shell, landing formula, or kit demo when a better structure serves the user.
 
-Project or user hard rules may already cover composition principles. This skill still owns mode routing, the critique workflow, and the output contract. Follow that contract even when principles feel familiar.
+## Industry craft bar (required)
+
+Hold every design, redesign, and critique to this bar. Fail outputs that miss it.
+
+1. **Goal first:** Name the user goal and primary action before layout or styling.
+2. **Structure before paint:** Fix hierarchy, IA, and task flow before color, glow, or decoration.
+3. **Distinctive authorship:** Named visual concept plus one signature move. Reject interchangeable AI template looks.
+4. **Clarity under real use:** Scan path, labels, density, and next action stay obvious without explanation.
+5. **Complete interaction states:** Hover, focus, active, disabled, loading, empty, and error are designed, not omitted.
+6. **Accessibility baseline:** Semantic structure, visible focus, readable contrast, keyboard paths, and labeled controls are required, not optional polish.
+7. **Responsive by redesign:** Narrow and wide layouts keep the goal; redraw regions when needed instead of crushing a desktop layout.
+8. **System honesty:** When a design system or Default File UI is present, compose with it. Do not invent a parallel chrome stack.
+9. **Evidence based judgment:** Critiques cite concrete UI evidence and impact. No vague taste reviews.
+10. **Ship ready decisions:** Prefer one strong recommendation and an improve pass over option piles or "looks fine" conclusions.
+
+This bar raises quality. It does not lock usage, and it does not forbid creative or unusual frontend directions that still serve the user.
+
+Project or user hard rules may already cover composition principles. This skill still owns mode routing, the critique workflow, the craft bar, and the output contract. Follow that contract even when principles feel familiar.
 
 Read this file immediately when the skill applies, then follow the task path below. Do not improvise a generic review format.
 
@@ -415,10 +434,11 @@ When designing or redesigning, provide:
 6. Implementation (code or concrete component changes)
 7. The critique contract above, including professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
 
-Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives. Stay frontend focused: invent and implement the UI the user wants within the classified mode. Keep thinking original: structure and craft may differ from common templates when that better fits the brief.
+Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives. Stay frontend focused: invent and implement the UI the user wants within the classified mode. Keep thinking original: structure and craft may differ from common templates when that better fits the brief. Meet the industry craft bar on every finish.
 
 ## Before finishing
 
+- **Industry craft bar:** Goal first, structure before paint, distinctive authorship, complete states, accessibility baseline, responsive redesign, system honesty, evidence based judgment, ship ready decisions.
 - **Mode and Brief:** Classified and stated. Marketing rules not applied to workspace; dashboard chrome not applied to marketing heroes.
 - **Problem briefs:** Decision model present; IA invented from the job, not a generic component shopping list.
 - **Visual authorship:** Concept and signature move named; default dark cyan SaaS template rejected unless requested.
@@ -434,11 +454,13 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 
 ## Anti goals
 
+- Average or "good enough" template UI that would not pass a senior design review
 - Fashion cloning from external showcase galleries
 - Taste only or trend based findings with no clear impact for the surface
 - Treating this skill as fixed to mobile, dashboard, admin, or marketing usage
 - Rewriting the user's request into a different product category
 - Letting professional findings voice suppress invention into bland safe templates
+- Skipping accessibility, focus, or interaction states and calling the UI done
 - Stack religion (no required framework)
 - Generic AI template aesthetics (marketing or workspace flavors)
 - Default dark enterprise dashboard with cyan accent and flat type as the whole identity

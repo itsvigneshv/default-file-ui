@@ -1,6 +1,6 @@
 # Design File UI skill
 
-Portable Agent Skill for designing, implementing, and critiquing excellent frontend UI. Usage agnostic: follow the user's request; do not lock to mobile, dashboard, admin, or marketing. Keep design thinking free: invent distinctive structure and craft; contracts must not flatten UI into safe templates. Tool agnostic and stack agnostic. When Default File UI is present in a project, prefer kit discovery before inventing chrome.
+Portable Agent Skill for designing, implementing, and critiquing frontend UI at a senior industry craft level. Usage agnostic: follow the user's request; do not lock to mobile, dashboard, admin, or marketing. Keep design thinking free: invent distinctive structure and craft; contracts must not flatten UI into safe templates. Tool agnostic and stack agnostic. When Default File UI is present in a project, prefer kit discovery before inventing chrome.
 
 **Canonical source for publish:** this folder (`skills/design-file-ui/` inside `@default-file/ui`).
 
@@ -78,6 +78,7 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 ## Adherence notes
 
 - Critique and redesign must load `references/critique.md` before findings.
+- Hold the industry craft bar: goal first, structure before paint, authorship, states, accessibility, responsive redesign, evidence based critique.
 - Findings use a clear professional voice: observation, impact, recommendation. This improves review quality only.
 - Keep the skill frontend first and usage agnostic. Do not force mobile, dashboard, or marketing when that is not the ask.
 - Keep design invention intact: distinctive authorship, alternate IA/layout when useful, no bland template default.

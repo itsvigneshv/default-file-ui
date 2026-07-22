@@ -105,6 +105,16 @@ async function testHelpers() {
     "skill markdown must preserve design thinking freedom"
   )
   assert.ok(
+    /Industry craft bar/i.test(designSkill.skillMarkdown),
+    "skill markdown must define an industry craft bar"
+  )
+  assert.ok(
+    /Accessibility baseline/i.test(designSkill.skillMarkdown) &&
+      /Structure before paint/i.test(designSkill.skillMarkdown) &&
+      /Ship ready decisions/i.test(designSkill.skillMarkdown),
+    "skill markdown craft bar must include accessibility, structure, and ship ready decisions"
+  )
+  assert.ok(
     /must not flatten invention/i.test(designSkill.skillMarkdown) ||
       /Think structure differently/i.test(designSkill.skillMarkdown),
     "skill markdown must keep ability to invent different UI"
