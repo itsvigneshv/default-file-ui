@@ -97,13 +97,22 @@ async function testHelpers() {
     "skill markdown must stay frontend focused"
   )
   assert.ok(
-    /does\s*\**not\**\s*limit the skill to enterprise/i.test(
+    /usage agnostic/i.test(designSkill.skillMarkdown),
+    "skill markdown must stay usage agnostic"
+  )
+  assert.ok(
+    /routing labels/i.test(designSkill.skillMarkdown) ||
+      /not usage locks/i.test(designSkill.skillMarkdown),
+    "skill markdown must treat modes as routing, not usage locks"
+  )
+  assert.ok(
+    /Do not force a dashboard, mobile app, or marketing page/i.test(
       designSkill.skillMarkdown
     ) ||
-      /Do not narrow the brief to enterprise dashboards only/i.test(
+      /Do not invent a dashboard or mobile shell/i.test(
         designSkill.skillMarkdown
       ),
-    "skill markdown must not narrow build scope to enterprise only"
+    "skill markdown must not force mobile/dashboard/marketing usage"
   )
   assert.ok(
     /observation/i.test(designSkill.skillMarkdown) &&
@@ -121,8 +130,8 @@ async function testHelpers() {
     "critique.md must require professional findings"
   )
   assert.ok(
-    /creative frontend work fully in scope/i.test(critiqueRef.content),
-    "critique.md must keep creative frontend work in scope"
+    /usage agnostic/i.test(critiqueRef.content),
+    "critique.md must stay usage agnostic"
   )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }

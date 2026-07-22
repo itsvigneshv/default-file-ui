@@ -14,9 +14,9 @@ description: >-
 
 # Design File UI
 
-Build and critique frontend interfaces that feel intentional, branded, and human. This skill is stack agnostic and tool agnostic. Prefer principles over fashion. Do not clone a specific external showcase site.
+Build and critique frontend interfaces that feel intentional, branded, and human. This skill is **usage agnostic**, stack agnostic, and tool agnostic. Prefer principles over fashion. Do not clone a specific external showcase site.
 
-**Scope:** This is a frontend focused skill. Build what the user asks for: marketing pages, portfolios, product sites, SaaS tools, admin screens, data UI, mobile web apps, and mixed surfaces. Do not narrow the brief to enterprise dashboards only. Mode routing chooses the right rules for the surface; it does not limit what the user may request.
+**Scope:** Frontend focused, usage open. Follow the user's request. Do not lock the work to mobile, dashboard, admin, marketing, or any other fixed product category. Those labels are only examples. Mode names below are internal routing for composition rules after you read the brief; they are not a menu of allowed app types, and they must not rewrite the user's ask into a different product.
 
 Project or user hard rules may already cover composition principles. This skill still owns mode routing, the critique workflow, and the output contract. Follow that contract even when principles feel familiar.
 
@@ -42,12 +42,11 @@ If unsure whether a string is English UI copy or a technical token, prefer space
 
 ## When to use
 
-- New frontend UI from a brief or rough idea (any product or brand surface the user wants)
+- New frontend UI from a brief or rough idea
 - Redesign or visual upgrade of an existing screen
 - Critique of hierarchy, brand strength, task clarity, motion, or UX clarity
 - Choosing layout, type, color, and interaction patterns for a frontend surface
-- Marketing and promotional pages, portfolios, and product launches
-- SaaS dashboards, admin tools, tables, filters, settings, and mobile tool UI
+- Any user facing web UI the user wants built or reviewed (not limited to one product category)
 
 ## When not to use
 
@@ -57,15 +56,19 @@ If unsure whether a string is English UI copy or a technical token, prefer space
 
 ## Step 0: Classify surface mode (required)
 
+Modes are **routing labels**, not usage locks. Classify from the user's actual brief. Never force a dashboard, mobile app, or marketing page if that is not what they asked for.
+
 Before preflight, classify exactly one primary mode. Emit it as a single line:
 
 `Mode: marketing | workspace | mobileTool` plus one short rationale.
 
-| Mode | Choose when the surface being built is |
+| Mode | Choose when the surface being built is mainly |
 |---|---|
-| `marketing` | Landing, pitch, portfolio, brand campaign, or promotional product page |
-| `workspace` | SaaS dashboard, admin, analytics, CRM, settings, data tool, desktop app shell |
-| `mobileTool` | Mobile web app, thumb first tool UI, or responsive tool shell as the deliverable |
+| `marketing` | Persuasion or brand first: landing, pitch, portfolio, campaign, promotional product page, and similar |
+| `workspace` | Task first tool UI: app shell, admin, analytics, settings, data workbench, and similar (desktop or responsive) |
+| `mobileTool` | Thumb first tool UI where the primary deliverable is a mobile web tool shell |
+
+If the brief does not match these examples cleanly, still pick the closest mode for rules only, then build the user's requested frontend. Do not rename their product into "dashboard" or "mobile app" unless that matches the ask.
 
 If the brief mixes modes (for example a marketing page that embeds a product screenshot), classify by the **surface being built**, not the surrounding page type.
 
@@ -81,7 +84,7 @@ Misclassification checks:
 - "SaaS billing admin" → `workspace`
 - "Mobile web triage app" → `mobileTool`
 
-Do not apply marketing hero budget rules to workspace or mobileTool surfaces. Do not apply dashboard chrome to marketing heroes.
+Do not apply marketing hero budget rules to workspace or mobileTool surfaces. Do not apply dashboard chrome to marketing heroes. Do not invent a dashboard or mobile shell when the user asked for something else.
 
 ## Step 0b: Classify brief class (required)
 
@@ -97,15 +100,15 @@ After mode, classify how the brief is specified. Emit a second line:
 Rules:
 
 - **spec:** Fidelity to the listed inventory matters. Still apply mode rules, authorship, hierarchy, and critique.
-- **problem:** Invent the information architecture, workflows, interaction patterns, and visualizations. Fail if the result is a generic dashboard with no justified triage or decision model.
-- If the brief mixes both (a business problem plus a short component list), prefer `problem` for IA invention and treat the list as non binding hints.
+- **problem:** Invent the information architecture, workflows, interaction patterns, and visualizations that fit the user's goal. Fail if the result is a generic template that ignores the stated job.
+- If the brief mixes both (a goal plus a short component list), prefer `problem` for IA invention and treat the list as non binding hints.
 
-For `problem` briefs, emit a **decision model** before the section or shell map (four short lines):
+For `problem` briefs, emit a **decision model** before the section or shell map (four short lines). Adapt the wording to the surface (visitor, customer, or operator):
 
 1. What needs attention
 2. Why it happened (or how to see why)
 3. What gets worse if ignored
-4. What action the operator should take
+4. What action the user should take next
 
 ## Required reference reads
 
@@ -303,7 +306,7 @@ Use the axis set for the classified mode. Score each axis `strong`, `weak`, or `
 
 Critique findings, structural issues, quick wins, and improve pass notes must be clear and useful, like a senior frontend product review. Not vague taste commentary, and not a design gallery caption.
 
-This voice applies to **how findings are written**. It does **not** limit the skill to enterprise apps. Keep building expressive marketing, portfolios, campaigns, and creative frontend work when the brief asks for them.
+This voice applies to **how findings are written**. It does **not** limit usage. The skill stays usage agnostic: build any frontend the user requests.
 
 Write each finding as:
 
@@ -322,7 +325,7 @@ Voice rules:
 - Do not frame success as looking trendy or viral. Frame success as clear hierarchy, strong craft, and a frontend that serves the user's goal
 - Marketing mode still owns brand presence, hero composition, visual authorship, and expressive type or motion
 - Workspace and mobileTool findings prioritize task clarity, density, states, and operator error risk, while still allowing distinctive visual authorship
-- Never refuse a frontend brief because it is creative, branded, or non enterprise. Route it to the correct mode and build it
+- Never refuse a frontend brief, and never rewrite it into mobile, dashboard, or marketing by default. Route to the closest mode for rules, then build what they asked for
 
 ### Marketing axes
 
@@ -414,7 +417,7 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - **Problem briefs:** Decision model present; IA invented from the job, not a generic component shopping list.
 - **Visual authorship:** Concept and signature move named; default dark cyan SaaS template rejected unless requested.
 - **Critique tasks:** Do not send a final answer without scored axes for the correct mode, evidence on each weak/missing axis, professional findings (observation, impact, recommendation), top 3 structural issues, redesign sequence, and non goals.
-- **Build scope:** Do not shrink a user brief to an enterprise dashboard template. Deliver the frontend surface they asked for.
+- **Build scope / usage agnostic:** Deliver the frontend the user asked for. Do not force mobile, dashboard, admin, or marketing templates when that is not the ask.
 - **Design or redesign tasks:** Matching preflight answered; section or shell map present; critique contract filled; at least one improve pass applied when any axis is weak or missing.
 - **Multi section IA:** No dead nav destinations; stubs must be real empty states with a next action, or the item must be removed from nav.
 - **Adaptive density:** Primary canvas does not leave a large empty void without a deliberate fill choice.
@@ -426,7 +429,8 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 
 - Fashion cloning from external showcase galleries
 - Taste only or trend based findings with no clear impact for the surface
-- Treating this skill as enterprise dashboard only and refusing creative or marketing frontend work
+- Treating this skill as fixed to mobile, dashboard, admin, or marketing usage
+- Rewriting the user's request into a different product category
 - Stack religion (no required framework)
 - Generic AI template aesthetics (marketing or workspace flavors)
 - Default dark enterprise dashboard with cyan accent and flat type as the whole identity

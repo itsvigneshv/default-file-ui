@@ -6,13 +6,13 @@ The required output shape lives in `SKILL.md` (Critique contract). Use this file
 
 ## Professional findings (required)
 
-Write findings like a senior frontend product review. This is about clarity of critique, not limiting the skill to enterprise apps. Each weak or missing axis needs:
+Write findings like a senior frontend product review. This is about clarity of critique, not locking usage to any product category. Each weak or missing axis needs:
 
 1. **Observation** — concrete UI evidence
-2. **Impact** — why it matters for this surface (marketing: brand, CTA, trust; workspace/mobileTool: task, scan path, error risk)
+2. **Impact** — why it matters for this surface (match the classified mode and the user's actual goal)
 3. **Recommendation** — the next structural change
 
-Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Keep expressive marketing and creative frontend work fully in scope when that is the brief.
+Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Stay usage agnostic: critique the frontend the user asked for; do not force mobile, dashboard, or marketing framing when that is not the brief.
 
 ## Evidence rule (required)
 
