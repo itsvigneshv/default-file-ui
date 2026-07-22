@@ -14,6 +14,8 @@ Write findings like a senior frontend product review. This is about clarity of c
 
 Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Stay usage agnostic: critique the frontend the user asked for; do not force mobile, dashboard, or marketing framing when that is not the brief.
 
+Do not let this rubric shrink invention. When structure is weak, recommend a different IA, layout metaphor, or visual system if that better serves the goal. Distinctive authorship remains required on design and redesign work.
+
 ## Evidence rule (required)
 
 For every axis scored `weak` or `missing`, name concrete evidence: a region, module, control, or pattern (for example "four equal KPI tiles above the agent table" or "Deploy has toast only, no busy state"). Vague scores without evidence fail the critique gate.

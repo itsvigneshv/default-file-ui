@@ -18,6 +18,8 @@ Build and critique frontend interfaces that feel intentional, branded, and human
 
 **Scope:** Frontend focused, usage open. Follow the user's request. Do not lock the work to mobile, dashboard, admin, marketing, or any other fixed product category. Those labels are only examples. Mode names below are internal routing for composition rules after you read the brief; they are not a menu of allowed app types, and they must not rewrite the user's ask into a different product.
 
+**Design thinking freedom:** Contracts, modes, and professional findings improve judgment. They must not flatten invention. Keep the ability to think the UI differently: invent IA, layout metaphors, hierarchy, interaction patterns, type, color, motion, and visual authorship that fit the brief. Prefer a named distinctive concept over a safe generic template. Do not copy one default admin shell, landing formula, or kit demo when a better structure serves the user.
+
 Project or user hard rules may already cover composition principles. This skill still owns mode routing, the critique workflow, and the output contract. Follow that contract even when principles feel familiar.
 
 Read this file immediately when the skill applies, then follow the task path below. Do not improvise a generic review format.
@@ -190,9 +192,11 @@ Name a **visual concept** in 1 to 2 sentences: atmosphere plus one signature mov
 
 - Reject the default template look unless the brief explicitly asks for it: dark bordered panels + cyan or electric blue accent + flat Inter-like UI type as the whole identity.
 - Require at least one non default signature: distinctive type pairing, surface language (material, grid, ink, terminal, editorial), accent strategy, or data emphasis pattern.
+- Think structure differently when useful: alternate navigation models, focal regions, denser or quieter canvases, unexpected but clear section order, or a stronger media or data metaphor. Difference must still serve the user goal.
 - Marketing: authorship may live in hero, type, and media.
 - Workspace / mobileTool: brand stays quiet in chrome; authorship lives in materials, hierarchy, and how data is emphasized, not in campaign heroes.
 - Fail outputs that only look like "a professional dark enterprise dashboard" with no named concept.
+- Fail safe sameness: a competent but interchangeable UI with no invented point of view when the brief left room to invent.
 
 ### Color and look
 
@@ -306,7 +310,7 @@ Use the axis set for the classified mode. Score each axis `strong`, `weak`, or `
 
 Critique findings, structural issues, quick wins, and improve pass notes must be clear and useful, like a senior frontend product review. Not vague taste commentary, and not a design gallery caption.
 
-This voice applies to **how findings are written**. It does **not** limit usage. The skill stays usage agnostic: build any frontend the user requests.
+This voice applies to **how findings are written**. It does **not** limit usage, and it does **not** reduce design invention. The skill stays usage agnostic and must still invent distinctive UI when the brief allows.
 
 Write each finding as:
 
@@ -323,9 +327,11 @@ Voice rules:
 
 - Keep tone calm, specific, and decisive. No hype, no taste only judgments, no trend chasing
 - Do not frame success as looking trendy or viral. Frame success as clear hierarchy, strong craft, and a frontend that serves the user's goal
+- Recommendations may propose a different IA, layout metaphor, or visual system when that better solves the goal. Do not only suggest minor polish on a generic shell
 - Marketing mode still owns brand presence, hero composition, visual authorship, and expressive type or motion
-- Workspace and mobileTool findings prioritize task clarity, density, states, and operator error risk, while still allowing distinctive visual authorship
+- Workspace and mobileTool findings prioritize task clarity, density, states, and operator error risk, while still requiring distinctive visual authorship when inventing or redesigning
 - Never refuse a frontend brief, and never rewrite it into mobile, dashboard, or marketing by default. Route to the closest mode for rules, then build what they asked for
+- Never use "professional" as an excuse for bland, template, or copycat UI
 
 ### Marketing axes
 
@@ -409,13 +415,14 @@ When designing or redesigning, provide:
 6. Implementation (code or concrete component changes)
 7. The critique contract above, including professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
 
-Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives. Stay frontend focused: invent and implement the UI the user wants within the classified mode.
+Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives. Stay frontend focused: invent and implement the UI the user wants within the classified mode. Keep thinking original: structure and craft may differ from common templates when that better fits the brief.
 
 ## Before finishing
 
 - **Mode and Brief:** Classified and stated. Marketing rules not applied to workspace; dashboard chrome not applied to marketing heroes.
 - **Problem briefs:** Decision model present; IA invented from the job, not a generic component shopping list.
 - **Visual authorship:** Concept and signature move named; default dark cyan SaaS template rejected unless requested.
+- **Design invention:** For open briefs, the UI has a distinctive point of view (structure and/or craft). Do not end on a safe generic template.
 - **Critique tasks:** Do not send a final answer without scored axes for the correct mode, evidence on each weak/missing axis, professional findings (observation, impact, recommendation), top 3 structural issues, redesign sequence, and non goals.
 - **Build scope / usage agnostic:** Deliver the frontend the user asked for. Do not force mobile, dashboard, admin, or marketing templates when that is not the ask.
 - **Design or redesign tasks:** Matching preflight answered; section or shell map present; critique contract filled; at least one improve pass applied when any axis is weak or missing.
@@ -431,6 +438,7 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - Taste only or trend based findings with no clear impact for the surface
 - Treating this skill as fixed to mobile, dashboard, admin, or marketing usage
 - Rewriting the user's request into a different product category
+- Letting professional findings voice suppress invention into bland safe templates
 - Stack religion (no required framework)
 - Generic AI template aesthetics (marketing or workspace flavors)
 - Default dark enterprise dashboard with cyan accent and flat type as the whole identity
@@ -442,3 +450,4 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - Using a promotional landing as a template for a logged in admin
 - Using a dense admin as a template for a brand campaign hero
 - Treating a problem brief as a prompt to copy a generic dashboard template
+- Refusing to rethink IA, hierarchy, or visual system when the current one is weak

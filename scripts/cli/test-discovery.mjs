@@ -101,6 +101,15 @@ async function testHelpers() {
     "skill markdown must stay usage agnostic"
   )
   assert.ok(
+    /Design thinking freedom/i.test(designSkill.skillMarkdown),
+    "skill markdown must preserve design thinking freedom"
+  )
+  assert.ok(
+    /must not flatten invention/i.test(designSkill.skillMarkdown) ||
+      /Think structure differently/i.test(designSkill.skillMarkdown),
+    "skill markdown must keep ability to invent different UI"
+  )
+  assert.ok(
     /routing labels/i.test(designSkill.skillMarkdown) ||
       /not usage locks/i.test(designSkill.skillMarkdown),
     "skill markdown must treat modes as routing, not usage locks"
