@@ -2388,6 +2388,46 @@
   line-height: var(--df-leading-5);
 }
 
+:where([data-df="progress"]),
+.df-progress {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--df-progress-height, var(--df-progress-height-md));
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background-color: var(--muted);
+}
+
+:where([data-df="progress"][data-size="sm"]),
+.df-progress[data-size="sm"] {
+  --df-progress-height: var(--df-progress-height-sm);
+}
+
+:where([data-df="progress"][data-size="md"]),
+.df-progress[data-size="md"] {
+  --df-progress-height: var(--df-progress-height-md);
+}
+
+:where([data-df="progress"] .df-progress-indicator),
+.df-progress .df-progress-indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--df-progress-value, 0%);
+  border-radius: inherit;
+  background-color: var(--foreground);
+  transition: width var(--df-progress-duration) var(--df-ease-standard);
+}
+
+:where([data-df="progress"][data-state="indeterminate"] .df-progress-indicator),
+.df-progress[data-state="indeterminate"] .df-progress-indicator {
+  width: var(--df-progress-indeterminate-width);
+  transition: none;
+  animation: df-progress-indeterminate var(--df-progress-indeterminate-duration)
+    var(--df-ease-standard) infinite;
+}
+
 :where([data-df="spinner"]),
 .df-spinner {
   display: inline-flex;

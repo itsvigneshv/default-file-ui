@@ -4,6 +4,15 @@
   }
 }
 
+@keyframes df-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(var(--df-progress-indeterminate-travel));
+  }
+}
+
 @keyframes df-pulse {
   0%,
   100% {
@@ -364,7 +373,9 @@
   .animate-spin,
   .animate-pulse,
   :where([data-df="spinner"] svg),
-  .df-spinner svg {
+  .df-spinner svg,
+  :where([data-df="progress"][data-state="indeterminate"] .df-progress-indicator),
+  .df-progress[data-state="indeterminate"] .df-progress-indicator {
     animation: none !important;
   }
 

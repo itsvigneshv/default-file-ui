@@ -198,6 +198,7 @@
   --df-duration-reveal-long: 1000ms;
   --df-duration-linger: 750ms;
   --df-duration-spin: 1s;
+  --df-duration-progress-indeterminate: 1.2s;
 
   --df-spinner-size-xs: calc(3 * var(--spacing-unit));
   --df-spinner-size-sm: calc(3.5 * var(--spacing-unit));
@@ -206,6 +207,13 @@
   --df-spinner-stroke: var(--border-width-thick);
   --df-spinner-track-opacity: var(--df-opacity-25);
   --df-spinner-dasharray: 28 40;
+
+  --df-progress-height-sm: calc(1 * var(--spacing-unit));
+  --df-progress-height-md: calc(1.5 * var(--spacing-unit));
+  --df-progress-duration: var(--df-duration-fast);
+  --df-progress-indeterminate-duration: var(--df-duration-progress-indeterminate);
+  --df-progress-indeterminate-width: 40%;
+  --df-progress-indeterminate-travel: 350%;
 
   --df-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
   --df-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);

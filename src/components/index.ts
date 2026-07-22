@@ -51,6 +51,8 @@ export type { LabelMarkVariant, LabelProps } from "./df-label"
 export { Separator } from "./df-separator"
 export { Spinner } from "./df-spinner"
 export type { SpinnerProps, SpinnerSize } from "./df-spinner"
+export { Progress } from "./df-progress"
+export type { ProgressProps, ProgressSize } from "./df-progress"
 export { Switch } from "./df-switch"
 export { Slider } from "./df-slider"
 export type {

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T16:07:34.347Z",
+  "generatedAt": "2026-07-22T17:38:32.286Z",
   "source": "docs/api",
   "foundation": {
     "registryName": "foundation",
@@ -264,6 +264,19 @@
       "importPath": "@default-file/ui/components/df-popover",
       "dependencies": [],
       "propCount": 24
+    },
+    {
+      "slug": "progress",
+      "name": "progress",
+      "title": "Progress",
+      "description": "Linear progress bar for determinate or indeterminate completion.",
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-progress",
+      "dependencies": [],
+      "propCount": 10
     },
     {
       "slug": "scroll-area",
