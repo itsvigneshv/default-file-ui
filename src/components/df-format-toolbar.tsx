@@ -247,9 +247,11 @@ function FormatToolbar({
         className
       )}
       onPointerDownCapture={(event) => {
-        if (!editLocked) return
         const target = event.target
         if (!(target instanceof Element) || !target.closest("button")) return
+        // Keep host editor selection when pressing toolbar controls.
+        event.preventDefault()
+        if (!editLocked) return
         onLockedEditAttempt?.(event.clientX, event.clientY)
       }}
     >
