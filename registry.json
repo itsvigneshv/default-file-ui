@@ -307,6 +307,28 @@
       ]
     },
     {
+      "name": "format-toolbar",
+      "type": "registry:ui",
+      "title": "Format Toolbar",
+      "description": "Rich text formatting toolbar. Host owns document state through a controller.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "foundation",
+        "button",
+        "input",
+        "popover",
+        "separator",
+        "tooltip"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-format-toolbar.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-format-toolbar.tsx"
+        }
+      ]
+    },
+    {
       "name": "overlay-hint",
       "type": "registry:ui",
       "title": "Overlay Hint",

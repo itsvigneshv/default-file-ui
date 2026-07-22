@@ -226,6 +226,17 @@ export { PanelSection } from "./df-panel-section"
 export { ImageDropzone } from "./df-image-dropzone"
 export type { ImageDropzoneProps } from "./df-image-dropzone"
 export {
+  FormatToolbar,
+  FORMAT_TOOLBAR_CALLOUT_TYPES,
+} from "./df-format-toolbar"
+export type {
+  FormatToolbarProps,
+  FormatToolbarController,
+  FormatToolbarQuery,
+  FormatToolbarAttrs,
+  FormatToolbarCalloutType,
+} from "./df-format-toolbar"
+export {
   DockPanel,
   DockPanelRail,
   DockPanelHeader,

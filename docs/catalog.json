@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T17:38:32.286Z",
+  "generatedAt": "2026-07-22T18:07:53.352Z",
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
@@ -58,7 +58,7 @@
       ],
       "importPath": "@default-file/ui/components/df-badge",
       "dependencies": [],
-      "propCount": 27
+      "propCount": 24
     },
     {
       "slug": "border-glow",
@@ -160,6 +160,26 @@
       "importPath": "@default-file/ui/components/df-floating-controls",
       "dependencies": [],
       "propCount": 39
+    },
+    {
+      "slug": "format-toolbar",
+      "name": "format-toolbar",
+      "title": "Format Toolbar",
+      "description": "Rich text formatting toolbar with headings, marks, lists, callouts, and tables.",
+      "chapter": "toolbars",
+      "registryDependencies": [
+        "foundation",
+        "button",
+        "input",
+        "popover",
+        "separator",
+        "tooltip"
+      ],
+      "importPath": "@default-file/ui/components/df-format-toolbar",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 11
     },
     {
       "slug": "image-dropzone",

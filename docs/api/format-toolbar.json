@@ -1,0 +1,93 @@
+{
+  "name": "format-toolbar",
+  "slug": "format-toolbar",
+  "title": "Format Toolbar",
+  "description": "Rich text formatting toolbar with headings, marks, lists, callouts, and tables.",
+  "chapter": "toolbars",
+  "registryDependencies": [
+    "foundation",
+    "button",
+    "input",
+    "popover",
+    "separator",
+    "tooltip"
+  ],
+  "importPath": "@default-file/ui/components/df-format-toolbar",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Rich text formatting toolbar for editor surfaces. Hosts own document state through a controller. Supports headings, marks, lists, quote, callout, code, rule, and table actions.",
+    "groups": [
+      {
+        "id": "format-toolbar",
+        "title": "FormatToolbar",
+        "props": [
+          {
+            "name": "controller",
+            "type": "FormatToolbarController | null",
+            "description": "Command surface for formatting actions and pressed states. Pass null while the editor is unavailable."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "description": "Disables every control."
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "default": "false",
+            "description": "Blocks edits and reports lock attempts when a control is pressed."
+          },
+          {
+            "name": "onLockedEditAttempt",
+            "type": "(clientX: number, clientY: number) => void",
+            "description": "Called when a locked control is pressed. Use for unlock hints."
+          },
+          {
+            "name": "isValidHref",
+            "type": "(href: string) => boolean",
+            "description": "Validates link URLs before Apply. Defaults to http, https, and mailto."
+          },
+          {
+            "name": "calloutLabel",
+            "type": "(type: FormatToolbarCalloutType) => string",
+            "description": "Label for each callout option in the callout menu."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the toolbar root."
+          }
+        ]
+      },
+      {
+        "id": "format-toolbar-controller",
+        "title": "FormatToolbarController",
+        "props": [
+          {
+            "name": "isActive",
+            "type": "(query, attrs?) => boolean",
+            "description": "Pressed state for a formatting query."
+          },
+          {
+            "name": "getLinkHref",
+            "type": "() => string | null",
+            "description": "Current link href at the selection, if any."
+          },
+          {
+            "name": "subscribe",
+            "type": "(listener) => () => void",
+            "description": "Subscribe to selection and document updates so pressed states refresh."
+          },
+          {
+            "name": "toggleHeading / toggleBold / …",
+            "type": "() => void",
+            "description": "Formatting commands for headings, marks, lists, quote, callout, code, rule, and tables."
+          }
+        ]
+      }
+    ]
+  }
+}
