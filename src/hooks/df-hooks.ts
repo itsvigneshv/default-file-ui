@@ -221,14 +221,62 @@ type AnchoredPlacement = {
   align: ResolvedAlign
 }
 
+export type AnchorRect = {
+  x: number
+  y: number
+  width?: number
+  height?: number
+}
+
 function initialAlign(align: Align): ResolvedAlign {
   return align === "auto" ? "center" : align
+}
+
+function rectFromAnchor(anchor: AnchorRect): DOMRect {
+  const width = anchor.width ?? 0
+  const height = anchor.height ?? 0
+  return {
+    x: anchor.x,
+    y: anchor.y,
+    width,
+    height,
+    top: anchor.y,
+    left: anchor.x,
+    right: anchor.x + width,
+    bottom: anchor.y + height,
+    toJSON() {
+      return {
+        x: anchor.x,
+        y: anchor.y,
+        width,
+        height,
+        top: anchor.y,
+        left: anchor.x,
+        right: anchor.x + width,
+        bottom: anchor.y + height,
+      }
+    },
+  } as DOMRect
+}
+
+export function readCssDurationMs(name: string, fallback: number): number {
+  if (typeof window === "undefined") return fallback
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim()
+  if (!raw) return fallback
+  const value = Number.parseFloat(raw)
+  if (Number.isNaN(value)) return fallback
+  if (raw.endsWith("ms")) return value
+  if (raw.endsWith("s")) return value * 1000
+  return value
 }
 
 export function useAnchoredPosition({
   open,
   triggerRef,
   contentRef,
+  anchorRect = null,
   side = "bottom",
   align = "center",
   sideOffset = 4,
@@ -238,8 +286,10 @@ export function useAnchoredPosition({
   followScroll = true,
 }: {
   open: boolean
-  triggerRef: React.RefObject<HTMLElement | null>
+  triggerRef?: React.RefObject<HTMLElement | null>
   contentRef: React.RefObject<HTMLElement | null>
+  /** Virtual anchor in viewport coordinates when there is no trigger element. */
+  anchorRect?: AnchorRect | null
   side?: Side
   align?: Align
   sideOffset?: number
@@ -259,12 +309,26 @@ export function useAnchoredPosition({
     align: initialAlign(align),
   }))
 
-  const update = useCallback(() => {
-    const trigger = triggerRef.current
-    const content = contentRef.current
-    if (!trigger || !content) return
+  const anchorX = anchorRect?.x
+  const anchorY = anchorRect?.y
+  const anchorWidth = anchorRect?.width
+  const anchorHeight = anchorRect?.height
+  const hasAnchorRect = anchorRect != null
 
-    const t = trigger.getBoundingClientRect()
+  const update = useCallback(() => {
+    const content = contentRef.current
+    if (!content) return
+
+    const t = hasAnchorRect
+      ? rectFromAnchor({
+          x: anchorX ?? 0,
+          y: anchorY ?? 0,
+          width: anchorWidth,
+          height: anchorHeight,
+        })
+      : triggerRef?.current?.getBoundingClientRect()
+    if (!t) return
+
     const c = content.getBoundingClientRect()
     const pad = 8
     const padTop = pad + readOverlayInset("--df-overlay-inset-top")
@@ -373,8 +437,13 @@ export function useAnchoredPosition({
   }, [
     align,
     alignOffset,
+    anchorHeight,
+    anchorWidth,
+    anchorX,
+    anchorY,
     collisionAvoidance,
     contentRef,
+    hasAnchorRect,
     matchTriggerWidth,
     side,
     sideOffset,
@@ -391,7 +460,7 @@ export function useAnchoredPosition({
     if (followScroll) window.addEventListener("scroll", onScroll, true)
 
     const content = contentRef.current
-    const trigger = triggerRef.current
+    const trigger = triggerRef?.current
     const ro =
       typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(() => update())
@@ -405,7 +474,17 @@ export function useAnchoredPosition({
       if (followScroll) window.removeEventListener("scroll", onScroll, true)
       ro?.disconnect()
     }
-  }, [contentRef, followScroll, open, triggerRef, update])
+  }, [
+    anchorHeight,
+    anchorWidth,
+    anchorX,
+    anchorY,
+    contentRef,
+    followScroll,
+    open,
+    triggerRef,
+    update,
+  ])
 
   return placement
 }

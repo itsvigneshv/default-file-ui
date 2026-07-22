@@ -197,6 +197,7 @@
   --df-duration-reveal: 700ms;
   --df-duration-reveal-long: 1000ms;
   --df-duration-linger: 750ms;
+  --df-duration-tip-hold: 1800ms;
   --df-duration-spin: 1s;
   --df-duration-progress-indeterminate: 1.2s;
 

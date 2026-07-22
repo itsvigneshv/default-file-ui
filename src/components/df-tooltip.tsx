@@ -4,6 +4,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 
 import {
+  readCssDurationMs,
   useAnchoredPosition,
   useControllableState,
   useIsClient,
@@ -15,6 +16,11 @@ type TooltipAppearance = "light" | "dark" | "inverse"
 type TooltipSide = "top" | "bottom" | "left" | "right"
 type TooltipAlign = "start" | "center" | "end"
 
+type TooltipAnchorPoint = {
+  x: number
+  y: number
+}
+
 type TooltipContextValue = {
   open: boolean
   show: () => void
@@ -24,6 +30,7 @@ type TooltipContextValue = {
   contentId: string
   variant: TooltipVariant
   appearance: TooltipAppearance
+  anchorPoint: TooltipAnchorPoint | null
 }
 
 const TooltipContext = React.createContext<TooltipContextValue | null>(null)
@@ -39,6 +46,8 @@ function Tooltip({
   defaultOpen = false,
   onOpenChange,
   delayDuration = 200,
+  dismissDuration,
+  anchorPoint = null,
   variant = "compact",
   appearance = "inverse",
   children,
@@ -47,6 +56,10 @@ function Tooltip({
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   delayDuration?: number
+  /** Auto-hide while open, in ms. Point mode defaults to --df-duration-tip-hold. */
+  dismissDuration?: number
+  /** Viewport point to anchor content when there is no trigger element. */
+  anchorPoint?: TooltipAnchorPoint | null
   variant?: TooltipVariant
   /** Panel surface: light, dark, or inverse to the document theme. */
   appearance?: TooltipAppearance
@@ -61,6 +74,8 @@ function Tooltip({
   const contentId = React.useId()
   const openTimerRef = React.useRef<number | null>(null)
   const closeTimerRef = React.useRef<number | null>(null)
+  const dismissTimerRef = React.useRef<number | null>(null)
+  const pointMode = anchorPoint != null
 
   const clearTimers = React.useCallback(() => {
     if (openTimerRef.current != null) {
@@ -71,23 +86,29 @@ function Tooltip({
       window.clearTimeout(closeTimerRef.current)
       closeTimerRef.current = null
     }
+    if (dismissTimerRef.current != null) {
+      window.clearTimeout(dismissTimerRef.current)
+      dismissTimerRef.current = null
+    }
   }, [])
 
   React.useEffect(() => () => clearTimers(), [clearTimers])
 
   const show = React.useCallback(() => {
+    if (pointMode) return
     clearTimers()
     openTimerRef.current = window.setTimeout(() => {
       setOpen(true)
     }, delayDuration)
-  }, [clearTimers, delayDuration, setOpen])
+  }, [clearTimers, delayDuration, pointMode, setOpen])
 
   const hide = React.useCallback(() => {
+    if (pointMode) return
     clearTimers()
     closeTimerRef.current = window.setTimeout(() => {
       setOpen(false)
     }, 0)
-  }, [clearTimers, setOpen])
+  }, [clearTimers, pointMode, setOpen])
 
   const hideImmediate = React.useCallback(() => {
     clearTimers()
@@ -110,6 +131,36 @@ function Tooltip({
     return () => window.removeEventListener("scroll", onScroll, true)
   }, [isOpen, hideImmediate])
 
+  React.useEffect(() => {
+    if (!isOpen) return
+    const holdMs =
+      dismissDuration ??
+      (pointMode
+        ? readCssDurationMs("--df-duration-tip-hold", 1800)
+        : null)
+    if (holdMs == null) return
+    if (dismissTimerRef.current != null) {
+      window.clearTimeout(dismissTimerRef.current)
+    }
+    dismissTimerRef.current = window.setTimeout(() => {
+      dismissTimerRef.current = null
+      hideImmediate()
+    }, holdMs)
+    return () => {
+      if (dismissTimerRef.current != null) {
+        window.clearTimeout(dismissTimerRef.current)
+        dismissTimerRef.current = null
+      }
+    }
+  }, [
+    anchorPoint?.x,
+    anchorPoint?.y,
+    dismissDuration,
+    hideImmediate,
+    isOpen,
+    pointMode,
+  ])
+
   return (
     <TooltipContext.Provider
       value={{
@@ -121,6 +172,7 @@ function Tooltip({
         contentId,
         variant,
         appearance,
+        anchorPoint,
       }}
     >
       {children}
@@ -136,7 +188,10 @@ function TooltipTrigger({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   render?: React.ReactElement
 }) {
-  const { open, show, hide, triggerRef, contentId } = useTooltipContext()
+  const { open, show, hide, triggerRef, contentId, anchorPoint } =
+    useTooltipContext()
+
+  if (anchorPoint != null) return null
 
   const shared = {
     ref: triggerRef as React.Ref<HTMLButtonElement>,
@@ -203,13 +258,18 @@ function TooltipContent({
   wrap?: boolean
   arrow?: boolean
 }) {
-  const { open, triggerRef, contentId, variant, appearance } = useTooltipContext()
+  const { open, triggerRef, contentId, variant, appearance, anchorPoint } =
+    useTooltipContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const [present, setPresent] = React.useState(open)
+  const pointMode = anchorPoint != null
   const placement = useAnchoredPosition({
     open,
-    triggerRef,
+    triggerRef: pointMode ? undefined : triggerRef,
     contentRef,
+    anchorRect: pointMode
+      ? { x: anchorPoint.x, y: anchorPoint.y, width: 0, height: 0 }
+      : null,
     side,
     align,
     sideOffset,
@@ -250,6 +310,7 @@ function TooltipContent({
       data-wrap={variant === "detailed" ? (wrapMode ? "true" : "false") : undefined}
       className={cn(className)}
       style={placement.style}
+      aria-live={pointMode ? "polite" : undefined}
       onAnimationEnd={(event) => {
         onAnimationEnd?.(event)
         if (event.target !== event.currentTarget) return
@@ -265,4 +326,4 @@ function TooltipContent({
 }
 
 export { Tooltip, TooltipContent, TooltipTrigger }
-export type { TooltipAppearance, TooltipVariant }
+export type { TooltipAppearance, TooltipAnchorPoint, TooltipVariant }

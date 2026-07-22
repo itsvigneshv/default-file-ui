@@ -71,6 +71,64 @@
   }
 }
 
+/* Interactive chrome is not document text. Fields and panel bodies stay selectable. */
+:where(
+  [data-df="button"],
+  [data-df="badge"],
+  [data-df="choice-chip"],
+  [data-df="content-switcher-item"],
+  [data-df="tabs-trigger"],
+  [data-df="floating-controls-item"],
+  [data-df="overlay-hint"],
+  [data-df="toggle-group-item"],
+  [data-df="accordion-trigger"],
+  [data-df="select-trigger"],
+  [data-df="select-field-help-button"],
+  [data-df="select-value-badge"],
+  [data-df="select-value-badge-remove"],
+  [data-df="option-list-trigger"],
+  [data-df="option-list-item"],
+  [data-df="option-list-scroll-up-button"],
+  [data-df="option-list-scroll-down-button"],
+  [data-df="popover-trigger"],
+  [data-df="tooltip-trigger"],
+  [data-df="switch"],
+  [data-df="color-picker-trigger"],
+  [data-df="label"],
+  [data-df="input-prefix"],
+  [data-df="input-suffix"],
+  [data-df="input-label"],
+  [data-df="input-clear"],
+  [data-df="input-icon"],
+  [data-df="search-input-clear"],
+  [data-df="search-input-icon"],
+  [data-df="slider"],
+  [data-df="slider-control"],
+  [data-df="tick-slider"],
+  [data-df="image-dropzone"],
+  [data-df="progress"],
+  [data-df="scroll-area-scrollbar"],
+  [data-df="dock-panel-header"],
+  [data-df="dock-panel-title"],
+  [data-df="dock-panel-subtitle"],
+  [data-df="dock-panel-expand-trigger"],
+  [data-df="dock-panel-expand-chip"],
+  [data-df="dock-panel-expand-label"],
+  [data-df="dock-panel-rail"],
+  [data-df="options-panel-header"],
+  [data-df="options-panel-title"],
+  [data-df="options-panel-trigger"]
+),
+.df-btn,
+.df-content-switcher-item,
+.df-tabs-trigger,
+.df-floating-controls-item,
+.df-overlay-hint,
+.df-toggle-item,
+.df-toast-close {
+  user-select: none;
+}
+
 @supports (corner-shape: squircle) {
   :where([data-df]),
   :where([data-df])::before,
@@ -107,7 +165,6 @@
   transition: color var(--df-duration-base), border-color var(--df-duration-base),
     box-shadow var(--df-duration-base), transform var(--df-duration-base);
   outline: none;
-  user-select: none;
   cursor: pointer;
 }
 
@@ -501,7 +558,6 @@
   transition: color var(--df-duration-base), border-color var(--df-duration-base),
     box-shadow var(--df-duration-base), transform var(--df-duration-base);
   outline: none;
-  user-select: none;
   cursor: pointer;
   text-decoration: none;
 }
@@ -1409,7 +1465,6 @@
   color: var(--df-input-addon);
   font-size: var(--df-text-sm);
   line-height: var(--df-leading-none);
-  user-select: none;
   pointer-events: none;
 }
 
@@ -2316,7 +2371,6 @@
   line-height: var(--df-leading-none);
   font-weight: var(--df-font-weight-medium);
   color: var(--foreground);
-  user-select: none;
 }
 
 :where([data-df="label"]:has([data-df="label-trailing"])),
@@ -2582,7 +2636,6 @@
   gap: var(--df-slider-header-gap);
   width: 100%;
   touch-action: none;
-  user-select: none;
 }
 
 :where([data-df="slider"][data-thickness="sm"]) {
@@ -2744,7 +2797,6 @@
   min-width: 0;
   flex: 1 1 auto;
   touch-action: none;
-  user-select: none;
   cursor: pointer;
 }
 
@@ -3175,7 +3227,6 @@
   padding-top: var(--df-tick-slider-root-pad-top);
   padding-bottom: 0;
   touch-action: none;
-  user-select: none;
 }
 
 :where([data-df="tick-slider"][data-bubble-side="bottom"]) {
@@ -3682,7 +3733,6 @@
   background: transparent;
   border: var(--border-width-hairline) solid transparent;
   color: inherit;
-  user-select: none;
 }
 .df-toggle-item svg {
   pointer-events: none;
@@ -3814,7 +3864,6 @@
   display: flex;
   width: var(--df-scrollbar-track-size);
   touch-action: none;
-  user-select: none;
   padding: var(--border-width-hairline);
   transition: opacity var(--df-duration-base), color var(--df-duration-base);
 }
@@ -5166,7 +5215,6 @@
     calc(3 * var(--spacing-unit, 0.25rem));
   font-size: var(--df-text-sm);
   outline: none;
-  user-select: none;
   white-space: nowrap;
   transition: color var(--df-duration-quick) ease;
 }
