@@ -1,6 +1,6 @@
 # Design File UI skill
 
-Portable Agent Skill for designing, implementing, and critiquing excellent frontend UI. Covers marketing and promotional surfaces and workspace tools (dashboards, admin, data UI, mobile tool shells). Tool agnostic and stack agnostic. When Default File UI is present in a project, prefer kit discovery before inventing chrome.
+Portable Agent Skill for designing, implementing, and critiquing frontend UI at a senior industry craft level. Usage agnostic: follow the user's request; do not lock to mobile, dashboard, admin, or marketing. Keep design thinking free: invent distinctive structure and craft; contracts must not flatten UI into safe templates. Tool agnostic and stack agnostic. When Default File UI is present in a project, prefer kit discovery before inventing chrome.
 
 **Canonical source for publish:** this folder (`skills/design-file-ui/` inside `@default-file/ui`).
 
@@ -34,11 +34,13 @@ Local kit development: prefer reading this folder directly, or reinstall before 
 
 ## Surface modes and brief class
 
+Modes are internal routing for composition rules, not a fixed list of allowed products. Classify from the user's brief, then build what they asked for.
+
 The skill must classify mode and brief class before preflight:
 
 | Mode | Example ask |
 |---|---|
-| `marketing` | Redesign this landing page / award style pitch |
+| `marketing` | Redesign this landing page / brand campaign pitch |
 | `workspace` | Design a SaaS billing admin / analytics dashboard |
 | `mobileTool` | Build a mobile web triage app |
 
@@ -76,6 +78,10 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 ## Adherence notes
 
 - Critique and redesign must load `references/critique.md` before findings.
+- Hold the industry craft bar: goal first, structure before paint, authorship, states, accessibility, responsive redesign, evidence based critique.
+- Findings use a clear professional voice: observation, impact, recommendation. This improves review quality only.
+- Keep the skill frontend first and usage agnostic. Do not force mobile, dashboard, or marketing when that is not the ask.
+- Keep design invention intact: distinctive authorship, alternate IA/layout when useful, no bland template default.
 - Weak or missing axes need concrete evidence; design tasks need an improve pass when scores are not all strong.
 - The critique output contract is inlined in `SKILL.md` so the format cannot be skipped.
 - Composition reference is marketing only; workspace work must load `workspace.md`.
@@ -87,5 +93,5 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 
 ## Research sources
 
-- Marketing corpus: `research/awards-ui/` (in the UX Tools app repo when developing locally)
-- Workspace corpus: `research/workspace-ui/`
+- Marketing corpus: promotional and brand campaign UI research (in the UX Tools app repo when developing locally)
+- Workspace corpus: enterprise workspace and admin UI research (in the UX Tools app repo when developing locally)

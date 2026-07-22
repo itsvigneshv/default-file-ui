@@ -88,7 +88,70 @@ async function testHelpers() {
     !/award|awwward|awards-ui/i.test(designSkill.skillMarkdown),
     "skill markdown must stay agnostic"
   )
+  assert.ok(
+    /Professional findings voice/i.test(designSkill.skillMarkdown),
+    "skill markdown must require professional findings voice"
+  )
+  assert.ok(
+    /frontend focused/i.test(designSkill.skillMarkdown),
+    "skill markdown must stay frontend focused"
+  )
+  assert.ok(
+    /usage agnostic/i.test(designSkill.skillMarkdown),
+    "skill markdown must stay usage agnostic"
+  )
+  assert.ok(
+    /Design thinking freedom/i.test(designSkill.skillMarkdown),
+    "skill markdown must preserve design thinking freedom"
+  )
+  assert.ok(
+    /Industry craft bar/i.test(designSkill.skillMarkdown),
+    "skill markdown must define an industry craft bar"
+  )
+  assert.ok(
+    /Accessibility baseline/i.test(designSkill.skillMarkdown) &&
+      /Structure before paint/i.test(designSkill.skillMarkdown) &&
+      /Ship ready decisions/i.test(designSkill.skillMarkdown),
+    "skill markdown craft bar must include accessibility, structure, and ship ready decisions"
+  )
+  assert.ok(
+    /must not flatten invention/i.test(designSkill.skillMarkdown) ||
+      /Think structure differently/i.test(designSkill.skillMarkdown),
+    "skill markdown must keep ability to invent different UI"
+  )
+  assert.ok(
+    /routing labels/i.test(designSkill.skillMarkdown) ||
+      /not usage locks/i.test(designSkill.skillMarkdown),
+    "skill markdown must treat modes as routing, not usage locks"
+  )
+  assert.ok(
+    /Do not force a dashboard, mobile app, or marketing page/i.test(
+      designSkill.skillMarkdown
+    ) ||
+      /Do not invent a dashboard or mobile shell/i.test(
+        designSkill.skillMarkdown
+      ),
+    "skill markdown must not force mobile/dashboard/marketing usage"
+  )
+  assert.ok(
+    /observation/i.test(designSkill.skillMarkdown) &&
+      /impact/i.test(designSkill.skillMarkdown) &&
+      /recommendation/i.test(designSkill.skillMarkdown),
+    "skill markdown must define observation, impact, recommendation"
+  )
   assert.ok(designSkill.references.length >= 3)
+  const critiqueRef = designSkill.referenceContents.find(
+    (ref) => ref.name === "critique.md"
+  )
+  assert.ok(critiqueRef, "expected critique.md reference")
+  assert.ok(
+    /Professional findings/i.test(critiqueRef.content),
+    "critique.md must require professional findings"
+  )
+  assert.ok(
+    /usage agnostic/i.test(critiqueRef.content),
+    "critique.md must stay usage agnostic"
+  )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
 

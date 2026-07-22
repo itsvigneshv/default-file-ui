@@ -4,6 +4,20 @@ Score each axis `strong`, `weak`, or `missing`. Fix weak structure before polish
 
 The required output shape lives in `SKILL.md` (Critique contract). Use this file for the per axis questions only. Choose the axis set that matches the classified surface mode.
 
+Hold critiques to the **industry craft bar** in `SKILL.md`: senior product design judgment plus senior frontend craft. Score `strong` only when the axis would pass a demanding design review, not when it is merely average.
+
+## Professional findings (required)
+
+Write findings like a senior frontend product review. This is about clarity of critique, not locking usage to any product category. Each weak or missing axis needs:
+
+1. **Observation** — concrete UI evidence
+2. **Impact** — why it matters for this surface (match the classified mode and the user's actual goal)
+3. **Recommendation** — the next structural change
+
+Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Stay usage agnostic: critique the frontend the user asked for; do not force mobile, dashboard, or marketing framing when that is not the brief.
+
+Do not let this rubric shrink invention. When structure is weak, recommend a different IA, layout metaphor, or visual system if that better serves the goal. Distinctive authorship remains required on design and redesign work. Accessibility, states, and responsive fitness count as craft failures when missing, not as late polish.
+
 ## Evidence rule (required)
 
 For every axis scored `weak` or `missing`, name concrete evidence: a region, module, control, or pattern (for example "four equal KPI tiles above the agent table" or "Deploy has toast only, no busy state"). Vague scores without evidence fail the critique gate.
