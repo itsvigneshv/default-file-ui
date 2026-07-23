@@ -4024,6 +4024,23 @@
   -ms-overflow-style: none;
 }
 
+/* Match viewport overflow axes to orientation so nested scrollports own the other axis. */
+:where(
+  [data-df="scroll-area"][data-orientation="vertical"]
+    > [data-df="scroll-area-viewport"]
+) {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+:where(
+  [data-df="scroll-area"][data-orientation="horizontal"]
+    > [data-df="scroll-area-viewport"]
+) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 /*
  * Scope part selectors to direct children so nested ScrollAreas keep their own
  * variant and space styles. With space=auto and visibility=hover, reserve track

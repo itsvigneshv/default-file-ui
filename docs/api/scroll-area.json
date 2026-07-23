@@ -39,7 +39,7 @@
             "name": "orientation",
             "type": "\"vertical\" | \"horizontal\" | \"both\"",
             "default": "\"vertical\"",
-            "description": "Axis the scrollbar tracks. `vertical` shows an up/down thumb on the trailing edge; `horizontal` shows a left/right thumb along the bottom; `both` renders a thumb on each axis as content overflows."
+            "description": "Scroll axis for thumbs and viewport overflow. `vertical` scrolls up/down and clips horizontal overflow; `horizontal` scrolls left/right and clips vertical overflow; `both` allows either axis when content overflows."
           },
           {
             "name": "side",
