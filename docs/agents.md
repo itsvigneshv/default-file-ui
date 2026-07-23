@@ -84,7 +84,7 @@ Local install:
 | `list_tokens` | Token inventory by group |
 | `search_kit` | Keyword search |
 | `check_coverage` | covered / partial / gap for a UI need |
-| `get_docs` | overview, install, mcp, tokens, foundation, skills |
+| `get_docs` | overview, install, colors, mcp, tokens, foundation, skills |
 | `list_skills` | Bundled Agent Skills |
 | `get_skill` | Full SKILL.md + reference list |
 | `install_skill` | Copy skill into `.agents/skills` and `.cursor/skills` |
