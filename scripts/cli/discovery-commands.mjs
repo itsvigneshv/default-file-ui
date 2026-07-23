@@ -125,7 +125,7 @@ Show one registry item, including full prop tables when available.
     }
   } else if (detail.type === "registry:style") {
     console.log(
-      "Style item. See df-ui docs colors (standalone) or foundation, and df-ui tokens.\n"
+      "Style item. See df-ui docs colors or foundation, and df-ui tokens.\n"
     )
   } else {
     console.log("No prop API metadata shipped for this item yet.\n")

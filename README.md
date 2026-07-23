@@ -87,9 +87,11 @@ Tools: `list_components`, `get_component`, `list_tokens`, `search_kit`, `check_c
 
 Agent brief: [docs/agents.md](./docs/agents.md).
 
-## Color system (standalone)
+## Color system
 
-Use the color scales, semantic tokens, and utilities on their own, without React components:
+Install color scales, semantic tokens, and utilities without components.
+
+Package entry:
 
 ```bash
 npm install github:itsvigneshv/default-file-ui#main
@@ -99,49 +101,49 @@ npm install github:itsvigneshv/default-file-ui#main
 @import "@default-file/ui/css/df-color-system.css";
 ```
 
-Or copy into your app:
+Copy-source:
 
 ```bash
 df-ui add color-system
 ```
 
-No peer React deps are required for the color system alone. Inspect tokens with `df-ui tokens` or `df-ui docs colors`.
+```css
+@import "@/default-file-ui/css/df-color-system.css";
+```
 
-## Install (package, full kit)
+Component peer packages are optional when you only import the color system CSS. See `df-ui docs colors` and `df-ui tokens --group color-scale`.
+
+## Install (full kit)
 
 ```bash
 npm install github:itsvigneshv/default-file-ui#main
 ```
 
-Peer deps for components: `react`, `react-dom`, `lucide-react`.
-
-Import full kit CSS (includes the color system):
+Component peers: `react`, `react-dom`, `lucide-react` (and `rough-notation` for TextMark).
 
 ```css
 @import "@default-file/ui/css/df-index.css";
 ```
 
-Import components:
-
 ```ts
 import { Button } from "@default-file/ui/components/df-button"
 ```
+
+`df-index.css` includes the color system, plus reset, animations, and component styles.
 
 ## Registry (copy source)
 
 Root `registry.json` lists installable items. Built payloads live under `public/r/` after `npm run df:registry`.
 
-Install path for registry consumers that accept a GitHub source:
+GitHub registry path: `itsvigneshv/default-file-ui/<item>`
 
-`itsvigneshv/default-file-ui/<item>`
+| Item | Purpose |
+|---|---|
+| `color-system` | Scales, tokens, utilities |
+| `foundation` | Kit CSS entry, component styles, hooks, `cn` (depends on `color-system`) |
+| component names | UI primitives (each depends on `foundation`) |
 
-Examples: `color-system` (styling only), `foundation` (full kit CSS + hooks), or any component.
-
-Machine-readable prop docs for agents live under `docs/api/`. Catalogue chapter metadata is in `docs/catalog.json`.
-
-## Kit contents
-
-Use `color-system` when you only need colors and utilities. Use the full package or `df-ui add` components when you need Default File UI chrome.
+Machine-readable prop docs: `docs/api/`. Catalogue metadata: `docs/catalog.json`.
 
 ## Color scale modes
 

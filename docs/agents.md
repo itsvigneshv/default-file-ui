@@ -1,13 +1,13 @@
 # Default File UI for AI agents
 
-Default File UI is a React design system: components, tokens, owned CSS, CLI, and MCP.
+Default File UI is a design system: color system, tokens, components, owned CSS, CLI, and MCP.
 
 ## Install paths
 
-**Color system only** (no components, no React peers required):
+**Color system** (no components):
 
 - Package CSS: `@import "@default-file/ui/css/df-color-system.css";`
-- Copy-source: `df-ui add color-system`
+- Copy-source: `df-ui add color-system` then import local `default-file-ui/css/df-color-system.css`
 - Docs: `df-ui docs colors`
 
 **Full kit** (components + color system):
@@ -15,7 +15,7 @@ Default File UI is a React design system: components, tokens, owned CSS, CLI, an
 - Package: `npm install github:itsvigneshv/default-file-ui#main`
 - CSS: `@import "@default-file/ui/css/df-index.css";`
 - Components: `import { Button } from "@default-file/ui/components/df-button"`
-- Copy-source: `df-ui init` then `df-ui add <items>` (foundation pulls color-system)
+- Copy-source: `df-ui init` then `df-ui add <items>` (resolves `foundation` → `color-system`)
 
 ## Discover before you invent
 
@@ -24,7 +24,8 @@ df-ui list --json
 df-ui show button --json
 df-ui search select --json
 df-ui cover "settings form with select, switch, and toast" --json
-df-ui tokens --json
+df-ui tokens --group color-scale --json
+df-ui docs colors
 df-ui docs mcp
 df-ui docs skills
 df-ui skills list --json

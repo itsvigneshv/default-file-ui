@@ -6,7 +6,7 @@
       "name": "color-system",
       "type": "registry:style",
       "title": "Color System",
-      "description": "Standalone color scales, semantic tokens, and utilities. Use without components.",
+      "description": "Color scales, semantic tokens, and utilities. Install without components.",
       "dependencies": [],
       "registryDependencies": [],
       "files": [
@@ -36,7 +36,7 @@
       "name": "foundation",
       "type": "registry:style",
       "title": "Foundation",
-      "description": "Full kit CSS entry, component styles, hooks, and cn. Pulls color-system. Install first for components.",
+      "description": "Kit CSS entry, component styles, hooks, and cn. Depends on color-system. Install first for components.",
       "dependencies": [],
       "registryDependencies": [
         "color-system"

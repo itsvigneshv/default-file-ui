@@ -3,14 +3,24 @@
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
-    "description": "Standalone color scales, semantic tokens, and utilities. Use without components."
+    "description": "Color scales, semantic tokens, and utilities. Install without components.",
+    "chapter": "color-system"
   },
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
-    "description": "Full kit CSS entry, component styles, hooks, and cn. Depends on color-system. Install first for components."
+    "description": "Kit CSS entry, component styles, hooks, and cn. Depends on color-system. Install first for components.",
+    "chapter": "foundation"
   },
   "chapters": [
+    {
+      "id": "color-system",
+      "label": "Color system"
+    },
+    {
+      "id": "foundation",
+      "label": "Foundation"
+    },
     {
       "id": "actions",
       "label": "Actions"

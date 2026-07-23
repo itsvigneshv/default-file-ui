@@ -2,7 +2,7 @@
   "name": "foundation",
   "type": "registry:style",
   "title": "Foundation",
-  "description": "Full kit CSS entry, component styles, hooks, and cn. Pulls color-system. Install first for components.",
+  "description": "Kit CSS entry, component styles, hooks, and cn. Depends on color-system. Install first for components.",
   "dependencies": [],
   "registryDependencies": [
     "color-system"

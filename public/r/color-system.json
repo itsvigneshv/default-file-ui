@@ -2,14 +2,14 @@
   "name": "color-system",
   "type": "registry:style",
   "title": "Color System",
-  "description": "Standalone color scales, semantic tokens, and utilities. Use without components.",
+  "description": "Color scales, semantic tokens, and utilities. Install without components.",
   "dependencies": [],
   "registryDependencies": [],
   "files": [
     {
       "path": "src/css/df-color-system.css",
       "type": "registry:file",
-      "content": "/* Standalone Default File color system: scales, semantic tokens, and utilities.\n * Use without React components, similar to a utility styling package:\n *   @import \"@default-file/ui/css/df-color-system.css\";\n * Or copy-source: df-ui add color-system\n */\n@import \"./df-color-scales.css\";\n@import \"./df-tokens.css\";\n@import \"./df-utilities.css\";\n",
+      "content": "@import \"./df-color-scales.css\";\n@import \"./df-tokens.css\";\n@import \"./df-utilities.css\";\n",
       "target": "default-file-ui/css/df-color-system.css"
     },
     {

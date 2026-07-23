@@ -1,8 +1,3 @@
-/* Standalone Default File color system: scales, semantic tokens, and utilities.
- * Use without React components, similar to a utility styling package:
- *   @import "@default-file/ui/css/df-color-system.css";
- * Or copy-source: df-ui add color-system
- */
 @import "./df-color-scales.css";
 @import "./df-tokens.css";
 @import "./df-utilities.css";
