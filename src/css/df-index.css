@@ -1,6 +1,4 @@
-@import "./df-color-scales.css";
-@import "./df-tokens.css";
+@import "./df-color-system.css";
 @import "./df-reset.css";
 @import "./df-animations.css";
 @import "./df-components.css";
-@import "./df-utilities.css";

@@ -4,6 +4,8 @@ import { kitFileExists, kitPath, readKitJson } from "./kit-root.mjs"
 
 /** Capability tags used by search and coverage matching. */
 const CHAPTER_TAGS = {
+  "color-system": ["color", "token", "utility", "scale", "palette", "theme"],
+  foundation: ["foundation", "css", "hook", "token"],
   actions: ["action", "button", "cta", "submit", "click"],
   inputs: [
     "form",
@@ -75,10 +77,24 @@ function loadBundle() {
   const catalogByName = new Map(
     (catalog?.components ?? []).map((item) => [item.name, item])
   )
+  for (const styleMeta of [catalog?.colorSystem, catalog?.foundation]) {
+    if (styleMeta?.registryName) {
+      catalogByName.set(styleMeta.registryName, {
+        ...styleMeta,
+        name: styleMeta.registryName,
+      })
+    }
+  }
 
   const items = (registry.items ?? []).map((item) => {
     const meta = catalogByName.get(item.name)
-    const chapter = meta?.chapter ?? (item.type === "registry:style" ? "foundation" : null)
+    const chapter =
+      meta?.chapter ??
+      (item.name === "color-system"
+        ? "color-system"
+        : item.type === "registry:style"
+          ? "foundation"
+          : null)
     const title = item.title ?? meta?.title ?? item.name
     const description = item.description ?? meta?.description ?? ""
     const tags = buildTags(item, meta, chapter, title, description)
@@ -218,7 +234,7 @@ function matchNeedToItems(needText, items) {
   const matched = []
 
   for (const item of items) {
-    if (item.name === "foundation") continue
+    if (item.name === "foundation" || item.name === "color-system") continue
     let reason = null
     if (terms.has(item.name) || text.includes(item.name.replace(/-/g, " "))) {
       reason = `Named ${item.title}`
@@ -305,11 +321,11 @@ export function getDocs(topic = "overview") {
       topic: "overview",
       title: "Default File UI",
       body: [
-        "Default File UI is an all-in-one React design system: components, tokens, owned CSS, and install CLI.",
-        "One install path. Do not add a separate utility CSS stack or a separate component kit for Default File UI surfaces.",
-        "Package import: @import \"@default-file/ui/css/df-index.css\"; then import components from @default-file/ui/components/df-*.",
-        "Copy-source: df-ui init, then df-ui add <items>. Foundation installs CSS, hooks, and cn.",
-        "AI hosts: run df-ui mcp (stdio) to inspect components, props, tokens, coverage, skills, and install.",
+        "Default File UI is a design system: color system, tokens, components, CSS, CLI, and MCP.",
+        "Color system (no components): @import \"@default-file/ui/css/df-color-system.css\"; or df-ui add color-system.",
+        "Full kit: @import \"@default-file/ui/css/df-index.css\"; then import from @default-file/ui/components/df-*.",
+        "Copy-source components: df-ui init, then df-ui add <items>. Foundation depends on color-system.",
+        "AI hosts: df-ui mcp (stdio) for components, props, tokens, coverage, skills, and install.",
       ].join("\n"),
     },
     install: {
@@ -318,10 +334,23 @@ export function getDocs(topic = "overview") {
       body: [
         "Scaffold: npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next",
         "Existing app: df-ui init (writes df.json; supports --framework, --color-scale, --radius, --corner-shape, --hover-border, --install-mode)",
-        "Add components: df-ui add button select",
-        "Agent skill: npx skills add itsvigneshv/default-file-ui --skill design-file-ui (or df-ui skills install design-file-ui)",
-        "Package mode peers: react, react-dom, lucide-react",
-        "CSS: @import \"@default-file/ui/css/df-index.css\";",
+        "Color system: df-ui add color-system, or package CSS @import \"@default-file/ui/css/df-color-system.css\"",
+        "Components: df-ui add button select (resolves foundation and color-system)",
+        "Agent skill: npx skills add itsvigneshv/default-file-ui --skill design-file-ui",
+        "Component peers (optional at package level): react, react-dom, lucide-react, rough-notation",
+        "Full kit CSS: @import \"@default-file/ui/css/df-index.css\";",
+      ].join("\n"),
+    },
+    colors: {
+      topic: "colors",
+      title: "Color system",
+      body: [
+        "Color system ships color scales, semantic tokens, and utilities without React components.",
+        "Package entry: @import \"@default-file/ui/css/df-color-system.css\"; after npm install github:itsvigneshv/default-file-ui#main",
+        "Copy-source: df-ui add color-system, then @import the local default-file-ui/css/df-color-system.css",
+        "Host modes on <html>: data-df-color-scale=\"detailed\" (default) or \"compact\".",
+        "Token inventory: df-ui tokens --group color-scale or --group semantic-color.",
+        "Components resolve color-system through foundation automatically.",
       ].join("\n"),
     },
     mcp: {
@@ -360,9 +389,11 @@ export function getDocs(topic = "overview") {
       topic: "foundation",
       title: "Foundation",
       body: [
-        "Foundation is the registry:style item: CSS layers, tokens, hooks, and cn.",
-        "Install first for copy-source setups: df-ui add foundation",
-        "Package mode pulls the same CSS via @default-file/ui/css/df-index.css.",
+        "Foundation is the kit style item: df-index.css, component CSS, hooks, and cn.",
+        "Depends on color-system.",
+        "Install: df-ui add foundation, or add any component (resolves foundation).",
+        "Package CSS: @import \"@default-file/ui/css/df-index.css\";",
+        "Color system without components: df-ui docs colors.",
       ].join("\n"),
     },
   }

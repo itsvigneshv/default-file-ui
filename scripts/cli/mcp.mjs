@@ -66,7 +66,7 @@ export async function startMcpServer() {
     {
       title: "List components",
       description:
-        "List Default File UI registry items (components and foundation). Includes chapter, description, and documented prop counts.",
+        "List Default File UI registry items (components, color-system, and foundation). Includes chapter, description, and documented prop counts.",
       inputSchema: {
         type: z
           .enum(["ui", "style", "registry:ui", "registry:style"])
@@ -218,10 +218,18 @@ export async function startMcpServer() {
     {
       title: "Get docs",
       description:
-        "Read Default File UI guidance: overview, install, mcp, tokens, or foundation. Reinforces the one-kit install path (components + tokens + CSS).",
+        "Read Default File UI guidance: overview, install, colors, mcp, tokens, foundation, or skills.",
       inputSchema: {
         topic: z
-          .enum(["overview", "install", "mcp", "tokens", "foundation", "skills"])
+          .enum([
+            "overview",
+            "install",
+            "colors",
+            "mcp",
+            "tokens",
+            "foundation",
+            "skills",
+          ])
           .optional()
           .describe("Docs topic"),
       },

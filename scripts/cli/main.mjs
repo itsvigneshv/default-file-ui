@@ -96,7 +96,7 @@ Commands:
   add          Copy registry items into your app (df-ui add button)
   info         Print detected framework and df.json
   frameworks   List supported framework templates
-  list         List registry items (components + foundation)
+  list         List registry items (components, color-system, foundation)
   show         Show one item with full prop API tables
   tokens       List design tokens from kit CSS
   search       Search components by keyword

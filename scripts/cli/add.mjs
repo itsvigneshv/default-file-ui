@@ -46,9 +46,58 @@ export async function addCommand(args) {
       `Install peer packages if missing: ${[...npmDeps].join(", ")}`
     )
   }
-  console.log(
-    `\nImport from your alias, for example:\n  import { Button } from "@/default-file-ui/components/df-button"\n`
-  )
+  printNextSteps(resolved)
+}
+
+/** Resolve requested registry items and their registryDependencies in dependency order. */
+export function resolveItems(registry, names) {
+  const byName = new Map(registry.items.map((item) => [item.name, item]))
+  const out = new Map()
+  const visiting = new Set()
+
+  function visit(name) {
+    if (out.has(name)) return
+    if (visiting.has(name)) {
+      throw new Error(`Circular registryDependencies involving "${name}".`)
+    }
+    const item = byName.get(name)
+    if (!item) {
+      const available = registry.items.map((i) => i.name).join(", ")
+      throw new Error(`Unknown item "${name}". Available: ${available}`)
+    }
+    visiting.add(name)
+    for (const dep of item.registryDependencies ?? []) visit(dep)
+    visiting.delete(name)
+    out.set(name, item)
+  }
+
+  for (const name of names) visit(name)
+  return [...out.values()]
+}
+
+function printNextSteps(resolved) {
+  const hasUi = resolved.some((item) => item.type === "registry:ui")
+  const names = new Set(resolved.map((item) => item.name))
+
+  if (hasUi) {
+    console.log(
+      `\nImport from your alias, for example:\n  import { Button } from "@/default-file-ui/components/df-button"\n`
+    )
+    return
+  }
+
+  if (names.has("foundation")) {
+    console.log(
+      `\nImport kit CSS, for example:\n  @import "@/default-file-ui/css/df-index.css";\n`
+    )
+    return
+  }
+
+  if (names.has("color-system")) {
+    console.log(
+      `\nImport the color system CSS, for example:\n  @import "@/default-file-ui/css/df-color-system.css";\n`
+    )
+  }
 }
 
 function destinationFor(cwd, baseDir, sourcePath) {
@@ -76,26 +125,6 @@ async function readSource(cwd, relPath) {
   return res.text()
 }
 
-function resolveItems(registry, names) {
-  const byName = new Map(registry.items.map((item) => [item.name, item]))
-  const out = new Map()
-
-  function visit(name) {
-    if (out.has(name)) return
-    const item = byName.get(name)
-    if (!item) {
-      const available = registry.items.map((i) => i.name).join(", ")
-      throw new Error(`Unknown item "${name}". Available: ${available}`)
-    }
-    for (const dep of item.registryDependencies ?? []) visit(dep)
-    out.set(name, item)
-  }
-
-  if (byName.has("foundation")) visit("foundation")
-  for (const name of names) visit(name)
-  return [...out.values()]
-}
-
 function parseAddArgs(args) {
   const options = { items: [], cwd: process.cwd(), dir: null, help: false }
   for (let i = 0; i < args.length; i += 1) {
@@ -118,6 +147,7 @@ Copies registry items (and their dependencies) into your app under
 <baseDir>/default-file-ui, reading baseDir from df.json when present.
 
 Examples:
+  df-ui add color-system
   df-ui add button
   df-ui add select toast
   df-ui add button --dir app

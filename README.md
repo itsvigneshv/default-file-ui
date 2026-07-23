@@ -38,6 +38,7 @@ df-ui show button --json
 df-ui search "toast select" --json
 df-ui cover "settings form with select, switch, and toast" --json
 df-ui tokens --group radius --json
+df-ui docs colors
 df-ui docs overview
 df-ui skills list --json
 df-ui skills install design-file-ui
@@ -86,39 +87,63 @@ Tools: `list_components`, `get_component`, `list_tokens`, `search_kit`, `check_c
 
 Agent brief: [docs/agents.md](./docs/agents.md).
 
-## Install (package)
+## Color system
+
+Install color scales, semantic tokens, and utilities without components.
+
+Package entry:
 
 ```bash
 npm install github:itsvigneshv/default-file-ui#main
 ```
 
-Peer deps: `react`, `react-dom`, `lucide-react`.
+```css
+@import "@default-file/ui/css/df-color-system.css";
+```
 
-Import CSS once:
+Copy-source:
+
+```bash
+df-ui add color-system
+```
+
+```css
+@import "@/default-file-ui/css/df-color-system.css";
+```
+
+Component peer packages are optional when you only import the color system CSS. See `df-ui docs colors` and `df-ui tokens --group color-scale`.
+
+## Install (full kit)
+
+```bash
+npm install github:itsvigneshv/default-file-ui#main
+```
+
+Component peers: `react`, `react-dom`, `lucide-react` (and `rough-notation` for TextMark).
 
 ```css
 @import "@default-file/ui/css/df-index.css";
 ```
 
-Import components:
-
 ```ts
 import { Button } from "@default-file/ui/components/df-button"
 ```
+
+`df-index.css` includes the color system, plus reset, animations, and component styles.
 
 ## Registry (copy source)
 
 Root `registry.json` lists installable items. Built payloads live under `public/r/` after `npm run df:registry`.
 
-Install path for registry consumers that accept a GitHub source:
+GitHub registry path: `itsvigneshv/default-file-ui/<item>`
 
-`itsvigneshv/default-file-ui/<item>`
+| Item | Purpose |
+|---|---|
+| `color-system` | Scales, tokens, utilities |
+| `foundation` | Kit CSS entry, component styles, hooks, `cn` (depends on `color-system`) |
+| component names | UI primitives (each depends on `foundation`) |
 
-Machine-readable prop docs for agents live under `docs/api/`. Catalogue chapter metadata is in `docs/catalog.json`.
-
-## One kit path
-
-Components, tokens, and owned CSS ship together. For Default File UI surfaces, prefer this package (or `df-ui add` copy-source) instead of combining a separate styling stack with a separate component kit.
+Machine-readable prop docs: `docs/api/`. Catalogue metadata: `docs/catalog.json`.
 
 ## Color scale modes
 

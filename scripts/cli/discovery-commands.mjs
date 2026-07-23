@@ -124,7 +124,9 @@ Show one registry item, including full prop tables when available.
       console.log("")
     }
   } else if (detail.type === "registry:style") {
-    console.log("Style item. See df-ui docs foundation and df-ui tokens.\n")
+    console.log(
+      "Style item. See df-ui docs colors or foundation, and df-ui tokens.\n"
+    )
   } else {
     console.log("No prop API metadata shipped for this item yet.\n")
   }
@@ -241,7 +243,7 @@ Assess whether the kit covers a UI surface. Returns covered, partial, or gap.
 export function docsCommand(args) {
   if (args.includes("-h") || args.includes("--help")) {
     console.log(`
-Usage: df-ui docs [overview|install|mcp|tokens|foundation|skills] [--json]
+Usage: df-ui docs [overview|install|colors|mcp|tokens|foundation|skills] [--json]
 
 Print kit guidance for humans and agents.
 `)

@@ -11,8 +11,10 @@ import { fileURLToPath } from "node:url"
 import { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 
+import { resolveItems } from "./add.mjs"
 import {
   checkCoverage,
+  getDocs,
   kitSummary,
   listComponents,
   listTokens,
@@ -20,6 +22,7 @@ import {
   showComponent,
 } from "./discover.mjs"
 import { listSkills, showSkill } from "./skills.mjs"
+import { readKitJson } from "./kit-root.mjs"
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 const BIN = path.join(ROOT, "bin/default-file-ui.mjs")
@@ -38,6 +41,52 @@ async function testHelpers() {
   const items = listComponents()
   assert.ok(items.some((i) => i.name === "button"))
   assert.ok(items.some((i) => i.name === "foundation"))
+  assert.ok(
+    items.some((i) => i.name === "color-system"),
+    "expected color-system style item"
+  )
+  const colorSystem = showComponent("color-system")
+  assert.equal(colorSystem.type, "registry:style")
+  assert.equal(colorSystem.chapter, "color-system")
+  assert.ok(
+    (colorSystem.files ?? []).some((f) =>
+      String(f.path).includes("df-color-system.css")
+    ),
+    "color-system must ship df-color-system.css"
+  )
+  const foundation = showComponent("foundation")
+  assert.ok(
+    (foundation.registryDependencies ?? []).includes("color-system"),
+    "foundation must depend on color-system"
+  )
+  assert.equal(foundation.chapter, "foundation")
+  const colorsDoc = getDocs("colors")
+  assert.ok(
+    /df-color-system\.css/i.test(colorsDoc.body) &&
+      /color scales/i.test(colorsDoc.body) &&
+      /semantic tokens/i.test(colorsDoc.body),
+    "docs colors topic must describe the color system entry"
+  )
+
+  const registry = readKitJson("registry.json")
+  const colorOnly = resolveItems(registry, ["color-system"]).map((i) => i.name)
+  assert.deepEqual(colorOnly, ["color-system"])
+  const buttonChain = resolveItems(registry, ["button"]).map((i) => i.name)
+  assert.ok(buttonChain.includes("color-system"))
+  assert.ok(buttonChain.includes("foundation"))
+  assert.ok(buttonChain.includes("button"))
+  for (const item of registry.items ?? []) {
+    if (item.type !== "registry:ui") continue
+    const chain = resolveItems(registry, [item.name]).map((i) => i.name)
+    assert.ok(
+      chain.includes("foundation"),
+      `${item.name} must resolve foundation`
+    )
+    assert.ok(
+      chain.includes("color-system"),
+      `${item.name} must resolve color-system`
+    )
+  }
 
   const button = showComponent("button")
   assert.ok(button, "button detail")

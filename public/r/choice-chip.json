@@ -11,7 +11,7 @@
     {
       "path": "src/components/df-choice-chip.tsx",
       "type": "registry:ui",
-      "content": "import * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\ntype ChoiceChipSize = \"sm\" | \"md\" | \"lg\"\r\n\r\ntype ChoiceChipProps = Omit<\r\n  React.ButtonHTMLAttributes<HTMLButtonElement>,\r\n  \"size\"\r\n> & {\r\n  selected?: boolean\r\n  size?: ChoiceChipSize\r\n}\r\n\r\nfunction ChoiceChip({\r\n  className,\r\n  selected,\r\n  size = \"md\",\r\n  ...props\r\n}: ChoiceChipProps) {\r\n  return (\r\n    <button\r\n      type=\"button\"\r\n      data-df=\"choice-chip\"\r\n      data-size={size}\r\n      data-selected={selected ? \"true\" : undefined}\r\n      className={cn(className)}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nexport { ChoiceChip }\r\nexport type { ChoiceChipProps, ChoiceChipSize }\r\n",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\ntype ChoiceChipSize = \"sm\" | \"md\" | \"lg\"\n\ntype ChoiceChipProps = Omit<\n  React.ButtonHTMLAttributes<HTMLButtonElement>,\n  \"size\"\n> & {\n  selected?: boolean\n  size?: ChoiceChipSize\n}\n\nfunction ChoiceChip({\n  className,\n  selected,\n  size = \"md\",\n  ...props\n}: ChoiceChipProps) {\n  return (\n    <button\n      type=\"button\"\n      data-df=\"choice-chip\"\n      data-size={size}\n      data-selected={selected ? \"true\" : undefined}\n      className={cn(className)}\n      {...props}\n    />\n  )\n}\n\nexport { ChoiceChip }\nexport type { ChoiceChipProps, ChoiceChipSize }\n",
       "target": "default-file-ui/components/df-choice-chip.tsx"
     }
   ]

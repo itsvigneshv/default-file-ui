@@ -1,11 +1,26 @@
 {
   "generatedAt": "2026-07-22T20:02:52.507Z",
+  "colorSystem": {
+    "registryName": "color-system",
+    "title": "Color System",
+    "description": "Color scales, semantic tokens, and utilities. Install without components.",
+    "chapter": "color-system"
+  },
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
-    "description": "CSS layers, tokens, hooks, and the cn utility. Install this first for copy-source setups."
+    "description": "Kit CSS entry, component styles, hooks, and cn. Depends on color-system. Install first for components.",
+    "chapter": "foundation"
   },
   "chapters": [
+    {
+      "id": "color-system",
+      "label": "Color system"
+    },
+    {
+      "id": "foundation",
+      "label": "Foundation"
+    },
     {
       "id": "actions",
       "label": "Actions"

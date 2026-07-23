@@ -1,15 +1,21 @@
 # Default File UI for AI agents
 
-Default File UI is an all-in-one React design system: components, tokens, owned CSS, CLI, and MCP.
+Default File UI is a design system: color system, tokens, components, owned CSS, CLI, and MCP.
 
-## One install path
+## Install paths
 
-Use this kit only for Default File UI surfaces. Do not pull in a separate utility CSS stack or a separate component library for the same chrome.
+**Color system** (no components):
+
+- Package CSS: `@import "@default-file/ui/css/df-color-system.css";`
+- Copy-source: `df-ui add color-system` then import local `default-file-ui/css/df-color-system.css`
+- Docs: `df-ui docs colors`
+
+**Full kit** (components + color system):
 
 - Package: `npm install github:itsvigneshv/default-file-ui#main`
 - CSS: `@import "@default-file/ui/css/df-index.css";`
 - Components: `import { Button } from "@default-file/ui/components/df-button"`
-- Copy-source: `df-ui init` then `df-ui add <items>`
+- Copy-source: `df-ui init` then `df-ui add <items>` (resolves `foundation` → `color-system`)
 
 ## Discover before you invent
 
@@ -18,7 +24,8 @@ df-ui list --json
 df-ui show button --json
 df-ui search select --json
 df-ui cover "settings form with select, switch, and toast" --json
-df-ui tokens --json
+df-ui tokens --group color-scale --json
+df-ui docs colors
 df-ui docs mcp
 df-ui docs skills
 df-ui skills list --json
@@ -78,7 +85,7 @@ Local install:
 | `list_tokens` | Token inventory by group |
 | `search_kit` | Keyword search |
 | `check_coverage` | covered / partial / gap for a UI need |
-| `get_docs` | overview, install, mcp, tokens, foundation, skills |
+| `get_docs` | overview, install, colors, mcp, tokens, foundation, skills |
 | `list_skills` | Bundled Agent Skills |
 | `get_skill` | Full SKILL.md + reference list |
 | `install_skill` | Copy skill into `.agents/skills` and `.cursor/skills` |
