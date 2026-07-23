@@ -15,12 +15,7 @@ export type ImageDropzoneProps = {
   icon?: React.ReactNode
   className?: string
   onFile: (file: File) => void
-  /**
-   * Choose which file from a drop or browse list is a candidate.
-   * Defaults to the first image file.
-   */
   pickFile?: (files: FileList | null | undefined) => File | undefined
-  /** Return an error message to reject the file, or null to accept. */
   validateFile?: (file: File) => string | null
   onReject?: (message: string) => void
 }
@@ -49,6 +44,7 @@ function ImageDropzone({
 }: ImageDropzoneProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
+  const releaseDialogFocusRef = React.useRef<(() => void) | null>(null)
   const usesDefaultImagePick = pickFileProp == null
   const pickFile = pickFileProp ?? pickImageFile
 
@@ -71,6 +67,34 @@ function ImageDropzone({
     },
     [onReject, usesDefaultImagePick, validateFile]
   )
+
+  const releaseFileInputFocus = React.useCallback(() => {
+    const input = inputRef.current
+    if (!input) return
+    if (document.activeElement !== input) return
+    input.blur()
+  }, [])
+
+  const clearDialogFocusRelease = React.useCallback(() => {
+    releaseDialogFocusRef.current?.()
+    releaseDialogFocusRef.current = null
+  }, [])
+
+  const armDialogFocusRelease = React.useCallback(() => {
+    clearDialogFocusRelease()
+    const onWindowFocus = () => {
+      clearDialogFocusRelease()
+      queueMicrotask(() => {
+        releaseFileInputFocus()
+      })
+    }
+    window.addEventListener("focus", onWindowFocus)
+    releaseDialogFocusRef.current = () => {
+      window.removeEventListener("focus", onWindowFocus)
+    }
+  }, [clearDialogFocusRelease, releaseFileInputFocus])
+
+  React.useEffect(() => () => clearDialogFocusRelease(), [clearDialogFocusRelease])
 
   React.useEffect(() => {
     if (disabled || !enablePaste) return
@@ -158,9 +182,17 @@ function ImageDropzone({
               : "Upload file"
         }
         className="absolute inset-0 z-10 cursor-pointer opacity-0"
+        onClick={armDialogFocusRelease}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            armDialogFocusRelease()
+          }
+        }}
         onChange={(event) => {
           const file = pickFile(event.target.files)
           event.target.value = ""
+          clearDialogFocusRelease()
+          releaseFileInputFocus()
           if (!acceptCandidate(file)) return
           onFile(file)
         }}

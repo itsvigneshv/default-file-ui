@@ -85,7 +85,18 @@
           {
             "name": "className",
             "type": "string",
-            "description": "Additional styles on the button shell."
+            "description": "Additional styles on the dropzone shell."
+          }
+        ]
+      },
+      {
+        "id": "image-dropzone-focus",
+        "title": "Focus",
+        "props": [
+          {
+            "name": "Browse dialog",
+            "type": "behavior",
+            "description": "After the native file dialog closes (file chosen or cancelled), focus leaves the file input when it is still the active element. Host shortcuts such as Space are not kept on the uploader."
           }
         ]
       },

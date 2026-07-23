@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T20:00:23.779Z",
+  "generatedAt": "2026-07-23T20:06:06.934Z",
   "source": "docs/api",
   "colorSystem": {
     "registryName": "color-system",
@@ -281,7 +281,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 17
+      "propCount": 18
     },
     {
       "slug": "input",
