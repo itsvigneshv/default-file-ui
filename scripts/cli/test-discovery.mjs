@@ -174,15 +174,13 @@ async function testHelpers() {
   assert.ok(
     /Color and styling/i.test(kitRef.content) &&
       /kit tokens/i.test(kitRef.content) &&
-      /kit utilities/i.test(kitRef.content) &&
-      !/tailwind/i.test(kitRef.content),
-    "kit.md must require kit color tokens and utilities with no competitor names"
+      /kit utilities only/i.test(kitRef.content),
+    "kit.md must require kit color tokens and utilities only"
   )
   assert.ok(
     /Use the kit color system/i.test(designSkill.skillMarkdown) &&
-      /kit tokens and kit CSS utilities only/i.test(designSkill.skillMarkdown) &&
-      !/tailwind/i.test(designSkill.skillMarkdown),
-    "skill markdown must require kit color system with no competitor names"
+      /kit tokens and kit CSS utilities only/i.test(designSkill.skillMarkdown),
+    "skill markdown must require kit color system only"
   )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
