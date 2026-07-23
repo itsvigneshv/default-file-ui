@@ -116,9 +116,9 @@ Install path for registry consumers that accept a GitHub source:
 
 Machine-readable prop docs for agents live under `docs/api/`. Catalogue chapter metadata is in `docs/catalog.json`.
 
-## One kit path
+## Kit contents
 
-Components, tokens, and owned CSS ship together. For Default File UI surfaces, prefer this package (or `df-ui add` copy-source) instead of combining a separate styling stack with a separate component kit.
+Components, tokens, and owned CSS ship together. Use the package import path or `df-ui add` copy-source for Default File UI surfaces.
 
 ## Color scale modes
 

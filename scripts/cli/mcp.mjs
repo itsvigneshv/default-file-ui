@@ -218,7 +218,7 @@ export async function startMcpServer() {
     {
       title: "Get docs",
       description:
-        "Read Default File UI guidance: overview, install, mcp, tokens, or foundation. Reinforces the one-kit install path (components + tokens + CSS).",
+        "Read Default File UI guidance: overview, install, mcp, tokens, or foundation. Covers components, tokens, and CSS.",
       inputSchema: {
         topic: z
           .enum(["overview", "install", "mcp", "tokens", "foundation", "skills"])
