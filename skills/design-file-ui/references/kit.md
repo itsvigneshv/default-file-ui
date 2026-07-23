@@ -71,8 +71,8 @@ Default File UI ships its own color scales, semantic tokens, and utility classes
 
 - Color surfaces, text, borders, accents, and status with kit tokens (`--df-*`, semantic vars such as `--background`, `--foreground`, `--border`, `--primary`, and kit utilities that resolve through them).
 - Discover color and space tokens with `df-ui tokens` / `list_tokens` before inventing a palette.
-- Load kit CSS (`@import "@default-file/ui/css/df-index.css"` or the project kit entry). Do not install Tailwind CSS, or another utility styling package, to color or space Default File UI surfaces.
-- If the project already has Tailwind (or similar) for unrelated legacy code, do not use it for new Default File UI chrome. Keep new kit UI on kit tokens and kit utilities.
+- Load kit CSS (`@import "@default-file/ui/css/df-index.css"` or the project kit entry).
+- Keep new Default File UI chrome on kit tokens and kit utilities only.
 - Custom components created for real gaps must still use kit color and spacing tokens when possible.
 
 ## Compose rules
@@ -95,7 +95,6 @@ Use the `importPath` from `df-ui show <name>` when unsure. Respect registry depe
 ## Anti goals
 
 - Hardcoded hex, px, rem, or raw shadows for kit chrome
-- Installing Tailwind CSS (or another utility styling package) to color or space Default File UI surfaces
 - Restyling kit components with an external utility palette instead of kit tokens
 - Hand-rolling controls that already exist in the registry
 - Skipping discovery on a single-shot build and inventing a full custom chrome set
