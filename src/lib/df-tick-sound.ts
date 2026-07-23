@@ -1,48 +1,21 @@
+import {
+  getUiAudioContext,
+  resumeUiAudio,
+  uiAudioAllowed,
+} from "./df-ui-audio"
+
 type TickSoundOptions = {
   volume?: number
 }
 
-type AudioContextConstructor = typeof AudioContext
-
-let sharedContext: AudioContext | null = null
-
-function getAudioContextConstructor(): AudioContextConstructor | null {
-  if (typeof window === "undefined") return null
-  const fromWindow = window.AudioContext
-  if (fromWindow) return fromWindow
-  const legacy = (
-    window as Window & { webkitAudioContext?: AudioContextConstructor }
-  ).webkitAudioContext
-  return legacy ?? null
-}
-
-function getSharedContext(): AudioContext | null {
-  const Constructor = getAudioContextConstructor()
-  if (!Constructor) return null
-  if (!sharedContext || sharedContext.state === "closed") {
-    sharedContext = new Constructor()
-  }
-  return sharedContext
-}
-
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return false
-  }
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-}
-
 export function resumeUiTickAudio(): void {
-  const ctx = getSharedContext()
-  if (!ctx || ctx.state !== "suspended") return
-  void ctx.resume()
+  resumeUiAudio()
 }
 
 export function playUiTick(options?: TickSoundOptions): void {
-  if (typeof document !== "undefined" && document.hidden) return
-  if (prefersReducedMotion()) return
+  if (!uiAudioAllowed()) return
 
-  const ctx = getSharedContext()
+  const ctx = getUiAudioContext()
   if (!ctx) return
   if (ctx.state === "suspended") {
     void ctx.resume()

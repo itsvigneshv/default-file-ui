@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T13:06:19.325Z",
+  "generatedAt": "2026-07-23T13:21:31.606Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -425,7 +425,7 @@
       ],
       "importPath": "@default-file/ui/components/df-slider",
       "dependencies": [],
-      "propCount": 68
+      "propCount": 69
     },
     {
       "slug": "spectrum-text",

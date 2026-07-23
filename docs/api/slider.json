@@ -152,6 +152,12 @@
             "description": "Custom readout for the full value array when valueSlot is omitted. String and number results keep the default value typography. Other React nodes are treated as custom slot content. Prefer valueSlot for a dedicated Badge or counter."
           },
           {
+            "name": "scrubSound",
+            "type": "boolean",
+            "default": "false",
+            "description": "Play a smooth scrub tone while dragging a thumb with the pointer. Pitch follows position and level follows drag speed. Off by default. Stops on release, unmount, or when the document is hidden. Skipped when reduced motion is preferred. Separate from the Tick Slider step tick."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "description": "Blocks pointer, keyboard, marks, and step buttons for every variant and layout."

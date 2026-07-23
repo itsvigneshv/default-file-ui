@@ -225,6 +225,16 @@
           "path": "src/components/df-slider.tsx",
           "type": "registry:ui",
           "target": "default-file-ui/components/df-slider.tsx"
+        },
+        {
+          "path": "src/lib/df-ui-audio.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-ui-audio.ts"
+        },
+        {
+          "path": "src/lib/df-scrub-sound.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-scrub-sound.ts"
         }
       ]
     },
@@ -241,6 +251,11 @@
           "path": "src/components/df-tick-slider.tsx",
           "type": "registry:ui",
           "target": "default-file-ui/components/df-tick-slider.tsx"
+        },
+        {
+          "path": "src/lib/df-ui-audio.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-ui-audio.ts"
         },
         {
           "path": "src/lib/df-tick-sound.ts",

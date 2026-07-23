@@ -4,6 +4,12 @@ import { Minus, Plus } from "lucide-react"
 import * as React from "react"
 
 import { useControllableState } from "../hooks"
+import {
+  resumeUiScrubAudio,
+  startUiScrub,
+  stopUiScrub,
+  updateUiScrub,
+} from "../lib/df-scrub-sound"
 import { cn } from "../lib/utils"
 import { Button } from "./df-button"
 
@@ -80,6 +86,7 @@ type SliderProps = Omit<
   valueSlot?:
     | React.ReactNode
     | ((values: number[]) => React.ReactNode)
+  scrubSound?: boolean
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -240,6 +247,7 @@ function Slider({
   formatValue,
   formatValues,
   valueSlot,
+  scrubSound = false,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   ref,
@@ -247,6 +255,13 @@ function Slider({
 }: SliderProps) {
   const labelId = React.useId()
   const safeStep = step > 0 ? step : 1
+
+  React.useEffect(() => {
+    return () => {
+      stopUiScrub()
+    }
+  }, [])
+
   const buttonSteps = Math.max(
     1,
     Math.floor(Number.isFinite(stepButtonSteps) ? stepButtonSteps : 1)
@@ -534,6 +549,10 @@ function Slider({
     track.setPointerCapture(event.pointerId)
     setDragging(true)
     if (!isRange && !useMarks) setDragPct(ratio * 100)
+    if (scrubSound) {
+      resumeUiScrubAudio()
+      startUiScrub(ratio)
+    }
     commitAtRatio(dragIndex, ratio)
 
     const move = (e: PointerEvent) => {
@@ -555,9 +574,11 @@ function Slider({
         }
       }
       if (!isRange && !useMarks) setDragPct(nextRatio * 100)
+      if (scrubSound) updateUiScrub(nextRatio)
       commitAtRatio(dragIndex, nextRatio)
     }
     const end = () => {
+      stopUiScrub()
       setDragging(false)
       setDragPct(null)
       window.removeEventListener("pointermove", move)
