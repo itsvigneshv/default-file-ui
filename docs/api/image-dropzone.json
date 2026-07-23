@@ -3,6 +3,12 @@
   "slug": "image-dropzone",
   "title": "Image Dropzone",
   "description": "Click, drag, or paste target for image files with consumer-owned validation.",
+  "aliases": [
+    "image upload",
+    "image dropzone",
+    "image paste target",
+    "photo dropzone"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"

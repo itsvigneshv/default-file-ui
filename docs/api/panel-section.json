@@ -2,7 +2,14 @@
   "name": "panel-section",
   "slug": "panel-section",
   "title": "Panel Section",
-  "description": "Titled groupings for control panels.",
+  "description": "Titled groupings for control panels and inspectors.",
+  "aliases": [
+    "inspector section",
+    "panel group",
+    "control section",
+    "settings section",
+    "Panel Section"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

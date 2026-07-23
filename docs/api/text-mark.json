@@ -2,7 +2,15 @@
   "name": "text-mark",
   "slug": "text-mark",
   "title": "Text Mark",
-  "description": "Animated hand drawn marks for highlighting inline text.",
+  "description": "Hand drawn text marks: highlight wash, underline, circle, and related annotation kinds.",
+  "aliases": [
+    "highlight mark",
+    "marker underline",
+    "scribble circle",
+    "text annotation",
+    "rough highlight",
+    "Text Mark"
+  ],
   "chapter": "text",
   "registryDependencies": [
     "foundation"

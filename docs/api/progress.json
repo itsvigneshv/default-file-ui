@@ -3,6 +3,13 @@
   "slug": "progress",
   "title": "Progress",
   "description": "Linear progress bar for determinate or indeterminate completion.",
+  "aliases": [
+    "progress bar",
+    "linear progress",
+    "determinate progress",
+    "indeterminate progress",
+    "Progress"
+  ],
   "chapter": "feedback",
   "registryDependencies": [
     "foundation"

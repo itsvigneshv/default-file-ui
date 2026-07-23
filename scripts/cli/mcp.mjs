@@ -79,11 +79,16 @@ export async function startMcpServer() {
             "feedback",
             "overlays",
             "structure",
+            "text",
+            "toolbars",
             "chrome",
             "foundation",
+            "color-system",
           ])
           .optional()
-          .describe("Filter by catalogue chapter"),
+          .describe(
+            "Filter by catalogue chapter. chrome resolves to toolbars."
+          ),
       },
     },
     async ({ type, chapter }) => {
@@ -99,6 +104,7 @@ export async function startMcpServer() {
           title: item.title,
           chapter: item.chapter,
           description: item.description,
+          aliases: item.aliases ?? [],
           propCount: item.propCount,
           importPath: item.importPath,
           registryDependencies: item.registryDependencies,
@@ -115,11 +121,11 @@ export async function startMcpServer() {
     {
       title: "Get component",
       description:
-        "Get one registry item with files, dependencies, import path, and full prop API tables (name, type, default, description) when available.",
+        "Get one registry item with files, dependencies, import path, aliases, and full prop API tables when available. Exact aliases resolve; shared aliases return every match.",
       inputSchema: {
         name: z
           .string()
-          .describe("Registry item name, e.g. button, select, toast"),
+          .describe("Registry item name or exact alias, e.g. button, tic slider, drawer"),
       },
     },
     async ({ name }) => {
@@ -127,7 +133,7 @@ export async function startMcpServer() {
         const detail = showComponent(name)
         if (!detail) {
           return errorResult(
-            new Error(`Unknown registry item "${name}". Call list_components.`)
+            new Error(`Unknown registry item "${name}". Call list_components or search_kit.`)
           )
         }
         return jsonResult(detail)
@@ -172,9 +178,9 @@ export async function startMcpServer() {
     {
       title: "Search kit",
       description:
-        "Search Default File UI registry names, titles, descriptions, and capability tags.",
+        "Search registry names, titles, aliases, descriptions, and capability tags. Exact alias matches score like registry names.",
       inputSchema: {
-        query: z.string().describe("Free-text search query"),
+        query: z.string().describe("Search query or exact alias"),
         limit: z.number().int().positive().max(100).optional(),
       },
     },

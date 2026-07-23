@@ -2,7 +2,14 @@
   "name": "border-glow",
   "slug": "border-glow",
   "title": "Border Glow",
-  "description": "Pointer directed border glow with optional soft bloom.",
+  "description": "Pointer directed border glow wrapper with optional soft bloom.",
+  "aliases": [
+    "glow border",
+    "pointer glow",
+    "border bloom",
+    "hover border glow",
+    "Border Glow"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

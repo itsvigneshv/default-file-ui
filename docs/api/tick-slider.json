@@ -3,6 +3,14 @@
   "slug": "tick-slider",
   "title": "Tick Slider",
   "description": "Bound labels, tick gauge, optional purpose title, and floating value bubble.",
+  "aliases": [
+    "tic slider",
+    "tick scrubber",
+    "gauge slider",
+    "bound slider",
+    "tick gauge slider",
+    "Tick Slider"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"

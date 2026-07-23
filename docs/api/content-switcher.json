@@ -2,7 +2,15 @@
   "name": "content-switcher",
   "slug": "content-switcher",
   "title": "Content Switcher",
-  "description": "Segmented single select for filters and view modes.",
+  "description": "Segmented single select for filters and view modes. Does not own tab panels.",
+  "aliases": [
+    "segmented control",
+    "segment control",
+    "segmented switcher",
+    "view switcher",
+    "mode switcher",
+    "Content Switcher"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"

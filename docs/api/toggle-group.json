@@ -2,7 +2,14 @@
   "name": "toggle-group",
   "slug": "toggle-group",
   "title": "Toggle Group",
-  "description": "Grouped options for single select choices.",
+  "description": "Grouped single- or multi-select toggles. Prefer Content Switcher for exclusive view modes as segments.",
+  "aliases": [
+    "button group",
+    "option group",
+    "toggle buttons",
+    "multi select toggles",
+    "Toggle Group"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"
@@ -10,7 +17,7 @@
   "importPath": "@default-file/ui/components/df-toggle-group",
   "dependencies": [],
   "api": {
-    "description": "Grouped single- or multi-select toggles. Compose ToggleGroup and ToggleGroupItem.",
+    "description": "Grouped single- or multi-select toggles. Compose ToggleGroup and ToggleGroupItem. Prefer Content Switcher for exclusive view modes as segments, and Switch for a single binary setting.",
     "groups": [
       {
         "id": "toggle-group",

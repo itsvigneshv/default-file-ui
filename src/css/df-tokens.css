@@ -180,6 +180,13 @@
   --df-shadow-tooltip:
     drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))
     drop-shadow(0 2px 3px rgb(0 0 0 / 0.08));
+  /* Filter elevation for popovers with a caret so the shadow follows the silhouette. */
+  --df-shadow-popover:
+    drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))
+    drop-shadow(0 2px 4px rgb(0 0 0 / 0.08));
+  --df-shadow-popover-elevated:
+    drop-shadow(0 12px 18px rgb(0 0 0 / 0.14))
+    drop-shadow(0 4px 8px rgb(0 0 0 / 0.1));
   --df-shadow-overlay: 0 10px 28px
     color-mix(in oklch, black var(--df-shadow-intensity-4xl), transparent);
   --df-shadow-tabs-indicator: 0 1px 2px
@@ -263,6 +270,7 @@
   --df-press-offset: 1px;
   --df-tooltip-arrow-offset: 3.5px;
   --df-tooltip-arrow-align-nudge: 4px;
+  --df-anchor-arrow-cross-inset: calc(3 * var(--spacing-unit));
 
   --spacing-px: var(--border-width-hairline);
 
@@ -636,6 +644,11 @@
   --stage-artboard: #000000;
   --stage-artboard-border: rgb(255 255 255 / 0.1);
   --stage-overlay-text: var(--df-neutral-0);
+  --stage-overlay-text-shadow-color: rgb(0 0 0 / 0.45);
+  --stage-overlay-text-shadow-y: 2px;
+  --stage-overlay-text-shadow-blur: 18px;
+  --df-overlay-text-shadow: 0 var(--stage-overlay-text-shadow-y)
+    var(--stage-overlay-text-shadow-blur) var(--stage-overlay-text-shadow-color);
   --stage-axis-x: var(--df-red-500);
   --stage-axis-y: var(--df-green-500);
   --stage-axis-z: var(--df-blue-500);
@@ -643,7 +656,6 @@
   --stage-axis-y-muted: color-mix(in oklch, var(--stage-axis-y) 55%, transparent);
   --stage-axis-z-muted: color-mix(in oklch, var(--stage-axis-z) 55%, transparent);
   --df-tool-stage-min-height: 52vh;
-  --df-overlay-text-shadow: 0 2px 18px rgb(0 0 0 / 0.45);
   --stage-surface-dot: radial-gradient(
     circle at 1px 1px,
     rgb(15 23 42 / 0.14) 1px,
@@ -826,11 +838,16 @@
   --spectrum-text-ease: ease-in-out;
   --spectrum-text-background-size: 200% auto;
 
+  --df-popover-width-sm: 14rem;
   --df-popover-width: 18rem;
+  --df-popover-width-lg: 22rem;
   --df-popover-width-safe: min(
     var(--df-popover-width),
     calc(100vw - 8 * var(--spacing-unit))
   );
+  --df-popover-arrow-size: calc(2 * var(--spacing-unit));
+  --df-popover-arrow-offset: var(--df-tooltip-arrow-offset);
+  --df-popover-arrow-align-nudge: var(--df-tooltip-arrow-align-nudge);
   --df-dialog-width: min(
     36rem,
     calc(100vw - 8 * var(--spacing-unit))
@@ -846,7 +863,31 @@
   --df-menu-max-height: 24rem;
   --df-submenu-min-width: 18rem;
   --df-submenu-max-height: 28rem;
+  /* Toast and Toaster chrome. */
   --df-toaster-width: 22rem;
+  --df-toaster-gap: calc(2 * var(--spacing-unit));
+  --df-toaster-inset: calc(4 * var(--spacing-unit));
+  --df-toaster-viewport-gutter: calc(8 * var(--spacing-unit));
+  --df-toast-width: 100%;
+  --df-toast-height: auto;
+  --df-toast-min-height: auto;
+  --df-toast-bg: var(--popover);
+  --df-toast-fg: var(--popover-foreground);
+  --df-toast-border: var(--border);
+  --df-toast-border-width: var(--border-width-hairline);
+  --df-toast-radius: var(--radius);
+  --df-toast-shadow: var(--df-shadow-lg);
+  --df-toast-padding-block: calc(3 * var(--spacing-unit));
+  --df-toast-padding-inline: calc(3.5 * var(--spacing-unit));
+  --df-toast-gap: calc(2.5 * var(--spacing-unit));
+  --df-toast-icon-success: var(--success);
+  --df-toast-icon-error: var(--destructive);
+  --df-toast-icon-warning: var(--warning);
+  --df-toast-icon-info: var(--muted-foreground);
+  --df-toast-close-size: var(--df-control-height-2xs);
+  --df-toast-close-fg: var(--muted-foreground);
+  --df-toast-close-hover-bg: var(--muted);
+  --df-toast-close-hover-fg: var(--foreground);
 
   --sidebar: var(--df-neutral-20, var(--df-neutral-50));
   --sidebar-foreground: var(--df-neutral-900);

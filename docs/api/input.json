@@ -2,7 +2,17 @@
   "name": "input",
   "slug": "input",
   "title": "Input",
-  "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, hover and focus borders, and validation.",
+  "description": "Text fields with variants, sizes, labels, icons, clear control, numeric stepper, addons, input groups, hover and focus borders, and validation.",
+  "aliases": [
+    "text field",
+    "text input",
+    "text box",
+    "form input",
+    "number input",
+    "numeric stepper",
+    "spinbutton",
+    "Input"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -13,7 +23,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Single-line text field with primary and secondary variants, size, height, padding, and border width control, outside or inside labels, chrome overrides, hover and focus border recipes, icons, clearable trailing control, prefix and suffix addons, an attached action for input groups, and validation state.",
+    "description": "Single-line text field with primary and secondary variants, size, height, padding, and border width control, outside or inside labels, chrome overrides, hover and focus border recipes, icons, clearable trailing control, optional numeric stepper with swappable icons, prefix and suffix addons, an attached action for input groups, and validation state.",
     "groups": [
       {
         "id": "input",
@@ -214,6 +224,22 @@
             "description": "Attached end action for an input group. Typically a kit Button. Shares the field border with a vertical divider."
           },
           {
+            "name": "stepper",
+            "type": "boolean",
+            "default": "false",
+            "description": "Show kit increment and decrement controls when the field is editable. Forces type number, hides the browser spin buttons, and steps with ArrowUp, ArrowDown, and the control buttons. Honors min, max, and step. Hidden when disabled or readOnly."
+          },
+          {
+            "name": "incrementIcon",
+            "type": "ReactNode",
+            "description": "Icon for the increment control. Defaults to ChevronUp. Only used when stepper is true."
+          },
+          {
+            "name": "decrementIcon",
+            "type": "ReactNode",
+            "description": "Icon for the decrement control. Defaults to ChevronDown. Only used when stepper is true."
+          },
+          {
             "name": "hint",
             "type": "ReactNode",
             "description": "Helper line under the field. Wired with aria-describedby. Stays muted in the invalid state."
@@ -294,6 +320,16 @@
             "name": "data-df=\"input-clear\"",
             "type": "part",
             "description": "Clear control on the trailing edge when clearable is active and the field has a value."
+          },
+          {
+            "name": "data-df=\"input-stepper\"",
+            "type": "part",
+            "description": "Stacked increment and decrement controls when stepper is true."
+          },
+          {
+            "name": "data-df=\"input-stepper-button\"",
+            "type": "part",
+            "description": "Stepper button. data-direction is up or down."
           },
           {
             "name": "data-df=\"input-action\"",

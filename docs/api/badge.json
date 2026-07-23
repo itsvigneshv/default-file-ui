@@ -2,7 +2,14 @@
   "name": "badge",
   "slug": "badge",
   "title": "Badge",
-  "description": "Compact labels for status and metadata.",
+  "description": "Compact labels for status, counts, and metadata.",
+  "aliases": [
+    "status badge",
+    "count badge",
+    "notification badge",
+    "meta badge",
+    "Badge"
+  ],
   "chapter": "feedback",
   "registryDependencies": [
     "foundation"
@@ -10,7 +17,7 @@
   "importPath": "@default-file/ui/components/df-badge",
   "dependencies": [],
   "api": {
-    "description": "Compact label for status and metadata. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Compose a close control, nested counter, or OptionList dropdown via children and render.",
+    "description": "Compact label for status and metadata. Label ink is optically centered to cap height with text-box when available, and a 1cap line box otherwise. Inline badges also use vertical-align middle so they sit on the text line next to copy. Compose a close control, nested counter, or OptionList dropdown via children and render.",
     "groups": [
       {
         "id": "badge",

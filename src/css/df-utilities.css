@@ -324,10 +324,6 @@
   overflow: visible;
 }
 
-.overflow-y-auto {
-  overflow-y: auto;
-}
-
 .p-1 {
   padding: calc(1 * var(--spacing-unit, 0.25rem));
 }

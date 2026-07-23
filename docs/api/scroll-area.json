@@ -3,6 +3,13 @@
   "slug": "scroll-area",
   "title": "Scroll Area",
   "description": "Scrollable regions with a custom thumb.",
+  "aliases": [
+    "custom scrollbar",
+    "scroll container",
+    "scrollport",
+    "custom scroll area",
+    "Scroll Area"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

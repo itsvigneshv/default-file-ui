@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T13:21:31.606Z",
+  "generatedAt": "2026-07-23T16:42:02.057Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -42,8 +42,12 @@
       "label": "Structure"
     },
     {
-      "id": "chrome",
-      "label": "Tool chrome"
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "id": "toolbars",
+      "label": "Toolbars"
     }
   ],
   "components": [
@@ -52,6 +56,13 @@
       "name": "accordion",
       "title": "Accordion",
       "description": "Expandable sections with single or multiple open items.",
+      "aliases": [
+        "disclosure",
+        "expandable sections",
+        "collapsible sections",
+        "faq accordion",
+        "Accordion"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -66,7 +77,14 @@
       "slug": "badge",
       "name": "badge",
       "title": "Badge",
-      "description": "Compact labels for status and metadata.",
+      "description": "Compact labels for status, counts, and metadata.",
+      "aliases": [
+        "status badge",
+        "count badge",
+        "notification badge",
+        "meta badge",
+        "Badge"
+      ],
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
@@ -79,7 +97,14 @@
       "slug": "border-glow",
       "name": "border-glow",
       "title": "Border Glow",
-      "description": "Pointer directed border glow with optional soft bloom.",
+      "description": "Pointer directed border glow wrapper with optional soft bloom.",
+      "aliases": [
+        "glow border",
+        "pointer glow",
+        "border bloom",
+        "hover border glow",
+        "Border Glow"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -93,6 +118,13 @@
       "name": "button",
       "title": "Button",
       "description": "Primary actions with variants, text sizes, icon sizes, and a plain icon-only style.",
+      "aliases": [
+        "cta",
+        "action button",
+        "icon button",
+        "plain icon button",
+        "Button"
+      ],
       "chapter": "actions",
       "registryDependencies": [
         "foundation",
@@ -107,7 +139,14 @@
       "slug": "choice-chip",
       "name": "choice-chip",
       "title": "Choice Chip",
-      "description": "Compact selectable chips for filters.",
+      "description": "Compact selectable chip for filters. Host owns grouping and multi-select.",
+      "aliases": [
+        "filter chip",
+        "choice chips",
+        "selectable chip",
+        "filter pill",
+        "Choice Chip"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -121,6 +160,13 @@
       "name": "color-picker",
       "title": "Color Picker",
       "description": "Swatch trigger with hex trailing, hover border, and channel editors.",
+      "aliases": [
+        "colour picker",
+        "swatch picker",
+        "hex picker",
+        "color swatch",
+        "Color Picker"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -136,7 +182,15 @@
       "slug": "content-switcher",
       "name": "content-switcher",
       "title": "Content Switcher",
-      "description": "Segmented single select for filters and view modes.",
+      "description": "Segmented single select for filters and view modes. Does not own tab panels.",
+      "aliases": [
+        "segmented control",
+        "segment control",
+        "segmented switcher",
+        "view switcher",
+        "mode switcher",
+        "Content Switcher"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -150,6 +204,13 @@
       "name": "dialog",
       "title": "Dialog",
       "description": "Center modal with scrim, focus trap, Escape to close, and scroll lock.",
+      "aliases": [
+        "modal",
+        "modal dialog",
+        "center modal",
+        "confirm dialog",
+        "Dialog"
+      ],
       "chapter": "overlays",
       "registryDependencies": [
         "foundation",
@@ -165,7 +226,18 @@
       "slug": "dock-panel",
       "name": "dock-panel",
       "title": "Dock Panel",
-      "description": "Collapsible edge-docked inspector with a kit scrollbar body.",
+      "description": "Collapsible edge-docked inspector with a kit scrollbar body. Prefer this for persistent side chrome; prefer Options Panel for anchored temporary controls.",
+      "aliases": [
+        "side panel",
+        "side drawer",
+        "edge drawer",
+        "inspector",
+        "inspector panel",
+        "edge panel",
+        "docked inspector",
+        "collapsible inspector",
+        "Dock Panel"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation",
@@ -182,7 +254,14 @@
       "slug": "floating-controls",
       "name": "floating-controls",
       "title": "Floating Controls",
-      "description": "Modular action bar for toolbars and docks.",
+      "description": "Modular action strip for canvas toolbars and docks.",
+      "aliases": [
+        "floating toolbar",
+        "canvas action bar",
+        "tool action strip",
+        "overlay controls",
+        "Floating Controls"
+      ],
       "chapter": "toolbars",
       "registryDependencies": [
         "foundation",
@@ -197,6 +276,14 @@
       "name": "format-toolbar",
       "title": "Format Toolbar",
       "description": "Rich text formatting toolbar with headings, marks, lists, callouts, and table row and column actions.",
+      "aliases": [
+        "rich text toolbar",
+        "formatting toolbar",
+        "editor toolbar",
+        "wysiwyg toolbar",
+        "text formatting bar",
+        "Format Toolbar"
+      ],
       "chapter": "toolbars",
       "registryDependencies": [
         "foundation",
@@ -217,6 +304,12 @@
       "name": "image-dropzone",
       "title": "Image Dropzone",
       "description": "Click, drag, or paste target for image files with consumer-owned validation.",
+      "aliases": [
+        "image upload",
+        "image dropzone",
+        "image paste target",
+        "photo dropzone"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -231,7 +324,17 @@
       "slug": "input",
       "name": "input",
       "title": "Input",
-      "description": "Text fields with variants, sizes, labels, icons, clear control, addons, input groups, hover and focus borders, and validation.",
+      "description": "Text fields with variants, sizes, labels, icons, clear control, numeric stepper, addons, input groups, hover and focus borders, and validation.",
+      "aliases": [
+        "text field",
+        "text input",
+        "text box",
+        "form input",
+        "number input",
+        "numeric stepper",
+        "spinbutton",
+        "Input"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -241,13 +344,19 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 97
+      "propCount": 102
     },
     {
       "slug": "label",
       "name": "label",
       "title": "Label",
       "description": "Accessible labels with required, optional, subtext, and a trailing slot for Badge or meta.",
+      "aliases": [
+        "field label",
+        "form label",
+        "accessible label",
+        "Label"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -260,7 +369,13 @@
       "slug": "number-slider",
       "name": "number-slider",
       "title": "Number Slider",
-      "description": "Labeled slider with a live numeric readout.",
+      "description": "Compact labeled Slider convenience with a live numeric readout. Prefer Slider for dual thumb, marks, orientation, or richer value chrome.",
+      "aliases": [
+        "labeled number slider",
+        "settings slider",
+        "numeric readout slider",
+        "Number Slider"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -275,7 +390,14 @@
       "slug": "option-list",
       "name": "option-list",
       "title": "Option List",
-      "description": "Option rows with search, checkboxes, and footer actions.",
+      "description": "Picker panel with option rows, search, checks, and footer actions. Select composes this.",
+      "aliases": [
+        "options list",
+        "select list",
+        "picker list",
+        "option rows",
+        "Option List"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -292,7 +414,19 @@
       "slug": "options-panel",
       "name": "options-panel",
       "title": "Options Panel",
-      "description": "Anchored panel with header, body, and footer slots. Hugs content up to a tokenized max width.",
+      "description": "Anchored popover shell with header, body, and footer slots for custom controls. Footer owns gapX and gapY, with FooterActions and FooterMeta for paired actions and status copy. Prefer this over Popover when the surface needs composed controls.",
+      "aliases": [
+        "rich popover",
+        "form popover",
+        "control popover",
+        "popover with controls",
+        "tool popover",
+        "custom popover",
+        "options popover",
+        "titled popover",
+        "options sheet",
+        "Options Panel"
+      ],
       "chapter": "overlays",
       "registryDependencies": [
         "foundation",
@@ -300,13 +434,20 @@
       ],
       "importPath": "@default-file/ui/components/df-options-panel",
       "dependencies": [],
-      "propCount": 20
+      "propCount": 29
     },
     {
       "slug": "overlay-hint",
       "name": "overlay-hint",
       "title": "Overlay Hint",
-      "description": "Frosted instruction pill with muted and marquee variants.",
+      "description": "On-canvas instruction or status pill with frosted, muted, and marquee variants.",
+      "aliases": [
+        "instruction chip",
+        "hint pill",
+        "canvas hint",
+        "marquee hint",
+        "Overlay Hint"
+      ],
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
@@ -319,7 +460,14 @@
       "slug": "panel-section",
       "name": "panel-section",
       "title": "Panel Section",
-      "description": "Titled groupings for control panels.",
+      "description": "Titled groupings for control panels and inspectors.",
+      "aliases": [
+        "inspector section",
+        "panel group",
+        "control section",
+        "settings section",
+        "Panel Section"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -332,20 +480,35 @@
       "slug": "popover",
       "name": "popover",
       "title": "Popover",
-      "description": "Anchored floating panels for short content.",
+      "description": "Anchored panel for mid-range tasks such as share sheets and short forms. Prefer Options Panel for denser inspectors, and Tooltip for hover-only hints.",
+      "aliases": [
+        "simple popover",
+        "light popover",
+        "lightweight popover",
+        "anchored popover",
+        "flyout",
+        "Popover"
+      ],
       "chapter": "overlays",
       "registryDependencies": [
         "foundation"
       ],
       "importPath": "@default-file/ui/components/df-popover",
       "dependencies": [],
-      "propCount": 24
+      "propCount": 121
     },
     {
       "slug": "progress",
       "name": "progress",
       "title": "Progress",
       "description": "Linear progress bar for determinate or indeterminate completion.",
+      "aliases": [
+        "progress bar",
+        "linear progress",
+        "determinate progress",
+        "indeterminate progress",
+        "Progress"
+      ],
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
@@ -359,6 +522,13 @@
       "name": "scroll-area",
       "title": "Scroll Area",
       "description": "Scrollable regions with a custom thumb.",
+      "aliases": [
+        "custom scrollbar",
+        "scroll container",
+        "scrollport",
+        "custom scroll area",
+        "Scroll Area"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -372,6 +542,13 @@
       "name": "search-input",
       "title": "Search Input",
       "description": "Search field with clear control, icon placement, and hover border.",
+      "aliases": [
+        "search bar",
+        "SearchBar",
+        "search field",
+        "search box",
+        "Search Input"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -387,7 +564,15 @@
       "slug": "select",
       "name": "select",
       "title": "Select",
-      "description": "Single or multi choice field with label, sizes, and hover border.",
+      "description": "Single or multi choice field that composes Option List. Closed list selection, not free-text autocomplete.",
+      "aliases": [
+        "dropdown",
+        "dropdown select",
+        "select menu",
+        "multi select",
+        "single select dropdown",
+        "Select"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -405,6 +590,12 @@
       "name": "separator",
       "title": "Separator",
       "description": "Horizontal or vertical rules between sections.",
+      "aliases": [
+        "divider",
+        "horizontal rule",
+        "vertical divider",
+        "Separator"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -417,7 +608,15 @@
       "slug": "slider",
       "name": "slider",
       "title": "Slider",
-      "description": "Single or dual thumb scrubber for continuous or stepped values.",
+      "description": "Single or dual thumb scrubber with marks, orientation, label, and value chrome. Prefer Number Slider for a compact settings row, and Tick Slider for bound labels with a tick gauge.",
+      "aliases": [
+        "range slider",
+        "dual slider",
+        "range scrubber",
+        "marked slider",
+        "continuous slider",
+        "Slider"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
@@ -432,6 +631,12 @@
       "name": "spectrum-text",
       "title": "Spectrum Text",
       "description": "Inline text with a shifting multi stop gradient fill.",
+      "aliases": [
+        "gradient text",
+        "spectrum gradient text",
+        "animated gradient text",
+        "Spectrum Text"
+      ],
       "chapter": "text",
       "registryDependencies": [
         "foundation"
@@ -445,6 +650,12 @@
       "name": "spinner",
       "title": "Spinner",
       "description": "Indeterminate circular loading indicator.",
+      "aliases": [
+        "loader",
+        "loading spinner",
+        "circular loader",
+        "Spinner"
+      ],
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
@@ -457,7 +668,14 @@
       "slug": "switch",
       "name": "switch",
       "title": "Switch",
-      "description": "Binary on and off toggles.",
+      "description": "Binary on and off control for immediate settings.",
+      "aliases": [
+        "toggle switch",
+        "on off switch",
+        "binary switch",
+        "settings switch",
+        "Switch"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -470,7 +688,14 @@
       "slug": "tabs",
       "name": "tabs",
       "title": "Tabs",
-      "description": "Panel switcher with pill, line, and segment variants.",
+      "description": "Panel switcher with pill, line, and segment variants. Prefer Content Switcher when you only switch mode without tab panels.",
+      "aliases": [
+        "tab bar",
+        "tab panels",
+        "tabbed panels",
+        "panel tabs",
+        "Tabs"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -483,7 +708,15 @@
       "slug": "text-mark",
       "name": "text-mark",
       "title": "Text Mark",
-      "description": "Animated hand drawn marks for highlighting inline text.",
+      "description": "Hand drawn text marks: highlight wash, underline, circle, and related annotation kinds.",
+      "aliases": [
+        "highlight mark",
+        "marker underline",
+        "scribble circle",
+        "text annotation",
+        "rough highlight",
+        "Text Mark"
+      ],
       "chapter": "text",
       "registryDependencies": [
         "foundation"
@@ -499,6 +732,14 @@
       "name": "tick-slider",
       "title": "Tick Slider",
       "description": "Bound labels, tick gauge, optional purpose title, and floating value bubble.",
+      "aliases": [
+        "tic slider",
+        "tick scrubber",
+        "gauge slider",
+        "bound slider",
+        "tick gauge slider",
+        "Tick Slider"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -511,7 +752,14 @@
       "slug": "toast",
       "name": "toast",
       "title": "Toast",
-      "description": "Transient messages with tone and screen position.",
+      "description": "Transient messages with tone, a leading slot, and screen position.",
+      "aliases": [
+        "snackbar",
+        "notification toast",
+        "toast message",
+        "toast notification",
+        "Toast"
+      ],
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
@@ -520,13 +768,20 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 15
+      "propCount": 75
     },
     {
       "slug": "toggle-group",
       "name": "toggle-group",
       "title": "Toggle Group",
-      "description": "Grouped options for single select choices.",
+      "description": "Grouped single- or multi-select toggles. Prefer Content Switcher for exclusive view modes as segments.",
+      "aliases": [
+        "button group",
+        "option group",
+        "toggle buttons",
+        "multi select toggles",
+        "Toggle Group"
+      ],
       "chapter": "inputs",
       "registryDependencies": [
         "foundation"
@@ -540,6 +795,13 @@
       "name": "nav-rail",
       "title": "Tool Rail",
       "description": "Fixed icon-over-label edge rail for switching tools or modes.",
+      "aliases": [
+        "tool rail",
+        "nav rail",
+        "navigation rail",
+        "icon rail",
+        "mode rail"
+      ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation"
@@ -552,14 +814,21 @@
       "slug": "tooltip",
       "name": "tooltip",
       "title": "Tooltip",
-      "description": "Compact and detailed labels on hover and focus.",
+      "description": "Compact and detailed labels on hover, focus, or a viewport point.",
+      "aliases": [
+        "hover tip",
+        "focus tip",
+        "hover label",
+        "info tip",
+        "Tooltip"
+      ],
       "chapter": "feedback",
       "registryDependencies": [
         "foundation"
       ],
       "importPath": "@default-file/ui/components/df-tooltip",
       "dependencies": [],
-      "propCount": 27
+      "propCount": 29
     }
   ]
 }

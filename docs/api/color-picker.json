@@ -3,6 +3,13 @@
   "slug": "color-picker",
   "title": "Color Picker",
   "description": "Swatch trigger with hex trailing, hover border, and channel editors.",
+  "aliases": [
+    "colour picker",
+    "swatch picker",
+    "hex picker",
+    "color swatch",
+    "Color Picker"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",

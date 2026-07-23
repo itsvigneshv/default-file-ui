@@ -2,7 +2,7 @@
   "name": "slider",
   "type": "registry:ui",
   "title": "Slider",
-  "description": "Single or dual thumb scrubber with bar or line chrome and horizontal or vertical orientation.",
+  "description": "Single or dual thumb scrubber with marks, orientation, label, and value chrome. Prefer Number Slider for a compact settings row, and Tick Slider for bound labels with a tick gauge.",
   "dependencies": [
     "lucide-react"
   ],

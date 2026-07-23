@@ -2,7 +2,7 @@
   "name": "toggle-group",
   "type": "registry:ui",
   "title": "Toggle Group",
-  "description": "",
+  "description": "Grouped single- or multi-select toggles. Prefer Content Switcher for exclusive view modes as segments.",
   "dependencies": [],
   "registryDependencies": [
     "foundation"

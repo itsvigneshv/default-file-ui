@@ -3,6 +3,12 @@
   "slug": "label",
   "title": "Label",
   "description": "Accessible labels with required, optional, subtext, and a trailing slot for Badge or meta.",
+  "aliases": [
+    "field label",
+    "form label",
+    "accessible label",
+    "Label"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"

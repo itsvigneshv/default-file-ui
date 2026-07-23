@@ -3,6 +3,13 @@
   "slug": "accordion",
   "title": "Accordion",
   "description": "Expandable sections with single or multiple open items.",
+  "aliases": [
+    "disclosure",
+    "expandable sections",
+    "collapsible sections",
+    "faq accordion",
+    "Accordion"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

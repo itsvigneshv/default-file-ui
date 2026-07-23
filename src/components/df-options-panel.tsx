@@ -77,36 +77,81 @@ function OptionsPanelTitle({
 
 function OptionsPanelBody({
   className,
-  style,
   ...props
 }: React.ComponentProps<"div">) {
   return (
     <div
       data-df="options-panel-body"
       className={cn(
-        "flex w-max min-w-0 max-w-full flex-col gap-4 overflow-y-auto px-4 py-4",
+        "flex w-max min-w-0 max-w-full flex-col gap-4 px-4 py-4",
         className
       )}
-      style={{
-        maxHeight: "min(60vh, var(--df-options-panel-max-height))",
-        ...style,
-      }}
       {...props}
     />
   )
 }
 
+type OptionsPanelFooterProps = React.ComponentProps<"div"> & {
+  gap?: string
+  gapX?: string
+  gapY?: string
+}
+
 function OptionsPanelFooter({
+  className,
+  style,
+  gap,
+  gapX,
+  gapY,
+  ...props
+}: OptionsPanelFooterProps) {
+  const resolvedGapX = gapX ?? gap
+  const resolvedGapY = gapY ?? gap
+
+  return (
+    <div
+      data-df="options-panel-footer"
+      className={cn(
+        "flex flex-col border-t border-border px-4 py-3",
+        className
+      )}
+      style={
+        {
+          ...(resolvedGapX != null
+            ? { "--df-options-panel-footer-gap-x": resolvedGapX }
+            : null),
+          ...(resolvedGapY != null
+            ? { "--df-options-panel-footer-gap-y": resolvedGapY }
+            : null),
+          ...style,
+        } as React.CSSProperties
+      }
+      {...props}
+    />
+  )
+}
+
+function OptionsPanelFooterActions({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   return (
     <div
-      data-df="options-panel-footer"
-      className={cn(
-        "flex flex-col gap-2.5 border-t border-border px-4 py-3",
-        className
-      )}
+      data-df="options-panel-footer-actions"
+      className={className}
+      {...props}
+    />
+  )
+}
+
+function OptionsPanelFooterMeta({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-df="options-panel-footer-meta"
+      className={className}
       {...props}
     />
   )
@@ -117,8 +162,10 @@ export {
   OptionsPanelBody,
   OptionsPanelContent,
   OptionsPanelFooter,
+  OptionsPanelFooterActions,
+  OptionsPanelFooterMeta,
   OptionsPanelHeader,
   OptionsPanelTitle,
   OptionsPanelTrigger,
 }
-export type { OptionsPanelContentProps }
+export type { OptionsPanelContentProps, OptionsPanelFooterProps }

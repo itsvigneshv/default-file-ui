@@ -3,6 +3,13 @@
   "slug": "button",
   "title": "Button",
   "description": "Primary actions with variants, text sizes, icon sizes, and a plain icon-only style.",
+  "aliases": [
+    "cta",
+    "action button",
+    "icon button",
+    "plain icon button",
+    "Button"
+  ],
   "chapter": "actions",
   "registryDependencies": [
     "foundation",

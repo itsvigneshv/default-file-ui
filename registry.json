@@ -206,13 +206,14 @@
           "type": "registry:ui",
           "target": "default-file-ui/components/df-switch.tsx"
         }
-      ]
+      ],
+      "description": "Binary on and off control for immediate settings."
     },
     {
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
-      "description": "Single or dual thumb scrubber with bar or line chrome and horizontal or vertical orientation.",
+      "description": "Single or dual thumb scrubber with marks, orientation, label, and value chrome. Prefer Number Slider for a compact settings row, and Tick Slider for bound labels with a tick gauge.",
       "dependencies": [
         "lucide-react"
       ],
@@ -277,7 +278,8 @@
           "type": "registry:ui",
           "target": "default-file-ui/components/df-toggle-group.tsx"
         }
-      ]
+      ],
+      "description": "Grouped single- or multi-select toggles. Prefer Content Switcher for exclusive view modes as segments."
     },
     {
       "name": "scroll-area",
@@ -307,7 +309,8 @@
           "type": "registry:ui",
           "target": "default-file-ui/components/df-popover.tsx"
         }
-      ]
+      ],
+      "description": "Anchored floating panel for short content. Prefer Options Panel when the surface needs inputs, buttons, or other composed controls."
     },
     {
       "name": "tooltip",
@@ -471,7 +474,7 @@
       "name": "options-panel",
       "type": "registry:ui",
       "title": "Options Panel",
-      "description": "Anchored panel chrome with titled header and open body/footer slots for tool options.",
+      "description": "Anchored popover shell with header, body, and footer slots for custom controls. Footer owns gapX and gapY, with FooterActions and FooterMeta for paired actions and status copy. Prefer this over Popover when the surface needs composed controls.",
       "registryDependencies": [
         "foundation",
         "popover"
@@ -488,7 +491,7 @@
       "name": "dock-panel",
       "type": "registry:ui",
       "title": "Dock Panel",
-      "description": "Collapsible edge-docked inspector with optional header, custom icons, and a body that owns the kit scrollbar.",
+      "description": "Collapsible edge-docked inspector with a kit scrollbar body. Prefer this for persistent side chrome; prefer Options Panel for anchored temporary controls.",
       "registryDependencies": [
         "foundation",
         "button",

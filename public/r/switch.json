@@ -2,7 +2,7 @@
   "name": "switch",
   "type": "registry:ui",
   "title": "Switch",
-  "description": "",
+  "description": "Binary on and off control for immediate settings.",
   "dependencies": [],
   "registryDependencies": [
     "foundation"

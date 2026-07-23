@@ -3,6 +3,12 @@
   "slug": "spinner",
   "title": "Spinner",
   "description": "Indeterminate circular loading indicator.",
+  "aliases": [
+    "loader",
+    "loading spinner",
+    "circular loader",
+    "Spinner"
+  ],
   "chapter": "feedback",
   "registryDependencies": [
     "foundation"

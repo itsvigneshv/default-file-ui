@@ -105,6 +105,74 @@ async function testHelpers() {
   const search = searchKit("toast")
   assert.ok(search.some((r) => r.name === "toast"))
 
+  const ticSearch = searchKit("tic slider")
+  assert.ok(
+    ticSearch.some((r) => r.name === "tick-slider" && r.exactAlias),
+    "tic slider must exact-match tick-slider"
+  )
+  assert.ok(
+    (ticSearch.find((r) => r.name === "tick-slider")?.score ?? 0) >= 100,
+    "exact alias should score like a registry name"
+  )
+
+  const sideDrawerShow = showComponent("side drawer")
+  assert.equal(
+    sideDrawerShow?.name,
+    "dock-panel",
+    "side drawer alias resolves to dock-panel"
+  )
+
+  const optionsSheetShow = showComponent("options sheet")
+  assert.equal(
+    optionsSheetShow?.name,
+    "options-panel",
+    "options sheet alias resolves to options-panel"
+  )
+
+  const bareToggle = searchKit("toggle")
+  assert.ok(
+    !bareToggle.some((r) => r.name === "switch" && r.exactAlias),
+    "bare toggle must not exact-match switch"
+  )
+
+  const tickDetail = showComponent("tick-slider")
+  assert.ok(
+    (tickDetail.aliases ?? []).includes("tic slider"),
+    "show must expose authored aliases"
+  )
+
+  const chromeChapter = listComponents({ chapter: "chrome" }).map((i) => i.name)
+  assert.ok(
+    chromeChapter.includes("floating-controls"),
+    "chrome chapter filter must resolve to toolbars"
+  )
+
+  const formPopover = searchKit("form popover")
+  assert.ok(
+    formPopover.some((r) => r.name === "options-panel" && r.exactAlias),
+    "form popover must exact-match options-panel"
+  )
+
+  const popoverControlsCover = checkCoverage(
+    "popover with input fields and buttons"
+  )
+  assert.ok(
+    popoverControlsCover.matched.some((m) => m.name === "options-panel"),
+    "popover plus controls must cover options-panel"
+  )
+  assert.ok(
+    popoverControlsCover.matched.some((m) => m.name === "popover"),
+    "popover plus controls must still list popover"
+  )
+
+  const sliderFamilyCover = checkCoverage("settings slider scrubber")
+  assert.ok(
+    ["slider", "number-slider", "tick-slider"].every((name) =>
+      sliderFamilyCover.matched.some((m) => m.name === name)
+    ),
+    "slider language must cover the full slider family"
+  )
+
   const cover = checkCoverage("settings form with select, switch, and toast")
   assert.equal(cover.status, "covered")
   assert.ok(cover.matched.some((m) => m.name === "select"))

@@ -2,7 +2,14 @@
   "name": "option-list",
   "slug": "option-list",
   "title": "Option List",
-  "description": "Option rows with search, checkboxes, and footer actions.",
+  "description": "Picker panel with option rows, search, checks, and footer actions. Select composes this.",
+  "aliases": [
+    "options list",
+    "select list",
+    "picker list",
+    "option rows",
+    "Option List"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",

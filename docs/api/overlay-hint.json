@@ -2,7 +2,14 @@
   "name": "overlay-hint",
   "slug": "overlay-hint",
   "title": "Overlay Hint",
-  "description": "Frosted instruction pill with muted and marquee variants.",
+  "description": "On-canvas instruction or status pill with frosted, muted, and marquee variants.",
+  "aliases": [
+    "instruction chip",
+    "hint pill",
+    "canvas hint",
+    "marquee hint",
+    "Overlay Hint"
+  ],
   "chapter": "feedback",
   "registryDependencies": [
     "foundation"

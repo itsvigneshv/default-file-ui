@@ -63,6 +63,7 @@ List registry items with titles, chapters, and prop counts.
     title: item.title,
     chapter: item.chapter,
     description: item.description,
+    aliases: item.aliases ?? [],
     propCount: item.propCount,
     registryDependencies: item.registryDependencies,
   }))
@@ -89,7 +90,7 @@ export function showCommand(args) {
     console.log(`
 Usage: df-ui show <name> [--json]
 
-Show one registry item, including full prop tables when available.
+Show one registry item with prop tables when available. Exact aliases resolve.
 `)
     return
   }
@@ -98,6 +99,22 @@ Show one registry item, including full prop tables when available.
   const detail = showComponent(name)
   if (!detail) {
     throw new Error(`Unknown registry item "${name}". Run df-ui list.`)
+  }
+
+  if (detail.ambiguous) {
+    if (wantsJson(args)) {
+      printJson(detail)
+      return
+    }
+    console.log(`\nAmbiguous name "${detail.query}". Exact matches:\n`)
+    for (const match of detail.matches) {
+      const aliases =
+        match.aliases?.length > 0 ? ` (also: ${match.aliases.join(", ")})` : ""
+      console.log(`  ${match.name.padEnd(22)} ${match.title}${aliases}`)
+      console.log(`    ${match.description}`)
+    }
+    console.log("\nPick an exact registry name, or run df-ui search.\n")
+    return
   }
 
   if (wantsJson(args)) {
@@ -110,6 +127,9 @@ Show one registry item, including full prop tables when available.
   console.log(`  chapter:  ${detail.chapter ?? "n/a"}`)
   if (detail.importPath) console.log(`  import:   ${detail.importPath}`)
   console.log(`  deps:     ${(detail.registryDependencies ?? []).join(", ") || "none"}`)
+  if (detail.aliases?.length) {
+    console.log(`  aliases:  ${detail.aliases.join(", ")}`)
+  }
   console.log(`\n${detail.docsDescription || detail.description}\n`)
 
   if (detail.api?.groups?.length) {
@@ -171,7 +191,7 @@ export function searchCommand(args) {
     console.log(`
 Usage: df-ui search <query> [--limit N] [--json]
 
-Search registry names, titles, descriptions, and capability tags.
+Search registry names, titles, aliases, descriptions, and capability tags.
 `)
     return
   }

@@ -2,7 +2,19 @@
   "name": "options-panel",
   "slug": "options-panel",
   "title": "Options Panel",
-  "description": "Anchored panel with header, body, and footer slots. Hugs content up to a tokenized max width.",
+  "description": "Anchored popover shell with header, body, and footer slots for custom controls. Footer owns gapX and gapY, with FooterActions and FooterMeta for paired actions and status copy. Prefer this over Popover when the surface needs composed controls.",
+  "aliases": [
+    "rich popover",
+    "form popover",
+    "control popover",
+    "popover with controls",
+    "tool popover",
+    "custom popover",
+    "options popover",
+    "titled popover",
+    "options sheet",
+    "Options Panel"
+  ],
   "chapter": "overlays",
   "registryDependencies": [
     "foundation",
@@ -11,7 +23,7 @@
   "importPath": "@default-file/ui/components/df-options-panel",
   "dependencies": [],
   "api": {
-    "description": "Anchored options panel chrome with a titled header and open body/footer slots. Width hugs content up to the panel max-width token and the viewport. Compose any sections or actions inside the slots. Shares Popover behavior: Escape and outside clicks dismiss, and closing by keyboard returns focus to the trigger.",
+    "description": "Anchored popover shell with a titled header and open body/footer slots for custom controls such as inputs, buttons, and sections. Prefer this over Popover when the surface needs composed controls. Width hugs content up to the panel max-width token and the viewport. Shares Popover dismiss behavior: Escape and outside clicks close, and focus returns to the trigger.",
     "groups": [
       {
         "id": "options-panel",
@@ -84,7 +96,7 @@
             "name": "portal",
             "type": "boolean",
             "default": "true",
-            "description": "When false, render the panel inline (docs demos). Default portals to document.body."
+            "description": "When false, render the panel inline for docs demos. The body hugs content with no height clamp. Default portals to document.body and keeps the body max-height scroll contract."
           },
           {
             "name": "className",
@@ -116,12 +128,63 @@
           {
             "name": "OptionsPanelBody",
             "type": "div attrs",
-            "description": "Scrollable body slot. Hugs content width and stays within the panel shell so long copy wraps instead of clipping."
+            "description": "Body slot. Hugs content width. Portaled panels clamp height with --df-options-panel-max-height and scroll when content is taller. Inline panels (portal false) size to content with no scroll clamp."
           },
           {
             "name": "OptionsPanelFooter",
             "type": "div attrs",
-            "description": "Footer slot with top border. Fully swappable for buttons, status, and meta."
+            "description": "Footer slot with top border. Compose OptionsPanelFooterActions and OptionsPanelFooterMeta. Owns gapX and gapY."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-footer",
+        "title": "OptionsPanelFooter",
+        "description": "Footer region for actions and meta. Column layout by default. gapY spaces stacked rows. gapX feeds FooterActions and FooterMeta.",
+        "props": [
+          {
+            "name": "gap",
+            "type": "string",
+            "description": "Sets both gapX and gapY. Prefer spacing tokens such as calc(2 * var(--spacing-unit)). Overridden by gapX or gapY when those are set."
+          },
+          {
+            "name": "gapX",
+            "type": "string",
+            "default": "calc(2 * var(--spacing-unit))",
+            "description": "Horizontal gap for FooterActions and FooterMeta. Sets --df-options-panel-footer-gap-x."
+          },
+          {
+            "name": "gapY",
+            "type": "string",
+            "default": "calc(2.5 * var(--spacing-unit))",
+            "description": "Vertical gap between stacked footer rows such as actions and meta. Sets --df-options-panel-footer-gap-y."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Prefer OptionsPanelFooterActions for the two-up action row and OptionsPanelFooterMeta for status copy with Badge."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the footer region."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-footer-parts",
+        "title": "Footer actions and meta",
+        "description": "Named footer parts that consume --df-options-panel-footer-gap-x. Keep custom single-action footers as direct Footer children.",
+        "props": [
+          {
+            "name": "OptionsPanelFooterActions",
+            "type": "div attrs",
+            "description": "Two-column action row for paired controls such as Download and Copy. Gap comes from the parent footer gapX."
+          },
+          {
+            "name": "OptionsPanelFooterMeta",
+            "type": "div attrs",
+            "description": "Centered meta row for export summary copy and kit Badge. Uses text-xs muted foreground by default. Gap comes from the parent footer gapX."
           }
         ]
       },
@@ -141,6 +204,18 @@
             "type": "CSS length",
             "description": "Maximum panel height before scrolling.",
             "default": "520px"
+          },
+          {
+            "name": "--df-options-panel-footer-gap-x",
+            "type": "CSS length",
+            "description": "Horizontal gap for FooterActions and FooterMeta. Set by gap or gapX.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-options-panel-footer-gap-y",
+            "type": "CSS length",
+            "description": "Vertical gap between stacked footer rows. Set by gap or gapY.",
+            "default": "calc(2.5 * var(--spacing-unit))"
           },
           {
             "name": "--popover",

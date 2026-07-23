@@ -3,6 +3,13 @@
   "slug": "search-input",
   "title": "Search Input",
   "description": "Search field with clear control, icon placement, and hover border.",
+  "aliases": [
+    "search bar",
+    "SearchBar",
+    "search field",
+    "search box",
+    "Search Input"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",

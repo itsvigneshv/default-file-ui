@@ -2,7 +2,15 @@
   "name": "slider",
   "slug": "slider",
   "title": "Slider",
-  "description": "Single or dual thumb scrubber for continuous or stepped values.",
+  "description": "Single or dual thumb scrubber with marks, orientation, label, and value chrome. Prefer Number Slider for a compact settings row, and Tick Slider for bound labels with a tick gauge.",
+  "aliases": [
+    "range slider",
+    "dual slider",
+    "range scrubber",
+    "marked slider",
+    "continuous slider",
+    "Slider"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -11,7 +19,7 @@
   "importPath": "@default-file/ui/components/df-slider",
   "dependencies": [],
   "api": {
-    "description": "Single or dual thumb scrubber with bar or line chrome, horizontal or vertical orientation, and optional label, leading icon, and value readout. Without marks, the thumb tracks the pointer smoothly while dragging and commits to step. With marks, the value snaps to the nearest mark.",
+    "description": "Single or dual thumb scrubber with bar or line chrome, horizontal or vertical orientation, and optional label, leading icon, and value readout. Prefer Number Slider for a compact settings row, and Tick Slider for bound labels with a tick gauge. Without marks, the thumb tracks the pointer smoothly while dragging and commits to step. With marks, the value snaps to the nearest mark.",
     "groups": [
       {
         "id": "slider",

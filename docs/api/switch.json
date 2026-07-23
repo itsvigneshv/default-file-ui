@@ -2,7 +2,14 @@
   "name": "switch",
   "slug": "switch",
   "title": "Switch",
-  "description": "Binary on and off toggles.",
+  "description": "Binary on and off control for immediate settings.",
+  "aliases": [
+    "toggle switch",
+    "on off switch",
+    "binary switch",
+    "settings switch",
+    "Switch"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"
@@ -10,7 +17,7 @@
   "importPath": "@default-file/ui/components/df-switch",
   "dependencies": [],
   "api": {
-    "description": "Binary on and off toggle.",
+    "description": "Binary on and off control for immediate settings. Prefer Toggle Group for option clusters.",
     "groups": [
       {
         "id": "switch",

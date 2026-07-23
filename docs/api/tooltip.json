@@ -2,7 +2,14 @@
   "name": "tooltip",
   "slug": "tooltip",
   "title": "Tooltip",
-  "description": "Compact and detailed labels on hover and focus.",
+  "description": "Compact and detailed labels on hover, focus, or a viewport point.",
+  "aliases": [
+    "hover tip",
+    "focus tip",
+    "hover label",
+    "info tip",
+    "Tooltip"
+  ],
   "chapter": "feedback",
   "registryDependencies": [
     "foundation"
@@ -119,7 +126,7 @@
             "name": "arrow",
             "type": "boolean",
             "default": "true",
-            "description": "Show the pointing arrow."
+            "description": "Show the pointing caret. The anchoring engine keeps it aimed at the trigger or anchor point after collision clamping."
           },
           {
             "name": "children",
@@ -154,8 +161,20 @@
           {
             "name": "--df-tooltip-arrow-align-nudge",
             "type": "CSS length",
-            "description": "Arrow alignment nudge toward the trigger.",
+            "description": "Half-caret optical nudge for the trigger-tracked caret.",
             "default": "4px"
+          },
+          {
+            "name": "--df-anchor-arrow-cross",
+            "type": "CSS length",
+            "description": "Trigger-centered caret offset on the cross axis. Set by the anchoring engine after collision clamping.",
+            "default": "50%"
+          },
+          {
+            "name": "--df-anchor-arrow-cross-inset",
+            "type": "CSS length",
+            "description": "Minimum inset that keeps the trigger-tracked caret on the panel edge.",
+            "default": "calc(3 * var(--spacing-unit))"
           },
           {
             "name": "--df-duration-tip-hold",

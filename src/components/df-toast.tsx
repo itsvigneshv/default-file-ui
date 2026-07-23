@@ -11,7 +11,13 @@ import {
 } from "lucide-react"
 
 import { useIsClient } from "../hooks"
+import {
+  dfCornerShapeStyle,
+  type DfCornerShape,
+} from "../lib/corner-shape"
 import { cn } from "../lib/utils"
+
+const TOAST_DISMISS_MS = 3200
 
 type ToastTone = "success" | "error" | "info" | "warning"
 
@@ -26,10 +32,33 @@ type ToastPosition =
   | "bottom-center"
   | "bottom-right"
 
+type ToastShowOptions = {
+  /** Replaces the tone icon. Pass null to hide the leading slot. */
+  leading?: React.ReactNode
+}
+
+type ToastChromeProps = {
+  background?: string
+  foreground?: string
+  borderColor?: string
+  borderWidth?: string
+  radius?: string
+  shadow?: string
+  paddingBlock?: string
+  paddingInline?: string
+  gap?: string
+  width?: string
+  height?: string
+  minHeight?: string
+  showClose?: boolean
+  cornerShape?: DfCornerShape
+}
+
 type ToastItem = {
   id: string
   tone: ToastTone
   message: string
+  leading?: React.ReactNode
 }
 
 type ToastListener = () => void
@@ -37,6 +66,7 @@ type ToastListener = () => void
 let toasts: ToastItem[] = []
 let position: ToastPosition = "bottom-right"
 const listeners = new Set<ToastListener>()
+const dismissTimers = new Map<string, number>()
 
 function emit() {
   for (const listener of listeners) listener()
@@ -67,15 +97,37 @@ function getPositionServerSnapshot(): ToastPosition {
   return "bottom-right"
 }
 
-function push(tone: ToastTone, message: string) {
+function clearDismissTimer(id: string) {
+  const timer = dismissTimers.get(id)
+  if (timer == null) return
+  window.clearTimeout(timer)
+  dismissTimers.delete(id)
+}
+
+function push(tone: ToastTone, message: string, options?: ToastShowOptions) {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-  toasts = [...toasts, { id, tone, message }]
+  toasts = [
+    ...toasts,
+    { id, tone, message, leading: options?.leading },
+  ]
   emit()
-  window.setTimeout(() => dismiss(id), 3200)
+  const timer = window.setTimeout(() => dismiss(id), TOAST_DISMISS_MS)
+  dismissTimers.set(id, timer)
   return id
 }
 
-function dismiss(id: string) {
+function dismiss(id?: string) {
+  if (id === undefined) {
+    for (const timer of dismissTimers.values()) {
+      window.clearTimeout(timer)
+    }
+    dismissTimers.clear()
+    toasts = []
+    emit()
+    return
+  }
+
+  clearDismissTimer(id)
   toasts = toasts.filter((item) => item.id !== id)
   emit()
 }
@@ -87,10 +139,14 @@ function setToastPosition(next: ToastPosition) {
 }
 
 export const toast = {
-  success: (message: string) => push("success", message),
-  error: (message: string) => push("error", message),
-  info: (message: string) => push("info", message),
-  warning: (message: string) => push("warning", message),
+  success: (message: string, options?: ToastShowOptions) =>
+    push("success", message, options),
+  error: (message: string, options?: ToastShowOptions) =>
+    push("error", message, options),
+  info: (message: string, options?: ToastShowOptions) =>
+    push("info", message, options),
+  warning: (message: string, options?: ToastShowOptions) =>
+    push("warning", message, options),
   dismiss,
 }
 
@@ -101,14 +157,163 @@ const ICONS: Record<ToastTone, React.ReactNode> = {
   warning: <TriangleAlert className="size-4 fill-current" />,
 }
 
-type ToasterProps = {
+function toastChromeStyle({
+  background,
+  foreground,
+  borderColor,
+  borderWidth,
+  radius,
+  shadow,
+  paddingBlock,
+  paddingInline,
+  gap,
+  width,
+  height,
+  minHeight,
+  cornerShape,
+}: Omit<ToastChromeProps, "showClose">): React.CSSProperties {
+  return {
+    ...(background != null ? { "--df-toast-bg": background } : null),
+    ...(foreground != null ? { "--df-toast-fg": foreground } : null),
+    ...(borderColor != null ? { "--df-toast-border": borderColor } : null),
+    ...(borderWidth != null
+      ? { "--df-toast-border-width": borderWidth }
+      : null),
+    ...(radius != null ? { "--df-toast-radius": radius } : null),
+    ...(shadow != null ? { "--df-toast-shadow": shadow } : null),
+    ...(paddingBlock != null
+      ? { "--df-toast-padding-block": paddingBlock }
+      : null),
+    ...(paddingInline != null
+      ? { "--df-toast-padding-inline": paddingInline }
+      : null),
+    ...(gap != null ? { "--df-toast-gap": gap } : null),
+    ...(width != null ? { "--df-toast-width": width } : null),
+    ...(height != null ? { "--df-toast-height": height } : null),
+    ...(minHeight != null ? { "--df-toast-min-height": minHeight } : null),
+    ...dfCornerShapeStyle(cornerShape),
+  } as React.CSSProperties
+}
+
+type ToastProps = React.ComponentProps<"div"> &
+  ToastChromeProps & {
+    tone: ToastTone
+    message: string
+    /** Defaults to the tone icon. Pass null to hide the slot. */
+    leading?: React.ReactNode
+    onDismiss?: () => void
+  }
+
+function Toast({
+  tone,
+  message,
+  leading,
+  onDismiss,
+  showClose = true,
+  background,
+  foreground,
+  borderColor,
+  borderWidth,
+  radius,
+  shadow,
+  paddingBlock,
+  paddingInline,
+  gap,
+  width,
+  height,
+  minHeight,
+  cornerShape,
+  className,
+  style,
+  ...props
+}: ToastProps) {
+  const leadingContent = leading === undefined ? ICONS[tone] : leading
+  const toastStyle = {
+    ...toastChromeStyle({
+      background,
+      foreground,
+      borderColor,
+      borderWidth,
+      radius,
+      shadow,
+      paddingBlock,
+      paddingInline,
+      gap,
+      width,
+      height,
+      minHeight,
+      cornerShape,
+    }),
+    ...style,
+  } as React.CSSProperties
+
+  return (
+    <div
+      role="status"
+      data-df="toast"
+      data-tone={tone}
+      className={cn("df-toast", className)}
+      style={toastStyle}
+      {...props}
+    >
+      {leadingContent != null ? (
+        <span className="df-toast-icon" aria-hidden>
+          {leadingContent}
+        </span>
+      ) : null}
+      <p className="df-toast-message">{message}</p>
+      {showClose ? (
+        onDismiss ? (
+          <button
+            type="button"
+            className="df-toast-close"
+            aria-label="Dismiss"
+            onClick={onDismiss}
+          >
+            <X className="size-3.5" />
+          </button>
+        ) : (
+          <span className="df-toast-close" aria-hidden>
+            <X className="size-3.5" />
+          </span>
+        )
+      ) : null}
+    </div>
+  )
+}
+
+type ToasterProps = ToastChromeProps & {
   position?: ToastPosition
   className?: string
+  style?: React.CSSProperties
+  stackWidth?: string
+  stackGap?: string
+  inset?: string
+  viewportGutter?: string
 }
 
 export function Toaster({
   position: positionProp,
   className,
+  style,
+  stackWidth,
+  stackGap,
+  inset,
+  viewportGutter,
+  background,
+  foreground,
+  borderColor,
+  borderWidth,
+  radius,
+  shadow,
+  paddingBlock,
+  paddingInline,
+  gap,
+  width,
+  height,
+  minHeight,
+  cornerShape,
+  showClose = true,
 }: ToasterProps = {}) {
   const mounted = useIsClient()
   const items = React.useSyncExternalStore(
@@ -129,40 +334,60 @@ export function Toaster({
   if (!mounted) return null
 
   const resolved = positionProp ?? currentPosition
+  const toasterStyle = {
+    ...(stackWidth != null ? { "--df-toaster-width": stackWidth } : null),
+    ...(stackGap != null ? { "--df-toaster-gap": stackGap } : null),
+    ...(inset != null ? { "--df-toaster-inset": inset } : null),
+    ...(viewportGutter != null
+      ? { "--df-toaster-viewport-gutter": viewportGutter }
+      : null),
+    ...toastChromeStyle({
+      background,
+      foreground,
+      borderColor,
+      borderWidth,
+      radius,
+      shadow,
+      paddingBlock,
+      paddingInline,
+      gap,
+      width,
+      height,
+      minHeight,
+      cornerShape,
+    }),
+    ...style,
+  } as React.CSSProperties
 
   return createPortal(
     <div
       className={cn("df-toaster", className)}
       data-position={resolved}
+      style={toasterStyle}
       aria-live="polite"
       aria-relevant="additions"
     >
       {items.map((item) => (
-        <div
+        <Toast
           key={item.id}
-          role="status"
-          data-df="toast"
-          data-tone={item.tone}
-          className={cn("df-toast")}
-        >
-          <span className="df-toast-icon" aria-hidden>
-            {ICONS[item.tone]}
-          </span>
-          <p className="df-toast-message">{item.message}</p>
-          <button
-            type="button"
-            className="df-toast-close"
-            aria-label="Dismiss"
-            onClick={() => dismiss(item.id)}
-          >
-            <X className="size-3.5" />
-          </button>
-        </div>
+          tone={item.tone}
+          message={item.message}
+          leading={item.leading}
+          showClose={showClose}
+          onDismiss={() => dismiss(item.id)}
+        />
       ))}
     </div>,
     document.body
   )
 }
 
-export { setToastPosition }
-export type { ToastPosition, ToasterProps, ToastTone }
+export { Toast, setToastPosition }
+export type {
+  ToastChromeProps,
+  ToastPosition,
+  ToastProps,
+  ToastShowOptions,
+  ToasterProps,
+  ToastTone,
+}

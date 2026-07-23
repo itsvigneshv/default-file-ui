@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { X } from "lucide-react"
+import { ChevronDown, ChevronUp, X } from "lucide-react"
 
 import { useControllableState } from "../hooks"
 import {
@@ -76,6 +76,65 @@ type InputProps = Omit<
   suffix?: React.ReactNode
   addonColor?: string
   action?: React.ReactNode
+  stepper?: boolean
+  incrementIcon?: React.ReactNode
+  decrementIcon?: React.ReactNode
+}
+
+function parseFiniteNumber(value: string): number | null {
+  if (value.trim() === "") return null
+  const next = Number(value)
+  return Number.isFinite(next) ? next : null
+}
+
+function resolveStep(step: React.ComponentProps<"input">["step"]): number {
+  if (step == null || step === "any") return 1
+  const next = Number(step)
+  return Number.isFinite(next) && next > 0 ? next : 1
+}
+
+function resolveBound(
+  value: React.ComponentProps<"input">["min"] | React.ComponentProps<"input">["max"]
+): number | null {
+  if (value == null || value === "") return null
+  const next = Number(value)
+  return Number.isFinite(next) ? next : null
+}
+
+function formatSteppedValue(value: number, step: number): string {
+  const decimals = (() => {
+    const text = String(step)
+    if (!text.includes("e") && !text.includes("E")) {
+      const fraction = text.split(".")[1]
+      return fraction ? fraction.length : 0
+    }
+    const match = /^(\d+)(?:\.(\d+))?e([+-]?\d+)$/i.exec(text)
+    if (!match) return 0
+    const fractionLength = match[2]?.length ?? 0
+    const exponent = Number(match[3])
+    return Math.max(0, fractionLength - exponent)
+  })()
+  return decimals > 0 ? value.toFixed(decimals) : String(Math.round(value))
+}
+
+function nextSteppedValue(
+  current: string,
+  direction: 1 | -1,
+  stepAttr: React.ComponentProps<"input">["step"],
+  minAttr: React.ComponentProps<"input">["min"],
+  maxAttr: React.ComponentProps<"input">["max"]
+): string {
+  const step = resolveStep(stepAttr)
+  const min = resolveBound(minAttr)
+  const max = resolveBound(maxAttr)
+  const parsed = parseFiniteNumber(current)
+  const base =
+    parsed ??
+    (direction > 0 ? (min ?? 0) : (max ?? min ?? 0))
+  let next = base + direction * step
+  if (min != null) next = Math.max(min, next)
+  if (max != null) next = Math.min(max, next)
+  return formatSteppedValue(next, step)
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -124,12 +183,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       suffix,
       addonColor,
       action,
+      stepper = false,
+      incrementIcon,
+      decrementIcon,
       placeholder,
       value,
       defaultValue,
       onChange,
+      onKeyDown,
       disabled,
       readOnly,
+      min,
+      max,
+      step,
       "aria-describedby": ariaDescribedBy,
       "aria-invalid": ariaInvalidProp,
       ...props
@@ -139,6 +205,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const reactId = React.useId()
     const inputId = idProp ?? `df-input-${reactId}`
     const hintId = hint != null ? `df-input-hint-${reactId}` : undefined
+    const inputRef = React.useRef<HTMLInputElement | null>(null)
 
     const [current, setCurrent] = useControllableState<string>({
       value: value === undefined ? undefined : String(value),
@@ -154,6 +221,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const isEmpty = String(current).length === 0
     const showClear =
       clearable && !isEmpty && !disabled && !readOnly
+    const showStepper = stepper && !disabled && !readOnly
     const hasLeading = leadingIcon != null
     const hasTrailing = trailingIcon != null
     const hasPrefix = prefix != null
@@ -168,7 +236,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       hasAction ||
       hasLeading ||
       hasTrailing ||
-      clearable
+      clearable ||
+      stepper
     const needsField =
       hasLeading ||
       hasTrailing ||
@@ -176,8 +245,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       hasSuffix ||
       hasAction ||
       hasInsideLabel ||
-      clearable
+      clearable ||
+      stepper
     const needsRoot = hasOutsideLabel || hint != null || needsField
+    const resolvedType = stepper ? "number" : type
+    const minBound = resolveBound(min)
+    const maxBound = resolveBound(max)
+    const numericValue = parseFiniteNumber(String(current))
+    const canIncrement =
+      showStepper && (maxBound == null || numericValue == null || numericValue < maxBound)
+    const canDecrement =
+      showStepper && (minBound == null || numericValue == null || numericValue > minBound)
 
     const describedBy =
       [ariaDescribedBy, hintId].filter(Boolean).join(" ") || undefined
@@ -256,6 +334,23 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ? paddingStyle
         : undefined
 
+    function setRefs(node: HTMLInputElement | null) {
+      inputRef.current = node
+      if (typeof ref === "function") {
+        ref(node)
+      } else if (ref) {
+        ref.current = node
+      }
+    }
+
+    function commitValue(next: string) {
+      setCurrent(next)
+      onChange?.({
+        target: { value: next },
+        currentTarget: { value: next },
+      } as React.ChangeEvent<HTMLInputElement>)
+    }
+
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
       setCurrent(event.target.value)
       onChange?.(event)
@@ -270,11 +365,33 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       } as React.ChangeEvent<HTMLInputElement>)
     }
 
+    function applyStep(direction: 1 | -1) {
+      if (!showStepper) return
+      commitValue(
+        nextSteppedValue(String(current), direction, step, min, max)
+      )
+      inputRef.current?.focus()
+    }
+
+    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+      onKeyDown?.(event)
+      if (event.defaultPrevented || !showStepper) return
+      if (event.key === "ArrowUp") {
+        event.preventDefault()
+        applyStep(1)
+        return
+      }
+      if (event.key === "ArrowDown") {
+        event.preventDefault()
+        applyStep(-1)
+      }
+    }
+
     const inputEl = (
       <input
-        ref={ref}
+        ref={setRefs}
         id={inputId}
-        type={type}
+        type={resolvedType}
         data-df="input"
         data-variant={variant}
         data-size={size}
@@ -283,14 +400,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         data-focus-variant={focusVariant}
         data-corner-shape={cornerShape}
         data-hover-border={hoverBorderAttr}
+        data-stepper={stepper ? "" : undefined}
         data-invalid={isInvalid ? "" : undefined}
         aria-invalid={isInvalid || undefined}
         aria-describedby={describedBy}
         placeholder={hasInsideLabel ? undefined : placeholder}
         value={current}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         disabled={disabled}
         readOnly={readOnly}
+        min={min}
+        max={max}
+        step={step}
         className={cn("df-input", !needsRoot && !needsField && className)}
         style={shellOwnsChrome ? undefined : surfaceStyle}
         {...props}
@@ -316,6 +438,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         data-has-prefix={hasPrefix ? "" : undefined}
         data-has-suffix={hasSuffix ? "" : undefined}
         data-has-action={hasAction ? "" : undefined}
+        data-has-stepper={showStepper ? "" : undefined}
         data-chrome={shellOwnsChrome ? "shell" : undefined}
         data-invalid={isInvalid ? "" : undefined}
         data-invalid-label={showInvalidLabel ? "" : undefined}
@@ -370,6 +493,37 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           >
             <X aria-hidden />
           </button>
+        ) : null}
+
+        {showStepper ? (
+          <div data-df="input-stepper">
+            <button
+              type="button"
+              data-df="input-stepper-button"
+              data-direction="up"
+              aria-label="Increment"
+              disabled={!canIncrement}
+              onMouseDown={(event) => {
+                event.preventDefault()
+              }}
+              onClick={() => applyStep(1)}
+            >
+              {incrementIcon ?? <ChevronUp aria-hidden />}
+            </button>
+            <button
+              type="button"
+              data-df="input-stepper-button"
+              data-direction="down"
+              aria-label="Decrement"
+              disabled={!canDecrement}
+              onMouseDown={(event) => {
+                event.preventDefault()
+              }}
+              onClick={() => applyStep(-1)}
+            >
+              {decrementIcon ?? <ChevronDown aria-hidden />}
+            </button>
+          </div>
         ) : null}
 
         {hasAction ? <div data-df="input-action">{action}</div> : null}

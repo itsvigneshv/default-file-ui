@@ -2,7 +2,13 @@
   "name": "number-slider",
   "slug": "number-slider",
   "title": "Number Slider",
-  "description": "Labeled slider with a live numeric readout.",
+  "description": "Compact labeled Slider convenience with a live numeric readout. Prefer Slider for dual thumb, marks, orientation, or richer value chrome.",
+  "aliases": [
+    "labeled number slider",
+    "settings slider",
+    "numeric readout slider",
+    "Number Slider"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
@@ -12,7 +18,7 @@
   "importPath": "@default-file/ui/components/df-number-slider",
   "dependencies": [],
   "api": {
-    "description": "Labeled slider with a live numeric readout. Composes Label and Slider.",
+    "description": "Compact labeled Slider convenience with a live numeric readout. Composes Label and Slider. Prefer Slider for dual thumb, marks, orientation, or richer value chrome.",
     "groups": [
       {
         "id": "number-slider",

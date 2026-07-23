@@ -24,17 +24,12 @@ const CHAPTER_TAGS = {
   feedback: ["toast", "message", "alert", "status", "badge", "tooltip", "hint"],
   overlays: ["popover", "menu", "dropdown", "panel", "modal", "dialog", "overlay"],
   structure: ["layout", "section", "tabs", "separator", "scroll", "card", "text"],
+  text: ["text", "typography", "headline", "mark", "gradient"],
+  toolbars: ["toolbar", "dock", "floating", "tool", "controls", "bar"],
   chrome: ["toolbar", "dock", "floating", "tool", "controls", "bar"],
 }
 
 const NEED_SYNONYMS = [
-  {
-    patterns: /\b(modal|dialog|drawer|sheet)\b/i,
-    gap: "Dedicated modal, dialog, drawer, or sheet primitive",
-    suggestion:
-      "Compose overlays with popover or options-panel, or build a custom dialog on kit tokens.",
-    related: ["popover", "options-panel", "overlay-hint"],
-  },
   {
     patterns: /\b(table|data.?grid|datagrid)\b/i,
     gap: "Table or data-grid primitive",
@@ -48,18 +43,60 @@ const NEED_SYNONYMS = [
     related: ["choice-chip", "toggle-group", "content-switcher", "select", "option-list"],
   },
   {
-    patterns: /\b(collapse|disclosure)\b/i,
-    gap: "Standalone disclosure primitive outside Accordion",
-    suggestion: "Use accordion for expandable sections, or compose with panel-section for custom shells.",
-    related: ["accordion", "panel-section", "separator"],
-  },
-  {
-    patterns: /\b(avatar|breadcrumb|pagination|skeleton|progress|spinner)\b/i,
+    patterns: /\b(avatar|breadcrumb|pagination|skeleton)\b/i,
     gap: "Specialty chrome not yet in the registry",
     suggestion: "Compose with badge, separator, and kit tokens, or request a registry item.",
     related: ["badge", "separator", "overlay-hint"],
   },
 ]
+
+/** Coverage family hints. Optional alsoRequires narrows when the pattern alone is too broad. */
+const COMPOSE_HINTS = [
+  {
+    patterns: /\bpopover\b/i,
+    alsoRequires: /\b(input|inputs|button|buttons|form|control|controls|field|fields)\b/i,
+    include: ["options-panel", "popover"],
+    reason: "Anchored panel family: Popover or Options Panel",
+  },
+  {
+    patterns: /\b(slider|scrubber)\b/i,
+    include: ["slider", "number-slider", "tick-slider"],
+    reason: "Slider family",
+  },
+  {
+    patterns: /\b(segmented|segment control|view mode|mode switcher)\b/i,
+    include: ["content-switcher", "toggle-group", "tabs"],
+    reason: "Segment and mode selection family",
+  },
+  {
+    patterns: /\b(drawer|side panel|inspector)\b/i,
+    include: ["dock-panel", "options-panel", "dialog"],
+    reason: "Overlay and inspector shell family",
+  },
+]
+
+/** Lowercase label with punctuation folded to spaces for exact matching. */
+function normalizeLabel(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+}
+
+function readAliases(meta) {
+  if (!Array.isArray(meta?.aliases)) return []
+  return meta.aliases
+    .map((alias) => String(alias ?? "").trim())
+    .filter(Boolean)
+}
+
+/** Phrase match, or whole-word match for single-token labels. */
+function needIncludesLabel(normalizedNeed, label) {
+  if (!label) return false
+  if (label.includes(" ")) return normalizedNeed.includes(label)
+  return new RegExp(`(?:^| )${label}(?: |$)`).test(` ${normalizedNeed} `)
+}
 
 let cached = null
 
@@ -95,15 +132,17 @@ function loadBundle() {
         : item.type === "registry:style"
           ? "foundation"
           : null)
-    const title = item.title ?? meta?.title ?? item.name
-    const description = item.description ?? meta?.description ?? ""
-    const tags = buildTags(item, meta, chapter, title, description)
-    const coverTerms = buildCoverTerms(item.name, title, chapter)
+    const title = meta?.title ?? item.title ?? item.name
+    const description = meta?.description ?? item.description ?? ""
+    const aliases = readAliases(meta)
+    const tags = buildTags(item, meta, chapter, title, description, aliases)
+    const coverTerms = buildCoverTerms(item.name, title, chapter, aliases)
     return {
       name: item.name,
       type: item.type,
       title,
       description,
+      aliases,
       chapter,
       registryDependencies: item.registryDependencies ?? meta?.registryDependencies ?? [],
       dependencies: item.dependencies ?? meta?.dependencies ?? [],
@@ -123,7 +162,7 @@ function loadBundle() {
   return cached
 }
 
-function buildTags(item, meta, chapter, title, description) {
+function buildTags(item, meta, chapter, title, description, aliases = []) {
   const tags = new Set()
   tags.add(item.name)
   if (item.type) tags.add(item.type.replace(/^registry:/, ""))
@@ -137,11 +176,18 @@ function buildTags(item, meta, chapter, title, description) {
     .filter((w) => w.length > 2)) {
     tags.add(word)
   }
+  for (const alias of aliases) {
+    const normalized = normalizeLabel(alias)
+    if (normalized) tags.add(normalized)
+    for (const word of normalized.split(" ").filter((w) => w.length > 2)) {
+      tags.add(word)
+    }
+  }
   return [...tags]
 }
 
-/** Tight terms for coverage: name parts, title words, chapter labels only. */
-function buildCoverTerms(name, title, chapter) {
+/** Coverage terms from name parts, title words, full aliases, and chapter. */
+function buildCoverTerms(name, title, chapter, aliases = []) {
   const terms = new Set()
   terms.add(name)
   for (const part of name.split("-").filter((w) => w.length > 2)) terms.add(part)
@@ -151,16 +197,39 @@ function buildCoverTerms(name, title, chapter) {
     .filter((w) => w.length > 2)) {
     terms.add(word)
   }
+  for (const alias of aliases) {
+    const normalized = normalizeLabel(alias)
+    if (normalized) terms.add(normalized)
+  }
   if (chapter) terms.add(chapter)
   return [...terms]
+}
+
+function itemAliasLabels(item) {
+  return (item.aliases ?? []).map(normalizeLabel).filter(Boolean)
+}
+
+function hasExactLabelMatch(item, query) {
+  const q = normalizeLabel(query)
+  if (!q) return false
+  if (normalizeLabel(item.name) === q) return true
+  if (normalizeLabel(item.title) === q) return true
+  return itemAliasLabels(item).includes(q)
+}
+
+const CHAPTER_FILTER_ALIASES = {
+  chrome: "toolbars",
 }
 
 /** List registry items, optionally filtered by type or chapter. */
 export function listComponents({ type, chapter } = {}) {
   const { items } = loadBundle()
+  const resolvedChapter = chapter
+    ? (CHAPTER_FILTER_ALIASES[chapter] ?? chapter)
+    : undefined
   return items.filter((item) => {
     if (type && item.type !== type && item.type !== `registry:${type}`) return false
-    if (chapter && item.chapter !== chapter) return false
+    if (resolvedChapter && item.chapter !== resolvedChapter) return false
     return true
   })
 }
@@ -172,12 +241,8 @@ export function loadComponentApi(name) {
   return readKitJson("docs", "api", `${slug}.json`)
 }
 
-/** Registry item plus prop API when docs/api/<name>.json exists. */
-export function showComponent(name) {
-  const { byName } = loadBundle()
-  const item = byName.get(name)
-  if (!item) return null
-  const apiDoc = loadComponentApi(name)
+function enrichComponent(item) {
+  const apiDoc = loadComponentApi(item.name)
   return {
     ...item,
     api: apiDoc?.api ?? null,
@@ -185,28 +250,72 @@ export function showComponent(name) {
   }
 }
 
-/** Ranked keyword search over names, titles, descriptions, and tags. */
+/** Registry item with prop API. Exact aliases resolve; shared aliases return { ambiguous, matches }. */
+export function showComponent(name) {
+  const { byName, items } = loadBundle()
+  const direct = byName.get(name)
+  if (direct) return enrichComponent(direct)
+
+  const q = normalizeLabel(name)
+  if (!q) return null
+  const hits = items.filter((item) => hasExactLabelMatch(item, q))
+  if (hits.length === 1) return enrichComponent(hits[0])
+  if (hits.length > 1) {
+    return {
+      ambiguous: true,
+      query: name,
+      matches: hits.map((item) => ({
+        name: item.name,
+        title: item.title,
+        description: item.description,
+        aliases: item.aliases ?? [],
+        chapter: item.chapter,
+        importPath: item.importPath,
+      })),
+    }
+  }
+  return null
+}
+
+/** Ranked search over names, titles, aliases, descriptions, and tags. */
 export function searchKit(query, { limit = 20 } = {}) {
-  const q = String(query ?? "").trim().toLowerCase()
+  const raw = String(query ?? "").trim()
+  const q = raw.toLowerCase()
   if (!q) return []
-  const terms = q.split(/[^a-z0-9]+/).filter(Boolean)
+  const normalizedQuery = normalizeLabel(raw)
+  const terms = normalizedQuery.split(" ").filter(Boolean)
   const { items } = loadBundle()
 
   const scored = items
     .map((item) => {
+      const aliases = item.aliases ?? []
+      const aliasHay = aliases.map(normalizeLabel).filter(Boolean)
       const hay = [
         item.name,
         item.title,
         item.description,
         item.chapter ?? "",
+        ...aliases,
         ...item.tags,
       ]
         .join(" ")
         .toLowerCase()
       let score = 0
-      if (item.name === q) score += 100
+      if (item.name === q || normalizeLabel(item.name) === normalizedQuery) score += 100
+      if (normalizeLabel(item.title) === normalizedQuery) score += 100
+      if (aliasHay.includes(normalizedQuery)) score += 100
       if (item.name.includes(q)) score += 40
       if (item.title.toLowerCase().includes(q)) score += 30
+      if (
+        aliasHay.some(
+          (alias) =>
+            alias !== normalizedQuery &&
+            (needIncludesLabel(alias, normalizedQuery) ||
+              needIncludesLabel(normalizedQuery, alias))
+        )
+      ) {
+        score += 50
+      }
       for (const term of terms) {
         if (item.name.includes(term)) score += 12
         if (hay.includes(term)) score += 4
@@ -223,25 +332,40 @@ export function searchKit(query, { limit = 20 } = {}) {
     type: row.item.type,
     chapter: row.item.chapter,
     description: row.item.description,
+    aliases: row.item.aliases ?? [],
     score: row.score,
     propCount: row.item.propCount,
+    exactAlias: hasExactLabelMatch(row.item, raw),
   }))
 }
 
 function matchNeedToItems(needText, items) {
-  const text = needText.toLowerCase()
-  const terms = new Set(text.split(/[^a-z0-9]+/).filter((t) => t.length > 2))
+  const normalizedNeed = normalizeLabel(needText)
+  const terms = new Set(normalizedNeed.split(" ").filter((t) => t.length > 2))
   const matched = []
 
   for (const item of items) {
     if (item.name === "foundation" || item.name === "color-system") continue
     let reason = null
-    if (terms.has(item.name) || text.includes(item.name.replace(/-/g, " "))) {
+    if (
+      terms.has(item.name) ||
+      needIncludesLabel(normalizedNeed, item.name.replace(/-/g, " "))
+    ) {
       reason = `Named ${item.title}`
+    } else if (hasExactLabelMatch(item, needText)) {
+      reason = `Alias match for ${item.title}`
     } else {
+      for (const alias of itemAliasLabels(item)) {
+        if (alias.length > 2 && needIncludesLabel(normalizedNeed, alias)) {
+          reason = `Alias "${alias}"`
+          break
+        }
+      }
+    }
+    if (!reason) {
       for (const term of item.coverTerms ?? []) {
         if (term === item.chapter) continue
-        if (terms.has(term)) {
+        if (term.includes(" ") ? needIncludesLabel(normalizedNeed, term) : terms.has(term)) {
           reason = `Matches ${term}`
           break
         }
@@ -268,8 +392,11 @@ export function checkCoverage(need) {
 
   for (const rule of NEED_SYNONYMS) {
     if (!rule.patterns.test(query)) continue
-    // Record a gap when the need matches and the kit has no dedicated item.
-    const dedicatedMissing = !items.some((item) => rule.patterns.test(item.name))
+    const dedicatedMissing = !items.some(
+      (item) =>
+        rule.patterns.test(item.name) ||
+        (item.aliases ?? []).some((alias) => rule.patterns.test(alias))
+    )
     if (dedicatedMissing) {
       gaps.push({
         need: rule.gap,
@@ -289,6 +416,19 @@ export function checkCoverage(need) {
           reason: "Common form control",
         })
       }
+    }
+  }
+
+  for (const hint of COMPOSE_HINTS) {
+    if (!hint.patterns.test(query)) continue
+    if (hint.alsoRequires && !hint.alsoRequires.test(query)) continue
+    for (const name of hint.include) {
+      if (matched.some((m) => m.name === name) || !byName.has(name)) continue
+      matched.push({
+        name,
+        title: byName.get(name).title,
+        reason: hint.reason,
+      })
     }
   }
 

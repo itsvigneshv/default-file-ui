@@ -157,22 +157,44 @@ export type {
 } from "./df-scroll-area"
 export {
   Popover,
+  PopoverBody,
+  PopoverClose,
   PopoverContent,
   PopoverDescription,
+  PopoverFooter,
   PopoverHeader,
+  PopoverHeaderBar,
   PopoverTitle,
   PopoverTrigger,
+} from "./df-popover"
+export type {
+  PopoverBorderWidth,
+  PopoverContentProps,
+  PopoverDescriptionProps,
+  PopoverFooterProps,
+  PopoverHeaderBarProps,
+  PopoverHeaderProps,
+  PopoverRadius,
+  PopoverSize,
+  PopoverTitleBadgePosition,
+  PopoverTitleProps,
+  PopoverVariant,
 } from "./df-popover"
 export {
   OptionsPanel,
   OptionsPanelBody,
   OptionsPanelContent,
   OptionsPanelFooter,
+  OptionsPanelFooterActions,
+  OptionsPanelFooterMeta,
   OptionsPanelHeader,
   OptionsPanelTitle,
   OptionsPanelTrigger,
 } from "./df-options-panel"
-export type { OptionsPanelContentProps } from "./df-options-panel"
+export type {
+  OptionsPanelContentProps,
+  OptionsPanelFooterProps,
+} from "./df-options-panel"
 export {
   Tooltip,
   TooltipContent,

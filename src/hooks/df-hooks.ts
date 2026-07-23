@@ -201,18 +201,57 @@ function pickCrossAlign(
   return best
 }
 
-function readOverlayInset(name: string): number {
-  if (typeof window === "undefined") return 0
-  const root = document.documentElement
-  const raw = getComputedStyle(root).getPropertyValue(name).trim()
-  if (!raw) return 0
+const ANCHOR_VIEWPORT_PAD_PX = 8
+const ANCHOR_ARROW_CROSS_INSET_FALLBACK_PX = 12
+
+function readCssLengthPx(
+  name: string,
+  fallback: number,
+  element?: Element | null
+): number {
+  if (typeof window === "undefined") return fallback
+  const target = element ?? document.documentElement
+  const raw = getComputedStyle(target).getPropertyValue(name).trim()
+  if (!raw) return fallback
   const num = Number.parseFloat(raw)
-  if (Number.isNaN(num)) return 0
+  if (Number.isNaN(num)) return fallback
   if (raw.endsWith("rem")) {
-    const rootPx = Number.parseFloat(getComputedStyle(root).fontSize) || 16
+    const rootPx =
+      Number.parseFloat(getComputedStyle(document.documentElement).fontSize) ||
+      16
     return num * rootPx
   }
   return num
+}
+
+function readOverlayInset(name: string): number {
+  return readCssLengthPx(name, 0)
+}
+
+function contentLayoutSize(content: HTMLElement) {
+  return { width: content.offsetWidth, height: content.offsetHeight }
+}
+
+function arrowCrossStyle(
+  side: Side,
+  trigger: DOMRect,
+  contentLeft: number,
+  contentTop: number,
+  size: { width: number; height: number },
+  inset: number
+): React.CSSProperties {
+  const alongMain = side === "top" || side === "bottom"
+  const cross = alongMain
+    ? trigger.left + trigger.width / 2 - contentLeft
+    : trigger.top + trigger.height / 2 - contentTop
+  const axisSize = alongMain ? size.width : size.height
+  const clamped = Math.min(
+    Math.max(cross, inset),
+    Math.max(inset, axisSize - inset)
+  )
+  return {
+    ["--df-anchor-arrow-cross" as string]: `${clamped}px`,
+  }
 }
 
 type AnchoredPlacement = {
@@ -329,13 +368,20 @@ export function useAnchoredPosition({
       : triggerRef?.current?.getBoundingClientRect()
     if (!t) return
 
-    const c = content.getBoundingClientRect()
-    const pad = 8
+    const c = contentLayoutSize(content)
+    if (c.width <= 0 || c.height <= 0) return
+
+    const pad = ANCHOR_VIEWPORT_PAD_PX
     const padTop = pad + readOverlayInset("--df-overlay-inset-top")
     const padBottom = pad + readOverlayInset("--df-overlay-inset-bottom")
     const vw = document.documentElement.clientWidth
     const vh = document.documentElement.clientHeight
     const contentAware = align === "auto" || collisionAvoidance
+    const arrowInset = readCssLengthPx(
+      "--df-anchor-arrow-cross-inset",
+      ANCHOR_ARROW_CROSS_INSET_FALLBACK_PX,
+      content
+    )
 
     const resolvedSide = resolveSide(
       side,
@@ -375,6 +421,31 @@ export function useAnchoredPosition({
       }
     }
 
+    const resolvedContentTop = (
+      boxTop: number | "auto",
+      boxBottom: number | "auto"
+    ) => {
+      if (typeof boxTop === "number") return boxTop
+      if (typeof boxBottom === "number") return vh - boxBottom - c.height
+      return 0
+    }
+
+    const withArrow = (
+      contentLeft: number,
+      contentTop: number,
+      style: React.CSSProperties
+    ): React.CSSProperties => ({
+      ...style,
+      ...arrowCrossStyle(
+        resolvedSide,
+        t,
+        contentLeft,
+        contentTop,
+        c,
+        arrowInset
+      ),
+    })
+
     const base: React.CSSProperties = {
       position: "fixed",
       top,
@@ -398,7 +469,11 @@ export function useAnchoredPosition({
         left = Math.max(pad, vw - c.width - pad)
       }
       setPlacement({
-        style: { ...base, left, right: "auto" },
+        style: withArrow(left, resolvedContentTop(top, bottom), {
+          ...base,
+          left,
+          right: "auto",
+        }),
         side: resolvedSide,
         align: resolvedAlign,
       })
@@ -411,8 +486,13 @@ export function useAnchoredPosition({
       if (leftEdge < pad) {
         right = Math.max(pad, vw - c.width - pad)
       }
+      const contentLeft = vw - right - c.width
       setPlacement({
-        style: { ...base, right, left: "auto" },
+        style: withArrow(contentLeft, resolvedContentTop(top, bottom), {
+          ...base,
+          right,
+          left: "auto",
+        }),
         side: resolvedSide,
         align: resolvedAlign,
       })
@@ -430,7 +510,11 @@ export function useAnchoredPosition({
       }
     }
     setPlacement({
-      style: { ...base, left, right: "auto" },
+      style: withArrow(left, resolvedContentTop(top, bottom), {
+        ...base,
+        left,
+        right: "auto",
+      }),
       side: resolvedSide,
       align: resolvedAlign,
     })

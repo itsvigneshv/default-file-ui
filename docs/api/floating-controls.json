@@ -2,7 +2,14 @@
   "name": "floating-controls",
   "slug": "floating-controls",
   "title": "Floating Controls",
-  "description": "Modular action bar for toolbars and docks.",
+  "description": "Modular action strip for canvas toolbars and docks.",
+  "aliases": [
+    "floating toolbar",
+    "canvas action bar",
+    "tool action strip",
+    "overlay controls",
+    "Floating Controls"
+  ],
   "chapter": "toolbars",
   "registryDependencies": [
     "foundation",

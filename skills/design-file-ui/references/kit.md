@@ -37,6 +37,8 @@ Optional inventory: `df-ui list` / `list_components`.
 
 Map each section of the UI to registry items before writing new chrome. Prefer `covered` or `partial` matches from `cover` over custom controls.
 
+Catalogue `aliases` are prepared with the docs (curated labels plus title, slug, and registry name forms). Prefer exact alias or registry-name matches from `search` / `search_kit`. Read prefer-language in descriptions: for example Popover vs Options Panel, Slider vs Number Slider vs Tick Slider, Switch vs Toggle Group. When several components share an alias or a family hint, present every option.
+
 ## Compose rules
 
 - Prefer registry components for interactive chrome (buttons, inputs, selects, dialogs, menus, toasts, and similar).

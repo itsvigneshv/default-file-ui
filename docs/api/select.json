@@ -2,7 +2,15 @@
   "name": "select",
   "slug": "select",
   "title": "Select",
-  "description": "Single or multi choice field with label, sizes, and hover border.",
+  "description": "Single or multi choice field that composes Option List. Closed list selection, not free-text autocomplete.",
+  "aliases": [
+    "dropdown",
+    "dropdown select",
+    "select menu",
+    "multi select",
+    "single select dropdown",
+    "Select"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",

@@ -2,7 +2,14 @@
   "name": "tabs",
   "slug": "tabs",
   "title": "Tabs",
-  "description": "Panel switcher with pill, line, and segment variants.",
+  "description": "Panel switcher with pill, line, and segment variants. Prefer Content Switcher when you only switch mode without tab panels.",
+  "aliases": [
+    "tab bar",
+    "tab panels",
+    "tabbed panels",
+    "panel tabs",
+    "Tabs"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

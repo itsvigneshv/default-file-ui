@@ -2,7 +2,18 @@
   "name": "dock-panel",
   "slug": "dock-panel",
   "title": "Dock Panel",
-  "description": "Collapsible edge-docked inspector with a kit scrollbar body.",
+  "description": "Collapsible edge-docked inspector with a kit scrollbar body. Prefer this for persistent side chrome; prefer Options Panel for anchored temporary controls.",
+  "aliases": [
+    "side panel",
+    "side drawer",
+    "edge drawer",
+    "inspector",
+    "inspector panel",
+    "edge panel",
+    "docked inspector",
+    "collapsible inspector",
+    "Dock Panel"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation",
@@ -14,7 +25,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Collapsible edge-docked inspector. Compose a rail of panels with optional header text, custom icons, and a body that owns the kit ScrollArea. Use dismissible for temporary tune panels that leave the rail when closed. Panel content is unrestricted.",
+    "description": "Collapsible edge-docked inspector. Compose a rail of panels with optional header text, custom icons, and a body that owns the kit ScrollArea. Prefer this for persistent side chrome; prefer Options Panel for anchored temporary controls. Use dismissible for temporary tune panels that leave the rail when closed.",
     "groups": [
       {
         "id": "dock-panel-rail",

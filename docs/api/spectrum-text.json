@@ -3,6 +3,12 @@
   "slug": "spectrum-text",
   "title": "Spectrum Text",
   "description": "Inline text with a shifting multi stop gradient fill.",
+  "aliases": [
+    "gradient text",
+    "spectrum gradient text",
+    "animated gradient text",
+    "Spectrum Text"
+  ],
   "chapter": "text",
   "registryDependencies": [
     "foundation"

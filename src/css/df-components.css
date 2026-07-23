@@ -930,6 +930,7 @@
   border-radius: var(--radius-4xl);
   border: var(--border-width-hairline) solid transparent;
   font-weight: var(--df-font-weight-medium);
+  vertical-align: middle;
   white-space: nowrap;
   transition: color var(--df-duration-base), border-color var(--df-duration-base);
 }
@@ -1537,7 +1538,8 @@
 }
 
 [data-df="input-field"][data-has-trailing][data-chrome="shell"] [data-df="input"].df-input,
-[data-df="input-field"][data-has-clear][data-chrome="shell"] [data-df="input"].df-input {
+[data-df="input-field"][data-has-clear][data-chrome="shell"] [data-df="input"].df-input,
+[data-df="input-field"][data-has-stepper][data-chrome="shell"] [data-df="input"].df-input {
   padding-right: 0;
 }
 
@@ -1580,6 +1582,72 @@
   display: block;
   width: calc(3.5 * var(--spacing-unit, 0.25rem));
   height: calc(3.5 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="input"][data-stepper]),
+.df-input[data-stepper] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+:where([data-df="input"][data-stepper]::-webkit-outer-spin-button),
+:where([data-df="input"][data-stepper]::-webkit-inner-spin-button),
+.df-input[data-stepper]::-webkit-outer-spin-button,
+.df-input[data-stepper]::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+[data-df="input-stepper"] {
+  display: inline-flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: center;
+  justify-content: center;
+  gap: calc(0.25 * var(--spacing-unit, 0.25rem));
+  margin-left: var(--df-input-affordance-gap);
+  margin-right: var(--df-input-padding-right);
+}
+
+[data-df="input-field"][data-has-clear][data-has-stepper] [data-df="input-stepper"],
+[data-df="input-field"][data-has-trailing][data-has-stepper] [data-df="input-stepper"] {
+  margin-left: 0;
+}
+
+[data-df="input-stepper-button"] {
+  display: inline-flex;
+  width: var(--df-control-height-2xs);
+  height: calc(3 * var(--spacing-unit, 0.25rem));
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    color var(--df-duration-base),
+    background-color var(--df-duration-base);
+}
+
+[data-df="input-stepper-button"]:hover:not(:disabled) {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+[data-df="input-stepper-button"]:disabled {
+  cursor: default;
+  opacity: var(--df-opacity-45);
+}
+
+[data-df="input-stepper-button"] svg {
+  display: block;
+  width: calc(3 * var(--spacing-unit, 0.25rem));
+  height: calc(3 * var(--spacing-unit, 0.25rem));
 }
 
 [data-df="input-action"] {
@@ -4325,38 +4393,18 @@
   border-bottom: var(--border-width-hairline) solid color-mix(in oklch, var(--foreground) 10%, transparent);
 }
 
-:where([data-df="tooltip-content"][data-side="top"][data-align="center"] [data-df="tooltip-arrow"]),
-:where([data-df="tooltip-content"][data-side="bottom"][data-align="center"] [data-df="tooltip-arrow"]) {
-  left: 50%;
+:where([data-df="tooltip-content"][data-side="top"] [data-df="tooltip-arrow"]),
+:where([data-df="tooltip-content"][data-side="bottom"] [data-df="tooltip-arrow"]) {
+  left: var(--df-anchor-arrow-cross, 50%);
   margin-left: calc(-1 * var(--df-tooltip-arrow-align-nudge));
+  right: auto;
 }
 
-:where([data-df="tooltip-content"][data-side="top"][data-align="start"] [data-df="tooltip-arrow"]),
-:where([data-df="tooltip-content"][data-side="bottom"][data-align="start"] [data-df="tooltip-arrow"]) {
-  left: calc(3 * var(--spacing-unit, 0.25rem));
-}
-
-:where([data-df="tooltip-content"][data-side="top"][data-align="end"] [data-df="tooltip-arrow"]),
-:where([data-df="tooltip-content"][data-side="bottom"][data-align="end"] [data-df="tooltip-arrow"]) {
-  right: calc(3 * var(--spacing-unit, 0.25rem));
-  left: auto;
-}
-
-:where([data-df="tooltip-content"][data-side="left"][data-align="center"] [data-df="tooltip-arrow"]),
-:where([data-df="tooltip-content"][data-side="right"][data-align="center"] [data-df="tooltip-arrow"]) {
-  top: 50%;
+:where([data-df="tooltip-content"][data-side="left"] [data-df="tooltip-arrow"]),
+:where([data-df="tooltip-content"][data-side="right"] [data-df="tooltip-arrow"]) {
+  top: var(--df-anchor-arrow-cross, 50%);
   margin-top: calc(-1 * var(--df-tooltip-arrow-align-nudge));
-}
-
-:where([data-df="tooltip-content"][data-side="left"][data-align="start"] [data-df="tooltip-arrow"]),
-:where([data-df="tooltip-content"][data-side="right"][data-align="start"] [data-df="tooltip-arrow"]) {
-  top: calc(3 * var(--spacing-unit, 0.25rem));
-}
-
-:where([data-df="tooltip-content"][data-side="left"][data-align="end"] [data-df="tooltip-arrow"]),
-:where([data-df="tooltip-content"][data-side="right"][data-align="end"] [data-df="tooltip-arrow"]) {
-  bottom: calc(3 * var(--spacing-unit, 0.25rem));
-  top: auto;
+  bottom: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4457,34 +4505,341 @@
 }
 
 :where([data-df="popover-content"]) {
+  --df-popover-surface: var(--popover);
+  --df-popover-surface-fg: var(--popover-foreground);
+  --df-popover-max-width: var(--df-popover-width);
+  --df-popover-inset-top: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-right: calc(4 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-bottom: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-left: calc(4 * var(--spacing-unit, 0.25rem));
+  --df-popover-padding-top: var(--df-popover-inset-top);
+  --df-popover-padding-right: var(--df-popover-inset-right);
+  --df-popover-padding-bottom: var(--df-popover-inset-bottom);
+  --df-popover-padding-left: var(--df-popover-inset-left);
+  --df-popover-gap: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-popover-radius: var(--radius-2xl);
+  --df-popover-border-width: var(--border-width-hairline);
+  --df-popover-border-color: var(--border);
+  --df-popover-shadow: var(--df-shadow-md);
+  --df-popover-elevation: var(--df-shadow-popover);
+  --df-popover-header-gap: calc(1.5 * var(--spacing-unit, 0.25rem));
+  --df-popover-header-bar-gap: calc(2 * var(--spacing-unit, 0.25rem));
+  --df-popover-footer-padding-top: 0px;
+  --df-popover-footer-padding-bottom: 0px;
+  --df-popover-footer-padding-x: 0px;
+  --df-popover-footer-gap: calc(2 * var(--spacing-unit, 0.25rem));
+  --df-popover-title-color: var(--df-popover-surface-fg);
+  --df-popover-title-size: inherit;
+  --df-popover-title-weight: var(--df-font-weight-semibold);
+  --df-popover-title-font: inherit;
+  --df-popover-title-leading: var(--df-leading-5);
+  --df-popover-title-tracking: var(--df-tracking-snug);
+  --df-popover-description-color: var(--muted-foreground);
+  --df-popover-description-size: var(--df-text-13);
+  --df-popover-description-weight: var(--df-font-weight-normal);
+  --df-popover-description-font: inherit;
+  --df-popover-description-leading: var(--df-leading-5);
+  --df-popover-description-tracking: normal;
+  --df-enter-opacity: 0;
+  --df-enter-scale: 0.96;
+  --df-enter-translate-x: 0;
+  --df-enter-translate-y: calc(-1 * var(--df-motion-travel-sm));
   z-index: var(--z-overlay);
+  position: relative;
   display: flex;
-  width: var(--df-popover-width);
+  width: max-content;
+  max-width: min(
+    var(--df-popover-max-width),
+    calc(100vw - 8 * var(--spacing-unit, 0.25rem))
+  );
   flex-direction: column;
-  gap: calc(2.5 * var(--spacing-unit, 0.25rem));
-  border-radius: var(--radius-lg);
-  background-color: var(--popover);
-  padding: calc(2.5 * var(--spacing-unit, 0.25rem));
+  gap: var(--df-popover-gap);
+  border: var(--df-popover-border-width) solid var(--df-popover-border-color);
+  border-radius: var(--df-popover-radius);
+  background-color: var(--df-popover-surface);
+  padding: var(--df-popover-padding-top) var(--df-popover-padding-right)
+    var(--df-popover-padding-bottom) var(--df-popover-padding-left);
   font-size: var(--df-text-sm);
-  color: var(--popover-foreground);
-  box-shadow: var(--df-shadow-md), var(--df-shadow-ring);
+  line-height: var(--df-leading-5);
+  color: var(--df-popover-surface-fg);
+  box-shadow: var(--df-popover-shadow);
   outline: none;
-  animation: df-enter var(--df-duration-snappy) ease-out;
+  transform-origin: center top;
+  will-change: transform, opacity;
+  animation: df-enter var(--df-duration-slow) var(--df-ease-emphasized) both;
+}
+
+:where([data-df="popover-content"][data-side="top"]) {
+  --df-enter-translate-y: var(--df-motion-travel-sm);
+  transform-origin: center bottom;
+}
+
+:where([data-df="popover-content"][data-side="bottom"]) {
+  --df-enter-translate-y: calc(-1 * var(--df-motion-travel-sm));
+  transform-origin: center top;
+}
+
+:where([data-df="popover-content"][data-side="left"]) {
+  --df-enter-translate-x: var(--df-motion-travel-sm);
+  --df-enter-translate-y: 0;
+  transform-origin: right center;
+}
+
+:where([data-df="popover-content"][data-side="right"]) {
+  --df-enter-translate-x: calc(-1 * var(--df-motion-travel-sm));
+  --df-enter-translate-y: 0;
+  transform-origin: left center;
+}
+
+:where([data-df="popover-content"][data-animated="false"]) {
+  animation: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-df="popover-content"]) {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+/* Caret mode: filter elevation follows panel + arrow, matching Tooltip. */
+:where([data-df="popover-content"][data-arrow="true"]) {
+  box-shadow: none;
+  filter: var(--df-popover-elevation);
+}
+
+/* With a footer, the shared bottom inset moves onto the footer. */
+:where([data-df="popover-content"]:has(> [data-df="popover-footer"])) {
+  --df-popover-padding-bottom: 0px;
+  --df-popover-footer-padding-bottom: var(--df-popover-inset-bottom);
+}
+
+:where([data-df="popover-content"][data-variant="muted"]) {
+  --df-popover-surface: var(--muted);
+  --df-popover-surface-fg: var(--foreground);
+  --df-popover-shadow: var(--df-shadow-sm);
+  --df-popover-elevation: var(--df-shadow-tooltip);
+}
+
+:where([data-df="popover-content"][data-variant="elevated"]) {
+  --df-popover-shadow: var(--df-shadow-xl);
+  --df-popover-elevation: var(--df-shadow-popover-elevated);
+}
+
+:where([data-df="popover-content"][data-variant="inverse"]) {
+  --df-popover-surface: var(--df-neutral-900);
+  --df-popover-surface-fg: var(--df-neutral-0);
+  --df-popover-border-color: color-mix(
+    in oklch,
+    var(--df-popover-surface-fg) 16%,
+    transparent
+  );
+  --df-popover-description-color: color-mix(
+    in oklch,
+    var(--df-popover-surface-fg) 72%,
+    transparent
+  );
+}
+
+/* Inverse flips against a .dark ancestor, including the portal theme shell. */
+:where(.dark [data-df="popover-content"][data-variant="inverse"]),
+:where([data-df="popover-content"].dark[data-variant="inverse"]) {
+  --df-popover-surface: var(--df-neutral-0);
+  --df-popover-surface-fg: var(--df-neutral-900);
+  --df-popover-border-color: color-mix(
+    in oklch,
+    var(--df-popover-surface-fg) 12%,
+    transparent
+  );
+  --df-popover-description-color: color-mix(
+    in oklch,
+    var(--df-popover-surface-fg) 68%,
+    transparent
+  );
+}
+
+:where([data-df="popover-content"][data-size="sm"]) {
+  --df-popover-max-width: var(--df-popover-width-sm);
+  --df-popover-inset-top: calc(2.5 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-right: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-bottom: calc(2.5 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-left: calc(3 * var(--spacing-unit, 0.25rem));
+  --df-popover-gap: calc(2 * var(--spacing-unit, 0.25rem));
+  --df-popover-radius: var(--radius-xl);
+  font-size: var(--df-text-13);
+}
+
+:where([data-df="popover-content"][data-size="md"]) {
+  --df-popover-max-width: var(--df-popover-width);
+}
+
+:where([data-df="popover-content"][data-size="lg"]) {
+  --df-popover-max-width: var(--df-popover-width-lg);
+  --df-popover-inset-top: calc(4 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-right: calc(5 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-bottom: calc(4 * var(--spacing-unit, 0.25rem));
+  --df-popover-inset-left: calc(5 * var(--spacing-unit, 0.25rem));
+  --df-popover-gap: calc(3.5 * var(--spacing-unit, 0.25rem));
+  --df-popover-radius: var(--radius-2xl);
+  font-size: var(--df-text-base);
+}
+
+:where([data-df="popover-content"][data-portal="false"]) {
+  isolation: isolate;
+  z-index: auto;
+}
+
+:where([data-df="popover-arrow"]) {
+  position: absolute;
+  width: var(--df-popover-arrow-size);
+  height: var(--df-popover-arrow-size);
+  background-color: var(--df-popover-surface);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+:where([data-df="popover-content"][data-side="top"] [data-df="popover-arrow"]) {
+  bottom: calc(-1 * var(--df-popover-arrow-offset));
+  border-right: var(--df-popover-border-width) solid var(--df-popover-border-color);
+  border-bottom: var(--df-popover-border-width) solid var(--df-popover-border-color);
+}
+
+:where([data-df="popover-content"][data-side="bottom"] [data-df="popover-arrow"]) {
+  top: calc(-1 * var(--df-popover-arrow-offset));
+  border-left: var(--df-popover-border-width) solid var(--df-popover-border-color);
+  border-top: var(--df-popover-border-width) solid var(--df-popover-border-color);
+}
+
+:where([data-df="popover-content"][data-side="left"] [data-df="popover-arrow"]) {
+  right: calc(-1 * var(--df-popover-arrow-offset));
+  border-right: var(--df-popover-border-width) solid var(--df-popover-border-color);
+  border-top: var(--df-popover-border-width) solid var(--df-popover-border-color);
+}
+
+:where([data-df="popover-content"][data-side="right"] [data-df="popover-arrow"]) {
+  left: calc(-1 * var(--df-popover-arrow-offset));
+  border-left: var(--df-popover-border-width) solid var(--df-popover-border-color);
+  border-bottom: var(--df-popover-border-width) solid var(--df-popover-border-color);
+}
+
+:where([data-df="popover-content"][data-side="top"] [data-df="popover-arrow"]),
+:where([data-df="popover-content"][data-side="bottom"] [data-df="popover-arrow"]) {
+  left: var(--df-anchor-arrow-cross, 50%);
+  margin-left: calc(-1 * var(--df-popover-arrow-align-nudge));
+  right: auto;
+}
+
+:where([data-df="popover-content"][data-side="left"] [data-df="popover-arrow"]),
+:where([data-df="popover-content"][data-side="right"] [data-df="popover-arrow"]) {
+  top: var(--df-anchor-arrow-cross, 50%);
+  margin-top: calc(-1 * var(--df-popover-arrow-align-nudge));
+  bottom: auto;
 }
 
 :where([data-df="popover-header"]) {
   display: flex;
   flex-direction: column;
-  gap: calc(0.5 * var(--spacing-unit, 0.25rem));
-  font-size: var(--df-text-sm);
+  gap: var(--df-popover-header-gap);
+  font-size: inherit;
+}
+
+:where([data-df="popover-header-bar"]) {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-popover-header-bar-gap);
+}
+
+:where([data-df="popover-header-bar"] > [data-df="popover-title"]) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:where(
+  [data-df="popover-header-bar"] > [data-df="popover-close"],
+  [data-df="popover-header-bar"] > [data-df-popover-close]
+) {
+  flex-shrink: 0;
 }
 
 :where([data-df="popover-title"]) {
-  font-weight: var(--df-font-weight-medium);
+  margin: 0;
+  color: var(--df-popover-title-color);
+  font-family: var(--df-popover-title-font);
+  font-size: var(--df-popover-title-size);
+  font-weight: var(--df-popover-title-weight);
+  letter-spacing: var(--df-popover-title-tracking);
+  line-height: var(--df-popover-title-leading);
+}
+
+:where([data-df="popover-title"][data-badge]) {
+  display: flex;
+  min-width: 0;
+  gap: calc(2 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="popover-title"][data-badge="end"]) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:where([data-df="popover-title"][data-badge="below"]) {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+:where([data-df="popover-title-text"]) {
+  min-width: 0;
+}
+
+:where([data-df="popover-title-badge"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
 }
 
 :where([data-df="popover-description"]) {
-  color: var(--muted-foreground);
+  margin: 0;
+  color: var(--df-popover-description-color);
+  font-family: var(--df-popover-description-font);
+  font-size: var(--df-popover-description-size);
+  font-weight: var(--df-popover-description-weight);
+  letter-spacing: var(--df-popover-description-tracking);
+  line-height: var(--df-popover-description-leading);
+}
+
+:where([data-df="popover-body"]) {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: calc(2 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="popover-footer"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--df-popover-footer-gap);
+  padding: var(--df-popover-footer-padding-top)
+    var(--df-popover-footer-padding-x)
+    var(--df-popover-footer-padding-bottom);
+}
+
+:where([data-df="popover-footer"][data-justify="between"]) {
+  justify-content: space-between;
+}
+
+:where([data-df="popover-footer"][data-justify="start"]) {
+  justify-content: flex-start;
+}
+
+:where([data-df="popover-close"]) {
+  display: inline-flex;
 }
 
 :where([data-df="options-panel-content"]) {
@@ -4509,6 +4864,41 @@
 :where([data-df="options-panel-content"][data-portal="false"]) {
   isolation: isolate;
   z-index: auto;
+}
+
+:where([data-df="options-panel-body"]) {
+  max-height: min(60vh, var(--df-options-panel-max-height));
+  overflow-y: auto;
+}
+
+:where(
+  [data-df="options-panel-content"][data-portal="false"] [data-df="options-panel-body"]
+) {
+  max-height: none;
+  overflow-y: visible;
+}
+
+:where([data-df="options-panel-footer"]) {
+  --df-options-panel-footer-gap-x: calc(2 * var(--spacing-unit, 0.25rem));
+  --df-options-panel-footer-gap-y: calc(2.5 * var(--spacing-unit, 0.25rem));
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-options-panel-footer-gap-y);
+}
+
+:where([data-df="options-panel-footer-actions"]) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--df-options-panel-footer-gap-x);
+}
+
+:where([data-df="options-panel-footer-meta"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--df-options-panel-footer-gap-x);
+  font-size: var(--df-text-xs);
+  color: var(--muted-foreground);
 }
 
 :where([data-df="options-panel-header"]) {
@@ -5624,19 +6014,22 @@
   position: fixed;
   z-index: var(--z-toast);
   display: flex;
-  width: min(var(--df-toaster-width), calc(100vw - 8 * var(--spacing-unit, 0.25rem)));
-  gap: calc(2 * var(--spacing-unit, 0.25rem));
+  width: min(
+    var(--df-toaster-width),
+    calc(100vw - var(--df-toaster-viewport-gutter))
+  );
+  gap: var(--df-toaster-gap);
   pointer-events: none;
 }
 
 .df-toaster[data-position="top-left"] {
-  top: calc(4 * var(--spacing-unit, 0.25rem));
-  left: calc(4 * var(--spacing-unit, 0.25rem));
+  top: var(--df-toaster-inset);
+  left: var(--df-toaster-inset);
   flex-direction: column;
 }
 
 .df-toaster[data-position="top-center"] {
-  top: calc(4 * var(--spacing-unit, 0.25rem));
+  top: var(--df-toaster-inset);
   left: 0;
   right: 0;
   margin-inline: auto;
@@ -5644,14 +6037,14 @@
 }
 
 .df-toaster[data-position="top-right"] {
-  top: calc(4 * var(--spacing-unit, 0.25rem));
-  right: calc(4 * var(--spacing-unit, 0.25rem));
+  top: var(--df-toaster-inset);
+  right: var(--df-toaster-inset);
   flex-direction: column;
 }
 
 .df-toaster[data-position="left-center"] {
   top: 50%;
-  left: calc(4 * var(--spacing-unit, 0.25rem));
+  left: var(--df-toaster-inset);
   transform: translateY(-50%);
   flex-direction: column;
 }
@@ -5667,19 +6060,19 @@
 
 .df-toaster[data-position="right-center"] {
   top: 50%;
-  right: calc(4 * var(--spacing-unit, 0.25rem));
+  right: var(--df-toaster-inset);
   transform: translateY(-50%);
   flex-direction: column;
 }
 
 .df-toaster[data-position="bottom-left"] {
-  bottom: calc(4 * var(--spacing-unit, 0.25rem));
-  left: calc(4 * var(--spacing-unit, 0.25rem));
+  bottom: var(--df-toaster-inset);
+  left: var(--df-toaster-inset);
   flex-direction: column-reverse;
 }
 
 .df-toaster[data-position="bottom-center"] {
-  bottom: calc(4 * var(--spacing-unit, 0.25rem));
+  bottom: var(--df-toaster-inset);
   left: 0;
   right: 0;
   margin-inline: auto;
@@ -5687,8 +6080,8 @@
 }
 
 .df-toaster[data-position="bottom-right"] {
-  bottom: calc(4 * var(--spacing-unit, 0.25rem));
-  right: calc(4 * var(--spacing-unit, 0.25rem));
+  bottom: var(--df-toaster-inset);
+  right: var(--df-toaster-inset);
   flex-direction: column-reverse;
 }
 
@@ -5696,13 +6089,17 @@
   pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: calc(2.5 * var(--spacing-unit, 0.25rem));
-  border-radius: var(--radius);
-  border: var(--border-width-hairline) solid var(--border);
-  background-color: var(--popover);
-  color: var(--popover-foreground);
-  padding: calc(3 * var(--spacing-unit, 0.25rem)) calc(3.5 * var(--spacing-unit, 0.25rem));
-  box-shadow: var(--df-shadow-lg);
+  width: var(--df-toast-width);
+  height: var(--df-toast-height);
+  min-height: var(--df-toast-min-height);
+  gap: var(--df-toast-gap);
+  border-radius: var(--df-toast-radius);
+  border: var(--df-toast-border-width) solid var(--df-toast-border);
+  background-color: var(--df-toast-bg);
+  color: var(--df-toast-fg);
+  padding-block: var(--df-toast-padding-block);
+  padding-inline: var(--df-toast-padding-inline);
+  box-shadow: var(--df-toast-shadow);
   animation: df-enter var(--df-duration-base) ease-out;
 }
 
@@ -5714,16 +6111,16 @@
 }
 
 .df-toast[data-tone="success"] .df-toast-icon {
-  color: var(--success);
+  color: var(--df-toast-icon-success);
 }
 .df-toast[data-tone="error"] .df-toast-icon {
-  color: var(--destructive);
+  color: var(--df-toast-icon-error);
 }
 .df-toast[data-tone="warning"] .df-toast-icon {
-  color: var(--warning);
+  color: var(--df-toast-icon-warning);
 }
 .df-toast[data-tone="info"] .df-toast-icon {
-  color: var(--muted-foreground);
+  color: var(--df-toast-icon-info);
 }
 
 .df-toast-message {
@@ -5739,14 +6136,14 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--df-control-height-2xs);
-  height: var(--df-control-height-2xs);
+  width: var(--df-toast-close-size);
+  height: var(--df-toast-close-size);
   border-radius: var(--radius-full);
-  color: var(--muted-foreground);
+  color: var(--df-toast-close-fg);
 }
 .df-toast-close:hover {
-  background-color: var(--muted);
-  color: var(--foreground);
+  background-color: var(--df-toast-close-hover-bg);
+  color: var(--df-toast-close-hover-fg);
 }
 
 :where([data-df="floating-positioner"]) {

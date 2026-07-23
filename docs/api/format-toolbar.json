@@ -3,6 +3,14 @@
   "slug": "format-toolbar",
   "title": "Format Toolbar",
   "description": "Rich text formatting toolbar with headings, marks, lists, callouts, and table row and column actions.",
+  "aliases": [
+    "rich text toolbar",
+    "formatting toolbar",
+    "editor toolbar",
+    "wysiwyg toolbar",
+    "text formatting bar",
+    "Format Toolbar"
+  ],
   "chapter": "toolbars",
   "registryDependencies": [
     "foundation",

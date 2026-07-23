@@ -3,6 +3,12 @@
   "slug": "separator",
   "title": "Separator",
   "description": "Horizontal or vertical rules between sections.",
+  "aliases": [
+    "divider",
+    "horizontal rule",
+    "vertical divider",
+    "Separator"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

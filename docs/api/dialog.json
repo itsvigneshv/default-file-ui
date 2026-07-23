@@ -3,6 +3,13 @@
   "slug": "dialog",
   "title": "Dialog",
   "description": "Center modal with scrim, focus trap, Escape to close, and scroll lock.",
+  "aliases": [
+    "modal",
+    "modal dialog",
+    "center modal",
+    "confirm dialog",
+    "Dialog"
+  ],
   "chapter": "overlays",
   "registryDependencies": [
     "foundation",

@@ -3,6 +3,13 @@
   "slug": "nav-rail",
   "title": "Tool Rail",
   "description": "Fixed icon-over-label edge rail for switching tools or modes.",
+  "aliases": [
+    "tool rail",
+    "nav rail",
+    "navigation rail",
+    "icon rail",
+    "mode rail"
+  ],
   "chapter": "structure",
   "registryDependencies": [
     "foundation"

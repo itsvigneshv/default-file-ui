@@ -2,7 +2,14 @@
   "name": "choice-chip",
   "slug": "choice-chip",
   "title": "Choice Chip",
-  "description": "Compact selectable chips for filters.",
+  "description": "Compact selectable chip for filters. Host owns grouping and multi-select.",
+  "aliases": [
+    "filter chip",
+    "choice chips",
+    "selectable chip",
+    "filter pill",
+    "Choice Chip"
+  ],
   "chapter": "inputs",
   "registryDependencies": [
     "foundation"
