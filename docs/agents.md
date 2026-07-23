@@ -1,15 +1,21 @@
 # Default File UI for AI agents
 
-Default File UI is an all-in-one React design system: components, tokens, owned CSS, CLI, and MCP.
+Default File UI is a React design system: components, tokens, owned CSS, CLI, and MCP.
 
-## One install path
+## Install paths
 
-Use this kit only for Default File UI surfaces. Do not pull in a separate utility CSS stack or a separate component library for the same chrome.
+**Color system only** (no components, no React peers required):
+
+- Package CSS: `@import "@default-file/ui/css/df-color-system.css";`
+- Copy-source: `df-ui add color-system`
+- Docs: `df-ui docs colors`
+
+**Full kit** (components + color system):
 
 - Package: `npm install github:itsvigneshv/default-file-ui#main`
 - CSS: `@import "@default-file/ui/css/df-index.css";`
 - Components: `import { Button } from "@default-file/ui/components/df-button"`
-- Copy-source: `df-ui init` then `df-ui add <items>`
+- Copy-source: `df-ui init` then `df-ui add <items>` (foundation pulls color-system)
 
 ## Discover before you invent
 

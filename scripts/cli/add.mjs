@@ -91,7 +91,9 @@ function resolveItems(registry, names) {
     out.set(name, item)
   }
 
-  if (byName.has("foundation")) visit("foundation")
+  // Resolve requested items and their registryDependencies only.
+  // UI items depend on foundation; foundation depends on color-system.
+  // color-system can be installed alone for a standalone styling path.
   for (const name of names) visit(name)
   return [...out.values()]
 }
@@ -118,6 +120,7 @@ Copies registry items (and their dependencies) into your app under
 <baseDir>/default-file-ui, reading baseDir from df.json when present.
 
 Examples:
+  df-ui add color-system
   df-ui add button
   df-ui add select toast
   df-ui add button --dir app

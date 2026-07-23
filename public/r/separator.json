@@ -11,7 +11,7 @@
     {
       "path": "src/components/df-separator.tsx",
       "type": "registry:ui",
-      "content": "\"use client\"\r\n\r\nimport * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\nfunction Separator({\r\n  className,\r\n  orientation = \"horizontal\",\r\n  decorative = true,\r\n  ...props\r\n}: React.ComponentProps<\"div\"> & {\r\n  orientation?: \"horizontal\" | \"vertical\"\r\n  decorative?: boolean\r\n}) {\r\n  return (\r\n    <div\r\n      role={decorative ? \"none\" : \"separator\"}\r\n      aria-orientation={decorative ? undefined : orientation}\r\n      data-df=\"separator\"\r\n      data-orientation={orientation}\r\n      data-vertical={orientation === \"vertical\" ? \"\" : undefined}\r\n      data-horizontal={orientation === \"horizontal\" ? \"\" : undefined}\r\n      className={cn(className)}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nexport { Separator }\r\n",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Separator({\n  className,\n  orientation = \"horizontal\",\n  decorative = true,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  orientation?: \"horizontal\" | \"vertical\"\n  decorative?: boolean\n}) {\n  return (\n    <div\n      role={decorative ? \"none\" : \"separator\"}\n      aria-orientation={decorative ? undefined : orientation}\n      data-df=\"separator\"\n      data-orientation={orientation}\n      data-vertical={orientation === \"vertical\" ? \"\" : undefined}\n      data-horizontal={orientation === \"horizontal\" ? \"\" : undefined}\n      className={cn(className)}\n      {...props}\n    />\n  )\n}\n\nexport { Separator }\n",
       "target": "default-file-ui/components/df-separator.tsx"
     }
   ]

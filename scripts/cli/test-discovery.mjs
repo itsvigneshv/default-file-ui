@@ -13,6 +13,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 
 import {
   checkCoverage,
+  getDocs,
   kitSummary,
   listComponents,
   listTokens,
@@ -38,6 +39,29 @@ async function testHelpers() {
   const items = listComponents()
   assert.ok(items.some((i) => i.name === "button"))
   assert.ok(items.some((i) => i.name === "foundation"))
+  assert.ok(
+    items.some((i) => i.name === "color-system"),
+    "expected standalone color-system style item"
+  )
+  const colorSystem = showComponent("color-system")
+  assert.equal(colorSystem.type, "registry:style")
+  assert.ok(
+    (colorSystem.files ?? []).some((f) =>
+      String(f.path).includes("df-color-system.css")
+    ),
+    "color-system must ship df-color-system.css"
+  )
+  const foundation = showComponent("foundation")
+  assert.ok(
+    (foundation.registryDependencies ?? []).includes("color-system"),
+    "foundation must depend on color-system"
+  )
+  const colorsDoc = getDocs("colors")
+  assert.ok(
+    /Standalone color system/i.test(colorsDoc.body) &&
+      /df-color-system\.css/i.test(colorsDoc.body),
+    "docs colors topic must describe standalone color system"
+  )
 
   const button = showComponent("button")
   assert.ok(button, "button detail")

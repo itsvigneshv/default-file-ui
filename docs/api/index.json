@@ -1,10 +1,15 @@
 {
   "generatedAt": "2026-07-22T20:02:52.507Z",
   "source": "docs/api",
+  "colorSystem": {
+    "registryName": "color-system",
+    "title": "Color System",
+    "description": "Standalone color scales, semantic tokens, and utilities. Use without components."
+  },
   "foundation": {
     "registryName": "foundation",
     "title": "Foundation",
-    "description": "CSS layers, tokens, hooks, and the cn utility. Install this first for copy-source setups."
+    "description": "Full kit CSS entry, component styles, hooks, and cn. Depends on color-system. Install first for components."
   },
   "components": [
     {

@@ -38,6 +38,7 @@ df-ui show button --json
 df-ui search "toast select" --json
 df-ui cover "settings form with select, switch, and toast" --json
 df-ui tokens --group radius --json
+df-ui docs colors
 df-ui docs overview
 df-ui skills list --json
 df-ui skills install design-file-ui
@@ -86,15 +87,35 @@ Tools: `list_components`, `get_component`, `list_tokens`, `search_kit`, `check_c
 
 Agent brief: [docs/agents.md](./docs/agents.md).
 
-## Install (package)
+## Color system (standalone)
+
+Use the color scales, semantic tokens, and utilities on their own, without React components:
 
 ```bash
 npm install github:itsvigneshv/default-file-ui#main
 ```
 
-Peer deps: `react`, `react-dom`, `lucide-react`.
+```css
+@import "@default-file/ui/css/df-color-system.css";
+```
 
-Import CSS once:
+Or copy into your app:
+
+```bash
+df-ui add color-system
+```
+
+No peer React deps are required for the color system alone. Inspect tokens with `df-ui tokens` or `df-ui docs colors`.
+
+## Install (package, full kit)
+
+```bash
+npm install github:itsvigneshv/default-file-ui#main
+```
+
+Peer deps for components: `react`, `react-dom`, `lucide-react`.
+
+Import full kit CSS (includes the color system):
 
 ```css
 @import "@default-file/ui/css/df-index.css";
@@ -114,11 +135,13 @@ Install path for registry consumers that accept a GitHub source:
 
 `itsvigneshv/default-file-ui/<item>`
 
+Examples: `color-system` (styling only), `foundation` (full kit CSS + hooks), or any component.
+
 Machine-readable prop docs for agents live under `docs/api/`. Catalogue chapter metadata is in `docs/catalog.json`.
 
-## One kit path
+## Kit contents
 
-Components, tokens, and owned CSS ship together. For Default File UI surfaces, prefer this package (or `df-ui add` copy-source) instead of combining a separate styling stack with a separate component kit.
+Use `color-system` when you only need colors and utilities. Use the full package or `df-ui add` components when you need Default File UI chrome.
 
 ## Color scale modes
 

@@ -3,17 +3,17 @@
   "homepage": "https://github.com/itsvigneshv/default-file-ui",
   "items": [
     {
-      "name": "foundation",
+      "name": "color-system",
       "type": "registry:style",
-      "title": "Foundation",
-      "description": "CSS layers, tokens, hooks, and cn utility. Install first.",
+      "title": "Color System",
+      "description": "Standalone color scales, semantic tokens, and utilities. Use without components.",
       "dependencies": [],
       "registryDependencies": [],
       "files": [
         {
-          "path": "src/css/df-index.css",
+          "path": "src/css/df-color-system.css",
           "type": "registry:file",
-          "target": "default-file-ui/css/df-index.css"
+          "target": "default-file-ui/css/df-color-system.css"
         },
         {
           "path": "src/css/df-color-scales.css",
@@ -24,6 +24,28 @@
           "path": "src/css/df-tokens.css",
           "type": "registry:file",
           "target": "default-file-ui/css/df-tokens.css"
+        },
+        {
+          "path": "src/css/df-utilities.css",
+          "type": "registry:file",
+          "target": "default-file-ui/css/df-utilities.css"
+        }
+      ]
+    },
+    {
+      "name": "foundation",
+      "type": "registry:style",
+      "title": "Foundation",
+      "description": "Full kit CSS entry, component styles, hooks, and cn. Pulls color-system. Install first for components.",
+      "dependencies": [],
+      "registryDependencies": [
+        "color-system"
+      ],
+      "files": [
+        {
+          "path": "src/css/df-index.css",
+          "type": "registry:file",
+          "target": "default-file-ui/css/df-index.css"
         },
         {
           "path": "src/css/df-reset.css",
@@ -39,11 +61,6 @@
           "path": "src/css/df-components.css",
           "type": "registry:file",
           "target": "default-file-ui/css/df-components.css"
-        },
-        {
-          "path": "src/css/df-utilities.css",
-          "type": "registry:file",
-          "target": "default-file-ui/css/df-utilities.css"
         },
         {
           "path": "src/lib/utils.ts",

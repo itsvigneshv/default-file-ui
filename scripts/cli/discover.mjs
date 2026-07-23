@@ -218,7 +218,7 @@ function matchNeedToItems(needText, items) {
   const matched = []
 
   for (const item of items) {
-    if (item.name === "foundation") continue
+    if (item.name === "foundation" || item.name === "color-system") continue
     let reason = null
     if (terms.has(item.name) || text.includes(item.name.replace(/-/g, " "))) {
       reason = `Named ${item.title}`
@@ -305,10 +305,11 @@ export function getDocs(topic = "overview") {
       topic: "overview",
       title: "Default File UI",
       body: [
-        "Default File UI is an all-in-one React design system: components, tokens, owned CSS, and install CLI.",
-        "One install path. Do not add a separate utility CSS stack or a separate component kit for Default File UI surfaces.",
-        "Package import: @import \"@default-file/ui/css/df-index.css\"; then import components from @default-file/ui/components/df-*.",
-        "Copy-source: df-ui init, then df-ui add <items>. Foundation installs CSS, hooks, and cn.",
+        "Default File UI is a React design system: components, tokens, owned CSS, and install CLI.",
+        "Color system can be used alone (like a utility styling package) or with components.",
+        "Colors only: @import \"@default-file/ui/css/df-color-system.css\"; or df-ui add color-system.",
+        "Full kit: @import \"@default-file/ui/css/df-index.css\"; then import components from @default-file/ui/components/df-*.",
+        "Copy-source: df-ui init, then df-ui add <items>. Foundation pulls color-system plus component CSS, hooks, and cn.",
         "AI hosts: run df-ui mcp (stdio) to inspect components, props, tokens, coverage, skills, and install.",
       ].join("\n"),
     },
@@ -318,10 +319,23 @@ export function getDocs(topic = "overview") {
       body: [
         "Scaffold: npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next",
         "Existing app: df-ui init (writes df.json; supports --framework, --color-scale, --radius, --corner-shape, --hover-border, --install-mode)",
-        "Add components: df-ui add button select",
+        "Color system only: df-ui add color-system (or package CSS @import \"@default-file/ui/css/df-color-system.css\")",
+        "Add components: df-ui add button select (pulls foundation and color-system)",
         "Agent skill: npx skills add itsvigneshv/default-file-ui --skill design-file-ui (or df-ui skills install design-file-ui)",
-        "Package mode peers: react, react-dom, lucide-react",
-        "CSS: @import \"@default-file/ui/css/df-index.css\";",
+        "Package mode peers for components: react, react-dom, lucide-react",
+        "Full kit CSS: @import \"@default-file/ui/css/df-index.css\";",
+      ].join("\n"),
+    },
+    colors: {
+      topic: "colors",
+      title: "Color system",
+      body: [
+        "Standalone color system: scales, semantic tokens, and utilities. No React components required.",
+        "Package: npm install github:itsvigneshv/default-file-ui#main then @import \"@default-file/ui/css/df-color-system.css\";",
+        "Copy-source: df-ui add color-system",
+        "Modes: data-df-color-scale=\"detailed\" (default) or \"compact\" on <html>.",
+        "Use df-ui tokens --group color (or list_tokens) for token names.",
+        "For components, install foundation (or add a component); that pulls color-system automatically.",
       ].join("\n"),
     },
     mcp: {
@@ -360,9 +374,11 @@ export function getDocs(topic = "overview") {
       topic: "foundation",
       title: "Foundation",
       body: [
-        "Foundation is the registry:style item: CSS layers, tokens, hooks, and cn.",
-        "Install first for copy-source setups: df-ui add foundation",
-        "Package mode pulls the same CSS via @default-file/ui/css/df-index.css.",
+        "Foundation is the full kit style item: df-index.css, component CSS, hooks, and cn.",
+        "It depends on color-system (scales, tokens, utilities).",
+        "Install for components: df-ui add foundation (or any component, which pulls foundation).",
+        "Package mode: @import \"@default-file/ui/css/df-index.css\";",
+        "Colors without components: use the colors docs topic or df-ui add color-system.",
       ].join("\n"),
     },
   }
