@@ -11,7 +11,7 @@
     {
       "path": "src/components/df-panel-section.tsx",
       "type": "registry:ui",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction PanelSection({\n  title,\n  children,\n  className,\n}: {\n  title: string\n  children: React.ReactNode\n  className?: string\n}) {\n  return (\n    <section className={cn(\"flex flex-col gap-2.5\", className)} data-df=\"panel-section\">\n      <p className=\"text-11 font-semibold tracking-wide text-muted-foreground\">\n        {title}\n      </p>\n      {children}\n    </section>\n  )\n}\n\nexport { PanelSection }\n",
+      "content": "import * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\nfunction PanelSection({\r\n  title,\r\n  children,\r\n  className,\r\n}: {\r\n  title: string\r\n  children: React.ReactNode\r\n  className?: string\r\n}) {\r\n  return (\r\n    <section className={cn(\"flex flex-col gap-2.5\", className)} data-df=\"panel-section\">\r\n      <p className=\"text-11 font-semibold tracking-wide text-muted-foreground\">\r\n        {title}\r\n      </p>\r\n      {children}\r\n    </section>\r\n  )\r\n}\r\n\r\nexport { PanelSection }\r\n",
       "target": "default-file-ui/components/df-panel-section.tsx"
     }
   ]

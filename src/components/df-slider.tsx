@@ -19,6 +19,10 @@ type SliderValuePosition =
   | "auto"
   | "header"
   | "footer"
+  | "start"
+  | "end"
+  | "ends"
+  | "ends-reverse"
   | "thumb"
   | "thumbs"
   | "bubble"
@@ -33,6 +37,17 @@ type SliderMark = {
 }
 
 type SliderMarkInput = number | SliderMark
+
+type SliderChromeSlot = "header" | "footer" | "start" | "end"
+
+type SliderChromeContent = "both" | "heading" | "value"
+
+const SLIDER_CHROME_SLOT = {
+  header: "slider-header",
+  footer: "slider-footer",
+  start: "slider-start",
+  end: "slider-end",
+} as const satisfies Record<SliderChromeSlot, `slider-${SliderChromeSlot}`>
 
 type SliderProps = Omit<
   React.ComponentProps<"div">,
@@ -62,6 +77,9 @@ type SliderProps = Omit<
   valueFormat?: SliderValueFormat
   formatValue?: (value: number) => string
   formatValues?: (values: number[]) => React.ReactNode
+  valueSlot?:
+    | React.ReactNode
+    | ((values: number[]) => React.ReactNode)
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -221,6 +239,7 @@ function Slider({
   valueFormat = "number",
   formatValue,
   formatValues,
+  valueSlot,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   ref,
@@ -299,6 +318,7 @@ function Slider({
     showValue ??
     (formatValue != null ||
       formatValues != null ||
+      valueSlot != null ||
       label != null ||
       description != null ||
       leading != null)
@@ -326,8 +346,12 @@ function Slider({
   )
 
   const displayValue = React.useMemo(() => {
+    const values = isRange ? [low, high] : [single]
+    if (valueSlot != null) {
+      return typeof valueSlot === "function" ? valueSlot(values) : valueSlot
+    }
+    if (formatValues) return formatValues(values)
     if (isRange) {
-      if (formatValues) return formatValues([low, high])
       const sep = <span data-df="slider-value-sep">to</span>
       if (isVertical && resolvedValuePosition !== "header") {
         return (
@@ -344,7 +368,6 @@ function Slider({
         </>
       )
     }
-    if (formatValues) return formatValues([single])
     return formatOne(single)
   }, [
     formatOne,
@@ -355,7 +378,14 @@ function Slider({
     low,
     resolvedValuePosition,
     single,
+    valueSlot,
   ])
+
+  const hasCustomValueSlot =
+    valueSlot != null ||
+    (formatValues != null &&
+      typeof displayValue !== "string" &&
+      typeof displayValue !== "number")
 
   const resolvedAriaLabelledBy =
     ariaLabelledBy ?? (label != null ? labelId : undefined)
@@ -748,11 +778,33 @@ function Slider({
   const hasChromeHeading =
     label != null || leading != null || description != null
   const showHeaderChrome =
-    resolvedValuePosition === "header" &&
-    (hasChromeHeading || resolvedShowValue)
+    resolvedValuePosition === "header"
+      ? hasChromeHeading || resolvedShowValue
+      : (resolvedValuePosition === "thumbs" ||
+          resolvedValuePosition === "bubble") &&
+        hasChromeHeading
+  const headerChromeContent: SliderChromeContent =
+    resolvedValuePosition === "header" ? "both" : "heading"
   const showFooterChrome =
     resolvedValuePosition === "footer" &&
     (hasChromeHeading || resolvedShowValue)
+  const showStartChrome =
+    resolvedValuePosition === "start" &&
+    (hasChromeHeading || resolvedShowValue)
+  const showEndChrome =
+    resolvedValuePosition === "end" &&
+    (hasChromeHeading || resolvedShowValue)
+  const showEndsChrome =
+    resolvedValuePosition === "ends" &&
+    (hasChromeHeading || resolvedShowValue)
+  const showEndsReverseChrome =
+    resolvedValuePosition === "ends-reverse" &&
+    (hasChromeHeading || resolvedShowValue)
+  const showInlineChrome =
+    showStartChrome ||
+    showEndChrome ||
+    showEndsChrome ||
+    showEndsReverseChrome
 
   const stepThumbIndex: 0 | 1 = isRange
     ? activeThumb === 1
@@ -873,7 +925,12 @@ function Slider({
     <span data-df="slider-description">{description}</span>
   ) : null
   const thumbValueNode = showThumbValue ? (
-    <span data-df="slider-value">{displayValue}</span>
+    <span
+      data-df="slider-value"
+      data-custom={hasCustomValueSlot ? "" : undefined}
+    >
+      {displayValue}
+    </span>
   ) : null
   const thumbMetaContent =
     thumbValueOrder === "value-first" ? (
@@ -946,39 +1003,124 @@ function Slider({
     )
   }
 
-  const chromeNode = (slot: "header" | "footer") => (
-    <div
-      data-df={slot === "header" ? "slider-header" : "slider-footer"}
-      data-has-description={description != null ? "" : undefined}
-    >
-      <div data-df="slider-heading-block">
-        {label != null || leading != null ? (
-          <div data-df="slider-heading">
-            {leading != null ? (
-              <span data-df="slider-leading" aria-hidden="true">
-                {leading}
-              </span>
-            ) : null}
-            {label != null ? (
-              <span data-df="slider-label" id={labelId}>
-                {label}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-        {description != null ? (
-          <span data-df="slider-description">{description}</span>
-        ) : null}
-      </div>
-      {resolvedShowValue ? (
-        <span
-          data-df="slider-value"
-          data-layout={isRange ? "stack" : undefined}
-        >
-          {displayValue}
-        </span>
+  const headingChrome = hasChromeHeading ? (
+    <div data-df="slider-heading-block">
+      {label != null || leading != null ? (
+        <div data-df="slider-heading">
+          {leading != null ? (
+            <span data-df="slider-leading" aria-hidden="true">
+              {leading}
+            </span>
+          ) : null}
+          {label != null ? (
+            <span data-df="slider-label" id={labelId}>
+              {label}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+      {description != null ? (
+        <span data-df="slider-description">{description}</span>
       ) : null}
     </div>
+  ) : null
+
+  const valueChrome = resolvedShowValue ? (
+    <span
+      data-df="slider-value"
+      data-custom={hasCustomValueSlot ? "" : undefined}
+      data-layout={
+        !hasCustomValueSlot &&
+        isRange &&
+        isVertical &&
+        resolvedValuePosition !== "header"
+          ? "stack"
+          : undefined
+      }
+    >
+      {displayValue}
+    </span>
+  ) : null
+
+  const chromeNode = (
+    slot: SliderChromeSlot,
+    content: SliderChromeContent = "both"
+  ) => {
+    const showHeading = content !== "value" ? headingChrome : null
+    const showValue = content !== "heading" ? valueChrome : null
+    if (showHeading == null && showValue == null) return null
+    return (
+      <div
+        data-df={SLIDER_CHROME_SLOT[slot]}
+        data-has-description={
+          content !== "value" && description != null ? "" : undefined
+        }
+      >
+        {showHeading}
+        {showValue}
+      </div>
+    )
+  }
+
+  const railNode = (
+    <div data-df="slider-rail">
+      {showStepButtons ? (
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          disabled={!canStepDown}
+          aria-label={`Decrease ${stepControlName}`}
+          onClick={() => nudgeByStep(-1)}
+        >
+          <Minus aria-hidden="true" />
+        </Button>
+      ) : null}
+      <div data-df="slider-control" onPointerDown={onControlPointerDown}>
+        <div data-df="slider-track">
+          <div data-df="slider-range" style={rangeStyle} />
+        </div>
+        {isRange ? (
+          <>
+            {renderThumb(0, lowPct, low)}
+            {renderThumb(1, highPct, high)}
+          </>
+        ) : (
+          renderThumb(0, singlePct, single)
+        )}
+      </div>
+      {showStepButtons ? (
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          disabled={!canStepUp}
+          aria-label={`Increase ${stepControlName}`}
+          onClick={() => nudgeByStep(1)}
+        >
+          <Plus aria-hidden="true" />
+        </Button>
+      ) : null}
+    </div>
+  )
+
+  let trackRowStart: React.ReactNode = null
+  let trackRowEnd: React.ReactNode = null
+  if (showStartChrome) trackRowStart = chromeNode("start")
+  else if (showEndsChrome) trackRowStart = chromeNode("start", "heading")
+  else if (showEndsReverseChrome) trackRowStart = chromeNode("start", "value")
+  if (showEndChrome) trackRowEnd = chromeNode("end")
+  else if (showEndsChrome) trackRowEnd = chromeNode("end", "value")
+  else if (showEndsReverseChrome) trackRowEnd = chromeNode("end", "heading")
+
+  const trackRowNode = showInlineChrome ? (
+    <div data-df="slider-track-row">
+      {trackRowStart}
+      {railNode}
+      {trackRowEnd}
+    </div>
+  ) : (
+    railNode
   )
 
   return (
@@ -999,9 +1141,10 @@ function Slider({
       className={cn(className)}
       {...props}
     >
-      {showHeaderChrome ? chromeNode("header") : null}
+      {showHeaderChrome ? chromeNode("header", headerChromeContent) : null}
       {!showHeaderChrome &&
       !showFooterChrome &&
+      !showInlineChrome &&
       label != null &&
       resolvedValuePosition === "thumb" ? (
         <span data-df="slider-sr-only" id={labelId}>
@@ -1021,45 +1164,7 @@ function Slider({
           </div>
         ) : null}
 
-        <div data-df="slider-rail">
-          {showStepButtons ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              disabled={!canStepDown}
-              aria-label={`Decrease ${stepControlName}`}
-              onClick={() => nudgeByStep(-1)}
-            >
-              <Minus aria-hidden="true" />
-            </Button>
-          ) : null}
-          <div data-df="slider-control" onPointerDown={onControlPointerDown}>
-            <div data-df="slider-track">
-              <div data-df="slider-range" style={rangeStyle} />
-            </div>
-            {isRange ? (
-              <>
-                {renderThumb(0, lowPct, low)}
-                {renderThumb(1, highPct, high)}
-              </>
-            ) : (
-              renderThumb(0, singlePct, single)
-            )}
-          </div>
-          {showStepButtons ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              disabled={!canStepUp}
-              aria-label={`Increase ${stepControlName}`}
-              onClick={() => nudgeByStep(1)}
-            >
-              <Plus aria-hidden="true" />
-            </Button>
-          ) : null}
-        </div>
+        {trackRowNode}
 
         {thumbsValueNode}
         {marksNode}

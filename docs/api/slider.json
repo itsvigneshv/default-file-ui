@@ -82,9 +82,9 @@
           },
           {
             "name": "valuePosition",
-            "type": "\"auto\" | \"header\" | \"footer\" | \"thumb\" | \"thumbs\" | \"bubble\"",
+            "type": "\"auto\" | \"header\" | \"footer\" | \"start\" | \"end\" | \"ends\" | \"ends-reverse\" | \"thumb\" | \"thumbs\" | \"bubble\"",
             "default": "\"auto\"",
-            "description": "Where the label and value chrome sit. header is above the track. footer is below the track with the same label and value row. auto uses thumb for a vertical marked single thumb, footer for other vertical sliders, and header for horizontal. thumb is vertical single-thumb only; on horizontal or range it falls back to header. thumbs places a formatted value under each thumb. bubble floats a tooltip on a single thumb."
+            "description": "Where the label and value chrome sit. header is above the track. footer is below the track with the same label and value row. start places both beside the track at the start. end places both at the end. ends puts the label at the start and the value at the end, with the track between them. ends-reverse flips that (value at the start, label at the end). auto uses thumb for a vertical marked single thumb, footer for other vertical sliders, and header for horizontal. thumb is vertical single-thumb only; on horizontal or range it falls back to header. thumbs places a formatted value under each thumb and keeps label, leading, and description in the header. bubble floats a tooltip on a single thumb and keeps label, leading, and description in the header."
           },
           {
             "name": "thumbValueOrder",
@@ -106,7 +106,7 @@
           {
             "name": "description",
             "type": "React.ReactNode",
-            "description": "Optional supporting line under the label, such as a minimum gap hint for constrained ranges."
+            "description": "Optional supporting line under the label. Omit it to hide the copy while keeping constraints such as minStepsBetween."
           },
           {
             "name": "leading",
@@ -128,23 +128,28 @@
           {
             "name": "showValue",
             "type": "boolean",
-            "description": "Show the live value readout. Defaults to true when label, description, leading, formatValue, or formatValues is set. Set false to keep a label without a readout. Placement follows valuePosition."
+            "description": "Show the value slot. Defaults to true when label, description, leading, valueSlot, formatValue, or formatValues is set. Set false to keep a label without a readout. Placement follows valuePosition."
           },
           {
             "name": "valueFormat",
             "type": "\"number\" | \"percent\"",
             "default": "\"number\"",
-            "description": "Built in readout format when formatValue is omitted. number uses step precision. percent shows position across min to max."
+            "description": "Built in readout format when valueSlot, formatValue, and formatValues are omitted. number uses step precision. percent shows position across min to max."
+          },
+          {
+            "name": "valueSlot",
+            "type": "React.ReactNode | ((values: number[]) => React.ReactNode)",
+            "description": "Custom value slot for header, footer, start, end, ends, ends-reverse, and thumb chrome. Replaces the default readout with any node, such as a Badge or counter. Pass a render function to receive the current values and keep the slot in sync. Does not replace per-thumb thumbs or bubble readouts. Overrides formatValues, formatValue, and valueFormat for display. Keyboard and aria valuetext still use formatValue or valueFormat."
           },
           {
             "name": "formatValue",
             "type": "(value: number) => string",
-            "description": "Formats each thumb value for the readout and aria valuetext. Overrides valueFormat."
+            "description": "Formats each thumb value for the default readout, per-thumb thumbs and bubble text, and aria valuetext. Overrides valueFormat. Ignored for chrome display when valueSlot is set."
           },
           {
             "name": "formatValues",
             "type": "(values: number[]) => React.ReactNode",
-            "description": "Custom readout for the full value array. Overrides the default single or range text layout."
+            "description": "Custom readout for the full value array when valueSlot is omitted. String and number results keep the default value typography. Other React nodes are treated as custom slot content. Prefer valueSlot for a dedicated Badge or counter."
           },
           {
             "name": "disabled",
@@ -181,7 +186,7 @@
       {
         "id": "slider-tokens",
         "title": "Tokens",
-        "description": "thickness remaps track, line, and thumb variables to the sm or lg companions. variant line uses the line thickness tokens. valuePosition bubble uses the bubble tokens and reserves clearance on the rail or control. orientation vertical uses --df-slider-vertical-size for track length and --df-slider-vertical-column-gap between meta, track, and marks. Horizontal marks use --df-slider-marks-gap. Prop and style overrides still win.",
+        "description": "thickness remaps track, line, and thumb variables to the sm or lg companions. variant line uses the line thickness tokens. valuePosition bubble uses the bubble tokens and reserves clearance on the rail or control. valuePosition start, end, ends, and ends-reverse place chrome in a track row beside the rail using --df-slider-step-gap. orientation vertical uses --df-slider-vertical-size for track length and --df-slider-vertical-column-gap between meta, track, and marks. Horizontal marks use --df-slider-marks-gap. Prop and style overrides still win.",
         "props": [
           {
             "name": "--primary",

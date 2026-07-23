@@ -553,7 +553,6 @@
 }
 
 .df-btn {
-  position: relative;
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -2698,9 +2697,39 @@
   width: 100%;
 }
 
+:where([data-df="slider-start"], [data-df="slider-end"]) {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  align-self: center;
+  justify-content: flex-start;
+  gap: var(--df-slider-header-inline-gap);
+  width: max-content;
+  min-width: 0;
+  min-height: var(--df-slider-thumb-size);
+}
+
+:where(
+  [data-df="slider-start"] [data-df="slider-heading-block"],
+  [data-df="slider-end"] [data-df="slider-heading-block"]
+) {
+  justify-content: center;
+}
+
+:where(
+  [data-df="slider-start"] [data-df="slider-heading"],
+  [data-df="slider-end"] [data-df="slider-heading"],
+  [data-df="slider-start"] [data-df="slider-label"],
+  [data-df="slider-end"] [data-df="slider-label"]
+) {
+  line-height: 1;
+}
+
 :where(
   [data-df="slider-header"][data-has-description],
-  [data-df="slider-footer"][data-has-description]
+  [data-df="slider-footer"][data-has-description],
+  [data-df="slider-start"][data-has-description],
+  [data-df="slider-end"][data-has-description]
 ) {
   align-items: flex-start;
 }
@@ -2773,6 +2802,19 @@
   text-align: center;
 }
 
+:where([data-df="slider-value"][data-custom]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: unset;
+  font-family: unset;
+  font-size: unset;
+  font-weight: unset;
+  font-variant-numeric: unset;
+  line-height: 1;
+  text-align: unset;
+}
+
 :where([data-df="slider-value"][data-layout="stack"]) {
   display: flex;
   flex-direction: column;
@@ -2789,12 +2831,67 @@
   font-size: var(--df-text-2xs);
 }
 
+:where([data-df="slider-track-row"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--df-slider-step-gap);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--df-slider-thumb-size);
+}
+
+:where(
+  [data-df="slider"][data-orientation="vertical"] [data-df="slider-track-row"]
+) {
+  flex-direction: row;
+  align-items: center;
+  width: auto;
+  height: var(--df-slider-vertical-size);
+}
+
+:where(
+  [data-df="slider"][data-orientation="vertical"] [data-df="slider-start"],
+  [data-df="slider"][data-orientation="vertical"] [data-df="slider-end"]
+) {
+  width: max-content;
+}
+
+:where(
+  [data-df="slider"][data-orientation="vertical"]
+    [data-df="slider-start"]
+    [data-df="slider-value"][data-layout="stack"],
+  [data-df="slider"][data-orientation="vertical"]
+    [data-df="slider-end"]
+    [data-df="slider-value"][data-layout="stack"]
+) {
+  align-items: flex-start;
+}
+
 :where([data-df="slider-rail"]) {
   display: flex;
   align-items: center;
   gap: var(--df-slider-step-gap);
   width: 100%;
   min-width: 0;
+}
+
+:where(
+  [data-df="slider-track-row"] [data-df="slider-rail"]
+) {
+  flex: 1 1 0;
+  align-self: center;
+  width: auto;
+  min-width: 0;
+}
+
+:where(
+  [data-df="slider"][data-orientation="vertical"]
+    [data-df="slider-track-row"]
+    [data-df="slider-rail"]
+) {
+  flex: 0 0 auto;
+  width: auto;
+  height: 100%;
 }
 
 :where([data-df="slider"][data-orientation="vertical"] [data-df="slider-rail"]) {
