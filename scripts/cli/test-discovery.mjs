@@ -171,6 +171,17 @@ async function testHelpers() {
       /single-shot/i.test(kitRef.content),
     "kit.md must require max coverage, custom reports, and single-shot discovery"
   )
+  assert.ok(
+    /Color and styling/i.test(kitRef.content) &&
+      /Do not install Tailwind CSS/i.test(kitRef.content) &&
+      /kit tokens/i.test(kitRef.content),
+    "kit.md must require kit color tokens and forbid Tailwind for kit UI"
+  )
+  assert.ok(
+    /Use the kit color system/i.test(designSkill.skillMarkdown) &&
+      /Do not install Tailwind CSS/i.test(designSkill.skillMarkdown),
+    "skill markdown must require kit color system over Tailwind"
+  )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
 

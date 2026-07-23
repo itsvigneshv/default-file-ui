@@ -292,8 +292,9 @@ When the project uses Default File UI (`@default-file/ui`), or the task needs ki
 1. MUST open [references/kit.md](references/kit.md) before inventing UI chrome.
 2. Discover before invent: `cover` / `search` / `show` / `tokens` (CLI or MCP), then compose with registry items and kit tokens.
 3. **Maximize kit use:** Prefer Default File UI components for every interactive control the registry covers. This is required on single-shot "build everything" prompts, not only when the user names components one by one.
-4. **Custom only on real gaps:** If `cover` / `search` find no suitable item, you may create a custom or local component. Theme it with kit tokens when possible.
-5. **Report custom creations:** If you invent any component that is not in the registry, tell the user in the final answer under `## Components not in Default File UI` (name, purpose, that it was not found). Omit the section only when all interactive chrome came from the kit.
+4. **Use the kit color system:** Color and space Default File UI surfaces with kit tokens and kit CSS utilities. Do not install Tailwind CSS (or another utility styling package) to style kit UI.
+5. **Custom only on real gaps:** If `cover` / `search` find no suitable item, you may create a custom or local component. Theme it with kit tokens when possible.
+6. **Report custom creations:** If you invent any component that is not in the registry, tell the user in the final answer under `## Components not in Default File UI` (name, purpose, that it was not found). Omit the section only when all interactive chrome came from the kit.
 
 If the kit is absent, skip `kit.md` and use the agnostic implementation path above.
 
@@ -454,6 +455,7 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - **Multi section IA:** No dead nav destinations; stubs must be real empty states with a next action, or the item must be removed from nav.
 - **Adaptive density:** Primary canvas does not leave a large empty void without a deliberate fill choice.
 - **Kit present:** Discovery from `kit.md` done; interactive chrome maximizes registry components and kit tokens. Custom controls only for real gaps.
+- **Kit color system:** New Default File UI surfaces use kit color/spacing tokens and kit CSS. No Tailwind (or similar) install or palette for coloring kit UI.
 - **Kit custom report:** If any non-registry components were created, the final answer includes `## Components not in Default File UI` with name and purpose for each.
 - **UI copy:** User-facing English strings follow UI copy constraints; allowed exceptions only as listed above.
 - If structure scores are weak, fix hierarchy or task clarity before paint (color, glow, or decorative motion).
@@ -475,6 +477,7 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - Overbuilding layout systems for a simple page
 - Freeform UI opinions that skip the critique contract
 - Hand-rolling chrome when Default File UI already covers the need
+- Installing Tailwind CSS (or similar) to color or space Default File UI surfaces instead of kit tokens
 - Single-shot builds that skip kit discovery and invent a full custom control set
 - Creating custom components without reporting them to the user
 - Using a promotional landing as a template for a logged in admin
