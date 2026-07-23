@@ -1,6 +1,6 @@
 # Default File UI kit usage
 
-Use this playbook when the project includes Default File UI. Discover live registry data; do not invent a parallel component set or paste a stale catalog from memory.
+Use this playbook when the project includes Default File UI. Discover live registry data; do not paste a stale catalog from memory or recreate covered controls by hand.
 
 ## Detect the kit
 
@@ -30,7 +30,6 @@ Map each section of the UI to registry items before writing new chrome. Prefer `
 
 - Prefer registry components for interactive chrome (buttons, inputs, selects, dialogs, menus, toasts, and similar).
 - Theme UI chrome with semantic utilities and `var(--...)` tokens from the kit. Do not hardcode design literals for surfaces, type sizes, radii, borders, or shadows.
-- Do not introduce a second component library or utility CSS stack for the same surfaces.
 - In package mode, import from `@default-file/ui/components/df-*` and ensure kit CSS is loaded (`@import "@default-file/ui/css/df-index.css"` or the project's existing kit CSS entry).
 - In copy source mode, install missing items with `df-ui add <items>` / MCP `add_components` before recreating them by hand.
 - Keep composition and hierarchy decisions from `SKILL.md` for the classified surface mode. The kit supplies parts; it does not replace mode routing, marketing hero rules, workspace shell rules, or critique contracts.
@@ -47,6 +46,5 @@ Use the `importPath` from `df-ui show <name>` when unsure. Respect registry depe
 ## Anti goals
 
 - Hardcoded hex, px, rem, or raw shadows for kit chrome
-- Recreating kit primitives under an app `components/ui` (or similar) tree
-- Inventing a second design system alongside Default File UI for the same product surface
+- Hand-rolling controls that already exist in the registry
 - Skipping discovery and guessing prop names or variants from memory

@@ -14,7 +14,7 @@ Write findings like a senior frontend product review. This is about clarity of c
 2. **Impact** — why it matters for this surface (match the classified mode and the user's actual goal)
 3. **Recommendation** — the next structural change
 
-Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Stay usage agnostic: critique the frontend the user asked for; do not force mobile, dashboard, or marketing framing when that is not the brief.
+Prefer clear impact language over taste language. Fail findings that only say the UI looks plain or trendy without stating impact. Stay usage agnostic: critique the frontend the user asked for; do not force mobile, dashboard, or marketing framing when that is not the brief.
 
 Do not let this rubric shrink invention. When structure is weak, recommend a different IA, layout metaphor, or visual system if that better serves the goal. Distinctive authorship remains required on design and redesign work. Accessibility, states, and responsive fitness count as craft failures when missing, not as late polish.
 

@@ -14,7 +14,7 @@ description: >-
 
 # Design File UI
 
-Build and critique frontend interfaces that feel intentional, branded, and human. This skill is **usage agnostic**, stack agnostic, and tool agnostic. Prefer principles over fashion. Do not clone a specific external showcase site.
+Build and critique frontend interfaces that feel intentional, branded, and human. This skill is **usage agnostic**, stack agnostic, and tool agnostic. Prefer principles over fashion. Prefer original authorship fitted to the brief.
 
 Operate at a **senior industry craft level**: the bar of a principal product designer and senior frontend craftsperson working together. Ship work that is clear, distinctive, usable, accessible, and ready for real users. Do not settle for average template UI.
 
@@ -33,7 +33,7 @@ Hold every design, redesign, and critique to this bar. Fail outputs that miss it
 5. **Complete interaction states:** Hover, focus, active, disabled, loading, empty, and error are designed, not omitted.
 6. **Accessibility baseline:** Semantic structure, visible focus, readable contrast, keyboard paths, and labeled controls are required, not optional polish.
 7. **Responsive by redesign:** Narrow and wide layouts keep the goal; redraw regions when needed instead of crushing a desktop layout.
-8. **System honesty:** When a design system or Default File UI is present, compose with it. Do not invent a parallel chrome stack.
+8. **System honesty:** When a design system or Default File UI is present, compose with it. Discover covered controls before inventing new chrome.
 9. **Evidence based judgment:** Critiques cite concrete UI evidence and impact. No vague taste reviews.
 10. **Ship ready decisions:** Prefer one strong recommendation and an improve pass over option piles or "looks fine" conclusions.
 
@@ -327,7 +327,7 @@ Use the axis set for the classified mode. Score each axis `strong`, `weak`, or `
 
 ### Professional findings voice (required)
 
-Critique findings, structural issues, quick wins, and improve pass notes must be clear and useful, like a senior frontend product review. Not vague taste commentary, and not a design gallery caption.
+Critique findings, structural issues, quick wins, and improve pass notes must be clear and useful, like a senior frontend product review. Not vague taste commentary.
 
 This voice applies to **how findings are written**. It does **not** limit usage, and it does **not** reduce design invention. The skill stays usage agnostic and must still invent distinctive UI when the brief allows.
 
@@ -448,14 +448,13 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - **Design or redesign tasks:** Matching preflight answered; section or shell map present; critique contract filled; at least one improve pass applied when any axis is weak or missing.
 - **Multi section IA:** No dead nav destinations; stubs must be real empty states with a next action, or the item must be removed from nav.
 - **Adaptive density:** Primary canvas does not leave a large empty void without a deliberate fill choice.
-- **Kit present:** Discovery from `kit.md` done; chrome uses registry components and kit tokens, not a parallel stack.
+- **Kit present:** Discovery from `kit.md` done; chrome uses registry components and kit tokens.
 - **UI copy:** User-facing English strings follow UI copy constraints; allowed exceptions only as listed above.
 - If structure scores are weak, fix hierarchy or task clarity before paint (color, glow, or decorative motion).
 
 ## Anti goals
 
 - Average or "good enough" template UI that would not pass a senior design review
-- Fashion cloning from external showcase galleries
 - Taste only or trend based findings with no clear impact for the surface
 - Treating this skill as fixed to mobile, dashboard, admin, or marketing usage
 - Rewriting the user's request into a different product category
@@ -468,7 +467,7 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - Sparse tables or canvases floating in unused viewport with no adaptive fill choice
 - Overbuilding layout systems for a simple page
 - Freeform UI opinions that skip the critique contract
-- Inventing parallel chrome when Default File UI already covers the need
+- Hand-rolling chrome when Default File UI already covers the need
 - Using a promotional landing as a template for a logged in admin
 - Using a dense admin as a template for a brand campaign hero
 - Treating a problem brief as a prompt to copy a generic dashboard template

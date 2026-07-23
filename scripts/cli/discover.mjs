@@ -305,8 +305,8 @@ export function getDocs(topic = "overview") {
       topic: "overview",
       title: "Default File UI",
       body: [
-        "Default File UI is an all-in-one React design system: components, tokens, owned CSS, and install CLI.",
-        "One install path. Do not add a separate utility CSS stack or a separate component kit for Default File UI surfaces.",
+        "Default File UI is a React design system: components, tokens, owned CSS, and install CLI.",
+        "Compose Default File UI surfaces with the kit components, tokens, and CSS together.",
         "Package import: @import \"@default-file/ui/css/df-index.css\"; then import components from @default-file/ui/components/df-*.",
         "Copy-source: df-ui init, then df-ui add <items>. Foundation installs CSS, hooks, and cn.",
         "AI hosts: run df-ui mcp (stdio) to inspect components, props, tokens, coverage, skills, and install.",
