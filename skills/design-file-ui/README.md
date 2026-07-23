@@ -89,7 +89,7 @@ Use these prompts in a fresh agent turn after install. Pass only if the skill at
 - Workspace motion recipes live in `motion.md`; toast-only feedback on async actions is not enough.
 - Workflow graphs need a readable execution path, not disconnected cards.
 - Visual authorship and adaptive density are finish gates for tool UI.
-- When Default File UI is present, open `references/kit.md` and discover components/tokens before inventing chrome.
+- When Default File UI is present, open `references/kit.md`, maximize registry components (especially on single-shot builds), and report any custom components that were not found in the kit.
 
 ## Research sources
 

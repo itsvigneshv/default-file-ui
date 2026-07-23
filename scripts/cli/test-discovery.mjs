@@ -139,6 +139,15 @@ async function testHelpers() {
       /recommendation/i.test(designSkill.skillMarkdown),
     "skill markdown must define observation, impact, recommendation"
   )
+  assert.ok(
+    /Maximize kit use/i.test(designSkill.skillMarkdown) &&
+      /Components not in Default File UI/i.test(designSkill.skillMarkdown),
+    "skill markdown must maximize kit use and report custom components"
+  )
+  assert.ok(
+    /single-shot/i.test(designSkill.skillMarkdown),
+    "skill markdown must call out single-shot builds for kit discovery"
+  )
   assert.ok(designSkill.references.length >= 3)
   const critiqueRef = designSkill.referenceContents.find(
     (ref) => ref.name === "critique.md"
@@ -151,6 +160,27 @@ async function testHelpers() {
   assert.ok(
     /usage agnostic/i.test(critiqueRef.content),
     "critique.md must stay usage agnostic"
+  )
+  const kitRef = designSkill.referenceContents.find(
+    (ref) => ref.name === "kit.md"
+  )
+  assert.ok(kitRef, "expected kit.md reference")
+  assert.ok(
+    /Maximize kit coverage/i.test(kitRef.content) &&
+      /Custom component report/i.test(kitRef.content) &&
+      /single-shot/i.test(kitRef.content),
+    "kit.md must require max coverage, custom reports, and single-shot discovery"
+  )
+  assert.ok(
+    /Color and styling/i.test(kitRef.content) &&
+      /kit tokens/i.test(kitRef.content) &&
+      /kit utilities only/i.test(kitRef.content),
+    "kit.md must require kit color tokens and utilities only"
+  )
+  assert.ok(
+    /Use the kit color system/i.test(designSkill.skillMarkdown) &&
+      /kit tokens and kit CSS utilities only/i.test(designSkill.skillMarkdown),
+    "skill markdown must require kit color system only"
   )
   console.log(`skills: ${skills.map((s) => s.name).join(", ")}`)
 }
