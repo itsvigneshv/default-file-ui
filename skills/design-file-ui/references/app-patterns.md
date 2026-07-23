@@ -61,4 +61,4 @@ Rules:
 
 ## Kit mapping
 
-When Default File UI is present, open [kit.md](kit.md) and discover inputs, selects, dialogs, menus, tables, and related registry items before inventing chrome.
+When Default File UI is present, open [kit.md](kit.md), maximize registry components for the surface, and report any custom controls that were not found.

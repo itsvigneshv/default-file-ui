@@ -27,7 +27,7 @@ df-ui skills install design-file-ui
 
 `show` and MCP `get_component` return full prop tables (name, type, default, description) from `docs/api`.
 
-The bundled `design-file-ui` skill routes marketing vs workspace vs mobileTool surfaces, and includes `references/kit.md` for discover then compose with these CLI and MCP tools.
+The bundled `design-file-ui` skill routes marketing vs workspace vs mobileTool surfaces, and includes `references/kit.md` for discover then compose with these CLI and MCP tools. When the kit is present, agents must maximize registry components (especially on single-shot builds) and report any custom components that were not found.
 
 Open skills install:
 

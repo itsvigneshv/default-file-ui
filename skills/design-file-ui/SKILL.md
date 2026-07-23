@@ -33,7 +33,7 @@ Hold every design, redesign, and critique to this bar. Fail outputs that miss it
 5. **Complete interaction states:** Hover, focus, active, disabled, loading, empty, and error are designed, not omitted.
 6. **Accessibility baseline:** Semantic structure, visible focus, readable contrast, keyboard paths, and labeled controls are required, not optional polish.
 7. **Responsive by redesign:** Narrow and wide layouts keep the goal; redraw regions when needed instead of crushing a desktop layout.
-8. **System honesty:** When a design system or Default File UI is present, compose with it. Do not invent a parallel chrome stack.
+8. **System honesty:** When a design system or Default File UI is present, maximize registry components first. Create custom chrome only for real discovery gaps, and report those custom creations to the user.
 9. **Evidence based judgment:** Critiques cite concrete UI evidence and impact. No vague taste reviews.
 10. **Ship ready decisions:** Prefer one strong recommendation and an improve pass over option piles or "looks fine" conclusions.
 
@@ -291,6 +291,9 @@ When the project uses Default File UI (`@default-file/ui`), or the task needs ki
 
 1. MUST open [references/kit.md](references/kit.md) before inventing UI chrome.
 2. Discover before invent: `cover` / `search` / `show` / `tokens` (CLI or MCP), then compose with registry items and kit tokens.
+3. **Maximize kit use:** Prefer Default File UI components for every interactive control the registry covers. This is required on single-shot "build everything" prompts, not only when the user names components one by one.
+4. **Custom only on real gaps:** If `cover` / `search` find no suitable item, you may create a custom or local component. Theme it with kit tokens when possible.
+5. **Report custom creations:** If you invent any component that is not in the registry, tell the user in the final answer under `## Components not in Default File UI` (name, purpose, that it was not found). Omit the section only when all interactive chrome came from the kit.
 
 If the kit is absent, skip `kit.md` and use the agnostic implementation path above.
 
@@ -304,11 +307,12 @@ If the kit is absent, skip `kit.md` and use the agnostic implementation path abo
 6. Define visual authorship: concept paragraph plus one named signature move (not a generic template).
 7. Outline map: marketing section map, or workspace shell map (and mobile region plan when needed). For `problem` briefs, invent IA; do not wait for a component list.
 8. Open required references for the mode and task.
-9. If Default File UI is present, open [references/kit.md](references/kit.md), run discovery, and map needs to registry items before coding.
-10. Implement structure first, then style, then motion (kit components and tokens when the kit is present).
+9. If Default File UI is present, open [references/kit.md](references/kit.md), run discovery, and map needs to registry items before coding. On single-shot builds, cover the full brief and each major region before writing chrome.
+10. Implement structure first, then style, then motion (kit components and tokens when the kit is present). Custom controls only where discovery returned a real gap.
 11. Verify narrow layout, type ladder, adaptive density, and focus states.
 12. Self critique using the matching critique contract below.
 13. If any axis is `weak` or `missing`, apply at least one improve pass that fixes the top structural issues before finishing. Do not end on scores alone.
+14. If Default File UI is present and any custom components were created, include the `## Components not in Default File UI` report in the final answer.
 
 ## Workflow: critique and redesign
 
@@ -432,7 +436,8 @@ When designing or redesigning, provide:
 4. Section map (marketing) or shell map (workspace / mobileTool)
 5. Key UI decisions (type ladder, color, motion, primary action, table vs card, adaptive density when relevant)
 6. Implementation (code or concrete component changes)
-7. The critique contract above, including professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
+7. When Default File UI is present and any custom components were created: `## Components not in Default File UI` (see [references/kit.md](references/kit.md))
+8. The critique contract above, including professional findings (observation, impact, recommendation), evidence on weak axes, and an improve pass when scores are not all strong
 
 Keep prose short and professional. Prefer decisive recommendations over option piles unless the user asks for alternatives. Stay frontend focused: invent and implement the UI the user wants within the classified mode. Keep thinking original: structure and craft may differ from common templates when that better fits the brief. Meet the industry craft bar on every finish.
 
@@ -448,7 +453,8 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - **Design or redesign tasks:** Matching preflight answered; section or shell map present; critique contract filled; at least one improve pass applied when any axis is weak or missing.
 - **Multi section IA:** No dead nav destinations; stubs must be real empty states with a next action, or the item must be removed from nav.
 - **Adaptive density:** Primary canvas does not leave a large empty void without a deliberate fill choice.
-- **Kit present:** Discovery from `kit.md` done; chrome uses registry components and kit tokens, not a parallel stack.
+- **Kit present:** Discovery from `kit.md` done; interactive chrome maximizes registry components and kit tokens. Custom controls only for real gaps.
+- **Kit custom report:** If any non-registry components were created, the final answer includes `## Components not in Default File UI` with name and purpose for each.
 - **UI copy:** User-facing English strings follow UI copy constraints; allowed exceptions only as listed above.
 - If structure scores are weak, fix hierarchy or task clarity before paint (color, glow, or decorative motion).
 
@@ -468,7 +474,9 @@ Keep prose short and professional. Prefer decisive recommendations over option p
 - Sparse tables or canvases floating in unused viewport with no adaptive fill choice
 - Overbuilding layout systems for a simple page
 - Freeform UI opinions that skip the critique contract
-- Inventing parallel chrome when Default File UI already covers the need
+- Hand-rolling chrome when Default File UI already covers the need
+- Single-shot builds that skip kit discovery and invent a full custom control set
+- Creating custom components without reporting them to the user
 - Using a promotional landing as a template for a logged in admin
 - Using a dense admin as a template for a brand campaign hero
 - Treating a problem brief as a prompt to copy a generic dashboard template
