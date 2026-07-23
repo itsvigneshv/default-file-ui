@@ -41,7 +41,7 @@ Map each section of the UI to registry items before writing new chrome. Prefer `
 
 - Prefer registry components for interactive chrome (buttons, inputs, selects, dialogs, menus, toasts, and similar).
 - Theme UI chrome with semantic utilities and `var(--...)` tokens from the kit. Do not hardcode design literals for surfaces, type sizes, radii, borders, or shadows.
-- Color and space with the kit color system (`df-color-system.css` or full `df-index.css`). Do not install Tailwind CSS to style kit surfaces.
+- Color and space with the kit color system (`df-color-system.css` or full `df-index.css`) and kit tokens only.
 - In package mode, import from `@default-file/ui/components/df-*` and ensure kit CSS is loaded (`df-index.css`, or `df-color-system.css` when components are not used).
 - In copy source mode, install missing items with `df-ui add <items>` / MCP `add_components` before recreating them by hand.
 - Keep composition and hierarchy decisions from `SKILL.md` for the classified surface mode. The kit supplies parts; it does not replace mode routing, marketing hero rules, workspace shell rules, or critique contracts.
@@ -58,6 +58,6 @@ Use the `importPath` from `df-ui show <name>` when unsure. Respect registry depe
 ## Anti goals
 
 - Hardcoded hex, px, rem, or raw shadows for kit chrome
-- Installing Tailwind CSS (or similar) to style kit surfaces instead of the color system
+- Styling kit surfaces with an external utility palette instead of the kit color system
 - Hand-rolling controls that already exist in the registry
 - Skipping discovery and guessing prop names or variants from memory
