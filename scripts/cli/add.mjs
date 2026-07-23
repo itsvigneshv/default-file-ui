@@ -49,7 +49,6 @@ export async function addCommand(args) {
   printNextSteps(resolved)
 }
 
-/** Resolve requested registry items and their registryDependencies in dependency order. */
 export function resolveItems(registry, names) {
   const byName = new Map(registry.items.map((item) => [item.name, item]))
   const out = new Map()
