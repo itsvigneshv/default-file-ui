@@ -656,6 +656,8 @@
   --stage-axis-y-muted: color-mix(in oklch, var(--stage-axis-y) 55%, transparent);
   --stage-axis-z-muted: color-mix(in oklch, var(--stage-axis-z) 55%, transparent);
   --df-tool-stage-min-height: 52vh;
+  /* Vertical budget for timeline ruler and lane/property tracks. Chrome stays outside. */
+  --stage-timeline-tracks-max-height: 36vh;
   --stage-surface-dot: radial-gradient(
     circle at 1px 1px,
     rgb(15 23 42 / 0.14) 1px,
