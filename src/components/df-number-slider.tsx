@@ -1,7 +1,20 @@
 "use client"
 
 import { Label } from "./df-label"
-import { Slider } from "./df-slider"
+import { Slider, type SliderThickness, type SliderVariant } from "./df-slider"
+
+export type NumberSliderProps = {
+  label: string
+  value: number
+  min: number
+  max: number
+  step?: number
+  onChange: (value: number) => void
+  /** Track and thumb thickness. Matches Slider. Default md. */
+  thickness?: SliderThickness
+  /** Visual recipe. Matches Slider. Default bar. */
+  variant?: SliderVariant
+}
 
 function NumberSlider({
   label,
@@ -10,14 +23,9 @@ function NumberSlider({
   max,
   step = 0.01,
   onChange,
-}: {
-  label: string
-  value: number
-  min: number
-  max: number
-  step?: number
-  onChange: (value: number) => void
-}) {
+  thickness = "md",
+  variant = "bar",
+}: NumberSliderProps) {
   const digits = step >= 1 ? 0 : step >= 0.1 ? 1 : 2
   const bounded = Math.min(max, Math.max(min, value))
 
@@ -35,6 +43,8 @@ function NumberSlider({
         min={min}
         max={max}
         step={step}
+        thickness={thickness}
+        variant={variant}
         value={[bounded]}
         onValueChange={(next) => {
           const v = Array.isArray(next) ? next[0] : next

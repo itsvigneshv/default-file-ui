@@ -15,6 +15,11 @@ export type ImageDropzoneProps = {
   icon?: React.ReactNode
   className?: string
   onFile: (file: File) => void
+  /**
+   * Choose which file from a drop or browse list is a candidate.
+   * Defaults to the first image file.
+   */
+  pickFile?: (files: FileList | null | undefined) => File | undefined
   /** Return an error message to reject the file, or null to accept. */
   validateFile?: (file: File) => string | null
   onReject?: (message: string) => void
@@ -38,19 +43,22 @@ function ImageDropzone({
   icon,
   className,
   onFile,
+  pickFile: pickFileProp,
   validateFile,
   onReject,
 }: ImageDropzoneProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
+  const usesDefaultImagePick = pickFileProp == null
+  const pickFile = pickFileProp ?? pickImageFile
 
   const acceptCandidate = React.useCallback(
     (file: File | undefined): file is File => {
       if (!file) {
-        onReject?.("No image found.")
+        onReject?.(usesDefaultImagePick ? "No image found." : "No file found.")
         return false
       }
-      if (!file.type.startsWith("image/")) {
+      if (usesDefaultImagePick && !file.type.startsWith("image/")) {
         onReject?.("That file type is not supported. Use an image.")
         return false
       }
@@ -61,28 +69,42 @@ function ImageDropzone({
       }
       return true
     },
-    [onReject, validateFile]
+    [onReject, usesDefaultImagePick, validateFile]
   )
 
   React.useEffect(() => {
     if (disabled || !enablePaste) return
 
     const onPaste = (event: ClipboardEvent) => {
-      const items = event.clipboardData?.items
-      if (!items) return
-      for (const item of items) {
-        if (!item.type.startsWith("image/")) continue
-        const file = item.getAsFile() ?? undefined
-        if (!acceptCandidate(file)) return
-        event.preventDefault()
-        onFile(file)
+      if (usesDefaultImagePick) {
+        const items = event.clipboardData?.items
+        if (!items) return
+        for (const item of items) {
+          if (!item.type.startsWith("image/")) continue
+          const file = item.getAsFile() ?? undefined
+          if (!acceptCandidate(file)) return
+          event.preventDefault()
+          onFile(file)
+          return
+        }
         return
       }
+      const file = pickFile(event.clipboardData?.files)
+      if (!file || !acceptCandidate(file)) return
+      event.preventDefault()
+      onFile(file)
     }
 
     window.addEventListener("paste", onPaste)
     return () => window.removeEventListener("paste", onPaste)
-  }, [acceptCandidate, disabled, enablePaste, onFile])
+  }, [
+    acceptCandidate,
+    disabled,
+    enablePaste,
+    onFile,
+    pickFile,
+    usesDefaultImagePick,
+  ])
 
   const setActive = (active: boolean) => {
     const root = rootRef.current
@@ -118,7 +140,7 @@ function ImageDropzone({
         event.preventDefault()
         setActive(false)
         if (disabled) return
-        const file = pickImageFile(event.dataTransfer.files)
+        const file = pickFile(event.dataTransfer.files)
         if (!acceptCandidate(file)) return
         onFile(file)
       }}
@@ -128,10 +150,16 @@ function ImageDropzone({
         type="file"
         accept={accept}
         disabled={disabled}
-        aria-label={typeof title === "string" ? title : "Upload image"}
+        aria-label={
+          typeof title === "string"
+            ? title
+            : usesDefaultImagePick
+              ? "Upload image"
+              : "Upload file"
+        }
         className="absolute inset-0 z-10 cursor-pointer opacity-0"
         onChange={(event) => {
-          const file = pickImageFile(event.target.files)
+          const file = pickFile(event.target.files)
           event.target.value = ""
           if (!acceptCandidate(file)) return
           onFile(file)

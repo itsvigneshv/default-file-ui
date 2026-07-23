@@ -54,6 +54,18 @@
             "name": "onChange",
             "type": "(value: number) => void",
             "description": "Called when the value changes (required)."
+          },
+          {
+            "name": "thickness",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"md\"",
+            "description": "Track and thumb thickness. Passed through to Slider. sm is fine, md is default, lg is a thick rail."
+          },
+          {
+            "name": "variant",
+            "type": "\"bar\" | \"line\"",
+            "default": "\"bar\"",
+            "description": "Visual recipe. Passed through to Slider."
           }
         ]
       },

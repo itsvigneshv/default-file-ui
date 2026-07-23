@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T16:42:50.867Z",
+  "generatedAt": "2026-07-23T18:31:51.960Z",
   "source": "docs/api",
   "colorSystem": {
     "registryName": "color-system",
@@ -281,7 +281,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 16
+      "propCount": 17
     },
     {
       "slug": "input",
@@ -347,7 +347,7 @@
       ],
       "importPath": "@default-file/ui/components/df-number-slider",
       "dependencies": [],
-      "propCount": 8
+      "propCount": 10
     },
     {
       "slug": "option-list",

@@ -18,7 +18,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Click, drag, or paste target for image files. Validation and copy stay with the consumer.",
+    "description": "Click, drag, or paste upload target. Defaults to images; pass pickFile for other media. Validation and copy stay with the consumer.",
     "groups": [
       {
         "id": "image-dropzone",
@@ -44,6 +44,11 @@
             "type": "string",
             "default": "image/png,image/jpeg,image/webp,image/gif",
             "description": "File input accept attribute."
+          },
+          {
+            "name": "pickFile",
+            "type": "(files: FileList | null | undefined) => File | undefined",
+            "description": "Choose a candidate from a drop or browse list. Defaults to the first image file."
           },
           {
             "name": "enablePaste",
