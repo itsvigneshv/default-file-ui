@@ -20,6 +20,7 @@ type InputLabelPosition = "outside" | "inside"
 type InputFocusVariant = "ring" | "border"
 type InputSize = "sm" | "md" | "lg" | "xl"
 type InputBorderWidth = "hairline" | "thin" | "thick"
+type InputCommitMode = "change" | "blur"
 type InputRadius =
   | "none"
   | "xxs"
@@ -79,6 +80,7 @@ type InputProps = Omit<
   stepper?: boolean
   incrementIcon?: React.ReactNode
   decrementIcon?: React.ReactNode
+  commitMode?: InputCommitMode
 }
 
 function parseFiniteNumber(value: string): number | null {
@@ -137,6 +139,16 @@ function nextSteppedValue(
   return formatSteppedValue(next, step)
 }
 
+function resolveInputType(
+  type: React.ComponentProps<"input">["type"],
+  stepper: boolean,
+  commitMode: InputCommitMode
+): React.ComponentProps<"input">["type"] {
+  if (!stepper) return type
+  if (commitMode === "blur") return type
+  return "number"
+}
+
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   function Input(
     {
@@ -186,10 +198,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       stepper = false,
       incrementIcon,
       decrementIcon,
+      commitMode = "change",
       placeholder,
       value,
       defaultValue,
       onChange,
+      onFocus,
+      onBlur,
       onKeyDown,
       disabled,
       readOnly,
@@ -206,6 +221,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = idProp ?? `df-input-${reactId}`
     const hintId = hint != null ? `df-input-hint-${reactId}` : undefined
     const inputRef = React.useRef<HTMLInputElement | null>(null)
+    const commitOnBlur = commitMode === "blur"
+    const [draft, setDraft] = React.useState<string | null>(null)
+    const draftRef = React.useRef<string | null>(null)
+    const pendingCommitRef = React.useRef<string | null>(null)
 
     const [current, setCurrent] = useControllableState<string>({
       value: value === undefined ? undefined : String(value),
@@ -215,10 +234,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           : String(defaultValue),
     })
 
+    const displayValue = commitOnBlur && draft !== null ? draft : current
     const isInvalid =
       invalid || ariaInvalidProp === true || ariaInvalidProp === "true"
     const showInvalidLabel = isInvalid && invalidLabel
-    const isEmpty = String(current).length === 0
+    const isEmpty = String(displayValue).length === 0
     const showClear =
       clearable && !isEmpty && !disabled && !readOnly
     const showStepper = stepper && !disabled && !readOnly
@@ -248,14 +268,29 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       clearable ||
       stepper
     const needsRoot = hasOutsideLabel || hint != null || needsField
-    const resolvedType = stepper ? "number" : type
+    const resolvedType = resolveInputType(type, stepper, commitMode)
     const minBound = resolveBound(min)
     const maxBound = resolveBound(max)
-    const numericValue = parseFiniteNumber(String(current))
+    const numericValue = parseFiniteNumber(String(displayValue))
     const canIncrement =
       showStepper && (maxBound == null || numericValue == null || numericValue < maxBound)
     const canDecrement =
       showStepper && (minBound == null || numericValue == null || numericValue > minBound)
+
+    function writeDraft(next: string | null) {
+      draftRef.current = next
+      setDraft(next)
+    }
+
+    React.useLayoutEffect(() => {
+      if (!commitOnBlur) return
+      const pending = pendingCommitRef.current
+      if (pending == null) return
+      pendingCommitRef.current = null
+      if (draftRef.current === null) return
+      if (String(current) === pending) return
+      writeDraft(String(current))
+    }, [current, commitOnBlur])
 
     const describedBy =
       [ariaDescribedBy, hintId].filter(Boolean).join(" ") || undefined
@@ -343,39 +378,77 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     }
 
-    function commitValue(next: string) {
-      setCurrent(next)
+    function emitChange(next: string) {
       onChange?.({
         target: { value: next },
         currentTarget: { value: next },
       } as React.ChangeEvent<HTMLInputElement>)
     }
 
+    function commitValue(next: string) {
+      if (commitOnBlur) {
+        writeDraft(next)
+        pendingCommitRef.current = next
+      }
+      setCurrent(next)
+      emitChange(next)
+    }
+
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+      if (commitOnBlur) {
+        writeDraft(event.target.value)
+        return
+      }
       setCurrent(event.target.value)
       onChange?.(event)
     }
 
+    function handleFocus(event: React.FocusEvent<HTMLInputElement>) {
+      if (commitOnBlur && draftRef.current === null) {
+        writeDraft(String(current))
+      }
+      onFocus?.(event)
+    }
+
+    function handleBlur(event: React.FocusEvent<HTMLInputElement>) {
+      if (commitOnBlur) {
+        const next = draftRef.current ?? String(current)
+        writeDraft(null)
+        pendingCommitRef.current = null
+        if (next !== String(current)) {
+          setCurrent(next)
+          emitChange(next)
+        }
+      }
+      onBlur?.(event)
+    }
+
     function handleClear() {
+      if (commitOnBlur) {
+        writeDraft("")
+        pendingCommitRef.current = ""
+      }
       setCurrent("")
       onClear?.()
-      onChange?.({
-        target: { value: "" },
-        currentTarget: { value: "" },
-      } as React.ChangeEvent<HTMLInputElement>)
+      emitChange("")
     }
 
     function applyStep(direction: 1 | -1) {
       if (!showStepper) return
-      commitValue(
-        nextSteppedValue(String(current), direction, step, min, max)
-      )
+      const base = draftRef.current ?? String(current)
+      commitValue(nextSteppedValue(base, direction, step, min, max))
       inputRef.current?.focus()
     }
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
       onKeyDown?.(event)
-      if (event.defaultPrevented || !showStepper) return
+      if (event.defaultPrevented) return
+      if (commitOnBlur && event.key === "Enter") {
+        event.preventDefault()
+        event.currentTarget.blur()
+        return
+      }
+      if (!showStepper) return
       if (event.key === "ArrowUp") {
         event.preventDefault()
         applyStep(1)
@@ -401,12 +474,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         data-corner-shape={cornerShape}
         data-hover-border={hoverBorderAttr}
         data-stepper={stepper ? "" : undefined}
+        data-commit-mode={commitOnBlur ? "blur" : undefined}
         data-invalid={isInvalid ? "" : undefined}
         aria-invalid={isInvalid || undefined}
         aria-describedby={describedBy}
         placeholder={hasInsideLabel ? undefined : placeholder}
-        value={current}
+        value={displayValue}
         onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         disabled={disabled}
         readOnly={readOnly}
@@ -568,6 +644,7 @@ export type {
   InputVariant,
   InputSize,
   InputBorderWidth,
+  InputCommitMode,
   InputLabelPosition,
   InputFocusVariant,
   InputRadius,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T19:44:25.310Z",
+  "generatedAt": "2026-07-23T20:00:23.779Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -324,7 +324,7 @@
       "slug": "input",
       "name": "input",
       "title": "Input",
-      "description": "Text fields with variants, sizes, labels, icons, clear control, numeric stepper, addons, input groups, hover and focus borders, and validation.",
+      "description": "Text fields with variants, sizes, labels, icons, clear control, numeric stepper, change or blur value commit, addons, input groups, hover and focus borders, and validation.",
       "aliases": [
         "text field",
         "text input",
@@ -344,7 +344,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 102
+      "propCount": 104
     },
     {
       "slug": "label",
