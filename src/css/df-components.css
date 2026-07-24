@@ -4892,7 +4892,8 @@
 
 :where(
   [data-df="options-panel-content"][data-portal="false"] [data-df="options-panel-body"]
-) {
+),
+:where([data-df="options-panel-body"][data-fit="true"]) {
   max-height: none;
   overflow-y: visible;
 }

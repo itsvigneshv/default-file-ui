@@ -127,8 +127,14 @@
           },
           {
             "name": "OptionsPanelBody",
-            "type": "div attrs",
-            "description": "Body slot. Hugs content width. Portaled panels clamp height with --df-options-panel-max-height and scroll when content is taller. Inline panels (portal false) size to content with no scroll clamp."
+            "type": "div attrs & { fit?: boolean }",
+            "description": "Body slot. Hugs content width. Portaled panels clamp height with --df-options-panel-max-height and scroll when content is taller. Set fit to size to content with no scroll clamp. Inline panels (portal false) also size to content with no scroll clamp."
+          },
+          {
+            "name": "fit",
+            "type": "boolean",
+            "default": "false",
+            "description": "OptionsPanelBody prop. Size the body to its content with no max-height scroll clamp. Default keeps the portaled height cap and vertical scroll."
           },
           {
             "name": "OptionsPanelFooter",
