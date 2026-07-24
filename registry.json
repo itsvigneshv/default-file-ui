@@ -438,9 +438,9 @@
       ]
     },
     {
-      "name": "image-dropzone",
+      "name": "file-uploader",
       "type": "registry:ui",
-      "title": "Image Dropzone",
+      "title": "File Uploader",
       "registryDependencies": [
         "foundation"
       ],
@@ -449,9 +449,9 @@
       ],
       "files": [
         {
-          "path": "src/components/df-image-dropzone.tsx",
+          "path": "src/components/df-file-uploader.tsx",
           "type": "registry:ui",
-          "target": "default-file-ui/components/df-image-dropzone.tsx"
+          "target": "default-file-ui/components/df-file-uploader.tsx"
         }
       ]
     },

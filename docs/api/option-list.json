@@ -88,6 +88,12 @@
             "description": "Close after choosing a row. Defaults to true in single mode, false in multiple."
           },
           {
+            "name": "width",
+            "type": "\"hug\" | \"fill\" | string",
+            "default": "\"hug\"",
+            "description": "Root width for the list and its trigger. hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem or 200px for a fixed width. Select triggers inside follow the same width."
+          },
+          {
             "name": "submenuAnimated",
             "type": "boolean",
             "default": "true",
@@ -535,7 +541,23 @@
         "title": "Layout & appearance",
         "props": [
           {
-            "name": "Hug content",
+            "name": "Hug trigger",
+            "type": "width=\"hug\"",
+            "default": "\"hug\"",
+            "description": "Default root width. The trigger sizes to its content."
+          },
+          {
+            "name": "Fill parent",
+            "type": "width=\"fill\"",
+            "description": "Stretch the root and trigger to the full width of the parent."
+          },
+          {
+            "name": "Fixed width",
+            "type": "width CSS length",
+            "description": "Pass a CSS length on OptionList such as 12rem or 200px. Sets --df-option-list-width."
+          },
+          {
+            "name": "Hug menu content",
             "type": "alignItemWithTrigger={false}",
             "default": "false",
             "description": "Panel width follows option content; at least trigger width."
@@ -624,6 +646,11 @@
         "title": "Tokens",
         "description": "Theme defaults live on :root. Override these globally or on a local host.",
         "props": [
+          {
+            "name": "--df-option-list-width",
+            "type": "CSS length",
+            "description": "Fixed root width when width is a CSS length. Set by the width prop."
+          },
           {
             "name": "--df-option-list-min-width",
             "type": "CSS length",

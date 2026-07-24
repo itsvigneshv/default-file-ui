@@ -307,6 +307,21 @@ function OptionListSubContent({
   return createPortal(panel, document.body)
 }
 
+/** Root and trigger width: hug content, fill the parent, or a fixed CSS length. */
+type OptionListWidth = "hug" | "fill" | (string & {})
+
+function resolveOptionListWidth(width: OptionListWidth | undefined): {
+  mode: "hug" | "fill" | "fixed"
+  style?: React.CSSProperties
+} {
+  if (width == null || width === "hug") return { mode: "hug" }
+  if (width === "fill") return { mode: "fill" }
+  return {
+    mode: "fixed",
+    style: { "--df-option-list-width": width } as React.CSSProperties,
+  }
+}
+
 type OptionListProps = {
   selectionMode?: SelectionMode
   value?: string | null
@@ -319,6 +334,7 @@ type OptionListProps = {
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   closeOnSelect?: boolean
+  width?: OptionListWidth
   submenuAnimated?: boolean
   submenuOpenDuration?: number
   submenuCloseDuration?: number
@@ -337,11 +353,13 @@ function OptionList({
   defaultOpen = false,
   onOpenChange,
   closeOnSelect,
+  width = "hug",
   submenuAnimated = true,
   submenuOpenDuration = DEFAULT_SUBMENU_OPEN_DURATION,
   submenuCloseDuration = DEFAULT_SUBMENU_CLOSE_DURATION,
   children,
 }: OptionListProps) {
+  const resolvedWidth = resolveOptionListWidth(width)
   const [current, setCurrent] = useControllableState({
     value,
     defaultValue,
@@ -472,7 +490,13 @@ function OptionList({
         submenuCloseDuration,
       }}
     >
-      <div data-df="option-list">{children}</div>
+      <div
+        data-df="option-list"
+        data-width={resolvedWidth.mode}
+        style={resolvedWidth.style}
+      >
+        {children}
+      </div>
     </OptionListContext.Provider>
   )
 }
@@ -1322,5 +1346,6 @@ export type {
   OptionListSearchProps,
   OptionListSubContentProps,
   OptionListSubmenuProps,
+  OptionListWidth,
   SelectionMode,
 }

@@ -88,6 +88,12 @@
             "description": "Close after choosing a row. Defaults to true in single mode, false in multiple."
           },
           {
+            "name": "width",
+            "type": "\"hug\" | \"fill\" | string",
+            "default": "\"hug\"",
+            "description": "Root and trigger width. hug sizes to the value. fill stretches to the parent. Pass a CSS length such as 12rem or 200px for a fixed width."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "default": "false",
@@ -315,7 +321,7 @@
           {
             "name": "className",
             "type": "string",
-            "description": "Width and shape. Examples: w-64 (fixed width), w-36 (truncate), rounded-xl or rounded-full (radius override). Default radius uses the kit --radius-4xl token."
+            "description": "Extra classes for shape and polish. Prefer Select width for hug, fill, or fixed sizing. Radius override examples: rounded-xl or rounded-full. Default radius uses the kit --radius-4xl token."
           },
           {
             "name": "id",
@@ -673,17 +679,28 @@
             "description": "Curve style for rounded chrome. Set once with df-ui init --corner-shape (round or smooth), or override --df-corner-shape on :root."
           },
           {
+            "name": "Hug trigger",
+            "type": "width=\"hug\"",
+            "default": "\"hug\"",
+            "description": "Default trigger width. The control sizes to its value."
+          },
+          {
+            "name": "Fill parent",
+            "type": "width=\"fill\"",
+            "description": "Stretch the root and trigger to the full width of the parent."
+          },
+          {
             "name": "Fixed width",
-            "type": "className on SelectTrigger",
-            "description": "Set an explicit width (for example w-64). Multi-select badges wrap to new lines and the trigger grows in height."
+            "type": "width CSS length",
+            "description": "Pass a CSS length on Select such as 12rem or 200px. Multi-select badges wrap to new lines and the trigger grows in height."
           },
           {
             "name": "Text truncation",
-            "type": "className on SelectTrigger",
-            "description": "Constrain width (for example w-36). SelectValue ellipsizes the selected label. The open list still hugs options unless alignItemWithTrigger is true."
+            "type": "width CSS length",
+            "description": "A fixed width that is shorter than the label ellipsizes SelectValue. The open list still hugs options unless alignItemWithTrigger is true."
           },
           {
-            "name": "Hug content",
+            "name": "Hug menu content",
             "type": "alignItemWithTrigger={false}",
             "default": "false",
             "description": "Default menu sizing: width follows the longest option (nowrap rows)."
@@ -691,7 +708,7 @@
           {
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
-            "description": "Lock the menu to the trigger width. Useful for fixed width multi-select fields."
+            "description": "Lock the menu to the trigger width. Useful for fill or fixed width fields."
           }
         ]
       },

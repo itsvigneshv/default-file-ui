@@ -14,6 +14,7 @@ import {
   OptionListScrollUpButton,
   OptionListSeparator,
   useOptionListContext,
+  type OptionListWidth,
 } from "./df-option-list"
 import {
   dfHoverBorderAttr,
@@ -138,6 +139,7 @@ function Select({
   defaultOpen,
   onOpenChange,
   closeOnSelect,
+  width = "hug",
   disabled = false,
   invalid = false,
   children,
@@ -153,6 +155,7 @@ function Select({
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   closeOnSelect?: boolean
+  width?: OptionListWidth
   disabled?: boolean
   invalid?: boolean
   children: React.ReactNode
@@ -170,6 +173,7 @@ function Select({
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
       closeOnSelect={closeOnSelect}
+      width={width}
     >
       <SelectExtrasContext.Provider value={{ disabled, invalid }}>
         <SelectDisabledSync disabled={disabled} />

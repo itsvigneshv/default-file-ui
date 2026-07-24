@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T20:49:19.051Z",
+  "generatedAt": "2026-07-24T08:52:46.667Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -251,6 +251,33 @@
       "propCount": 73
     },
     {
+      "slug": "file-uploader",
+      "name": "file-uploader",
+      "title": "File Uploader",
+      "description": "Click, drag, or paste target for files with consumer-owned validation. Defaults to images. Use the tile variant for compact square or circle add and replace controls such as profile photos.",
+      "aliases": [
+        "file uploader",
+        "file upload",
+        "image upload",
+        "image dropzone",
+        "image paste target",
+        "photo dropzone",
+        "dropzone",
+        "profile picture upload",
+        "avatar upload",
+        "add photo"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-file-uploader",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 38
+    },
+    {
       "slug": "floating-controls",
       "name": "floating-controls",
       "title": "Floating Controls",
@@ -298,27 +325,6 @@
         "lucide-react"
       ],
       "propCount": 35
-    },
-    {
-      "slug": "image-dropzone",
-      "name": "image-dropzone",
-      "title": "Image Dropzone",
-      "description": "Click, drag, or paste target for image files with consumer-owned validation.",
-      "aliases": [
-        "image upload",
-        "image dropzone",
-        "image paste target",
-        "photo dropzone"
-      ],
-      "chapter": "inputs",
-      "registryDependencies": [
-        "foundation"
-      ],
-      "importPath": "@default-file/ui/components/df-image-dropzone",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "propCount": 18
     },
     {
       "slug": "input",
@@ -408,7 +414,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 113
+      "propCount": 118
     },
     {
       "slug": "options-panel",
@@ -583,7 +589,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 151
+      "propCount": 154
     },
     {
       "slug": "separator",

@@ -3,21 +3,45 @@
 import * as React from "react"
 import { ImagePlus } from "lucide-react"
 
+import {
+  dfCornerShapeStyle,
+  type DfCornerShape,
+} from "../lib/corner-shape"
 import { cn } from "../lib/utils"
 
-export type ImageDropzoneProps = {
+export type FileUploaderBorderStyle = "dashed" | "solid"
+export type FileUploaderVariant = "default" | "tile"
+export type FileUploaderShape = "rounded" | "circle"
+export type FileUploaderSize = "sm" | "md" | "lg" | "xl"
+
+export type FileUploaderProps = {
   disabled?: boolean
   accept?: string
   enablePaste?: boolean
+  variant?: FileUploaderVariant
+  shape?: FileUploaderShape
+  size?: FileUploaderSize
+  cornerShape?: DfCornerShape
   title?: React.ReactNode
   description?: React.ReactNode
   hint?: React.ReactNode
   icon?: React.ReactNode
+  previewSrc?: string
+  borderStyle?: FileUploaderBorderStyle
+  borderColor?: string
+  background?: string
   className?: string
   onFile: (file: File) => void
   pickFile?: (files: FileList | null | undefined) => File | undefined
   validateFile?: (file: File) => string | null
   onReject?: (message: string) => void
+}
+
+type FileUploaderStyle = React.CSSProperties & {
+  "--df-file-uploader-border-style"?: FileUploaderBorderStyle
+  "--df-file-uploader-border-color"?: string
+  "--df-file-uploader-bg"?: string
+  "--df-corner-shape"?: string
 }
 
 function pickImageFile(files: FileList | null | undefined): File | undefined {
@@ -28,25 +52,47 @@ function pickImageFile(files: FileList | null | undefined): File | undefined {
   return undefined
 }
 
-function ImageDropzone({
+function FileUploader({
   disabled = false,
   accept = "image/png,image/jpeg,image/webp,image/gif",
   enablePaste = true,
-  title = "Drop an image here",
-  description = "or click to browse. Paste also works.",
+  variant = "default",
+  shape = "rounded",
+  size = "md",
+  cornerShape,
+  title: titleProp,
+  description: descriptionProp,
   hint,
   icon,
+  previewSrc,
+  borderStyle,
+  borderColor,
+  background,
   className,
   onFile,
   pickFile: pickFileProp,
   validateFile,
   onReject,
-}: ImageDropzoneProps) {
+}: FileUploaderProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const releaseDialogFocusRef = React.useRef<(() => void) | null>(null)
   const usesDefaultImagePick = pickFileProp == null
   const pickFile = pickFileProp ?? pickImageFile
+  const isTile = variant === "tile"
+  const title =
+    titleProp !== undefined
+      ? titleProp
+      : isTile
+        ? "Add"
+        : "Drop an image here"
+  const description =
+    descriptionProp !== undefined
+      ? descriptionProp
+      : isTile
+        ? null
+        : "or click to browse. Paste also works."
+  const showContent = !previewSrc
 
   const acceptCandidate = React.useCallback(
     (file: File | undefined): file is File => {
@@ -137,21 +183,39 @@ function ImageDropzone({
     else delete root.dataset.active
   }
 
+  const uploaderStyle = {
+    ...(borderStyle != null
+      ? { "--df-file-uploader-border-style": borderStyle }
+      : null),
+    ...(borderColor != null
+      ? { "--df-file-uploader-border-color": borderColor }
+      : null),
+    ...(background != null
+      ? { "--df-file-uploader-bg": background }
+      : null),
+    ...dfCornerShapeStyle(cornerShape),
+  } as FileUploaderStyle
+
   return (
     <div
       ref={rootRef}
-      data-df="image-dropzone"
+      data-df="file-uploader"
+      data-variant={variant}
+      data-shape={isTile ? shape : undefined}
+      data-size={isTile ? size : undefined}
+      data-corner-shape={cornerShape}
+      data-preview={previewSrc ? "true" : undefined}
       data-disabled={disabled ? "true" : undefined}
       className={cn(
-        "relative flex w-full flex-col items-center justify-center gap-1.5 border border-dashed border-border bg-muted/40 px-4 py-6 text-center text-muted-foreground transition-colors",
-        "rounded-[var(--radius-lg)]",
-        "hover:border-primary/40 hover:bg-muted/60",
+        "df-file-uploader relative flex flex-col items-center justify-center text-center text-muted-foreground transition-colors",
+        isTile
+          ? "gap-1 overflow-hidden p-2"
+          : "w-full gap-1.5 px-4 py-6",
         "focus-within:shadow-[var(--focus-ring)]",
-        "data-[active=true]:border-primary data-[active=true]:bg-primary/5",
         "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
         className
       )}
-      style={{ minHeight: "var(--df-image-dropzone-min-height)" }}
+      style={uploaderStyle}
       onDragOver={(event) => {
         event.preventDefault()
         setActive(true)
@@ -197,16 +261,42 @@ function ImageDropzone({
           onFile(file)
         }}
       />
-      <span className="pointer-events-none flex flex-col items-center justify-center gap-1.5">
-        {icon ?? <ImagePlus className="size-5" aria-hidden />}
-        <span className="text-sm font-medium text-foreground">{title}</span>
-        {description ? <span className="text-xs">{description}</span> : null}
-        {hint ? (
-          <span className="text-xs text-muted-foreground/80">{hint}</span>
-        ) : null}
-      </span>
+      {previewSrc ? (
+        <img
+          src={previewSrc}
+          alt=""
+          className="df-file-uploader-preview pointer-events-none absolute inset-0 size-full object-cover"
+        />
+      ) : null}
+      {showContent ? (
+        <span className="df-file-uploader-content pointer-events-none relative flex flex-col items-center justify-center gap-1">
+          {icon ?? (
+            <ImagePlus className="df-file-uploader-icon size-5" aria-hidden />
+          )}
+          {title ? (
+            <span
+              className={cn(
+                "df-file-uploader-title font-medium",
+                isTile ? "text-xs" : "text-sm text-foreground"
+              )}
+            >
+              {title}
+            </span>
+          ) : null}
+          {description ? (
+            <span className="df-file-uploader-description text-xs">
+              {description}
+            </span>
+          ) : null}
+          {hint ? (
+            <span className="df-file-uploader-hint text-xs text-muted-foreground/80">
+              {hint}
+            </span>
+          ) : null}
+        </span>
+      ) : null}
     </div>
   )
 }
 
-export { ImageDropzone }
+export { FileUploader }

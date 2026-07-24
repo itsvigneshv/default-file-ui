@@ -37,10 +37,6 @@
   background-color: var(--card);
 }
 
-.bg-muted\/40 {
-  background-color: color-mix(in oklch, var(--muted) 40%, var(--background));
-}
-
 .bg-transparent {
   background-color: transparent;
 }
@@ -72,10 +68,6 @@
   border-color: color-mix(in oklch, var(--border) 80%, var(--background));
 }
 
-.border-dashed {
-  border-style: dashed;
-}
-
 .border-t {
   border-top-width: var(--border-width-hairline);
   border-top-style: solid;
@@ -99,14 +91,6 @@
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.data-\[active\=true\]\:bg-primary\/5[data-active=true] {
-  background-color: color-mix(in oklch, var(--primary) 5%, var(--background));
-}
-
-.data-\[active\=true\]\:border-primary[data-active=true] {
-  border-color: var(--primary);
 }
 
 .data-\[disabled\=true\]\:opacity-50[data-disabled=true] {
@@ -213,16 +197,8 @@
   height: var(--spacing-px);
 }
 
-.hover\:bg-muted\/60:hover {
-  background-color: color-mix(in oklch, var(--muted) 60%, var(--background));
-}
-
 .hover\:bg-neutral-200:hover {
   background-color: var(--df-neutral-200);
-}
-
-.hover\:border-primary\/40:hover {
-  border-color: color-mix(in oklch, var(--primary) 40%, var(--background));
 }
 
 .hover\:scale-105:hover {
@@ -308,6 +284,10 @@
   margin-bottom: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
+.object-cover {
+  object-fit: cover;
+}
+
 .opacity-0 {
   opacity: 0;
 }
@@ -330,6 +310,10 @@
 
 .p-1\.5 {
   padding: calc(1.5 * var(--spacing-unit, 0.25rem));
+}
+
+.p-2 {
+  padding: calc(2 * var(--spacing-unit, 0.25rem));
 }
 
 .p-3 {
@@ -441,10 +425,6 @@
   box-shadow: 0 0 0 var(--ring-width) var(--border);
 }
 
-.rounded-\[var\(--radius-lg\)\] {
-  border-radius: var(--radius-lg);
-}
-
 .rounded-full {
   border-radius: var(--radius-full);
 }
@@ -492,6 +472,11 @@
 .size-9 {
   width: calc(9 * var(--spacing-unit, 0.25rem));
   height: calc(9 * var(--spacing-unit, 0.25rem));
+}
+
+.size-full {
+  width: 100%;
+  height: 100%;
 }
 
 .tabular-nums {

@@ -437,6 +437,7 @@
   --home-tool-preview-mesh-gradient: #fcf5f0;
   --home-tool-preview-color-lab: #fcf5f0;
   --home-tool-preview-design-extractor: #fef7f2;
+  --home-tool-preview-stage-shot: #0b0c0f;
   --home-tool-preview-markdown-preview: #f7f8fa;
   --home-showcase-radius: calc(var(--radius) * 3.4);
   --home-hero-collage-gap: calc(28 * var(--spacing-unit, 0.25rem));
@@ -720,7 +721,33 @@
   --df-nav-rail-radius: 0;
   --df-nav-rail-item-radius: var(--radius-lg);
   --df-demo-stage-height: calc(112 * var(--spacing-unit));
-  --df-image-dropzone-min-height: calc(30 * var(--spacing-unit));
+  --df-file-uploader-min-height: calc(30 * var(--spacing-unit));
+  --df-file-uploader-border-style: dashed;
+  --df-file-uploader-border-color: var(--border);
+  --df-file-uploader-bg: color-mix(in oklch, var(--muted) 40%, transparent);
+  --df-file-uploader-border-color-hover: color-mix(
+    in oklch,
+    var(--primary) 40%,
+    transparent
+  );
+  --df-file-uploader-bg-hover: color-mix(in oklch, var(--muted) 60%, transparent);
+  --df-file-uploader-border-color-active: var(--primary);
+  --df-file-uploader-bg-active: color-mix(
+    in oklch,
+    var(--primary) 5%,
+    transparent
+  );
+  --df-file-uploader-tile-size-sm: calc(16 * var(--spacing-unit));
+  --df-file-uploader-tile-size-md: calc(22 * var(--spacing-unit));
+  --df-file-uploader-tile-size-lg: calc(28 * var(--spacing-unit));
+  --df-file-uploader-tile-size-xl: calc(36 * var(--spacing-unit));
+  --df-file-uploader-tile-size: var(--df-file-uploader-tile-size-md);
+  --df-file-uploader-tile-icon-size-sm: calc(4 * var(--spacing-unit));
+  --df-file-uploader-tile-icon-size-md: calc(5 * var(--spacing-unit));
+  --df-file-uploader-tile-icon-size-lg: calc(6 * var(--spacing-unit));
+  --df-file-uploader-tile-icon-size-xl: calc(7 * var(--spacing-unit));
+  --df-file-uploader-tile-icon-size: var(--df-file-uploader-tile-icon-size-md);
+  --df-file-uploader-tile-radius: var(--radius-lg);
   --df-leading-code: 1.7;
 
   --success: oklch(0.55 0.14 145);

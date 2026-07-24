@@ -226,6 +226,7 @@ export type {
   OptionListSearchProps,
   OptionListSubContentProps,
   OptionListSubmenuProps,
+  OptionListWidth,
   SelectionMode,
 } from "./df-option-list"
 export {
@@ -255,8 +256,14 @@ export { NumberSlider, type NumberSliderProps } from "./df-number-slider"
 export { ChoiceChip } from "./df-choice-chip"
 export type { ChoiceChipProps, ChoiceChipSize } from "./df-choice-chip"
 export { PanelSection } from "./df-panel-section"
-export { ImageDropzone } from "./df-image-dropzone"
-export type { ImageDropzoneProps } from "./df-image-dropzone"
+export { FileUploader } from "./df-file-uploader"
+export type {
+  FileUploaderBorderStyle,
+  FileUploaderProps,
+  FileUploaderShape,
+  FileUploaderSize,
+  FileUploaderVariant,
+} from "./df-file-uploader"
 export {
   FormatToolbar,
   FORMAT_TOOLBAR_CALLOUT_TYPES,
