@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T08:52:46.667Z",
+  "generatedAt": "2026-07-24T10:54:48.381Z",
   "source": "docs/api",
   "colorSystem": {
     "registryName": "color-system",
@@ -359,7 +359,7 @@
       "slug": "option-list",
       "name": "option-list",
       "title": "Option List",
-      "description": "Picker panel with option rows, search, checks, and footer actions. Select composes this.",
+      "description": "Picker panel with option rows, search, checks, and footer actions. Configure root width and panel match. Select composes this.",
       "aliases": [
         "options list",
         "select list",
@@ -533,7 +533,7 @@
       "slug": "select",
       "name": "select",
       "title": "Select",
-      "description": "Single or multi choice field that composes Option List. Closed list selection, not free-text autocomplete.",
+      "description": "Single or multi choice field that composes Option List. Configure width and open-list sizing. Closed list selection, not free-text autocomplete.",
       "aliases": [
         "dropdown",
         "dropdown select",

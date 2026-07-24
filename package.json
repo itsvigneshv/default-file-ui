@@ -33,6 +33,13 @@
     "./components/*": "./src/components/*.tsx",
     "./hooks": "./src/hooks/index.ts",
     "./utils": "./src/lib/utils.ts",
+    "./df-schema": "./src/lib/df-schema/index.ts",
+    "./df-store": "./src/lib/df-store/index.ts",
+    "./df-date": "./src/lib/df-date/index.ts",
+    "./df-dnd": "./src/lib/df-dnd/index.ts",
+    "./df-editor": "./src/lib/df-editor/index.ts",
+    "./df-calendar-grid": "./src/lib/df-calendar-grid/index.ts",
+    "./df-chart": "./src/lib/df-chart/index.ts",
     "./package.json": "./package.json"
   },
   "scripts": {

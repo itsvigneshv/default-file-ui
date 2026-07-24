@@ -8574,3 +8574,99 @@
     color: HighlightText;
   }
 }
+
+/* df-editor: owned document surface + toolbar chrome */
+.df-editor {
+  display: flex;
+  flex-direction: column;
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--card);
+  overflow: hidden;
+}
+
+.df-editor[data-disabled="true"] {
+  opacity: var(--opacity-disabled);
+}
+
+.df-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(0.5 * var(--spacing-unit, 0.25rem));
+  align-items: center;
+  border-bottom: var(--border-width-hairline) solid var(--border);
+  padding: calc(1.5 * var(--spacing-unit, 0.25rem))
+    calc(2 * var(--spacing-unit, 0.25rem));
+  background: color-mix(in oklch, var(--muted) 40%, transparent);
+}
+
+.df-editor-surface-wrap {
+  position: relative;
+  min-height: calc(28 * var(--spacing-unit, 0.25rem));
+}
+
+.df-editor-placeholder {
+  position: absolute;
+  top: calc(3 * var(--spacing-unit, 0.25rem));
+  left: calc(3 * var(--spacing-unit, 0.25rem));
+  margin: 0;
+  pointer-events: none;
+  color: var(--muted-foreground);
+  font-size: var(--df-text-sm);
+}
+
+.df-editor-surface {
+  min-height: calc(28 * var(--spacing-unit, 0.25rem));
+  padding: calc(3 * var(--spacing-unit, 0.25rem));
+  outline: none;
+  color: var(--foreground);
+  font-size: var(--df-text-sm);
+  line-height: var(--df-leading-normal);
+}
+
+.df-editor-surface:focus-visible {
+  box-shadow: inset var(--focus-ring);
+}
+
+.df-editor-surface :where(h1, h2, h3) {
+  margin: 0 0 calc(2 * var(--spacing-unit, 0.25rem));
+  font-weight: var(--df-font-weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.df-editor-surface :where(h1) {
+  font-size: var(--df-text-base);
+}
+
+.df-editor-surface :where(h2, h3) {
+  font-size: var(--df-text-sm);
+}
+
+.df-editor-surface :where(p) {
+  margin: 0 0 calc(2 * var(--spacing-unit, 0.25rem));
+}
+
+.df-editor-surface :where(ul, ol) {
+  margin: 0 0 calc(2 * var(--spacing-unit, 0.25rem));
+  padding-left: calc(5 * var(--spacing-unit, 0.25rem));
+}
+
+.df-editor-surface :where(a) {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: calc(0.5 * var(--spacing-unit, 0.25rem));
+}
+
+.df-editor-surface :where(code) {
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  padding: 0 calc(1 * var(--spacing-unit, 0.25rem));
+  font-size: var(--df-text-13);
+}
+
+.df-editor-surface :where([data-mention-id]) {
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  padding: 0 calc(1 * var(--spacing-unit, 0.25rem));
+  font-weight: var(--df-font-weight-medium);
+}

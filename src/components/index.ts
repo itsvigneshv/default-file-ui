@@ -329,3 +329,5 @@ export type {
   TextMarkLayer,
   TextMarkBracketSide,
 } from "./df-text-mark"
+export { DfEditor } from "./df-editor"
+export type { DfEditorProps } from "./df-editor"

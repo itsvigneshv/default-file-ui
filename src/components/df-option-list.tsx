@@ -18,6 +18,8 @@ import { cn } from "../lib/utils"
 type SelectionMode = "single" | "multiple"
 type OptionListItemLayout = "inline" | "stacked"
 
+type OptionListWidthMode = "hug" | "fill" | "fixed"
+
 type OptionListContextValue = {
   selectionMode: SelectionMode
   value: string | null
@@ -44,6 +46,7 @@ type OptionListContextValue = {
   closeOnSelect: boolean
   searchQuery: string
   setSearchQuery: (query: string) => void
+  widthMode: OptionListWidthMode
   submenuAnimated: boolean
   submenuOpenDuration: number
   submenuCloseDuration: number
@@ -485,6 +488,7 @@ function OptionList({
         closeOnSelect: resolvedCloseOnSelect,
         searchQuery,
         setSearchQuery,
+        widthMode: resolvedWidth.mode,
         submenuAnimated,
         submenuOpenDuration,
         submenuCloseDuration,
@@ -780,7 +784,7 @@ function OptionListContent({
   sideOffset = 4,
   align = "start",
   alignOffset = 0,
-  alignItemWithTrigger = false,
+  alignItemWithTrigger: alignItemWithTriggerProp,
   portal = true,
   dismissOnScroll = true,
   search = false,
@@ -804,7 +808,11 @@ function OptionListContent({
     optionDomId,
     value,
     values,
+    widthMode,
   } = useOptionListContext()
+  const alignItemWithTrigger =
+    alignItemWithTriggerProp ??
+    (widthMode === "fill" || widthMode === "fixed")
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const typeaheadRef = React.useRef<{ query: string; timer: number | null }>({
     query: "",
