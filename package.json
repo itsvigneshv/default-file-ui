@@ -33,6 +33,26 @@
     "./components/*": "./src/components/*.tsx",
     "./hooks": "./src/hooks/index.ts",
     "./utils": "./src/lib/utils.ts",
+    "./df-schema": "./src/lib/df-schema/index.ts",
+    "./df-store": "./src/lib/df-store/index.ts",
+    "./df-date": "./src/lib/df-date/index.ts",
+    "./df-dnd": "./src/lib/df-dnd/index.ts",
+    "./df-editor": "./src/lib/df-editor/index.ts",
+    "./df-calendar-grid": "./src/lib/df-calendar-grid/index.ts",
+    "./df-chart": "./src/lib/df-chart/index.ts",
+    "./df-virtual": "./src/lib/df-virtual/index.ts",
+    "./df-data-grid": "./src/lib/df-data-grid/index.ts",
+    "./df-avatar": "./src/lib/df-avatar/index.ts",
+    "./df-command": "./src/lib/df-command/index.ts",
+    "./df-context-menu": "./src/lib/df-context-menu/index.ts",
+    "./df-date-picker": "./src/lib/df-date-picker/index.ts",
+    "./df-tag-input": "./src/lib/df-tag-input/index.ts",
+    "./df-combobox": "./src/lib/df-combobox/index.ts",
+    "./df-split": "./src/lib/df-split/index.ts",
+    "./df-focus-trap": "./src/lib/df-focus-trap/index.ts",
+    "./df-timeline": "./src/lib/df-timeline/index.ts",
+    "./df-widget-grid": "./src/lib/df-widget-grid/index.ts",
+    "./df-local-store": "./src/lib/df-local-store/index.ts",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -73,6 +93,8 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@tanstack/react-virtual": "^3.14.8",
+    "recharts": "^3.9.2"
   }
 }

@@ -721,6 +721,179 @@
           "target": "default-file-ui/components/df-text-mark.tsx"
         }
       ]
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "description": "Virtualized timeline with shared row scroll, time-scale bars, dependency routing, and snapped drag edits.",
+      "dependencies": [],
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-timeline.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-timeline.tsx"
+        },
+        {
+          "path": "src/lib/df-timeline/index.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-timeline/index.ts"
+        },
+        {
+          "path": "src/lib/df-timeline/scale.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-timeline/scale.ts"
+        },
+        {
+          "path": "src/lib/df-timeline/bars.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-timeline/bars.ts"
+        },
+        {
+          "path": "src/lib/df-timeline/dependencies.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-timeline/dependencies.ts"
+        },
+        {
+          "path": "src/lib/df-timeline/drag.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-timeline/drag.ts"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "Shared chart chrome: sized frame with empty and loading states, token tooltip surface, and legend. Compose plot primitives inside the frame.",
+      "dependencies": [
+        "recharts"
+      ],
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-chart.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-chart.tsx"
+        },
+        {
+          "path": "src/lib/df-chart/index.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-chart/index.ts"
+        },
+        {
+          "path": "src/lib/df-chart/theme.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-chart/theme.ts"
+        },
+        {
+          "path": "src/lib/df-chart/format.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-chart/format.ts"
+        },
+        {
+          "path": "src/lib/df-chart/series.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-chart/series.ts"
+        }
+      ]
+    },
+    {
+      "name": "widget-grid",
+      "type": "registry:ui",
+      "title": "Widget Grid",
+      "description": "Twelve-column dashboard layout with drag move, edge resize, ghost previews, and keyboard cell editing.",
+      "dependencies": [],
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-widget-grid.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-widget-grid.tsx"
+        },
+        {
+          "path": "src/lib/df-widget-grid/index.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-widget-grid/index.ts"
+        },
+        {
+          "path": "src/lib/df-widget-grid/layout.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-widget-grid/layout.ts"
+        },
+        {
+          "path": "src/lib/df-widget-grid/pointer.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-widget-grid/pointer.ts"
+        },
+        {
+          "path": "src/lib/df-widget-grid/serialize.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-widget-grid/serialize.ts"
+        }
+      ]
+    },
+    {
+      "name": "editor",
+      "type": "registry:ui",
+      "title": "Editor",
+      "description": "Markdown-first rich text surface with AST transforms, static and floating toolbars, and contentEditable input mapping.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "foundation",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-editor.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-editor.tsx"
+        },
+        {
+          "path": "src/lib/df-editor/index.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/index.ts"
+        },
+        {
+          "path": "src/lib/df-editor/ast.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/ast.ts"
+        },
+        {
+          "path": "src/lib/df-editor/parse.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/parse.ts"
+        },
+        {
+          "path": "src/lib/df-editor/serialize.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/serialize.ts"
+        },
+        {
+          "path": "src/lib/df-editor/transforms.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/transforms.ts"
+        },
+        {
+          "path": "src/lib/df-editor/input-rules.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/input-rules.ts"
+        },
+        {
+          "path": "src/lib/df-editor/url.ts",
+          "type": "registry:lib",
+          "target": "default-file-ui/lib/df-editor/url.ts"
+        }
+      ]
     }
   ]
 }

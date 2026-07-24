@@ -99,6 +99,34 @@
   }
 }
 
+@keyframes df-tag-input-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(-1 * var(--df-tag-input-shake-travel)));
+  }
+  75% {
+    transform: translateX(var(--df-tag-input-shake-travel));
+  }
+}
+
+@keyframes df-drawer-in {
+  from {
+    opacity: var(--df-opacity-0);
+    transform: translate3d(
+      var(--df-drawer-enter-x),
+      var(--df-drawer-enter-y),
+      0
+    );
+  }
+  to {
+    opacity: var(--df-opacity-100);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes df-tab-progress {
   from {
     transform: scaleX(0);
@@ -375,7 +403,10 @@
   :where([data-df="spinner"] svg),
   .df-spinner svg,
   :where([data-df="progress"][data-state="indeterminate"] .df-progress-indicator),
-  .df-progress[data-state="indeterminate"] .df-progress-indicator {
+  .df-progress[data-state="indeterminate"] .df-progress-indicator,
+  .df-data-grid-skeleton,
+  :where([data-df="skeleton"]),
+  .df-skeleton {
     animation: none !important;
   }
 

@@ -50,6 +50,7 @@ export function useIsClient() {
 export const DISMISS_NESTED_LAYER_SELECTORS = [
   '[data-df="option-list-content"]',
   '[data-df="select-content"]',
+  '[data-df="context-menu-content"]',
 ] as const
 
 function isInsideDismissSurface(

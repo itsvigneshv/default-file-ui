@@ -32,9 +32,16 @@ type ToastPosition =
   | "bottom-center"
   | "bottom-right"
 
+type ToastAction = {
+  label: string
+  onClick: () => void
+}
+
 type ToastShowOptions = {
   /** Replaces the tone icon. Pass null to hide the leading slot. */
   leading?: React.ReactNode
+  /** Compact action control shown before dismiss. */
+  action?: ToastAction
 }
 
 type ToastChromeProps = {
@@ -59,6 +66,7 @@ type ToastItem = {
   tone: ToastTone
   message: string
   leading?: React.ReactNode
+  action?: ToastAction
 }
 
 type ToastListener = () => void
@@ -67,6 +75,9 @@ let toasts: ToastItem[] = []
 let position: ToastPosition = "bottom-right"
 const listeners = new Set<ToastListener>()
 const dismissTimers = new Map<string, number>()
+const dismissRemainingMs = new Map<string, number>()
+const dismissStartedAt = new Map<string, number>()
+const pausedDismissIds = new Set<string>()
 
 function emit() {
   for (const listener of listeners) listener()
@@ -104,15 +115,48 @@ function clearDismissTimer(id: string) {
   dismissTimers.delete(id)
 }
 
+function scheduleDismiss(id: string, ms: number) {
+  clearDismissTimer(id)
+  const duration = Math.max(0, ms)
+  dismissRemainingMs.set(id, duration)
+  dismissStartedAt.set(id, performance.now())
+  const timer = window.setTimeout(() => dismiss(id), duration)
+  dismissTimers.set(id, timer)
+}
+
+function pauseDismiss(id: string) {
+  if (pausedDismissIds.has(id)) return
+  const startedAt = dismissStartedAt.get(id)
+  const remaining = dismissRemainingMs.get(id)
+  if (startedAt == null || remaining == null) return
+  const elapsed = performance.now() - startedAt
+  dismissRemainingMs.set(id, Math.max(0, remaining - elapsed))
+  clearDismissTimer(id)
+  dismissStartedAt.delete(id)
+  pausedDismissIds.add(id)
+}
+
+function resumeDismiss(id: string) {
+  if (!pausedDismissIds.has(id)) return
+  pausedDismissIds.delete(id)
+  const remaining = dismissRemainingMs.get(id) ?? TOAST_DISMISS_MS
+  scheduleDismiss(id, remaining)
+}
+
 function push(tone: ToastTone, message: string, options?: ToastShowOptions) {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
   toasts = [
     ...toasts,
-    { id, tone, message, leading: options?.leading },
+    {
+      id,
+      tone,
+      message,
+      leading: options?.leading,
+      action: options?.action,
+    },
   ]
   emit()
-  const timer = window.setTimeout(() => dismiss(id), TOAST_DISMISS_MS)
-  dismissTimers.set(id, timer)
+  scheduleDismiss(id, TOAST_DISMISS_MS)
   return id
 }
 
@@ -122,12 +166,18 @@ function dismiss(id?: string) {
       window.clearTimeout(timer)
     }
     dismissTimers.clear()
+    dismissRemainingMs.clear()
+    dismissStartedAt.clear()
+    pausedDismissIds.clear()
     toasts = []
     emit()
     return
   }
 
   clearDismissTimer(id)
+  dismissRemainingMs.delete(id)
+  dismissStartedAt.delete(id)
+  pausedDismissIds.delete(id)
   toasts = toasts.filter((item) => item.id !== id)
   emit()
 }
@@ -201,14 +251,20 @@ type ToastProps = React.ComponentProps<"div"> &
     message: string
     /** Defaults to the tone icon. Pass null to hide the slot. */
     leading?: React.ReactNode
+    /** Compact action control shown before dismiss. */
+    action?: ToastAction
     onDismiss?: () => void
+    /** Pause the live auto-dismiss timer while the action is hovered or focused. */
+    onActionPauseChange?: (paused: boolean) => void
   }
 
 function Toast({
   tone,
   message,
   leading,
+  action,
   onDismiss,
+  onActionPauseChange,
   showClose = true,
   background,
   foreground,
@@ -247,6 +303,15 @@ function Toast({
     ...style,
   } as React.CSSProperties
 
+  const handleActionClick = () => {
+    action?.onClick()
+    onDismiss?.()
+  }
+
+  const handleActionPause = (paused: boolean) => {
+    onActionPauseChange?.(paused)
+  }
+
   return (
     <div
       role="status"
@@ -262,6 +327,19 @@ function Toast({
         </span>
       ) : null}
       <p className="df-toast-message">{message}</p>
+      {action ? (
+        <button
+          type="button"
+          className="df-toast-action"
+          onClick={handleActionClick}
+          onMouseEnter={() => handleActionPause(true)}
+          onMouseLeave={() => handleActionPause(false)}
+          onFocus={() => handleActionPause(true)}
+          onBlur={() => handleActionPause(false)}
+        >
+          {action.label}
+        </button>
+      ) : null}
       {showClose ? (
         onDismiss ? (
           <button
@@ -373,8 +451,13 @@ export function Toaster({
           tone={item.tone}
           message={item.message}
           leading={item.leading}
+          action={item.action}
           showClose={showClose}
           onDismiss={() => dismiss(item.id)}
+          onActionPauseChange={(paused) => {
+            if (paused) pauseDismiss(item.id)
+            else resumeDismiss(item.id)
+          }}
         />
       ))}
     </div>,
@@ -384,6 +467,7 @@ export function Toaster({
 
 export { Toast, setToastPosition }
 export type {
+  ToastAction,
   ToastChromeProps,
   ToastPosition,
   ToastProps,

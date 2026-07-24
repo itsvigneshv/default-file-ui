@@ -2,7 +2,7 @@
   "name": "select",
   "slug": "select",
   "title": "Select",
-  "description": "Single or multi choice field that composes Option List. Closed list selection, not free-text autocomplete.",
+  "description": "Single or multi choice field that composes Option List. Configure width and open-list sizing. Closed list selection, not free-text autocomplete.",
   "aliases": [
     "dropdown",
     "dropdown select",
@@ -22,12 +22,12 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Select composes Option List for the open panel. Configure the root, field chrome, trigger, value display, content, and items below. The trigger is a combobox with full keyboard support inherited from Option List.",
+    "description": "Select composes Option List for the open panel. Configure root width, field chrome, trigger, value display, content, and items below. Root width sets the trigger; open-list width follows that mode unless SelectContent overrides alignItemWithTrigger. The trigger is a combobox with full keyboard support inherited from Option List.",
     "groups": [
       {
         "id": "select-root",
         "title": "Select",
-        "description": "Root state for single or multi choice, open state, disabled, and validation.",
+        "description": "Root state for single or multi choice, open state, width, disabled, and validation.",
         "props": [
           {
             "name": "selectionMode",
@@ -91,7 +91,7 @@
             "name": "width",
             "type": "\"hug\" | \"fill\" | string",
             "default": "\"hug\"",
-            "description": "Root and trigger width. hug sizes to the value. fill stretches to the parent. Pass a CSS length such as 12rem or 200px for a fixed width."
+            "description": "Root and trigger width. hug sizes to the value. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Fill and fixed also default the open list to match the trigger; hug defaults the list to hug option content. Override with SelectContent alignItemWithTrigger."
           },
           {
             "name": "disabled",
@@ -397,7 +397,7 @@
       {
         "id": "select-content",
         "title": "SelectContent",
-        "description": "Open Option List panel. Same API as OptionListContent.",
+        "description": "Open Option List panel. Same API as OptionListContent, including alignItemWithTrigger for menu width.",
         "props": [
           {
             "name": "align",
@@ -408,8 +408,7 @@
           {
             "name": "alignItemWithTrigger",
             "type": "boolean",
-            "default": "false",
-            "description": "When true, menu width matches the trigger. When false, the menu hugs the longest option (floored at --df-menu-min-width)."
+            "description": "Configure open-list width. true matches the trigger. false hugs the longest option (floored at --df-menu-min-width). Omit to follow the root width prop: hug defaults to false; fill and fixed default to true."
           },
           {
             "name": "side",
@@ -697,18 +696,17 @@
           {
             "name": "Text truncation",
             "type": "width CSS length",
-            "description": "A fixed width that is shorter than the label ellipsizes SelectValue. The open list still hugs options unless alignItemWithTrigger is true."
+            "description": "A fixed width that is shorter than the label ellipsizes SelectValue. The open list matches the trigger by default for fill and fixed width."
           },
           {
             "name": "Hug menu content",
             "type": "alignItemWithTrigger={false}",
-            "default": "false",
-            "description": "Default menu sizing: width follows the longest option (nowrap rows)."
+            "description": "Menu width follows the longest option. Default when root width is hug, or pass false to override fill and fixed."
           },
           {
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
-            "description": "Lock the menu to the trigger width. Useful for fill or fixed width fields."
+            "description": "Lock the menu to the trigger width. Default when root width is fill or fixed."
           }
         ]
       },

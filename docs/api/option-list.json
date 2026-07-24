@@ -2,7 +2,7 @@
   "name": "option-list",
   "slug": "option-list",
   "title": "Option List",
-  "description": "Picker panel with option rows, search, checks, and footer actions. Select composes this.",
+  "description": "Picker panel with option rows, search, checks, and footer actions. Configure root width and panel match. Select composes this.",
   "aliases": [
     "options list",
     "select list",
@@ -21,12 +21,12 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Open panel and option rows for pickers. Select composes this list for its menu. Full keyboard support: arrow keys, Home and End, Enter, typeahead, and focus return to the trigger on close.",
+    "description": "Open panel and option rows for pickers. Select composes this list for its menu. Configure root width for the trigger shell; open-list width follows that mode unless OptionListContent overrides alignItemWithTrigger. Full keyboard support: arrow keys, Home and End, Enter, typeahead, and focus return to the trigger on close.",
     "groups": [
       {
         "id": "option-list-root",
         "title": "OptionList",
-        "description": "Root selection and open state.",
+        "description": "Root selection, open state, and width.",
         "props": [
           {
             "name": "selectionMode",
@@ -91,7 +91,7 @@
             "name": "width",
             "type": "\"hug\" | \"fill\" | string",
             "default": "\"hug\"",
-            "description": "Root width for the list and its trigger. hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem or 200px for a fixed width. Select triggers inside follow the same width."
+            "description": "Root width for the list and its trigger. hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Select triggers inside follow the same width. Fill and fixed also default the open panel to match the trigger; hug defaults the panel to hug option content. Override with OptionListContent alignItemWithTrigger."
           },
           {
             "name": "submenuAnimated",
@@ -154,8 +154,7 @@
           {
             "name": "alignItemWithTrigger",
             "type": "boolean",
-            "default": "false",
-            "description": "When true, menu width matches the trigger. When false, the menu hugs the longest option (floored at --df-menu-min-width)."
+            "description": "Configure open-list width. true matches the trigger. false hugs the longest option (floored at --df-menu-min-width). Omit to follow the root width prop: hug defaults to false; fill and fixed default to true."
           },
           {
             "name": "side",
@@ -559,13 +558,12 @@
           {
             "name": "Hug menu content",
             "type": "alignItemWithTrigger={false}",
-            "default": "false",
-            "description": "Panel width follows option content; at least trigger width."
+            "description": "Panel width follows option content. Default when root width is hug, or pass false to override fill and fixed."
           },
           {
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
-            "description": "Lock panel width to the trigger."
+            "description": "Lock panel width to the trigger. Default when root width is fill or fixed."
           },
           {
             "name": "Inline previews",

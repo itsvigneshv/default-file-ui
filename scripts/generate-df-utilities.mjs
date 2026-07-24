@@ -332,6 +332,8 @@ function declsFor(utility) {
     "cursor-grabbing": { cursor: "grabbing" },
     "object-cover": { "object-fit": "cover" },
     "object-contain": { "object-fit": "contain" },
+    "bg-cover": { "background-size": "cover" },
+    "bg-center": { "background-position": "center" },
     "cursor-default": { cursor: "default" },
     "cursor-not-allowed": { cursor: "not-allowed" },
     "cursor-crosshair": { cursor: "crosshair" },
