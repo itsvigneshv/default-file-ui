@@ -3,7 +3,7 @@ import {
   formatUtcDate,
   startOfUtcDay,
   toDate,
-} from "../df-date/index.ts"
+} from "../df-date/index"
 
 export type CalendarCell = {
   date: string

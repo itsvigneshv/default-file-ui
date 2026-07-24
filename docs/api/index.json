@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T13:08:04.342Z",
+  "generatedAt": "2026-07-24T18:20:25.121Z",
   "source": "docs/api",
   "colorSystem": {
     "registryName": "color-system",
@@ -403,7 +403,7 @@
       ],
       "importPath": "@default-file/ui/components/df-options-panel",
       "dependencies": [],
-      "propCount": 29
+      "propCount": 30
     },
     {
       "slug": "overlay-hint",

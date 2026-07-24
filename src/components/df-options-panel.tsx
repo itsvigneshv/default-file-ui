@@ -75,13 +75,23 @@ function OptionsPanelTitle({
   )
 }
 
+type OptionsPanelBodyProps = React.ComponentProps<"div"> & {
+  /**
+   * Size the body to its content with no max-height scroll clamp.
+   * Default keeps the portaled height cap and vertical scroll.
+   */
+  fit?: boolean
+}
+
 function OptionsPanelBody({
   className,
+  fit = false,
   ...props
-}: React.ComponentProps<"div">) {
+}: OptionsPanelBodyProps) {
   return (
     <div
       data-df="options-panel-body"
+      data-fit={fit ? "true" : undefined}
       className={cn(
         "flex w-max min-w-0 max-w-full flex-col gap-4 px-4 py-4",
         className
@@ -168,4 +178,8 @@ export {
   OptionsPanelTitle,
   OptionsPanelTrigger,
 }
-export type { OptionsPanelContentProps, OptionsPanelFooterProps }
+export type {
+  OptionsPanelBodyProps,
+  OptionsPanelContentProps,
+  OptionsPanelFooterProps,
+}

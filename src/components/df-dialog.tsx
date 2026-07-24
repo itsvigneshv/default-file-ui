@@ -5,6 +5,7 @@ import { createPortal } from "react-dom"
 import { X } from "lucide-react"
 
 import { useControllableState, useIsClient } from "../hooks"
+import { useFocusTrap } from "../lib/df-focus-trap"
 import { cn } from "../lib/utils"
 import { Button } from "./df-button"
 
@@ -123,20 +124,17 @@ function DialogTrigger({
   )
 }
 
-const FOCUSABLE_SELECTOR = [
-  "a[href]",
-  "button:not([disabled])",
-  "textarea:not([disabled])",
-  "input:not([disabled])",
-  "select:not([disabled])",
-  '[tabindex]:not([tabindex="-1"])',
-].join(",")
+type DialogPlacement = "center" | "left"
 
 function DialogContent({
   className,
   children,
+  placement = "center",
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement> & {
+  /** Side sheet when left; centered modal otherwise. */
+  placement?: DialogPlacement
+}) {
   const {
     open,
     setOpen,
@@ -146,80 +144,19 @@ function DialogContent({
     hasDescription,
   } = useDialogContext()
   const panelRef = React.useRef<HTMLDivElement | null>(null)
-  const previousFocusRef = React.useRef<HTMLElement | null>(null)
   const mounted = useIsClient()
-  const wasOpenRef = React.useRef(false)
 
-  React.useEffect(() => {
-    if (!open) {
-      if (wasOpenRef.current) {
-        wasOpenRef.current = false
-        const restore =
-          triggerRef.current ?? previousFocusRef.current ?? null
-        previousFocusRef.current = null
-        restore?.focus?.()
-      }
-      return
-    }
-
-    wasOpenRef.current = true
-    const active = document.activeElement
-    previousFocusRef.current =
-      active instanceof HTMLElement ? active : null
-
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    const panel = panelRef.current
-    const focusables = panel
-      ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
-      : []
-    const initial = focusables[0] ?? panel
-    initial?.focus?.()
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-    }
-  }, [open, triggerRef])
-
-  React.useEffect(() => {
-    if (!open) return
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault()
-        setOpen(false)
-        return
-      }
-      if (event.key !== "Tab") return
-      const panel = panelRef.current
-      if (!panel) return
-      const focusables = Array.from(
-        panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-      )
-      if (focusables.length === 0) {
-        event.preventDefault()
-        panel.focus()
-        return
-      }
-      const first = focusables[0]
-      const last = focusables[focusables.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-
-    window.addEventListener("keydown", onKeyDown)
-    return () => window.removeEventListener("keydown", onKeyDown)
-  }, [open, setOpen])
+  useFocusTrap({
+    open,
+    panelRef,
+    triggerRef,
+    onEscape: () => setOpen(false),
+  })
 
   if (!mounted || !open) return null
 
   return createPortal(
-    <div data-df="dialog-root">
+    <div data-df="dialog-root" data-placement={placement}>
       <div
         data-df="dialog-scrim"
         aria-hidden
@@ -232,6 +169,7 @@ function DialogContent({
         aria-labelledby={titleId}
         aria-describedby={hasDescription ? descriptionId : undefined}
         data-df="dialog-content"
+        data-placement={placement}
         tabIndex={-1}
         className={cn(className)}
         {...props}

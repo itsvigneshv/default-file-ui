@@ -4444,6 +4444,12 @@
   padding: calc(4 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="dialog-root"][data-placement="left"]) {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+}
+
 :where([data-df="dialog-scrim"]) {
   position: absolute;
   inset: 0;
@@ -4466,6 +4472,17 @@
   color: var(--card-foreground);
   box-shadow: var(--df-shadow-panel);
   outline: none;
+}
+
+:where([data-df="dialog-content"][data-placement="left"]) {
+  width: min(var(--df-drawer-width-md), 100%);
+  max-height: none;
+  height: 100%;
+  border-radius: 0;
+  border-right: var(--border-width-hairline) solid var(--border);
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
 }
 
 :where([data-df="dialog-header"]) {
@@ -4892,7 +4909,8 @@
 
 :where(
   [data-df="options-panel-content"][data-portal="false"] [data-df="options-panel-body"]
-) {
+),
+:where([data-df="options-panel-body"][data-fit="true"]) {
   max-height: none;
   overflow-y: visible;
 }
@@ -6183,6 +6201,103 @@
 .df-toast-close:hover {
   background-color: var(--df-toast-close-hover-bg);
   color: var(--df-toast-close-hover-fg);
+}
+
+.df-toast-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--df-toast-action-padding-inline);
+  border: none;
+  border-radius: var(--df-toast-action-radius);
+  background: transparent;
+  color: var(--df-toast-action-fg);
+  font-size: var(--df-toast-action-font-size);
+  font-weight: var(--df-toast-action-font-weight);
+  line-height: var(--df-leading-4-5);
+  cursor: pointer;
+}
+
+.df-toast-action:hover {
+  background-color: var(--df-toast-action-hover-bg);
+  color: var(--df-toast-action-hover-fg);
+}
+
+.df-toast-action:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+:where([data-df="dnd-overlay"]),
+.df-dnd-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--df-dnd-overlay-z);
+  pointer-events: none;
+  will-change: transform;
+}
+
+:where([data-df="dnd-overlay"] .df-dnd-overlay-lift),
+.df-dnd-overlay-lift {
+  border-radius: var(--df-dnd-overlay-radius);
+  box-shadow: var(--df-dnd-overlay-shadow);
+  transform-origin: top left;
+}
+
+:where([data-df="dnd-overlay"] .df-dnd-overlay-lift[data-lift="true"]),
+.df-dnd-overlay-lift[data-lift="true"] {
+  transform: scale(var(--df-dnd-lift-scale));
+}
+
+:where([data-df-dnd-placeholder="true"]),
+.df-dnd-placeholder {
+  opacity: var(--df-dnd-placeholder-opacity);
+  border: var(--df-dnd-placeholder-border-width) dashed
+    var(--df-dnd-placeholder-border-color);
+  background-color: var(--df-dnd-placeholder-bg);
+  box-shadow: none;
+}
+
+:where([data-df-drop-indicator]),
+.df-dnd-drop-line {
+  position: relative;
+}
+
+:where([data-df-drop-indicator="before"])::before,
+:where([data-df-drop-indicator="after"])::after,
+.df-dnd-drop-line[data-placement="before"]::before,
+.df-dnd-drop-line[data-placement="after"]::after {
+  content: "";
+  position: absolute;
+  left: var(--df-dnd-drop-line-inset-inline);
+  right: var(--df-dnd-drop-line-inset-inline);
+  height: var(--df-dnd-drop-line-thickness);
+  background-color: var(--df-dnd-drop-line-color);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  z-index: var(--z-raised);
+}
+
+:where([data-df-drop-indicator="before"])::before,
+.df-dnd-drop-line[data-placement="before"]::before {
+  top: 0;
+  transform: translateY(calc(-0.5 * var(--df-dnd-drop-line-thickness)));
+}
+
+:where([data-df-drop-indicator="after"])::after,
+.df-dnd-drop-line[data-placement="after"]::after {
+  bottom: 0;
+  transform: translateY(calc(0.5 * var(--df-dnd-drop-line-thickness)));
+}
+
+:where([data-df-drop-indicator="into"]),
+.df-dnd-drop-line[data-placement="into"] {
+  outline: var(--border-width-hairline) solid var(--df-dnd-drop-line-color);
+  outline-offset: calc(-1 * var(--border-width-hairline));
 }
 
 :where([data-df="floating-positioner"]) {
@@ -8575,63 +8690,96 @@
   }
 }
 
-/* df-editor: owned document surface + toolbar chrome */
+/* df-editor: markdown surface, static toolbar, and floating selection toolbar */
+:where([data-df="editor"]),
 .df-editor {
+  --df-editor-surface-bg: var(--card);
+  --df-editor-surface-fg: var(--card-foreground);
+  --df-editor-border: var(--border);
+  position: relative;
   display: flex;
   flex-direction: column;
-  border: var(--border-width-hairline) solid var(--border);
-  border-radius: var(--radius-xl);
-  background: var(--card);
   overflow: hidden;
-}
-
-.df-editor[data-disabled="true"] {
-  opacity: var(--opacity-disabled);
+  border: var(--border-width-hairline) solid var(--df-editor-border);
+  border-radius: var(--df-editor-radius);
+  background: var(--df-editor-surface-bg);
+  color: var(--df-editor-surface-fg);
 }
 
 .df-editor-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: calc(0.5 * var(--spacing-unit, 0.25rem));
+  gap: var(--df-editor-toolbar-gap);
   align-items: center;
-  border-bottom: var(--border-width-hairline) solid var(--border);
-  padding: calc(1.5 * var(--spacing-unit, 0.25rem))
-    calc(2 * var(--spacing-unit, 0.25rem));
-  background: color-mix(in oklch, var(--muted) 40%, transparent);
+  border-bottom: var(--border-width-hairline) solid var(--df-editor-border);
+  padding: var(--df-editor-toolbar-padding-block)
+    var(--df-editor-toolbar-padding-inline);
+  background: var(--df-editor-toolbar-bg);
+}
+
+.df-editor-toolbar :where([data-df="editor-toolbar-sep"]) {
+  width: var(--border-width-hairline);
+  align-self: stretch;
+  margin-inline: var(--df-editor-toolbar-gap);
+  background: var(--df-editor-border);
+}
+
+.df-editor-floating-toolbar {
+  position: fixed;
+  z-index: var(--df-editor-floating-z);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--df-editor-toolbar-gap);
+  align-items: center;
+  max-width: min(100vw, calc(90 * var(--spacing-unit)));
+  padding: var(--df-editor-toolbar-padding-block)
+    var(--df-editor-toolbar-padding-inline);
+  border: var(--border-width-hairline) solid var(--df-editor-floating-border);
+  border-radius: var(--df-editor-floating-radius);
+  background: var(--df-editor-floating-bg);
+  color: var(--df-editor-floating-fg);
+  box-shadow: var(--df-editor-floating-shadow);
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .df-editor-floating-toolbar {
+    transition: none;
+  }
 }
 
 .df-editor-surface-wrap {
   position: relative;
-  min-height: calc(28 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-editor-min-height);
 }
 
 .df-editor-placeholder {
   position: absolute;
-  top: calc(3 * var(--spacing-unit, 0.25rem));
-  left: calc(3 * var(--spacing-unit, 0.25rem));
+  top: var(--df-editor-padding);
+  left: var(--df-editor-padding);
   margin: 0;
   pointer-events: none;
-  color: var(--muted-foreground);
-  font-size: var(--df-text-sm);
+  color: var(--df-editor-placeholder-fg);
+  font-size: var(--df-editor-font-size);
+  line-height: var(--df-editor-line-height);
 }
 
 .df-editor-surface {
-  min-height: calc(28 * var(--spacing-unit, 0.25rem));
-  padding: calc(3 * var(--spacing-unit, 0.25rem));
+  min-height: var(--df-editor-min-height);
+  padding: var(--df-editor-padding);
   outline: none;
-  color: var(--foreground);
-  font-size: var(--df-text-sm);
-  line-height: var(--df-leading-normal);
+  color: var(--df-editor-surface-fg);
+  font-size: var(--df-editor-font-size);
+  line-height: var(--df-editor-line-height);
 }
 
 .df-editor-surface:focus-visible {
-  box-shadow: inset var(--focus-ring);
+  box-shadow: inset var(--df-editor-focus-ring);
 }
 
 .df-editor-surface :where(h1, h2, h3) {
-  margin: 0 0 calc(2 * var(--spacing-unit, 0.25rem));
+  margin: 0 0 var(--df-editor-gap);
   font-weight: var(--df-font-weight-semibold);
-  letter-spacing: -0.01em;
 }
 
 .df-editor-surface :where(h1) {
@@ -8642,31 +8790,2396 @@
   font-size: var(--df-text-sm);
 }
 
-.df-editor-surface :where(p) {
-  margin: 0 0 calc(2 * var(--spacing-unit, 0.25rem));
+.df-editor-surface :where(p, blockquote, ul, ol, pre) {
+  margin: 0 0 var(--df-editor-gap);
 }
 
 .df-editor-surface :where(ul, ol) {
-  margin: 0 0 calc(2 * var(--spacing-unit, 0.25rem));
-  padding-left: calc(5 * var(--spacing-unit, 0.25rem));
+  padding-inline-start: calc(5 * var(--spacing-unit));
+}
+
+.df-editor-surface :where(blockquote) {
+  padding-inline-start: var(--df-editor-quote-padding-inline);
+  border-inline-start: var(--df-editor-quote-border-width) solid
+    var(--df-editor-quote-border);
 }
 
 .df-editor-surface :where(a) {
-  color: var(--foreground);
+  color: var(--df-editor-link-fg);
   text-decoration: underline;
-  text-underline-offset: calc(0.5 * var(--spacing-unit, 0.25rem));
+  text-underline-offset: calc(0.5 * var(--spacing-unit));
 }
 
 .df-editor-surface :where(code) {
-  border-radius: var(--radius-sm);
-  background: var(--muted);
-  padding: 0 calc(1 * var(--spacing-unit, 0.25rem));
+  border-radius: var(--df-editor-code-radius);
+  background: var(--df-editor-code-bg);
+  color: var(--df-editor-code-fg);
+  padding: 0 calc(1 * var(--spacing-unit));
+  font-family: var(--df-editor-mono);
   font-size: var(--df-text-13);
 }
 
-.df-editor-surface :where([data-mention-id]) {
-  border-radius: var(--radius-sm);
-  background: var(--muted);
-  padding: 0 calc(1 * var(--spacing-unit, 0.25rem));
+.df-editor-surface :where(pre[data-df="editor-code-block"]) {
+  overflow: auto;
+  padding: var(--df-editor-code-block-padding);
+  border-radius: var(--df-editor-code-block-radius);
+  background: var(--df-editor-code-block-bg);
+  font-family: var(--df-editor-mono);
+  white-space: pre-wrap;
+  tab-size: 2;
+}
+
+.df-editor-surface :where(pre[data-df="editor-code-block"] code) {
+  padding: 0;
+  background: transparent;
+  font-size: inherit;
+}
+
+.df-editor-surface :where(pre[data-df="editor-raw"]) {
+  overflow: auto;
+  padding: var(--df-editor-code-block-padding);
+  border-radius: var(--df-editor-code-block-radius);
+  background: var(--df-editor-raw-bg);
+  font-family: var(--df-editor-mono);
+  white-space: pre-wrap;
+}
+
+.df-editor-surface :where(hr[data-df="editor-divider"]) {
+  margin: var(--df-editor-gap) 0;
+  border: 0;
+  border-top: var(--border-width-hairline) solid var(--df-editor-border);
+}
+
+.df-editor-surface :where(ul[data-df="editor-task-list"]) {
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.df-editor-surface :where(li[data-df="editor-task-item"]) {
+  display: flex;
+  gap: var(--df-editor-task-gap);
+  align-items: flex-start;
+}
+
+.df-editor-surface :where(.df-editor-task-check) {
+  flex: none;
+  margin-top: calc(0.5 * var(--spacing-unit));
+}
+
+:where([data-df="data-grid"]),
+.df-data-grid {
+  --df-data-grid-border: var(--border);
+  --df-data-grid-bg: var(--card);
+  --df-data-grid-fg: var(--card-foreground);
+  --df-data-grid-header-bg: var(--muted);
+  --df-data-grid-header-fg: var(--muted-foreground);
+  --df-data-grid-row-hover-bg: color-mix(
+    in oklch,
+    var(--foreground) 4%,
+    transparent
+  );
+  --df-data-grid-row-selected-bg: color-mix(
+    in oklch,
+    var(--foreground) 8%,
+    transparent
+  );
+  --df-data-grid-focus-ring: var(--ring);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--df-data-grid-border);
+  border-radius: var(--radius-lg);
+  background: var(--df-data-grid-bg);
+  color: var(--df-data-grid-fg);
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="data-grid-header-scroll"]),
+.df-data-grid-header-scroll {
+  flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: var(--border-width-hairline) solid var(--df-data-grid-border);
+  background: var(--df-data-grid-header-bg);
+  scrollbar-width: none;
+}
+
+:where([data-df="data-grid-header-scroll"])::-webkit-scrollbar,
+.df-data-grid-header-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+:where([data-df="data-grid-header"]),
+.df-data-grid-header {
+  display: flex;
+  align-items: stretch;
+  min-height: var(--df-data-grid-header-height);
+  color: var(--df-data-grid-header-fg);
   font-weight: var(--df-font-weight-medium);
+  user-select: none;
+}
+
+:where([data-df="data-grid-columnheader"]),
+.df-data-grid-header-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: var(--df-data-grid-header-height);
+  padding-block: var(--df-data-grid-cell-padding-block);
+  padding-inline: var(--df-data-grid-cell-padding-inline);
+  border-inline-end: var(--border-width-hairline) solid var(--df-data-grid-border);
+}
+
+:where([data-df="data-grid-columnheader"]:last-child),
+.df-data-grid-header-cell:last-child {
+  border-inline-end: none;
+}
+
+.df-data-grid-header-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-df="data-grid-resize"]),
+.df-data-grid-resize {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: var(--z-raised);
+  width: var(--df-data-grid-resize-hit-width);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+:where([data-df="data-grid-resize"])::after,
+.df-data-grid-resize::after {
+  content: "";
+  position: absolute;
+  inset-block: calc(2 * var(--spacing-unit));
+  inset-inline-end: 0;
+  width: var(--border-width-hairline);
+  background: var(--df-data-grid-border);
+}
+
+:where([data-df="data-grid-body"]),
+.df-data-grid-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+:where([data-df="data-grid-rows"]),
+.df-data-grid-rows {
+  position: relative;
+}
+
+:where([data-df="data-grid-row"]),
+.df-data-grid-row {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  border-bottom: var(--border-width-hairline) solid var(--df-data-grid-border);
+}
+
+:where([data-df="data-grid-row"]:hover),
+.df-data-grid-row:hover {
+  background: var(--df-data-grid-row-hover-bg);
+}
+
+:where([data-df="data-grid-row"][data-selected="true"]),
+.df-data-grid-row[data-selected="true"] {
+  background: var(--df-data-grid-row-selected-bg);
+}
+
+:where([data-df="data-grid-cell"]),
+.df-data-grid-cell {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: var(--df-data-grid-row-height);
+  padding-block: var(--df-data-grid-cell-padding-block);
+  padding-inline: var(--df-data-grid-cell-padding-inline);
+  border-inline-end: var(--border-width-hairline) solid var(--df-data-grid-border);
+  outline: none;
+  overflow: hidden;
+}
+
+:where([data-df="data-grid-cell"]:last-child),
+.df-data-grid-cell:last-child {
+  border-inline-end: none;
+}
+
+:where([data-df="data-grid-cell"]:focus-visible),
+.df-data-grid-cell:focus-visible {
+  box-shadow: inset 0 0 0 var(--border-width-thick) var(--df-data-grid-focus-ring);
+}
+
+:where([data-df="data-grid-cell"][data-editing="true"]),
+.df-data-grid-cell[data-editing="true"] {
+  overflow: visible;
+  background: var(--background);
+  box-shadow: inset 0 0 0 var(--border-width-hairline) var(--ring);
+}
+
+.df-data-grid-select-cell {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+:where([data-df="data-grid-check"]),
+.df-data-grid-check {
+  display: inline-flex;
+  width: var(--df-affordance-size-sm);
+  height: var(--df-affordance-size-sm);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: var(--border-width-thin) solid var(--input);
+  border-radius: var(--radius-xs);
+  background: var(--background);
+  color: var(--primary-foreground);
+  cursor: pointer;
+  transition:
+    border-color var(--df-duration-quick) var(--df-ease-standard),
+    background-color var(--df-duration-quick) var(--df-ease-standard);
+}
+
+:where([data-df="data-grid-check"][data-state="checked"]),
+:where([data-df="data-grid-check"][data-state="indeterminate"]),
+.df-data-grid-check[data-state="checked"],
+.df-data-grid-check[data-state="indeterminate"] {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+:where([data-df="data-grid-empty"]),
+.df-data-grid-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--df-data-grid-row-height) * 4);
+  padding: var(--df-data-grid-empty-padding);
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+:where([data-df="data-grid-loading"]),
+.df-data-grid-loading {
+  display: flex;
+  flex-direction: column;
+}
+
+.df-data-grid-skeleton {
+  display: block;
+  width: var(--df-data-grid-skeleton-width);
+  height: var(--df-data-grid-skeleton-height);
+  border-radius: var(--radius-sm);
+  background: var(--muted-foreground);
+  opacity: var(--df-opacity-30);
+  animation: df-pulse var(--df-duration-pulse) var(--df-ease-standard) infinite;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Avatar                                                                    */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="avatar"]),
+.df-avatar {
+  --df-avatar-size: var(--df-avatar-size-md);
+  --df-avatar-font: var(--df-avatar-font-md);
+  --df-avatar-radius: var(--df-avatar-radius-circle);
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--df-avatar-size);
+  height: var(--df-avatar-size);
+  border-radius: var(--df-avatar-radius);
+  background: var(--df-avatar-tone, var(--muted));
+  color: var(--df-avatar-fallback-fg);
+  font-size: var(--df-avatar-font);
+  font-weight: var(--df-font-weight-semibold);
+  line-height: var(--df-leading-none);
+  user-select: none;
+  vertical-align: middle;
+}
+
+:where([data-df="avatar"]:not([data-presence])) {
+  overflow: hidden;
+}
+
+:where([data-df="avatar"][data-presence]) {
+  overflow: visible;
+}
+
+:where([data-df="avatar"][data-presence] [data-df="avatar-image"]),
+:where([data-df="avatar"][data-presence] [data-df="avatar-fallback"]) {
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+:where([data-df="avatar"][data-size="xs"]) {
+  --df-avatar-size: var(--df-avatar-size-xs);
+  --df-avatar-font: var(--df-avatar-font-xs);
+}
+
+:where([data-df="avatar"][data-size="sm"]) {
+  --df-avatar-size: var(--df-avatar-size-sm);
+  --df-avatar-font: var(--df-avatar-font-sm);
+}
+
+:where([data-df="avatar"][data-size="md"]) {
+  --df-avatar-size: var(--df-avatar-size-md);
+  --df-avatar-font: var(--df-avatar-font-md);
+}
+
+:where([data-df="avatar"][data-size="lg"]) {
+  --df-avatar-size: var(--df-avatar-size-lg);
+  --df-avatar-font: var(--df-avatar-font-lg);
+}
+
+:where([data-df="avatar"][data-shape="square"]) {
+  --df-avatar-radius: var(--df-avatar-radius-square);
+}
+
+:where([data-df="avatar-image"]) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+:where([data-df="avatar-fallback"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-transform: uppercase;
+}
+
+:where([data-df="avatar-presence"]) {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--df-avatar-presence-size);
+  height: var(--df-avatar-presence-size);
+  border: var(--df-avatar-presence-ring) solid var(--df-avatar-ring-color);
+  border-radius: var(--radius-full);
+  background: var(--df-avatar-presence-offline);
+}
+
+:where([data-df="avatar-presence"][data-tone="online"]) {
+  background: var(--df-avatar-presence-online);
+}
+
+:where([data-df="avatar-presence"][data-tone="away"]) {
+  background: var(--df-avatar-presence-away);
+}
+
+:where([data-df="avatar-presence"][data-tone="busy"]) {
+  background: var(--df-avatar-presence-busy);
+}
+
+:where([data-df="avatar-presence"][data-tone="offline"]) {
+  background: var(--df-avatar-presence-offline);
+}
+
+:where([data-df="avatar-stack"]) {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+:where([data-df="avatar-stack"] > [data-df="avatar"]),
+:where([data-df="avatar-stack"] > [data-df="avatar-overflow"]) {
+  position: relative;
+  margin-inline-start: calc(-1 * var(--df-avatar-stack-overlap));
+  box-shadow: var(--df-avatar-stack-ring);
+  transition:
+    transform var(--df-duration-fast) var(--df-ease-standard),
+    z-index 0s;
+  z-index: var(--z-raised);
+}
+
+:where([data-df="avatar-stack"] > :first-child) {
+  margin-inline-start: 0;
+}
+
+:where([data-df="avatar-stack"] > [data-df="avatar"]:hover),
+:where([data-df="avatar-stack"] > [data-df="avatar-overflow"]:hover) {
+  z-index: var(--z-sticky);
+  transform: translateY(var(--df-avatar-stack-lift));
+}
+
+:where([data-df="avatar-overflow"]) {
+  --df-avatar-size: var(--df-avatar-size-md);
+  --df-avatar-font: var(--df-avatar-font-md);
+  --df-avatar-radius: var(--df-avatar-radius-circle);
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--df-avatar-size);
+  height: var(--df-avatar-size);
+  border-radius: var(--df-avatar-radius);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: var(--df-avatar-font);
+  font-weight: var(--df-font-weight-semibold);
+  line-height: var(--df-leading-none);
+}
+
+:where([data-df="avatar-overflow"][data-size="xs"]) {
+  --df-avatar-size: var(--df-avatar-size-xs);
+  --df-avatar-font: var(--df-avatar-font-xs);
+}
+
+:where([data-df="avatar-overflow"][data-size="sm"]) {
+  --df-avatar-size: var(--df-avatar-size-sm);
+  --df-avatar-font: var(--df-avatar-font-sm);
+}
+
+:where([data-df="avatar-overflow"][data-size="lg"]) {
+  --df-avatar-size: var(--df-avatar-size-lg);
+  --df-avatar-font: var(--df-avatar-font-lg);
+}
+
+:where([data-df="avatar-overflow"][data-shape="square"]) {
+  --df-avatar-radius: var(--df-avatar-radius-square);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Command palette                                                           */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="dialog-content"]:has([data-df="command-palette"])) {
+  width: var(--df-command-palette-width);
+  max-height: var(--df-command-palette-max-height);
+  padding: 0;
+  overflow: hidden;
+}
+
+:where([data-df="command-palette"]) {
+  display: flex;
+  min-height: 0;
+  max-height: var(--df-command-palette-max-height);
+  flex-direction: column;
+}
+
+:where([data-df="command-palette-search"]) {
+  flex-shrink: 0;
+  border-bottom: var(--border-width-hairline) solid var(--border);
+  padding: var(--df-command-palette-search-padding);
+}
+
+:where([data-df="command-palette-body"]) {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  max-height: var(--df-command-palette-list-max-height);
+}
+
+:where([data-df="command-palette-list"]) {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1 * var(--spacing-unit));
+  padding: calc(1 * var(--spacing-unit));
+}
+
+:where([data-df="command-palette-section"]) {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5 * var(--spacing-unit));
+}
+
+:where([data-df="command-palette-section-label"]) {
+  padding: var(--df-command-palette-section-padding-block)
+    var(--df-command-palette-section-padding-inline);
+  color: var(--muted-foreground);
+  font-size: var(--df-text-11);
+  font-weight: var(--df-font-weight-medium);
+  letter-spacing: var(--df-tracking-wide);
+  text-transform: uppercase;
+}
+
+:where([data-df="command-palette-item"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--df-command-palette-item-gap);
+  border-radius: var(--radius-xl);
+  padding: var(--df-command-palette-item-padding-block)
+    var(--df-command-palette-item-padding-inline);
+  color: var(--foreground);
+  cursor: pointer;
+  outline: none;
+}
+
+:where([data-df="command-palette-item"][data-active]) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+:where([data-df="command-palette-item"][data-disabled]) {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+:where([data-df="command-palette-glyph"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+
+:where([data-df="command-palette-label"]) {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-medium);
+}
+
+:where([data-df="command-palette-mark"]) {
+  background: var(--df-command-palette-mark-bg);
+  color: var(--df-command-palette-mark-fg);
+  border-radius: var(--radius-xs);
+}
+
+:where([data-df="command-palette-shortcut"]) {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-family: var(--df-font-mono);
+  font-size: var(--df-text-11);
+}
+
+:where([data-df="command-palette-empty"]),
+:where([data-df="command-palette-loading"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(2 * var(--spacing-unit));
+  min-height: calc(16 * var(--spacing-unit));
+  padding: var(--df-command-palette-empty-padding);
+  color: var(--muted-foreground);
+  font-size: var(--df-text-sm);
+}
+
+:where([data-df="command-palette-footer"]) {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--df-command-palette-footer-gap);
+  border-top: var(--border-width-hairline) solid var(--border);
+  padding: var(--df-command-palette-footer-padding-block)
+    var(--df-command-palette-footer-padding-inline);
+  color: var(--muted-foreground);
+  font-size: var(--df-text-11);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Context menu                                                              */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="context-menu-content"]),
+.df-context-menu {
+  --df-enter-opacity: 0;
+  --df-enter-scale: 0.96;
+  --df-enter-translate-y: calc(-1 * var(--df-motion-travel-sm));
+  z-index: var(--z-overlay);
+  display: flex;
+  min-width: var(--df-context-menu-min-width);
+  max-width: min(
+    calc(100vw - 4 * var(--spacing-unit)),
+    var(--df-context-menu-max-width)
+  );
+  max-height: min(60vh, var(--df-menu-max-height));
+  flex-direction: column;
+  gap: calc(0.5 * var(--spacing-unit));
+  overflow: auto;
+  border: var(--border-width-hairline) solid var(--border);
+  border-radius: var(--radius-2xl);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--df-shadow-2xl), var(--df-shadow-ring-subtle);
+  padding: var(--df-context-menu-padding);
+  outline: none;
+  transform-origin: center top;
+  animation: df-enter var(--df-duration-slow) var(--df-ease-emphasized) both;
+}
+
+:where([data-df="context-menu-content"][data-submenu]) {
+  z-index: var(--z-toast);
+}
+
+:where([data-df="context-menu-item"]) {
+  position: relative;
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+  align-items: center;
+  gap: var(--df-context-menu-item-gap);
+  border-radius: var(--radius-xl);
+  padding: var(--df-context-menu-item-padding-block)
+    var(--df-context-menu-item-padding-inline);
+  font-size: var(--df-text-sm);
+  outline: none;
+  white-space: nowrap;
+}
+
+:where([data-df="context-menu-item"][data-active]),
+:where([data-df="context-menu-item"]:hover:not([data-disabled])) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+:where([data-df="context-menu-item"][data-destructive]) {
+  color: var(--destructive);
+}
+
+:where([data-df="context-menu-item"][data-destructive][data-active]),
+:where([data-df="context-menu-item"][data-destructive]:hover:not([data-disabled])) {
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+  color: var(--destructive);
+}
+
+:where([data-df="context-menu-item"][data-disabled]) {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+:where([data-df="context-menu-glyph"]),
+:where([data-df="context-menu-chevron"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+
+:where([data-df="context-menu-label"]) {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-weight: var(--df-font-weight-medium);
+}
+
+:where([data-df="context-menu-shortcut"]) {
+  flex-shrink: 0;
+  margin-inline-start: calc(4 * var(--spacing-unit));
+  color: var(--muted-foreground);
+  font-family: var(--df-font-mono);
+  font-size: var(--df-text-11);
+}
+
+:where([data-df="context-menu-separator"]) {
+  height: var(--border-width-hairline);
+  margin-block: var(--df-context-menu-separator-margin-block);
+  background: color-mix(in oklch, var(--border) 70%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-df="context-menu-content"]),
+  .df-context-menu {
+    animation: none;
+  }
+
+  :where([data-df="avatar-stack"] > [data-df="avatar"]),
+  :where([data-df="avatar-stack"] > [data-df="avatar-overflow"]) {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Date picker                                                               */
+/* ------------------------------------------------------------------------- */
+
+:where(.df-date-picker-content) {
+  padding: 0;
+  overflow: hidden;
+}
+
+:where([data-df="date-picker-panel"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-date-picker-gap);
+  padding: var(--df-date-picker-padding);
+  min-width: calc(var(--df-date-picker-day-size) * 7);
+}
+
+:where([data-df="date-picker-header"]) {
+  display: grid;
+  grid-template-columns: var(--df-date-picker-nav-size) 1fr var(--df-date-picker-nav-size) auto;
+  align-items: center;
+  gap: var(--df-date-picker-header-gap);
+}
+
+:where([data-df="date-picker-title"]) {
+  text-align: center;
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-semibold);
+  color: var(--foreground);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="date-picker-nav"]),
+:where([data-df="date-picker-today"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--df-date-picker-nav-size);
+  border: var(--border-width-hairline) solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  outline: none;
+}
+
+:where([data-df="date-picker-nav"]) {
+  width: var(--df-date-picker-nav-size);
+  color: var(--muted-foreground);
+}
+
+:where([data-df="date-picker-nav"]) svg {
+  width: var(--df-affordance-size-sm);
+  height: var(--df-affordance-size-sm);
+}
+
+:where([data-df="date-picker-today"]) {
+  padding-inline: calc(2 * var(--spacing-unit));
+  font-size: var(--df-text-11);
+  font-weight: var(--df-font-weight-medium);
+  color: var(--muted-foreground);
+}
+
+:where([data-df="date-picker-nav"]:hover),
+:where([data-df="date-picker-today"]:hover) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+:where([data-df="date-picker-nav"]:focus-visible),
+:where([data-df="date-picker-today"]:focus-visible) {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
+}
+
+:where([data-df="date-picker-grid"]) {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5 * var(--spacing-unit));
+}
+
+:where([data-df="date-picker-weekdays"]),
+:where([data-df="date-picker-week"]) {
+  display: grid;
+  grid-template-columns: repeat(7, var(--df-date-picker-day-size));
+  justify-content: space-between;
+  gap: 0;
+}
+
+:where([data-df="date-picker-weekday"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--df-control-height-sm);
+  color: var(--muted-foreground);
+  font-size: var(--df-date-picker-weekday-size);
+  font-weight: var(--df-font-weight-medium);
+  line-height: var(--df-leading-none);
+}
+
+:where([data-df="date-picker-day"]) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--df-date-picker-day-size);
+  height: var(--df-date-picker-day-size);
+  border: var(--border-width-hairline) solid transparent;
+  border-radius: var(--df-date-picker-day-radius);
+  background: transparent;
+  color: var(--foreground);
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-none);
+  cursor: pointer;
+  outline: none;
+}
+
+:where([data-df="date-picker-day"][data-outside]) {
+  color: var(--df-date-picker-outside-fg);
+}
+
+:where([data-df="date-picker-day"][data-in-range]),
+:where([data-df="date-picker-day"][data-preview]) {
+  background: var(--df-date-picker-range-bg);
+  border-radius: 0;
+}
+
+:where([data-df="date-picker-day"][data-preview]) {
+  background: var(--df-date-picker-preview-bg);
+}
+
+:where([data-df="date-picker-day"][data-range-start]) {
+  border-start-start-radius: var(--df-date-picker-day-radius);
+  border-end-start-radius: var(--df-date-picker-day-radius);
+}
+
+:where([data-df="date-picker-day"][data-range-end]) {
+  border-start-end-radius: var(--df-date-picker-day-radius);
+  border-end-end-radius: var(--df-date-picker-day-radius);
+}
+
+:where([data-df="date-picker-day"][data-today]) {
+  box-shadow: inset 0 0 0 var(--df-date-picker-today-ring) var(--ring);
+}
+
+:where([data-df="date-picker-day"][data-selected]),
+:where([data-df="date-picker-day"][data-range-start]),
+:where([data-df="date-picker-day"][data-range-end]) {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--df-date-picker-day-radius);
+}
+
+:where([data-df="date-picker-day"]:hover:not([data-disabled]):not([data-selected])) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+:where([data-df="date-picker-day"]:focus-visible) {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
+  z-index: var(--z-raised);
+}
+
+:where([data-df="date-picker-day"][data-disabled]),
+:where([data-df="date-picker-day"]:disabled) {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Checkbox                                                                  */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="checkbox-field"]),
+:where([data-df="radio-field"]) {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--df-checkbox-field-gap);
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+:where([data-df="radio-field"]) {
+  gap: var(--df-radio-field-gap);
+}
+
+:where([data-df="checkbox-field"][data-disabled]),
+:where([data-df="radio-field"][data-disabled]) {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+:where([data-df="checkbox"]),
+:where([data-df="radio"]) {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+:where([data-df="checkbox"][data-size="sm"]),
+:where([data-df="radio"][data-size="sm"]) {
+  width: var(--df-checkbox-size-sm);
+  height: var(--df-checkbox-size-sm);
+}
+
+:where([data-df="checkbox"][data-size="md"]),
+:where([data-df="radio"][data-size="md"]) {
+  width: var(--df-checkbox-size-md);
+  height: var(--df-checkbox-size-md);
+}
+
+:where([data-df="radio"][data-size="sm"]) {
+  width: var(--df-radio-size-sm);
+  height: var(--df-radio-size-sm);
+}
+
+:where([data-df="radio"][data-size="md"]) {
+  width: var(--df-radio-size-md);
+  height: var(--df-radio-size-md);
+}
+
+:where([data-df="checkbox-input"]),
+:where([data-df="radio-input"]) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+:where([data-df="checkbox-box"]) {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-width-thin) solid var(--input);
+  border-radius: var(--df-checkbox-radius);
+  background: var(--background);
+  color: var(--primary-foreground);
+  pointer-events: none;
+  transition:
+    border-color var(--df-duration-quick) var(--df-ease-standard),
+    background-color var(--df-duration-quick) var(--df-ease-standard);
+}
+
+:where([data-df="checkbox"][data-state="checked"] [data-df="checkbox-box"]),
+:where([data-df="checkbox"][data-state="indeterminate"] [data-df="checkbox-box"]) {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+:where([data-df="checkbox"][data-invalid] [data-df="checkbox-box"]),
+:where([data-df="checkbox-field"][data-invalid] [data-df="checkbox-box"]) {
+  border-color: var(--destructive);
+  box-shadow: var(--focus-ring-error);
+}
+
+:where([data-df="checkbox-input"]:focus-visible + [data-df="checkbox-box"]),
+:where([data-df="radio-input"]:focus-visible + [data-df="radio-dot"]) {
+  box-shadow: var(--focus-ring);
+  border-color: var(--ring);
+}
+
+:where([data-df="checkbox"][data-size="sm"] [data-df="checkbox-icon"]) {
+  width: var(--df-checkbox-icon-size-sm);
+  height: var(--df-checkbox-icon-size-sm);
+}
+
+:where([data-df="checkbox"][data-size="md"] [data-df="checkbox-icon"]) {
+  width: var(--df-checkbox-icon-size-md);
+  height: var(--df-checkbox-icon-size-md);
+}
+
+:where([data-df="checkbox-copy"]),
+:where([data-df="radio-copy"]) {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--df-checkbox-copy-gap);
+  padding-block: calc(0.25 * var(--spacing-unit));
+}
+
+:where([data-df="radio-copy"]) {
+  gap: var(--df-radio-copy-gap);
+}
+
+:where([data-df="checkbox-label"]),
+:where([data-df="radio-label"]) {
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-medium);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="checkbox-description"]),
+:where([data-df="radio-description"]),
+:where([data-df="radio-group-description"]) {
+  color: var(--muted-foreground);
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-normal);
+}
+
+:where([data-df="checkbox-field"][data-size="sm"] [data-df="checkbox-label"]),
+:where([data-df="radio-field"][data-size="sm"] [data-df="radio-label"]) {
+  font-size: var(--df-text-13);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Radio group                                                               */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="radio-group"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-radio-group-gap);
+}
+
+:where([data-df="radio-group-heading"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-radio-group-heading-gap);
+}
+
+:where([data-df="radio-group-label"]) {
+  font-size: var(--df-text-sm);
+  font-weight: var(--df-font-weight-semibold);
+  line-height: var(--df-leading-snug);
+  color: var(--foreground);
+}
+
+:where([data-df="radio-group-items"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-radio-group-items-gap);
+}
+
+:where([data-df="radio-group"][data-orientation="horizontal"] [data-df="radio-group-items"]) {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+:where([data-df="radio-dot"]) {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-width-thin) solid var(--input);
+  border-radius: var(--radius-full);
+  background: var(--background);
+  pointer-events: none;
+  transition:
+    border-color var(--df-duration-quick) var(--df-ease-standard),
+    background-color var(--df-duration-quick) var(--df-ease-standard);
+}
+
+:where([data-df="radio-dot"])::after {
+  content: "";
+  width: var(--df-radio-dot-size-md);
+  height: var(--df-radio-dot-size-md);
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--df-duration-quick) var(--df-ease-standard),
+    transform var(--df-duration-quick) var(--df-ease-standard);
+}
+
+:where([data-df="radio"][data-size="sm"] [data-df="radio-dot"])::after {
+  width: var(--df-radio-dot-size-sm);
+  height: var(--df-radio-dot-size-sm);
+}
+
+:where([data-df="radio"][data-state="checked"] [data-df="radio-dot"]) {
+  border-color: var(--primary);
+}
+
+:where([data-df="radio"][data-state="checked"] [data-df="radio-dot"])::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+:where([data-df="radio"][data-invalid] [data-df="radio-dot"]),
+:where([data-df="radio-field"][data-invalid] [data-df="radio-dot"]),
+:where([data-df="radio-group"][data-invalid] [data-df="radio-dot"]) {
+  border-color: var(--destructive);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Skeleton                                                                  */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="skeleton"]),
+.df-skeleton {
+  display: block;
+  background: var(--df-skeleton-fg);
+  animation: df-pulse var(--df-duration-pulse) var(--df-ease-standard) infinite;
+}
+
+:where([data-df="skeleton"][data-shape="text"]) {
+  width: var(--df-skeleton-width-text);
+  height: var(--df-skeleton-height-text);
+  border-radius: var(--df-skeleton-radius-text);
+}
+
+:where([data-df="skeleton"][data-shape="block"]) {
+  width: var(--df-skeleton-width-block);
+  height: var(--df-skeleton-height-block);
+  border-radius: var(--df-skeleton-radius-block);
+}
+
+:where([data-df="skeleton"][data-shape="circle"]) {
+  width: var(--df-skeleton-size-circle);
+  height: var(--df-skeleton-size-circle);
+  border-radius: var(--df-skeleton-radius-circle);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Empty state                                                               */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="empty-state"]),
+.df-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--df-empty-state-gap);
+  width: 100%;
+  max-width: var(--df-empty-state-max-width);
+  margin-inline: auto;
+  padding-block: var(--df-empty-state-padding-block);
+  padding-inline: var(--df-empty-state-padding-inline);
+  text-align: center;
+}
+
+:where([data-df="empty-state-glyph"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--df-empty-state-glyph-size);
+  height: var(--df-empty-state-glyph-size);
+  color: var(--muted-foreground);
+}
+
+:where([data-df="empty-state-glyph"]) svg {
+  width: var(--df-affordance-size-md);
+  height: var(--df-affordance-size-md);
+}
+
+:where([data-df="empty-state-copy"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-empty-state-copy-gap);
+  min-width: 0;
+}
+
+:where([data-df="empty-state-title"]) {
+  color: var(--foreground);
+  font-size: var(--df-text-base);
+  font-weight: var(--df-font-weight-semibold);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="empty-state-description"]) {
+  color: var(--muted-foreground);
+  font-size: var(--df-text-sm);
+  line-height: var(--df-leading-normal);
+}
+
+:where([data-df="empty-state-action"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(2 * var(--spacing-unit));
+}
+
+/* ------------------------------------------------------------------------- */
+/* Tag input                                                                 */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="tag-input"]) {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--df-tag-input-validation-gap);
+}
+
+:where([data-df="tag-input"] [data-df="option-list"]) {
+  width: 100%;
+}
+
+:where([data-df="tag-input-field"]) {
+  display: flex;
+  width: 100%;
+  min-height: var(--df-tag-input-min-height);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--df-tag-input-gap);
+  padding-block: var(--df-tag-input-padding-block);
+  padding-inline: var(--df-tag-input-padding-inline);
+  border: var(--border-width-hairline) solid var(--input);
+  border-radius: var(--df-tag-input-radius);
+  background: var(--background);
+  color: var(--foreground);
+  cursor: text;
+  transition:
+    border-color var(--df-duration-base) var(--df-ease-standard),
+    box-shadow var(--df-duration-base) var(--df-ease-standard);
+}
+
+:where([data-df="tag-input-field"]:focus-within) {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
+}
+
+:where([data-df="tag-input-field"][data-invalid]),
+:where([data-df="tag-input"][data-invalid] [data-df="tag-input-field"]) {
+  border-color: var(--destructive);
+  box-shadow: var(--focus-ring-error);
+}
+
+:where([data-df="tag-input-field"][data-disabled]),
+:where([data-df="tag-input"][data-disabled] [data-df="tag-input-field"]) {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+:where([data-df="tag-input-field"][data-shake]) {
+  animation: df-tag-input-shake var(--df-duration-slow) var(--df-ease-standard);
+}
+
+:where([data-df="tag-input-chip"]) {
+  display: inline-flex;
+  max-width: 100%;
+  height: var(--df-tag-input-chip-height);
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--df-tag-input-chip-gap);
+  overflow: hidden;
+  border-radius: var(--radius-4xl);
+  background: var(--foreground);
+  color: var(--background);
+  padding-inline: var(--df-tag-input-chip-padding-inline)
+    calc(1 * var(--spacing-unit));
+  font-size: var(--df-text-xs);
+  font-weight: var(--df-font-weight-medium);
+  white-space: nowrap;
+}
+
+:where([data-df="tag-input-chip-label"]) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:where([data-df="tag-input-chip-remove"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--df-tag-input-chip-remove-size);
+  height: var(--df-tag-input-chip-remove-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-4xl);
+  background: transparent;
+  color: inherit;
+  opacity: var(--opacity-subtle);
+  cursor: pointer;
+}
+
+:where([data-df="tag-input-chip-remove"]:hover) {
+  opacity: var(--df-opacity-100);
+  background: color-mix(in oklch, var(--background) 18%, transparent);
+}
+
+:where([data-df="tag-input-chip-remove"] svg) {
+  width: var(--df-tag-input-chip-icon-size);
+  height: var(--df-tag-input-chip-icon-size);
+}
+
+:where([data-df="tag-input-control"]) {
+  flex: 1 1 calc(16 * var(--spacing-unit));
+  min-width: calc(12 * var(--spacing-unit));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--df-text-sm);
+  line-height: var(--df-leading-5);
+  outline: none;
+}
+
+:where([data-df="tag-input-control"])::placeholder {
+  color: var(--muted-foreground);
+}
+
+:where([data-df="tag-input-validation"]) {
+  color: var(--destructive);
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-normal);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Combobox                                                                  */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="combobox"]) {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+}
+
+:where([data-df="combobox"] [data-df="option-list"]) {
+  width: 100%;
+}
+
+:where([data-df="combobox-field"]) {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: var(--df-combobox-min-height);
+  align-items: center;
+  border: var(--border-width-hairline) solid var(--input);
+  border-radius: var(--df-combobox-radius);
+  background: var(--background);
+  color: var(--foreground);
+  transition:
+    border-color var(--df-duration-base) var(--df-ease-standard),
+    box-shadow var(--df-duration-base) var(--df-ease-standard);
+}
+
+:where([data-df="combobox-field"]:focus-within) {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
+}
+
+:where([data-df="combobox-field"][data-invalid]),
+:where([data-df="combobox"][data-invalid] [data-df="combobox-field"]) {
+  border-color: var(--destructive);
+  box-shadow: var(--focus-ring-error);
+}
+
+:where([data-df="combobox-field"][data-disabled]),
+:where([data-df="combobox"][data-disabled] [data-df="combobox-field"]) {
+  opacity: var(--opacity-disabled);
+}
+
+:where([data-df="combobox-input"]) {
+  width: 100%;
+  min-width: 0;
+  height: var(--df-combobox-min-height);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--df-combobox-padding-inline);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--df-text-sm);
+  line-height: var(--df-leading-5);
+  outline: none;
+}
+
+:where([data-df="combobox-field"][data-clearable] [data-df="combobox-input"]) {
+  padding-inline-end: calc(
+    var(--df-combobox-clear-size) + var(--df-combobox-padding-inline)
+  );
+}
+
+:where([data-df="combobox-input"])::placeholder {
+  color: var(--muted-foreground);
+}
+
+:where([data-df="combobox-clear"]) {
+  position: absolute;
+  inset-inline-end: calc(1.5 * var(--spacing-unit));
+  display: inline-flex;
+  width: var(--df-combobox-clear-size);
+  height: var(--df-combobox-clear-size);
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+:where([data-df="combobox-clear"]:hover) {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+:where([data-df="combobox-clear"] svg) {
+  width: var(--df-combobox-clear-icon-size);
+  height: var(--df-combobox-clear-icon-size);
+}
+
+:where([data-df="combobox-empty"]) {
+  padding: var(--df-combobox-empty-padding);
+  color: var(--muted-foreground);
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-normal);
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Drawer                                                                    */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="drawer-root"]) {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+}
+
+:where([data-df="drawer-root"][data-side="right"]) {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+:where([data-df="drawer-root"][data-side="bottom"]) {
+  align-items: flex-end;
+}
+
+:where([data-df="drawer-scrim"]) {
+  position: absolute;
+  inset: 0;
+  background: var(--df-drawer-scrim);
+  backdrop-filter: blur(var(--df-blur-2xs));
+  -webkit-backdrop-filter: blur(var(--df-blur-2xs));
+  animation: df-enter var(--df-duration-base) var(--df-ease-standard);
+  --df-enter-opacity: var(--df-opacity-0);
+  --df-enter-scale: 1;
+  --df-enter-translate-x: 0;
+  --df-enter-translate-y: 0;
+}
+
+:where([data-df="drawer-content"]) {
+  position: relative;
+  z-index: var(--z-raised);
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--border);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--df-shadow-panel);
+  outline: none;
+  animation: df-drawer-in var(--df-duration-panel) var(--df-ease-emphasized);
+}
+
+:where([data-df="drawer-content"][data-side="right"]) {
+  --df-drawer-enter-x: var(--df-drawer-slide-travel);
+  --df-drawer-enter-y: 0;
+  width: var(--df-drawer-width-md);
+  height: 100%;
+  border-radius: var(--radius-2xl) 0 0 var(--radius-2xl);
+}
+
+:where([data-df="drawer-content"][data-side="right"][data-size="sm"]) {
+  width: var(--df-drawer-width-sm);
+}
+
+:where([data-df="drawer-content"][data-side="right"][data-size="md"]) {
+  width: var(--df-drawer-width-md);
+}
+
+:where([data-df="drawer-content"][data-side="right"][data-size="lg"]) {
+  width: var(--df-drawer-width-lg);
+}
+
+:where([data-df="drawer-content"][data-side="bottom"]) {
+  --df-drawer-enter-x: 0;
+  --df-drawer-enter-y: var(--df-drawer-slide-travel);
+  width: 100%;
+  max-height: var(--df-drawer-max-height-bottom);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+}
+
+:where([data-df="drawer-header"]) {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--df-drawer-header-gap);
+  border-bottom: var(--border-width-hairline) solid var(--border);
+  padding-block: var(--df-drawer-header-padding-block);
+  padding-inline: var(--df-drawer-header-padding-inline);
+}
+
+:where([data-df="drawer-header-copy"]) {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: calc(1 * var(--spacing-unit));
+}
+
+:where([data-df="drawer-title"]) {
+  margin: 0;
+  font-size: var(--df-text-base);
+  font-weight: var(--df-font-weight-semibold);
+  letter-spacing: var(--df-tracking-snug);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="drawer-description"]) {
+  margin: 0;
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-normal);
+  color: var(--muted-foreground);
+}
+
+:where([data-df="drawer-body"]) {
+  min-height: 0;
+  flex: 1 1 auto;
+  padding-block: var(--df-drawer-body-padding-block);
+  padding-inline: var(--df-drawer-body-padding-inline);
+}
+
+:where([data-df="drawer-body"] [data-df="scroll-area"]) {
+  height: 100%;
+  max-height: 100%;
+}
+
+:where([data-df="drawer-footer"]) {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--df-drawer-footer-gap);
+  border-top: var(--border-width-hairline) solid var(--border);
+  padding-block: var(--df-drawer-footer-padding-block);
+  padding-inline: var(--df-drawer-footer-padding-inline);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Split                                                                     */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="split"]) {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-items: stretch;
+}
+
+:where([data-df="split"][data-orientation="horizontal"]) {
+  flex-direction: row;
+}
+
+:where([data-df="split"][data-orientation="vertical"]) {
+  flex-direction: column;
+}
+
+:where([data-df="split-pane"]) {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+:where([data-df="split-divider"]) {
+  position: relative;
+  flex: 0 0 var(--df-split-divider-size);
+  background: var(--df-split-divider-color);
+  outline: none;
+  touch-action: none;
+}
+
+:where([data-df="split"][data-orientation="horizontal"] [data-df="split-divider"]) {
+  cursor: col-resize;
+}
+
+:where([data-df="split"][data-orientation="vertical"] [data-df="split-divider"]) {
+  cursor: row-resize;
+}
+
+:where([data-df="split-divider"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-raised);
+}
+
+:where([data-df="split"][data-orientation="horizontal"] [data-df="split-divider"])::before {
+  inset-inline: calc(var(--df-split-divider-hit) / -2);
+}
+
+:where([data-df="split"][data-orientation="vertical"] [data-df="split-divider"])::before {
+  inset-block: calc(var(--df-split-divider-hit) / -2);
+}
+
+:where([data-df="split-divider"]:hover),
+:where([data-df="split-divider"]:focus-visible) {
+  background: var(--df-split-divider-hover);
+}
+
+:where([data-df="split-divider"]:active) {
+  background: var(--df-split-divider-active);
+}
+
+:where([data-df="split-divider"]:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+:where([data-df="split"][data-disabled] [data-df="split-divider"]) {
+  cursor: not-allowed;
+  opacity: var(--opacity-disabled);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Timeline                                                                  */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="timeline"]),
+.df-timeline {
+  --df-timeline-border: var(--border);
+  --df-timeline-bg: var(--card);
+  --df-timeline-fg: var(--card-foreground);
+  --df-timeline-header-bg: var(--muted);
+  --df-timeline-header-fg: var(--muted-foreground);
+  --df-timeline-row-hover-bg: color-mix(
+    in oklch,
+    var(--foreground) 4%,
+    transparent
+  );
+  --df-timeline-focus-ring: var(--ring);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--df-timeline-border);
+  border-radius: var(--radius-lg);
+  background: var(--df-timeline-bg);
+  color: var(--df-timeline-fg);
+  font-size: var(--df-text-13);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="timeline-chrome"]),
+.df-timeline-chrome {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  border-bottom: var(--border-width-hairline) solid var(--df-timeline-border);
+  background: var(--df-timeline-header-bg);
+  color: var(--df-timeline-header-fg);
+  font-weight: var(--df-font-weight-medium);
+  user-select: none;
+}
+
+:where([data-df="timeline-corner"]),
+.df-timeline-corner {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  box-sizing: border-box;
+  min-height: calc(var(--df-timeline-header-row-height) * 2);
+  padding-block: var(--df-timeline-cell-padding-block);
+  padding-inline: var(--df-timeline-cell-padding-inline);
+  border-inline-end: var(--border-width-hairline) solid var(--df-timeline-border);
+}
+
+.df-timeline-corner-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-df="timeline-header-scroll"]),
+.df-timeline-header-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+:where([data-df="timeline-header"]),
+.df-timeline-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(var(--df-timeline-header-row-height) * 2);
+}
+
+:where([data-df="timeline-header-coarse"]),
+:where([data-df="timeline-header-fine"]),
+.df-timeline-header-row {
+  position: relative;
+  height: var(--df-timeline-header-row-height);
+}
+
+.df-timeline-header-cell {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding-inline: var(--df-timeline-cell-padding-inline);
+  border-inline-end: var(--border-width-hairline) solid var(--df-timeline-border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-df="timeline-header-coarse"]) .df-timeline-header-cell {
+  font-size: var(--df-text-11);
+}
+
+:where([data-df="timeline-body"]),
+.df-timeline-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+:where([data-df="timeline-labels"]),
+.df-timeline-labels {
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow: auto;
+  border-inline-end: var(--border-width-hairline) solid var(--df-timeline-border);
+  scrollbar-width: thin;
+}
+
+.df-timeline-label-rows,
+:where([data-df="timeline-tracks"]),
+.df-timeline-tracks {
+  position: relative;
+}
+
+:where([data-df="timeline-label-row"]),
+.df-timeline-label-row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-bottom: var(--border-width-hairline) solid var(--df-timeline-border);
+  cursor: pointer;
+}
+
+:where([data-df="timeline-label-row"]:hover),
+.df-timeline-label-row:hover {
+  background: var(--df-timeline-row-hover-bg);
+}
+
+.df-timeline-label-main {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5 * var(--spacing-unit));
+  min-width: 0;
+  padding-block: var(--df-timeline-cell-padding-block);
+  padding-inline: var(--df-timeline-cell-padding-inline);
+}
+
+.df-timeline-label-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.df-timeline-label-meta {
+  color: var(--muted-foreground);
+  font-size: var(--df-text-11);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-df="timeline-grid"]),
+.df-timeline-grid {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+:where([data-df="timeline-track-row"]),
+.df-timeline-track-row {
+  position: relative;
+  box-sizing: border-box;
+  border-bottom: var(--border-width-hairline) solid var(--df-timeline-border);
+}
+
+:where([data-df="timeline-weekend"]),
+.df-timeline-weekend {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  background: var(--df-timeline-weekend-bg);
+  pointer-events: none;
+}
+
+.df-timeline-column-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  width: var(--border-width-hairline);
+  background: var(--df-timeline-column-line);
+  pointer-events: none;
+}
+
+:where([data-df="timeline-today"]),
+.df-timeline-today {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: var(--z-raised);
+  width: var(--df-timeline-today-width);
+  background: var(--df-timeline-today-color);
+  pointer-events: none;
+  transform: translateX(calc(var(--df-timeline-today-width) / -2));
+}
+
+:where([data-df="timeline-dependencies"]),
+.df-timeline-dependencies {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.df-timeline-dependency-path {
+  fill: none;
+  stroke: var(--df-timeline-dependency-color);
+  stroke-width: var(--df-timeline-dependency-width);
+}
+
+:where([data-df="timeline-bar"]),
+.df-timeline-bar {
+  position: absolute;
+  top: calc(50% - var(--df-timeline-bar-height) / 2);
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  height: var(--df-timeline-bar-height);
+  border-radius: var(--df-timeline-bar-radius);
+  background: var(--df-timeline-bar-color);
+  color: var(--primary-foreground);
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+  overflow: hidden;
+  will-change: transform;
+}
+
+:where([data-df="timeline-bar"]:focus-visible),
+.df-timeline-bar:focus-visible {
+  box-shadow: 0 0 0 var(--border-width-thick) var(--df-timeline-focus-ring);
+}
+
+:where([data-df="timeline-bar"][data-dragging="true"]),
+.df-timeline-bar[data-dragging="true"] {
+  cursor: grabbing;
+  opacity: var(--opacity-subtle);
+}
+
+:where([data-df="timeline-bar"][data-missing-start="true"]),
+.df-timeline-bar[data-missing-start="true"] {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    var(--df-timeline-bar-color) 40%
+  );
+}
+
+:where([data-df="timeline-bar"][data-missing-due="true"]),
+.df-timeline-bar[data-missing-due="true"] {
+  mask-image: linear-gradient(
+    to left,
+    transparent,
+    var(--df-timeline-bar-color) 40%
+  );
+}
+
+:where([data-df="timeline-bar"][data-missing-start="true"][data-missing-due="true"]),
+.df-timeline-bar[data-missing-start="true"][data-missing-due="true"] {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    var(--df-timeline-bar-color) 30%,
+    var(--df-timeline-bar-color) 70%,
+    transparent
+  );
+}
+
+.df-timeline-bar-progress {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background: var(--df-timeline-bar-progress);
+  pointer-events: none;
+}
+
+:where([data-df="timeline-bar-handle"]),
+.df-timeline-bar-handle {
+  position: absolute;
+  inset-block: 0;
+  z-index: 1;
+  width: var(--df-timeline-handle-width);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.df-timeline-bar-handle-start {
+  inset-inline-start: 0;
+}
+
+.df-timeline-bar-handle-end {
+  inset-inline-end: 0;
+}
+
+:where([data-df="timeline-ghost"]),
+.df-timeline-ghost {
+  position: absolute;
+  top: calc(50% - var(--df-timeline-bar-height) / 2);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--df-timeline-bar-height);
+  border: var(--border-width-hairline) dashed var(--df-timeline-border);
+  border-radius: var(--df-timeline-bar-radius);
+  background: var(--df-timeline-ghost-bg);
+  color: var(--df-timeline-ghost-fg);
+  pointer-events: none;
+}
+
+.df-timeline-ghost-label {
+  padding-inline: var(--df-timeline-cell-padding-inline);
+  font-size: var(--df-text-11);
+  white-space: nowrap;
+}
+
+:where([data-df="timeline-empty"]),
+.df-timeline-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--df-timeline-row-height) * 4);
+  padding: var(--df-timeline-empty-padding);
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+:where([data-df="timeline-loading"]),
+.df-timeline-loading {
+  display: flex;
+  flex-direction: column;
+}
+
+.df-timeline-skeleton {
+  display: block;
+  width: var(--df-timeline-skeleton-width);
+  height: var(--df-timeline-skeleton-height);
+  border-radius: var(--radius-sm);
+  background: var(--muted-foreground);
+  opacity: var(--df-opacity-30);
+  animation: df-pulse var(--df-duration-pulse) var(--df-ease-standard) infinite;
+}
+
+.df-timeline-skeleton-bar {
+  width: var(--df-timeline-skeleton-bar-width);
+  margin-block: auto;
+  margin-inline: calc(4 * var(--spacing-unit));
+}
+
+:where([data-df="timeline-live"]),
+.df-timeline-live {
+  position: absolute;
+  width: var(--border-width-hairline);
+  height: var(--border-width-hairline);
+  padding: 0;
+  margin: calc(-1 * var(--border-width-hairline));
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Chart frame, tooltip, legend                                              */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="chart-frame"]),
+.df-chart-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-chart-frame-gap);
+  width: 100%;
+  min-width: 0;
+}
+
+:where([data-df="chart-frame-header"]) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--df-chart-header-gap);
+  min-width: 0;
+}
+
+:where([data-df="chart-frame-copy"]) {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5 * var(--spacing-unit));
+  min-width: 0;
+}
+
+:where([data-df="chart-frame-title"]) {
+  color: var(--foreground);
+  font-size: var(--df-chart-title-font-size);
+  font-weight: var(--df-font-weight-medium);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="chart-frame-description"]) {
+  color: var(--muted-foreground);
+  font-size: var(--df-chart-description-font-size);
+  line-height: var(--df-leading-normal);
+}
+
+:where([data-df="chart-frame-toolbar"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: calc(1 * var(--spacing-unit));
+}
+
+:where([data-df="chart-frame-plot"]) {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+:where([data-df="chart-frame-loading"]) {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+
+.df-chart-skeleton {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--df-chart-skeleton-radius);
+  background: var(--muted-foreground);
+  opacity: var(--df-opacity-30);
+  animation: df-pulse var(--df-duration-pulse) var(--df-ease-standard) infinite;
+}
+
+:where([data-df="chart-frame-empty"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--df-chart-empty-padding);
+  color: var(--muted-foreground);
+  font-size: var(--df-chart-description-font-size);
+  text-align: center;
+}
+
+:where([data-df="chart-tooltip"]),
+.df-chart-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--df-chart-tooltip-gap);
+  min-width: calc(28 * var(--spacing-unit));
+  padding: var(--df-chart-tooltip-padding);
+  border: var(--border-width-hairline) solid var(--df-chart-tooltip-border);
+  border-radius: var(--df-chart-tooltip-radius);
+  background: var(--df-chart-tooltip-bg);
+  color: var(--df-chart-tooltip-fg);
+  box-shadow: var(--df-chart-tooltip-shadow);
+  font-size: var(--df-chart-tooltip-font-size);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="chart-tooltip-label"]) {
+  color: var(--muted-foreground);
+  font-size: var(--df-chart-tooltip-label-font-size);
+  font-weight: var(--df-font-weight-medium);
+}
+
+:where([data-df="chart-tooltip-rows"]) {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1 * var(--spacing-unit));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:where([data-df="chart-tooltip-row"]) {
+  display: flex;
+  align-items: center;
+  gap: calc(1.5 * var(--spacing-unit));
+  min-width: 0;
+}
+
+:where([data-df="chart-tooltip-swatch"]) {
+  flex-shrink: 0;
+  width: var(--df-chart-tooltip-swatch-size);
+  height: var(--df-chart-tooltip-swatch-size);
+  border-radius: var(--radius-full);
+  background: var(--df-chart-series-1);
+}
+
+:where([data-df="chart-tooltip-name"]) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-df="chart-tooltip-value"]) {
+  flex-shrink: 0;
+  color: var(--df-chart-tooltip-fg);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--df-font-weight-medium);
+}
+
+:where([data-df="chart-legend"]),
+.df-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--df-chart-legend-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted-foreground);
+  font-size: var(--df-chart-legend-font-size);
+  line-height: var(--df-leading-snug);
+}
+
+:where([data-df="chart-legend-item"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--df-chart-legend-item-gap);
+  min-width: 0;
+}
+
+:where([data-df="chart-legend-swatch"]) {
+  flex-shrink: 0;
+  width: var(--df-chart-legend-swatch-size);
+  height: var(--df-chart-legend-swatch-size);
+  border-radius: var(--radius-full);
+  background: var(--df-chart-series-1);
+}
+
+:where([data-df="chart-legend-label"]) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Widget grid                                                               */
+/* ------------------------------------------------------------------------- */
+
+:where([data-df="widget-grid"]),
+.df-widget-grid {
+  --df-widget-grid-columns: 12;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--df-widget-grid-columns), minmax(0, 1fr));
+  grid-auto-rows: var(--df-widget-grid-row-height);
+  gap: var(--df-widget-grid-gap);
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+:where([data-df="widget-grid-item"]),
+.df-widget-grid-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--df-widget-grid-item-border);
+  border-radius: var(--df-widget-grid-item-radius);
+  background: var(--df-widget-grid-item-bg);
+  will-change: transform;
+}
+
+:where([data-df="widget-grid-item"][data-dragging="true"]),
+.df-widget-grid-item[data-dragging="true"] {
+  z-index: var(--z-raised);
+  opacity: var(--opacity-subtle);
+  pointer-events: none;
+}
+
+.df-widget-grid-item-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+:where([data-df="widget-grid"][data-editable="true"] [data-df-widget-drag-handle]) {
+  cursor: grab;
+  touch-action: none;
+}
+
+:where([data-df="widget-grid"][data-editable="true"][data-dragging="true"] [data-df-widget-drag-handle]) {
+  cursor: grabbing;
+}
+
+:where([data-df="widget-grid-keyboard-handle"]),
+.df-widget-grid-keyboard-handle {
+  position: absolute;
+  width: var(--border-width-hairline);
+  height: var(--border-width-hairline);
+  padding: 0;
+  margin: calc(-1 * var(--border-width-hairline));
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:where([data-df="widget-grid-resize"]),
+.df-widget-grid-resize {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  background: transparent;
+  touch-action: none;
+}
+
+.df-widget-grid-resize-e {
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--df-widget-grid-handle-size);
+  cursor: ew-resize;
+}
+
+.df-widget-grid-resize-s {
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: var(--df-widget-grid-handle-size);
+  cursor: ns-resize;
+}
+
+.df-widget-grid-resize-se {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: var(--df-widget-grid-handle-size);
+  height: var(--df-widget-grid-handle-size);
+  cursor: nwse-resize;
+}
+
+.df-widget-grid-resize-se::after {
+  content: "";
+  position: absolute;
+  inset-block-end: calc(0.5 * var(--spacing-unit));
+  inset-inline-end: calc(0.5 * var(--spacing-unit));
+  width: calc(1.5 * var(--spacing-unit));
+  height: calc(1.5 * var(--spacing-unit));
+  border-inline-end: var(--border-width-thick) solid var(--df-widget-grid-handle-color);
+  border-block-end: var(--border-width-thick) solid var(--df-widget-grid-handle-color);
+  border-end-end-radius: var(--radius-xxs);
+  pointer-events: none;
+}
+
+.df-widget-grid-resize-se:hover::after {
+  border-color: var(--df-widget-grid-handle-hover);
+}
+
+:where([data-df="widget-grid"][data-editable="false"] [data-df="widget-grid-resize"]),
+:where([data-df="widget-grid"][data-editable="false"] [data-df="widget-grid-keyboard-handle"]) {
+  display: none;
+}
+
+:where([data-df="widget-grid-ghost"]),
+.df-widget-grid-ghost {
+  z-index: var(--z-raised);
+  box-sizing: border-box;
+  border: var(--border-width-hairline) dashed var(--df-widget-grid-ghost-border);
+  border-radius: var(--df-widget-grid-item-radius);
+  background: var(--df-widget-grid-ghost-bg);
+  pointer-events: none;
+}
+
+:where([data-df="widget-grid-empty"]),
+.df-widget-grid-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--df-widget-grid-row-height) * 2);
+  padding: var(--df-widget-grid-empty-padding);
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+:where([data-df="widget-grid-live"]),
+.df-widget-grid-live {
+  position: absolute;
+  width: var(--border-width-hairline);
+  height: var(--border-width-hairline);
+  padding: 0;
+  margin: calc(-1 * var(--border-width-hairline));
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-df="checkbox-box"]),
+  :where([data-df="radio-dot"]),
+  :where([data-df="radio-dot"])::after {
+    transition: none;
+  }
+
+  :where([data-df="skeleton"]),
+  .df-skeleton,
+  .df-timeline-skeleton,
+  .df-chart-skeleton {
+    animation: none;
+  }
+
+  :where([data-df="tag-input-field"][data-shake]),
+  :where([data-df="drawer-scrim"]),
+  :where([data-df="drawer-content"]) {
+    animation: none;
+  }
+
+  :where([data-df="dnd-overlay"] .df-dnd-overlay-lift),
+  .df-dnd-overlay-lift {
+    transform: none;
+  }
+
+  :where([data-df="timeline-bar"]),
+  .df-timeline-bar,
+  :where([data-df="widget-grid-item"]),
+  .df-widget-grid-item {
+    transition: none;
+  }
 }
