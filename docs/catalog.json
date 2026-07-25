@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T14:42:18.128Z",
+  "generatedAt": "2026-07-25T16:47:59.594Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -277,6 +277,27 @@
       "propCount": 73
     },
     {
+      "slug": "featured-icon",
+      "name": "featured-icon",
+      "title": "Featured Icon",
+      "description": "Static featured icon shell with chrome variants, semantic colors, sizes, shape, and a plain glyph mode.",
+      "aliases": [
+        "feature icon",
+        "icon badge",
+        "icon shell",
+        "featured glyph",
+        "status icon",
+        "Featured Icon"
+      ],
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-featured-icon",
+      "dependencies": [],
+      "propCount": 26
+    },
+    {
       "slug": "file-uploader",
       "name": "file-uploader",
       "title": "File Uploader",
@@ -376,7 +397,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 106
+      "propCount": 108
     },
     {
       "slug": "label",
@@ -419,7 +440,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 67
+      "propCount": 73
     },
     {
       "slug": "number-slider",
@@ -465,7 +486,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 127
+      "propCount": 155
     },
     {
       "slug": "options-panel",
@@ -592,13 +613,13 @@
       ],
       "importPath": "@default-file/ui/components/df-scroll-area",
       "dependencies": [],
-      "propCount": 20
+      "propCount": 23
     },
     {
       "slug": "search-input",
       "name": "search-input",
       "title": "Search Input",
-      "description": "Search field with clear control, icon placement, and hover border.",
+      "description": "Search field with clear control, icon placement, background fill, and hover border.",
       "aliases": [
         "search bar",
         "SearchBar",
@@ -615,7 +636,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 19
+      "propCount": 23
     },
     {
       "slug": "select",
@@ -640,7 +661,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 165
+      "propCount": 176
     },
     {
       "slug": "separator",
@@ -665,7 +686,7 @@
       "slug": "sidebar",
       "name": "sidebar",
       "title": "Sidebar",
-      "description": "Composable primary navigation with provider state, height modes, docked floating or inset variants, icon or offcanvas collapse, configurable seam edgeCollapse and edgeBorder with directional dual-tone cursor, collapsible groups with chevron toggles, List Item menu rows, kit ScrollArea content, menu hierarchy, and SidebarSeparator rules between sections.",
+      "description": "Composable primary navigation with provider state, collapse modes, and a List Item menu hierarchy.",
       "aliases": [
         "app sidebar",
         "navigation sidebar",
@@ -692,7 +713,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 148
+      "propCount": 157
     },
     {
       "slug": "slider",

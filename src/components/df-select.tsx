@@ -4,7 +4,7 @@ import * as React from "react"
 import { ChevronDown, CircleHelp, X } from "lucide-react"
 
 import { Label, type LabelInsetAlign } from "./df-label"
-import type { ListItemChromeProps } from "./df-list-item"
+import type { ListItemChromeProps, ListItemLayout } from "./df-list-item"
 import {
   OptionList,
   OptionListContent,
@@ -83,7 +83,7 @@ type SelectValueRenderContext = {
   values: string[]
   labelFor: (value: string | null) => React.ReactNode
   secondaryFor: (value: string | null) => React.ReactNode | null
-  layoutFor: (value: string | null) => "inline" | "stacked"
+  layoutFor: (value: string | null) => ListItemLayout
   toggleValue: (value: string) => void
 }
 

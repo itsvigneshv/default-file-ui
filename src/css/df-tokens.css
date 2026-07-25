@@ -23,9 +23,44 @@
   --input: var(--df-neutral-100);
   --ring: var(--df-neutral-400);
 
-  /* Near-black ink surfaces (neutral scale). */
+  /* High-contrast ink surfaces. Near-black in light; near-white in dark. */
   --brand-ink: var(--df-neutral-950);
   --brand-ink-foreground: var(--df-neutral-0);
+  --brand-ink-fg-body: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 65%,
+    transparent
+  );
+  --brand-ink-fg-muted: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 55%,
+    transparent
+  );
+  --brand-ink-fg-soft: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 45%,
+    transparent
+  );
+  --brand-ink-fg-subtle: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 40%,
+    transparent
+  );
+  --brand-ink-fg-faint: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 35%,
+    transparent
+  );
+  --brand-ink-stroke: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 10%,
+    transparent
+  );
+  --brand-ink-stroke-strong: color-mix(
+    in oklch,
+    var(--brand-ink-foreground) 25%,
+    transparent
+  );
 
   --chart-1: var(--df-neutral-200);
   --chart-2: var(--df-neutral-500);
@@ -260,6 +295,68 @@
   --df-spinner-track-opacity: var(--df-opacity-25);
   --df-spinner-dasharray: 28 40;
 
+  /* Featured icon. Container scale: 12px (2xs) to 62px (3xl). */
+  --df-featured-icon-size-2xs: calc(3 * var(--spacing-unit));
+  --df-featured-icon-size-xs: calc(4 * var(--spacing-unit));
+  --df-featured-icon-size-sm: calc(6 * var(--spacing-unit));
+  --df-featured-icon-size-md: calc(8 * var(--spacing-unit));
+  --df-featured-icon-size-lg: calc(10 * var(--spacing-unit));
+  --df-featured-icon-size-xl: calc(12 * var(--spacing-unit));
+  --df-featured-icon-size-2xl: calc(14 * var(--spacing-unit));
+  --df-featured-icon-size-3xl: calc(15.5 * var(--spacing-unit));
+  --df-featured-icon-glyph-2xs: calc(1.5 * var(--spacing-unit));
+  --df-featured-icon-glyph-xs: calc(2 * var(--spacing-unit));
+  --df-featured-icon-glyph-sm: calc(3 * var(--spacing-unit));
+  --df-featured-icon-glyph-md: calc(4 * var(--spacing-unit));
+  --df-featured-icon-glyph-lg: calc(5 * var(--spacing-unit));
+  --df-featured-icon-glyph-xl: calc(6 * var(--spacing-unit));
+  --df-featured-icon-glyph-2xl: calc(7 * var(--spacing-unit));
+  --df-featured-icon-glyph-3xl: calc(7.5 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-2xs: calc(2 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-xs: calc(2.5 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-sm: calc(4 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-md: calc(5 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-lg: calc(7 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-xl: calc(8 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-2xl: calc(10 * var(--spacing-unit));
+  --df-featured-icon-halo-inner-3xl: calc(11 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-2xs: calc(1.5 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-xs: calc(2 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-sm: calc(2.5 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-md: calc(3 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-lg: calc(4 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-xl: calc(5 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-2xl: calc(5 * var(--spacing-unit));
+  --df-featured-icon-halo-glyph-3xl: calc(5.5 * var(--spacing-unit));
+  --df-featured-icon-radius-2xs: var(--radius-xs);
+  --df-featured-icon-radius-xs: var(--radius-sm);
+  --df-featured-icon-radius-sm: var(--radius-md);
+  --df-featured-icon-radius-md: var(--radius-md);
+  --df-featured-icon-radius-lg: var(--radius-lg);
+  --df-featured-icon-radius-xl: var(--radius-xl);
+  --df-featured-icon-radius-2xl: var(--radius-2xl);
+  --df-featured-icon-radius-3xl: var(--radius-2xl);
+  --df-featured-icon-outline-ring-inset-2xs: calc(0.5 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-xs: calc(1 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-sm: calc(1.5 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-md: calc(2 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-lg: calc(2 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-xl: calc(2.5 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-2xl: calc(3 * var(--spacing-unit));
+  --df-featured-icon-outline-ring-inset-3xl: calc(3.5 * var(--spacing-unit));
+  --df-featured-icon-plate-inset: calc(1 * var(--spacing-unit));
+  --df-featured-icon-soft-tint: 10%;
+  --df-featured-icon-soft-tint-strong: 20%;
+  --df-featured-icon-ring-strong: 40%;
+  --df-featured-icon-ring-soft: 20%;
+  --df-featured-icon-inset-highlight: 20%;
+  --df-featured-icon-surface-shadow: var(--df-shadow-xs);
+  --df-featured-icon-plate-shadow: var(--df-shadow-sm);
+  --df-featured-icon-filled-shadow: var(--df-shadow-xs);
+  --df-featured-icon-plain-glyph-filter: var(--df-button-plain-glyph-filter);
+  --df-featured-icon-brand-solid: var(--primary);
+  --df-featured-icon-brand-on-solid: var(--primary-foreground);
+
   --df-progress-height-sm: calc(1 * var(--spacing-unit));
   --df-progress-height-md: calc(1.5 * var(--spacing-unit));
   --df-progress-duration: var(--df-duration-fast);
@@ -341,6 +438,8 @@
   --df-scrollbar-min-thumb-edge: 20px;
   /* Keeps thumbs inside rounded overflow shells at the track ends. */
   --df-scrollbar-track-inset: calc(2 * var(--spacing-unit, 0.25rem));
+  /* Content-facing inset for the edge variant. 0 keeps the accent flush. */
+  --df-scrollbar-edge-inset: 0px;
   --df-scrollbar-track-size: calc(2.5 * var(--spacing-unit, 0.25rem));
   --df-tabs-indicator-thickness: var(--border-width-thick);
   --df-color-picker-width: 300px;
@@ -423,7 +522,7 @@
   --df-options-panel-max-height: 520px;
   --df-options-panel-max-width: var(--df-max-w-xs);
   --df-menu-stacked-max-height: 16rem;
-  --df-option-list-min-width: 12rem;
+  --df-option-list-min-width: var(--df-menu-min-width);
   --df-option-list-shell-inset: calc(1 * var(--spacing-unit));
   --df-option-list-scroll-thumb-gap: calc(1 * var(--spacing-unit));
   --df-option-list-scroll-track-width: calc(2.5 * var(--spacing-unit));
@@ -735,9 +834,7 @@
   --df-nav-rail-radius: 0;
   --df-nav-rail-item-radius: var(--radius-lg);
   --df-sidebar-width: calc(64 * var(--spacing-unit));
-  --df-sidebar-width-icon: calc(12 * var(--spacing-unit));
   --df-sidebar-width-mobile: calc(72 * var(--spacing-unit));
-  --df-sidebar-width-collapsed: var(--df-sidebar-width-icon);
   --df-sidebar-height: auto;
   --df-sidebar-bg: var(--sidebar);
   --df-sidebar-fg: var(--sidebar-foreground);
@@ -762,14 +859,21 @@
   --df-sidebar-gap: calc(3 * var(--spacing-unit));
   --df-sidebar-section-gap: calc(2 * var(--spacing-unit));
   --df-sidebar-group-gap: 0px;
+  --df-sidebar-scrollbar-track-inset: calc(1 * var(--spacing-unit));
   --df-sidebar-group-padding-block-start: 0px;
   --df-sidebar-group-padding-block-end: 0px;
   --df-sidebar-group-padding-inline-start: 0px;
   --df-sidebar-group-padding-inline-end: 0px;
   --df-sidebar-menu-gap: calc(1 * var(--spacing-unit));
+  --df-sidebar-menu-item-nest-padding-bottom: calc(2 * var(--spacing-unit));
   --df-sidebar-menu-button-height-sm: calc(7 * var(--spacing-unit));
   --df-sidebar-menu-button-height-md: calc(8 * var(--spacing-unit));
   --df-sidebar-menu-button-height-lg: calc(12 * var(--spacing-unit));
+  --df-sidebar-width-icon: calc(
+    var(--df-sidebar-menu-button-height-md) +
+      (2 * var(--df-sidebar-padding-inline))
+  );
+  --df-sidebar-width-collapsed: var(--df-sidebar-width-icon);
   --df-sidebar-group-action-size: calc(5 * var(--spacing-unit));
   --df-sidebar-menu-skeleton-text-width: 70%;
   --df-sidebar-group-label-fg: var(--muted-foreground);
@@ -843,9 +947,16 @@
   --df-text-mark: var(--df-text-mark-yellow);
   --df-text-mark-foreground: var(--foreground);
 
-  --focus-ring: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
-  --focus-ring-lg: 0 0 0 4px color-mix(in oklch, var(--ring) 50%, transparent);
-  --focus-ring-error: 0 0 0 3px color-mix(in oklch, var(--destructive) 20%, transparent);
+  --focus-ring-width: 3px;
+  --focus-ring-width-lg: 4px;
+  --focus-ring: 0 0 0 var(--focus-ring-width)
+    color-mix(in oklch, var(--ring) 50%, transparent);
+  --focus-ring-inset: inset 0 0 0 var(--focus-ring-width)
+    color-mix(in oklch, var(--ring) 50%, transparent);
+  --focus-ring-lg: 0 0 0 var(--focus-ring-width-lg)
+    color-mix(in oklch, var(--ring) 50%, transparent);
+  --focus-ring-error: 0 0 0 var(--focus-ring-width)
+    color-mix(in oklch, var(--destructive) 20%, transparent);
 
   --z-base: 0;
   --z-raised: 1;
@@ -1017,7 +1128,7 @@
   --sidebar-foreground: var(--df-neutral-900);
   --sidebar-primary: var(--df-neutral-850, var(--df-neutral-900));
   --sidebar-primary-foreground: var(--df-neutral-0);
-  --sidebar-accent: var(--df-neutral-50);
+  --sidebar-accent: var(--df-neutral-100);
   --sidebar-accent-foreground: var(--df-neutral-850, var(--df-neutral-900));
   --sidebar-border: var(--df-neutral-100);
   --sidebar-ring: var(--df-neutral-400);
@@ -1133,7 +1244,7 @@
   --df-avatar-ring-color: var(--background);
   --df-avatar-stack-ring: 0 0 0 var(--border-width-hairline)
     var(--df-avatar-ring-color);
-  --df-avatar-fallback-fg: var(--brand-ink-foreground);
+  --df-avatar-fallback-fg: var(--df-neutral-0);
   --df-avatar-presence-online: var(--success);
   --df-avatar-presence-away: var(--warning);
   --df-avatar-presence-busy: var(--destructive);
@@ -1512,8 +1623,13 @@
   --border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --input: color-mix(in oklch, var(--df-neutral-0) 15%, transparent);
   --ring: var(--df-neutral-500);
-  --brand-ink: var(--df-neutral-950);
-  --brand-ink-foreground: var(--df-neutral-0);
+  --brand-ink: var(--df-neutral-0);
+  --brand-ink-foreground: var(--df-neutral-950);
+  --brand-ink-mid: var(--df-neutral-100);
+  --brand-ink-lift: var(--df-neutral-200);
+  --brand-ink-deep: var(--df-neutral-50);
+  --df-featured-icon-brand-solid: var(--primary-foreground);
+  --df-featured-icon-brand-on-solid: var(--df-neutral-0);
   --code-bg: var(--code-dark-bg);
   --code-line: var(--code-dark-line);
   --code-gutter: var(--code-dark-gutter);
@@ -1533,7 +1649,7 @@
   --sidebar-foreground: var(--df-neutral-0);
   --sidebar-primary: var(--df-brand-500);
   --sidebar-primary-foreground: var(--df-neutral-0);
-  --sidebar-accent: var(--df-neutral-800);
+  --sidebar-accent: var(--df-neutral-700);
   --sidebar-accent-foreground: var(--df-neutral-0);
   --sidebar-border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
   --sidebar-ring: var(--df-neutral-500);

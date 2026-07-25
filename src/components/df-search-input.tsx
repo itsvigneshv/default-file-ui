@@ -14,7 +14,7 @@ type SearchInputProps = Omit<
   React.ComponentProps<"input">,
   "className" | "size" | "height"
 > &
-  Pick<InputProps, "hoverBorder" | "hoverBorderColor"> & {
+  Pick<InputProps, "background" | "hoverBorder" | "hoverBorderColor"> & {
     className?: string
     inputClassName?: string
     leadingIcon?: React.ReactNode | false

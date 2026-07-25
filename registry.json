@@ -161,6 +161,22 @@
       ]
     },
     {
+      "name": "featured-icon",
+      "type": "registry:ui",
+      "title": "Featured Icon",
+      "description": "Static featured icon shell with chrome variants, semantic colors, sizes, and a plain glyph mode.",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-featured-icon.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-featured-icon.tsx"
+        }
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",

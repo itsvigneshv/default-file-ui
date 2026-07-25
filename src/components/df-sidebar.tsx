@@ -10,7 +10,9 @@ import {
   useIsMobile,
 } from "../hooks"
 import { useFocusTrap } from "../lib/df-focus-trap"
-import { cn } from "../lib/utils"
+import { nearestDarkClass } from "../lib/nearest-theme"
+import { shouldInsertSidebarContentSeparator } from "../lib/df-sidebar/sidebar-content-separators"
+import { cn, composeRefs } from "../lib/utils"
 import { Button } from "./df-button"
 import { Label } from "./df-label"
 import { ListItem } from "./df-list-item"
@@ -123,6 +125,7 @@ type SidebarContextValue = {
   fillHeight: boolean
   heightMode: SidebarHeightMode
   label: string
+  hostRef: React.RefObject<HTMLDivElement | null>
 }
 
 const SidebarContext = React.createContext<SidebarContextValue | null>(null)
@@ -141,53 +144,38 @@ type SidebarProviderProps = React.ComponentProps<"div"> & {
   onOpenChange?: (open: boolean) => void
   /** Fixed viewport chrome (app) or absolute chrome inside a sized host (frame). */
   layout?: SidebarLayout
-  /** Stretch to the viewport or host. Ignored when height is set. */
   fillHeight?: boolean
-  /** Fixed height. Prefer a kit length token. Sets --df-sidebar-height. */
   height?: string
-  /** Accessible name for toggles and the mobile panel. */
   label?: string
-  /** When false, disables the mod+b shortcut. */
   keyboardShortcut?: boolean
   side?: SidebarSide
   variant?: SidebarVariant
   collapsible?: SidebarCollapsible
   /** Desktop seam double-click toggle. Ignored when collapsible is none. */
   edgeCollapse?: boolean
-  /** Hover accent on the seam when edgeCollapse is enabled. Uses --df-sidebar-border. */
+  /** Seam hover accent when edgeCollapse is enabled. */
   edgeBorder?: boolean
-  /** Sets --df-sidebar-width. */
   width?: string
-  /** Sets --df-sidebar-width-icon. */
+  /** Prefer omitting so the default tracks paddingInline. */
   iconWidth?: string
-  /** Sets --df-sidebar-width-mobile. */
   mobileWidth?: string
-  /** Sets block and inline panel padding to the same length. */
   padding?: string
-  /** Sets --df-sidebar-padding-block. */
   paddingBlock?: string
-  /** Sets --df-sidebar-padding-inline. */
+  /** Also feeds the default --df-sidebar-width-icon unless iconWidth is set. */
   paddingInline?: string
-  /** Panel corner radius. Sets --df-sidebar-radius and --df-sidebar-radius-floating. */
   radius?: string
-  /** Header, footer, and group radius. Sets --df-sidebar-section-radius. */
   sectionRadius?: string
-  /** Menu row and label radius. Sets --df-sidebar-item-radius. */
   itemRadius?: string
-  /** Gap inside header and footer stacks. Sets --df-sidebar-gap. */
   gap?: string
-  /** Gap inside SidebarGroup. Sets --df-sidebar-group-gap. */
   groupGap?: string
-  /** Sets all SidebarGroup padding axes to the same length. */
   groupPadding?: string
-  /** Sets SidebarGroup block-start and block-end padding. */
   groupPaddingBlock?: string
-  /** Sets SidebarGroup inline-start and inline-end padding. */
   groupPaddingInline?: string
   groupPaddingBlockStart?: string
   groupPaddingBlockEnd?: string
   groupPaddingInlineStart?: string
   groupPaddingInlineEnd?: string
+  menuItemNestPaddingBottom?: string | false
 }
 
 function SidebarProvider({
@@ -222,12 +210,15 @@ function SidebarProvider({
   groupPaddingBlockEnd,
   groupPaddingInlineStart,
   groupPaddingInlineEnd,
+  menuItemNestPaddingBottom,
   className,
   style,
   children,
+  ref,
   ...props
 }: SidebarProviderProps) {
   const isMobile = useIsMobile()
+  const hostRef = React.useRef<HTMLDivElement | null>(null)
   const [openMobile, setOpenMobile] = React.useState(false)
   const [open, setOpen] = useControllableState({
     value: openProp,
@@ -284,6 +275,7 @@ function SidebarProvider({
       fillHeight,
       heightMode,
       label,
+      hostRef,
     }),
     [
       state,
@@ -345,6 +337,14 @@ function SidebarProvider({
       paddingInlineStart: groupPaddingInlineStart,
       paddingInlineEnd: groupPaddingInlineEnd,
     }),
+    ...(menuItemNestPaddingBottom != null
+      ? {
+          "--df-sidebar-menu-item-nest-padding-bottom":
+            menuItemNestPaddingBottom === false
+              ? "0px"
+              : menuItemNestPaddingBottom,
+        }
+      : null),
     ...(height != null
       ? {
           "--df-sidebar-height": height,
@@ -367,6 +367,7 @@ function SidebarProvider({
         className={cn("df-sidebar-provider", className)}
         style={providerStyle}
         {...props}
+        ref={composeRefs(hostRef, ref)}
       >
         {children}
       </div>
@@ -391,7 +392,7 @@ function SidebarMobilePanel({
   label: string
   children: React.ReactNode
 }) {
-  const { openMobile, setOpenMobile } = useSidebar()
+  const { openMobile, setOpenMobile, hostRef } = useSidebar()
   const mounted = useIsClient()
   const panelRef = React.useRef<HTMLDivElement | null>(null)
   const triggerRef = React.useRef<HTMLElement | null>(null)
@@ -407,7 +408,11 @@ function SidebarMobilePanel({
   if (!mounted || !openMobile) return null
 
   return createPortal(
-    <div data-df="sidebar-mobile-root" data-side={side}>
+    <div
+      data-df="sidebar-mobile-root"
+      data-side={side}
+      className={nearestDarkClass(hostRef.current)}
+    >
       <div
         data-df="sidebar-mobile-scrim"
         aria-hidden
@@ -480,7 +485,7 @@ function Sidebar({
   }
 
   const collapsibleState = state === "collapsed" ? collapsible : ""
-  // Frame offcanvas collapses to width 0 with overflow hidden, so the seam cannot receive hits.
+  // Frame offcanvas collapses to width 0, so the seam cannot receive hits.
   const showEdge =
     edgeCollapse &&
     !(layout === "frame" && collapsible === "offcanvas" && state === "collapsed")
@@ -520,13 +525,7 @@ function SidebarEdgeToggle({
   const { toggleSidebar, label, state } = useSidebar()
   const expanded = state === "expanded"
   const emphasize: "left" | "right" =
-    side === "left"
-      ? expanded
-        ? "left"
-        : "right"
-      : expanded
-        ? "right"
-        : "left"
+    (side === "left") === expanded ? "left" : "right"
 
   return (
     <div
@@ -593,7 +592,6 @@ function SidebarInset({ className, ...props }: SidebarInsetProps) {
 }
 
 type SidebarSectionProps = React.ComponentProps<"div"> & {
-  /** Corner radius for this section. Sets --df-sidebar-section-radius. */
   radius?: string
 }
 
@@ -617,21 +615,13 @@ function useSidebarGroupOptional() {
 }
 
 type SidebarGroupProps = SidebarSectionProps & {
-  /** Opt in to a chevron on the label that expands and collapses SidebarGroupContent. */
   collapsible?: boolean
-  /** Controlled open state when collapsible. */
   open?: boolean
-  /** Uncontrolled initial open state when collapsible. */
   defaultOpen?: boolean
-  /** Called when open changes while collapsible. */
   onOpenChange?: (open: boolean) => void
-  /** Gap between label, separators, and content. Sets --df-sidebar-group-gap. */
   gap?: string
-  /** Sets all group padding axes to the same length. */
   padding?: string
-  /** Sets group block-start and block-end padding. */
   paddingBlock?: string
-  /** Sets group inline-start and inline-end padding. */
   paddingInline?: string
   paddingBlockStart?: string
   paddingBlockEnd?: string
@@ -685,61 +675,6 @@ function SidebarFooter({
   )
 }
 
-type SidebarContentProps = Omit<React.ComponentProps<"nav">, "children"> & {
-  children?: React.ReactNode
-  /** ScrollArea appearance: wider overlay (thumb) or thin flush accent (edge). */
-  scrollbar?: SidebarScrollbar
-  viewportClassName?: string
-  thumbShape?: ScrollAreaThumbShape
-  orientation?: ScrollAreaOrientation
-  side?: ScrollAreaSide
-  visibility?: ScrollAreaVisibility
-  space?: ScrollAreaSpace
-  width?: number
-}
-
-function SidebarContent({
-  className,
-  children,
-  scrollbar = "thumb",
-  viewportClassName,
-  thumbShape,
-  orientation = "vertical",
-  side,
-  visibility = "always",
-  space,
-  width,
-  ...props
-}: SidebarContentProps) {
-  const { label } = useSidebar()
-  return (
-    <nav
-      data-df="sidebar-content"
-      data-scrollbar={scrollbar}
-      aria-label={label}
-      className={cn("df-sidebar-content", className)}
-      {...props}
-    >
-      <ScrollArea
-        className="df-sidebar-content-scroll"
-        viewportClassName={cn(
-          "df-sidebar-content-viewport",
-          viewportClassName
-        )}
-        variant={scrollVariantForScrollbar(scrollbar)}
-        thumbShape={thumbShape}
-        orientation={orientation}
-        side={side}
-        visibility={visibility}
-        space={space}
-        width={width}
-      >
-        {children}
-      </ScrollArea>
-    </nav>
-  )
-}
-
 type SidebarSeparatorProps = Omit<
   React.ComponentProps<typeof Separator>,
   "color"
@@ -766,6 +701,96 @@ function SidebarSeparator({
       }
       {...props}
     />
+  )
+}
+
+function isSidebarSeparatorElement(
+  node: React.ReactNode
+): node is React.ReactElement {
+  return React.isValidElement(node) && node.type === SidebarSeparator
+}
+
+function renderSidebarContentChildren(
+  children: React.ReactNode,
+  separators: boolean
+): React.ReactNode {
+  if (!separators) return children
+
+  const items = React.Children.toArray(children)
+  if (items.length <= 1) return items
+
+  const isSeparatorAtIndex = items.map((child) =>
+    isSidebarSeparatorElement(child)
+  )
+
+  return items.flatMap((child, index) => {
+    if (!shouldInsertSidebarContentSeparator(isSeparatorAtIndex, index)) {
+      return [child]
+    }
+    return [
+      <SidebarSeparator key={`df-sidebar-content-separator-${index}`} />,
+      child,
+    ]
+  })
+}
+
+type SidebarContentProps = Omit<React.ComponentProps<"nav">, "children"> & {
+  children?: React.ReactNode
+  separators?: boolean
+  scrollbar?: SidebarScrollbar
+  viewportClassName?: string
+  thumbShape?: ScrollAreaThumbShape
+  orientation?: ScrollAreaOrientation
+  side?: ScrollAreaSide
+  visibility?: ScrollAreaVisibility
+  space?: ScrollAreaSpace
+  width?: number
+}
+
+function SidebarContent({
+  className,
+  children,
+  separators = false,
+  scrollbar = "thumb",
+  viewportClassName,
+  thumbShape,
+  orientation = "vertical",
+  side,
+  visibility = "always",
+  space = "none",
+  width,
+  ...props
+}: SidebarContentProps) {
+  const { label, state, collapsible, side: sidebarSide } = useSidebar()
+  const iconCollapsed = collapsible === "icon" && state === "collapsed"
+  const resolvedSpace = iconCollapsed ? "none" : space
+  const resolvedSide = side ?? (sidebarSide === "right" ? "left" : "right")
+  return (
+    <nav
+      data-df="sidebar-content"
+      data-scrollbar={scrollbar}
+      data-separators={separators ? "true" : "false"}
+      aria-label={label}
+      className={cn("df-sidebar-content", className)}
+      {...props}
+    >
+      <ScrollArea
+        className="df-sidebar-content-scroll"
+        viewportClassName={cn(
+          "df-sidebar-content-viewport",
+          viewportClassName
+        )}
+        variant={scrollVariantForScrollbar(scrollbar)}
+        thumbShape={thumbShape}
+        orientation={orientation}
+        side={resolvedSide}
+        visibility={visibility}
+        space={resolvedSpace}
+        width={width}
+      >
+        {renderSidebarContentChildren(children, separators)}
+      </ScrollArea>
+    </nav>
   )
 }
 
@@ -1013,6 +1038,7 @@ type SidebarGroupContentProps = React.ComponentProps<"div"> & {
   forceMount?: boolean
 }
 
+
 function SidebarGroupContent({
   className,
   forceMount = true,
@@ -1071,13 +1097,16 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
 }
 
 type SidebarMenuItemProps = React.ComponentProps<"li"> & {
-  /** Shown when the sidebar is icon-collapsed on desktop. Prefer this over the deprecated SidebarMenuButton tooltip. */
+  /** Shown when the sidebar is icon-collapsed on desktop. */
   tooltip?: React.ReactNode
+  nestPaddingBottom?: string | false
 }
 
 function SidebarMenuItem({
   className,
   tooltip,
+  nestPaddingBottom,
+  style,
   children,
   ...props
 }: SidebarMenuItemProps) {
@@ -1106,7 +1135,18 @@ function SidebarMenuItem({
   return (
     <li
       data-df="sidebar-menu-item"
+      data-nest-padding={nestPaddingBottom === false ? "false" : undefined}
       className={cn("df-sidebar-menu-item", className)}
+      style={
+        {
+          ...(typeof nestPaddingBottom === "string"
+            ? {
+                "--df-sidebar-menu-item-nest-padding-bottom": nestPaddingBottom,
+              }
+            : null),
+          ...style,
+        } as React.CSSProperties
+      }
       {...props}
     >
       {content}
@@ -1137,7 +1177,7 @@ type SidebarMenuButtonProps = Omit<
   children?: React.ReactNode
 }
 
-/** @deprecated Use ListItem inside SidebarMenuItem. Compatibility shim over List Item. */
+/** @deprecated Prefer ListItem inside SidebarMenuItem. */
 function SidebarMenuButton({
   className,
   asChild = false,
@@ -1314,7 +1354,7 @@ type SidebarMenuSubButtonProps = React.ComponentProps<"a"> & {
   isActive?: boolean
 }
 
-/** @deprecated Use ListItem inside SidebarMenuSubItem. Compatibility shim over List Item. */
+/** @deprecated Prefer ListItem inside SidebarMenuSubItem. */
 function SidebarMenuSubButton({
   className,
   asChild = false,

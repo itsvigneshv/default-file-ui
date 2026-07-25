@@ -261,6 +261,13 @@ export function buildColors() {
     black: "var(--df-neutral-1000)",
     "brand-ink": "var(--brand-ink)",
     "brand-ink-foreground": "var(--brand-ink-foreground)",
+    "brand-ink-fg-body": "var(--brand-ink-fg-body)",
+    "brand-ink-fg-muted": "var(--brand-ink-fg-muted)",
+    "brand-ink-fg-soft": "var(--brand-ink-fg-soft)",
+    "brand-ink-fg-subtle": "var(--brand-ink-fg-subtle)",
+    "brand-ink-fg-faint": "var(--brand-ink-fg-faint)",
+    "brand-ink-stroke": "var(--brand-ink-stroke)",
+    "brand-ink-stroke-strong": "var(--brand-ink-stroke-strong)",
     transparent: "transparent",
     current: "currentColor",
   }

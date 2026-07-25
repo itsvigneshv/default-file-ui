@@ -566,16 +566,28 @@
             "default": "var(--df-neutral-400)"
           },
           {
+            "name": "--focus-ring-width",
+            "type": "CSS length",
+            "description": "Shared spread for --focus-ring and --focus-ring-inset.",
+            "default": "3px"
+          },
+          {
             "name": "--focus-ring",
             "type": "CSS box-shadow",
-            "description": "Ring focus glow.",
-            "default": "0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent)"
+            "description": "Outer ring focus glow for controls with surrounding space.",
+            "default": "0 0 0 var(--focus-ring-width) color-mix(in oklch, var(--ring) 50%, transparent)"
+          },
+          {
+            "name": "--focus-ring-inset",
+            "type": "CSS box-shadow",
+            "description": "Inset ring focus glow for dense rows inside overflow scrollports (for example Sidebar menus).",
+            "default": "inset 0 0 0 var(--focus-ring-width) color-mix(in oklch, var(--ring) 50%, transparent)"
           },
           {
             "name": "--focus-ring-error",
             "type": "CSS box-shadow",
             "description": "Invalid glow.",
-            "default": "0 0 0 3px color-mix(in oklch, var(--destructive) 20%, transparent)"
+            "default": "0 0 0 var(--focus-ring-width) color-mix(in oklch, var(--destructive) 20%, transparent)"
           },
           {
             "name": "--destructive",

@@ -27,7 +27,7 @@
             "name": "variant",
             "type": "\"default\" | \"edge\"",
             "default": "\"default\"",
-            "description": "Scrollbar appearance. `default` is a wider inset overlay thumb. `edge` is a thin accent flush with the trailing edge. Use next to a sidebar or column divider so the thumb reads as part of that line."
+            "description": "Scrollbar appearance. default is a wider overlay thumb inset by --df-scrollbar-track-inset. edge is a thin accent whose content-facing inset is --df-scrollbar-edge-inset (default 0, flush). Use edge next to a sidebar or column divider so the thumb reads as part of that line."
           },
           {
             "name": "thumbShape",
@@ -134,6 +134,24 @@
             "type": "CSS length",
             "description": "Default thumb thickness for the edge variant.",
             "default": "3px"
+          },
+          {
+            "name": "--df-scrollbar-track-inset",
+            "type": "CSS length",
+            "description": "Inset of the default variant track from the scroll shell edges. Also used for track end inset on both variants.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-scrollbar-edge-inset",
+            "type": "CSS length",
+            "description": "Content-facing inset for the edge variant. Default 0 keeps the accent flush. Hosts may override on the ScrollArea root.",
+            "default": "0px"
+          },
+          {
+            "name": "--df-scrollbar-track-size",
+            "type": "CSS length",
+            "description": "Default variant track thickness reserved when space is auto.",
+            "default": "calc(2.5 * var(--spacing-unit))"
           },
           {
             "name": "--border",

@@ -7,7 +7,9 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   ListItem,
   ListItemLabel,
+  resolveListItemLayout,
   type ListItemChromeProps,
+  type ListItemLayout,
   type ListItemProps,
 } from "./df-list-item"
 import { SearchInput } from "./df-search-input"
@@ -22,7 +24,7 @@ import {
 import { cn, composeRefs } from "../lib/utils"
 
 type SelectionMode = "single" | "multiple"
-type OptionListItemLayout = "inline" | "stacked"
+type OptionListItemLayout = ListItemLayout
 
 type OptionListWidthMode = "hug" | "fill" | "fixed"
 
@@ -423,7 +425,7 @@ function OptionList({
       layout: OptionListItemLayout = "inline"
     ) => {
       const nextSecondary = secondary ?? null
-      const nextLayout = nextSecondary == null ? "inline" : layout
+      const nextLayout = resolveListItemLayout(layout, nextSecondary)
       const secondaryUnchanged =
         secondaries.current.get(itemValue) === nextSecondary
       const layoutUnchanged = layouts.current.get(itemValue) === nextLayout
@@ -595,11 +597,7 @@ function OptionListTrigger({
 
 function OptionListGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-df="option-list-group"
-      className={cn("p-1", className)}
-      {...props}
-    />
+    <div data-df="option-list-group" className={cn(className)} {...props} />
   )
 }
 
@@ -702,6 +700,25 @@ function OptionListBody({
   )
 }
 
+/** Stable across duplicate module instances in one JS realm. */
+const DF_OPTION_LIST_HEADER = Symbol.for("@default-file/ui.option-list-header")
+const DF_OPTION_LIST_FOOTER = Symbol.for("@default-file/ui.option-list-footer")
+const DF_OPTION_LIST_SUBMENU = Symbol.for("@default-file/ui.option-list-submenu")
+
+function markOptionListPart<T extends object>(part: T, mark: symbol): T {
+  Object.defineProperty(part, mark, { value: true })
+  return part
+}
+
+function isOptionListPart(
+  node: React.ReactNode,
+  mark: symbol
+): node is React.ReactElement {
+  if (!React.isValidElement(node)) return false
+  const type = node.type as { [key: symbol]: unknown } | string
+  return typeof type !== "string" && Boolean(type[mark])
+}
+
 function OptionListFooter({
   className,
   children,
@@ -713,32 +730,148 @@ function OptionListFooter({
     </div>
   )
 }
+markOptionListPart(OptionListFooter, DF_OPTION_LIST_FOOTER)
 
-type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> & {
-  side?: "top" | "bottom" | "left" | "right"
-  sideOffset?: number
-  align?: "start" | "center" | "end" | "auto"
-  alignOffset?: number
-  alignItemWithTrigger?: boolean
-  portal?: boolean
-  dismissOnScroll?: boolean
-  search?: boolean
-  searchPlaceholder?: string
-  searchValue?: string
-  defaultSearchValue?: string
-  onSearchChange?: (value: string) => void
-  scrollable?: boolean
-  scrollMaxHeight?: string | number
-  /** Space on each side of the scrollbar thumb, in pixels. */
-  scrollThumbGap?: number
-  footer?: React.ReactNode
+type OptionListHeaderProps = React.ComponentProps<"div"> & {
+  /** Primary panel title. */
+  label?: React.ReactNode
+  /** Supporting copy under the label. */
+  description?: React.ReactNode
+  /** Injected by OptionListContent for listbox aria-labelledby. */
+  labelId?: string
 }
+
+/** Panel header with an edge-to-edge bottom rule. */
+function OptionListHeader({
+  className,
+  label,
+  description,
+  labelId,
+  children,
+  ...props
+}: OptionListHeaderProps) {
+  return (
+    <div data-df="option-list-header" className={cn(className)} {...props}>
+      {label != null ? (
+        <div data-df="option-list-header-label" id={labelId}>
+          {label}
+        </div>
+      ) : null}
+      {description != null ? (
+        <div data-df="option-list-header-description">{description}</div>
+      ) : null}
+      {children}
+    </div>
+  )
+}
+markOptionListPart(OptionListHeader, DF_OPTION_LIST_HEADER)
+markOptionListPart(OptionListSubmenu, DF_OPTION_LIST_SUBMENU)
+
+function resolveOptionListHeader(
+  header: React.ReactNode,
+  labelId: string
+): { node: React.ReactNode; labelledBy?: string } {
+  if (header == null) return { node: null }
+  if (isOptionListPart(header, DF_OPTION_LIST_HEADER)) {
+    const el = header as React.ReactElement<OptionListHeaderProps>
+    const resolvedId = el.props.labelId ?? labelId
+    return {
+      node: React.cloneElement(el, { labelId: resolvedId }),
+      labelledBy: el.props.label != null ? resolvedId : undefined,
+    }
+  }
+  return { node: <OptionListHeader labelId={labelId}>{header}</OptionListHeader> }
+}
+
+function resolveOptionListFooter(footer: React.ReactNode): React.ReactNode {
+  if (footer == null) return null
+  if (isOptionListPart(footer, DF_OPTION_LIST_FOOTER)) return footer
+  return <OptionListFooter>{footer}</OptionListFooter>
+}
+
+type OptionListChrome = "menu" | "plain" | "panel"
+
+/** Panel surface chrome. Values should be CSS lengths or `var(--…)` tokens. */
+type OptionListSurfaceChromeProps = {
+  background?: string
+  foreground?: string
+  borderColor?: string
+  borderWidth?: string
+  borderStyle?: string
+  /** Hairline rules on header, search, and footer. Defaults to var(--border). */
+  dividerColor?: string
+  radius?: string
+}
+
+function optionListSurfaceChromeStyle({
+  background,
+  foreground,
+  borderColor,
+  borderWidth,
+  borderStyle,
+  dividerColor,
+  radius,
+}: OptionListSurfaceChromeProps): React.CSSProperties {
+  return {
+    ...(background != null
+      ? { "--df-option-list-surface-bg": background }
+      : null),
+    ...(foreground != null
+      ? { "--df-option-list-surface-fg": foreground }
+      : null),
+    ...(borderColor != null
+      ? { "--df-option-list-surface-border-color": borderColor }
+      : null),
+    ...(borderWidth != null
+      ? { "--df-option-list-surface-border-width": borderWidth }
+      : null),
+    ...(borderStyle != null
+      ? { "--df-option-list-surface-border-style": borderStyle }
+      : null),
+    ...(dividerColor != null
+      ? { "--df-option-list-divider-color": dividerColor }
+      : null),
+    ...(radius != null
+      ? { "--df-option-list-surface-radius": radius }
+      : null),
+  } as React.CSSProperties
+}
+
+type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> &
+  OptionListSurfaceChromeProps & {
+    side?: "top" | "bottom" | "left" | "right"
+    sideOffset?: number
+    align?: "start" | "center" | "end" | "auto"
+    alignOffset?: number
+    alignItemWithTrigger?: boolean
+    portal?: boolean
+    /**
+     * menu keeps popover fill, shadow, and radius.
+     * plain drops those so the list can sit inside a host surface.
+     * panel is a bordered card surface for always-visible lists.
+     */
+    chrome?: OptionListChrome
+    dismissOnScroll?: boolean
+    search?: boolean
+    searchPlaceholder?: string
+    searchBackground?: string
+    searchValue?: string
+    defaultSearchValue?: string
+    onSearchChange?: (value: string) => void
+    scrollable?: boolean
+    scrollMaxHeight?: string | number
+    /** Space on each side of the scrollbar thumb, in pixels. */
+    scrollThumbGap?: number
+    /** Panel header above the options. Prefer OptionListHeader for label and description. */
+    header?: React.ReactNode
+    footer?: React.ReactNode
+  }
 
 function containsSubmenu(node: React.ReactNode): boolean {
   let found = false
   React.Children.forEach(node, (child) => {
     if (found || !React.isValidElement(child)) return
-    if (child.type === OptionListSubmenu) {
+    if (isOptionListPart(child, DF_OPTION_LIST_SUBMENU)) {
       found = true
       return
     }
@@ -799,16 +932,27 @@ function OptionListContent({
   alignOffset = 0,
   alignItemWithTrigger: alignItemWithTriggerProp,
   portal = true,
+  chrome = "menu",
+  background,
+  foreground,
+  borderColor,
+  borderWidth,
+  borderStyle,
+  dividerColor,
+  radius,
   dismissOnScroll = true,
   search = false,
   searchPlaceholder = "Search",
+  searchBackground,
   searchValue,
   defaultSearchValue,
   onSearchChange,
   scrollable,
   scrollMaxHeight,
   scrollThumbGap,
+  header,
   footer,
+  style,
   ...props
 }: OptionListContentProps) {
   const {
@@ -850,7 +994,7 @@ function OptionListContent({
   const mounted = useIsClient()
   const hasSubmenu = React.useMemo(() => containsSubmenu(children), [children])
   const wrapInScrollArea = scrollable ?? !hasSubmenu
-  const stacked = search || footer != null
+  const stacked = search || header != null || footer != null
   const effectiveMaxHeight =
     scrollMaxHeight ??
     (stacked
@@ -1038,8 +1182,49 @@ function OptionListContent({
     </OptionListBody>
   )
 
+  const flushChrome = chrome === "plain" || chrome === "panel"
+  const hugMinWidth = stacked
+    ? "var(--df-submenu-min-width)"
+    : "var(--df-option-list-min-width)"
+  const headerLabelId = `${listboxId}-header-label`
+  const resolvedHeader = resolveOptionListHeader(header, headerLabelId)
+  const ariaLabelledBy =
+    props["aria-labelledby"] ?? resolvedHeader.labelledBy
+  const surfaceStyle = optionListSurfaceChromeStyle({
+    background,
+    foreground,
+    borderColor,
+    borderWidth,
+    borderStyle,
+    dividerColor,
+    radius,
+  })
+  const layoutStyle = portal
+    ? {
+        ...placement.style,
+        ...(alignItemWithTrigger
+          ? null
+          : {
+              // Hug the longest option. Use alignItemWithTrigger to match the field.
+              width: "max-content",
+              minWidth: flushChrome ? 0 : "var(--df-option-list-min-width)",
+              maxWidth:
+                "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-max-w-sm))",
+            }),
+      }
+    : {
+        position: "relative" as const,
+        width: alignItemWithTrigger ? "100%" : "max-content",
+        minWidth: flushChrome
+          ? 0
+          : alignItemWithTrigger
+            ? "var(--df-option-list-min-width)"
+            : hugMinWidth,
+      }
+
   const panel = (
     <div
+      {...props}
       ref={contentRef}
       role="listbox"
       id={listboxId}
@@ -1047,50 +1232,31 @@ function OptionListContent({
       aria-activedescendant={
         activeValue != null ? optionDomId(activeValue) : undefined
       }
+      aria-labelledby={ariaLabelledBy}
       data-df="option-list-content"
       data-side={placement.side}
       data-align={placement.align}
       data-align-trigger={alignItemWithTrigger ? "true" : "false"}
       data-portal={portal ? "true" : "false"}
+      data-chrome={chrome}
       data-stacked={stacked ? "true" : undefined}
       data-scroll={wrapInScrollArea ? "kit" : undefined}
       className={cn(className)}
-      style={
-        portal
-          ? {
-              ...placement.style,
-              ...(alignItemWithTrigger
-                ? null
-                : {
-                    // Hug the longest option. Use alignItemWithTrigger to match the field.
-                    width: "max-content",
-                    minWidth: "var(--df-menu-min-width)",
-                    maxWidth:
-                      "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-max-w-sm))",
-                  }),
-            }
-          : {
-              position: "relative",
-              width: alignItemWithTrigger ? "100%" : "max-content",
-              minWidth:
-                stacked && !alignItemWithTrigger
-                  ? "var(--df-submenu-min-width)"
-                  : "var(--df-menu-min-width)",
-            }
-      }
-      {...props}
+      style={{ ...surfaceStyle, ...layoutStyle, ...style }}
       onKeyDown={handleListKeyDown}
     >
+      {resolvedHeader.node}
       {search ? (
         <OptionListSearch
           placeholder={searchPlaceholder}
+          background={searchBackground}
           value={searchValue}
           defaultValue={defaultSearchValue}
           onValueChange={onSearchChange}
         />
       ) : null}
       {body}
-      {footer != null ? <OptionListFooter>{footer}</OptionListFooter> : null}
+      {resolveOptionListFooter(footer)}
     </div>
   )
 
@@ -1170,7 +1336,7 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
         selectionMode === "single" &&
         trailing == null &&
         !isSubmenuTrigger)
-    const copyLayout = secondary != null ? layout : "inline"
+    const copyLayout = resolveListItemLayout(layout, secondary)
     const highlighted =
       (isSubmenuTrigger && submenu?.open) || dataHighlightedProp != null
 
@@ -1241,14 +1407,22 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
   }
 )
 
+type OptionListSeparatorProps = React.ComponentProps<"div"> & {
+  /** When true, follow content padding. When false, span the full content width. */
+  inset?: boolean
+}
+
 function OptionListSeparator({
   className,
+  inset = false,
   ...props
-}: React.ComponentProps<"div">) {
+}: OptionListSeparatorProps) {
   return (
     <div
+      role="separator"
       data-df="option-list-separator"
-      className={cn("my-1 h-px bg-border/50", className)}
+      data-inset={inset ? "" : undefined}
+      className={cn(className)}
       {...props}
     />
   )
@@ -1296,6 +1470,7 @@ export {
   OptionListContent,
   OptionListFooter,
   OptionListGroup,
+  OptionListHeader,
   OptionListItem,
   OptionListLabel,
   OptionListScrollDownButton,
@@ -1309,13 +1484,17 @@ export {
 }
 export type {
   OptionListBodyProps,
+  OptionListChrome,
   OptionListContentProps,
+  OptionListHeaderProps,
   OptionListItemLayout,
   OptionListItemProps,
   OptionListProps,
   OptionListSearchProps,
+  OptionListSeparatorProps,
   OptionListSubContentProps,
   OptionListSubmenuProps,
+  OptionListSurfaceChromeProps,
   OptionListWidth,
   SelectionMode,
 }

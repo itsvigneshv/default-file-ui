@@ -13,13 +13,23 @@ import { cn, composeRefs } from "../lib/utils"
 type ListItemSize = "xs" | "sm" | "md" | "lg"
 type ListItemVariant = "accent" | "muted"
 type ListItemLabelVariant = "menu" | "nav"
-type ListItemLayout = "inline" | "stacked"
+type ListItemLayout = "inline" | "stacked" | "columns"
 type ListItemLeading = "checkbox" | "check" | React.ReactNode | false
 type ListItemAs = "div" | "button"
+
+/** stacked requires secondary; otherwise keep the requested layout. */
+function resolveListItemLayout(
+  layout: ListItemLayout,
+  secondary: React.ReactNode | null | undefined
+): ListItemLayout {
+  return layout === "stacked" && secondary == null ? "inline" : layout
+}
 
 type ListItemChromeProps = PaddingChromeProps & {
   gap?: string
   fontSize?: string
+  fontFamily?: string
+  fontWeight?: string
   background?: string
   foreground?: string
   hoverBackground?: string
@@ -29,6 +39,9 @@ type ListItemChromeProps = PaddingChromeProps & {
   selectedHoverBackground?: string
   activeBackground?: string
   radius?: string
+  borderWidth?: string
+  borderColor?: string
+  borderStyle?: string
 }
 
 type ListItemHostProps = React.HTMLAttributes<HTMLElement> & {
@@ -79,6 +92,8 @@ function listItemChromeStyle({
   paddingLeft,
   gap,
   fontSize,
+  fontFamily,
+  fontWeight,
   background,
   foreground,
   hoverBackground,
@@ -88,6 +103,9 @@ function listItemChromeStyle({
   selectedHoverBackground,
   activeBackground,
   radius,
+  borderWidth,
+  borderColor,
+  borderStyle,
 }: ListItemChromeProps): React.CSSProperties {
   return {
     ...dfPaddingChromeStyle(
@@ -104,6 +122,12 @@ function listItemChromeStyle({
     ),
     ...(gap != null ? { "--df-list-item-gap": gap } : null),
     ...(fontSize != null ? { "--df-list-item-font-size": fontSize } : null),
+    ...(fontFamily != null
+      ? { "--df-list-item-font-family": fontFamily }
+      : null),
+    ...(fontWeight != null
+      ? { "--df-list-item-font-weight": fontWeight }
+      : null),
     ...(background != null ? { "--df-list-item-bg": background } : null),
     ...(foreground != null ? { "--df-list-item-fg": foreground } : null),
     ...(hoverBackground != null
@@ -129,6 +153,15 @@ function listItemChromeStyle({
       ? { "--df-list-item-active-bg": activeBackground }
       : null),
     ...(radius != null ? { "--df-list-item-radius": radius } : null),
+    ...(borderWidth != null
+      ? { "--df-list-item-border-width": borderWidth }
+      : null),
+    ...(borderColor != null
+      ? { "--df-list-item-border-color": borderColor }
+      : null),
+    ...(borderStyle != null
+      ? { "--df-list-item-border-style": borderStyle }
+      : null),
   } as React.CSSProperties
 }
 
@@ -171,11 +204,7 @@ function ListItemSlots({
       </span>
     )
   } else if (leading != null && leading !== false) {
-    leadingNode = (
-      <span data-df="list-item-leading" aria-hidden>
-        {leading}
-      </span>
-    )
+    leadingNode = <span data-df="list-item-leading">{leading}</span>
   }
 
   return (
@@ -190,9 +219,9 @@ function ListItemSlots({
       {trailing != null ? (
         <span data-df="list-item-trailing">{trailing}</span>
       ) : null}
-      {indicator && selected ? (
-        <span data-df="list-item-indicator">
-          <Check className="pointer-events-none size-4" />
+      {indicator ? (
+        <span data-df="list-item-indicator" aria-hidden>
+          {selected ? <Check className="pointer-events-none" /> : null}
         </span>
       ) : null}
     </>
@@ -229,6 +258,8 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       paddingLeft,
       gap,
       fontSize,
+      fontFamily,
+      fontWeight,
       background,
       foreground,
       hoverBackground,
@@ -238,12 +269,15 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       selectedHoverBackground,
       activeBackground,
       radius,
+      borderWidth,
+      borderColor,
+      borderStyle,
       "data-highlighted": dataHighlightedProp,
       ...props
     },
     ref
   ) {
-    const copyLayout = secondary != null ? layout : "inline"
+    const copyLayout = resolveListItemLayout(layout, secondary)
     const dataState = selected ? "selected" : "idle"
     const dataHighlighted =
       highlighted || dataHighlightedProp != null
@@ -258,6 +292,8 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       paddingLeft,
       gap,
       fontSize,
+      fontFamily,
+      fontWeight,
       background,
       foreground,
       hoverBackground,
@@ -267,6 +303,9 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       selectedHoverBackground,
       activeBackground,
       radius,
+      borderWidth,
+      borderColor,
+      borderStyle,
     })
     const sharedClassName = cn(className)
     const sharedData = {
@@ -279,6 +318,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       "data-disabled": disabled ? ("" as const) : undefined,
       "data-leading": resolveLeadingAttr(leading),
       "data-trailing": trailing != null ? ("" as const) : undefined,
+      "data-indicator": indicator ? ("" as const) : undefined,
       "data-highlighted": dataHighlighted ? ("" as const) : undefined,
       "aria-disabled": disabled || undefined,
     }
@@ -402,7 +442,7 @@ export type {
   ListItemNestProps,
 } from "./df-list-item-nest"
 
-export { ListItem, ListItemLabel }
+export { ListItem, ListItemLabel, resolveListItemLayout }
 export type {
   ListItemAs,
   ListItemChromeProps,

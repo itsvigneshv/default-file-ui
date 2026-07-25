@@ -2,7 +2,7 @@
   "name": "search-input",
   "slug": "search-input",
   "title": "Search Input",
-  "description": "Search field with clear control, icon placement, and hover border.",
+  "description": "Search field with clear control, icon placement, background fill, and hover border.",
   "aliases": [
     "search bar",
     "SearchBar",
@@ -20,7 +20,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Search field with clear control, sizes, icon placement, and Input hover border controls. Block padding stays equal; Input optical shift is disabled. SearchBar is an alias.",
+    "description": "Search field with clear control, sizes, icon placement, background fill, and Input hover border controls. Block padding stays equal; Input optical shift is disabled. SearchBar is an alias.",
     "groups": [
       {
         "id": "search-input",
@@ -66,6 +66,11 @@
             "description": "Called when the clear control is activated."
           },
           {
+            "name": "background",
+            "type": "string",
+            "description": "Field fill. Prefer tokens such as var(--muted). Forwards to Input, sets --df-input-bg, and overrides the default and pill recipes for resting and filled states."
+          },
+          {
             "name": "hoverBorder",
             "type": "boolean",
             "description": "Forwards to Input. Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on."
@@ -97,6 +102,24 @@
         "title": "Tokens",
         "description": "Theme defaults live on :root. Override these globally or on a local host.",
         "props": [
+          {
+            "name": "--df-input-bg",
+            "type": "CSS color",
+            "description": "Resolved field fill on the inner Input. Set by variant recipes or the background prop.",
+            "default": "var(--background)"
+          },
+          {
+            "name": "--df-search-input-bg",
+            "type": "CSS color",
+            "description": "Pill resting fill recipe. Mapped to --df-input-bg unless background is set.",
+            "default": "color-mix(in oklch, var(--muted) 50%, var(--background))"
+          },
+          {
+            "name": "--df-search-input-bg-filled",
+            "type": "CSS color",
+            "description": "Pill filled fill recipe. Mapped to --df-input-bg unless background is set.",
+            "default": "color-mix(in oklch, var(--muted) 70%, var(--background))"
+          },
           {
             "name": "--input",
             "type": "CSS color",

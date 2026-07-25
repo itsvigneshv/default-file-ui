@@ -43,7 +43,7 @@
           {
             "name": "leading",
             "type": "ReactNode",
-            "description": "Slot before the title text. Pass an icon or custom node."
+            "description": "Slot before the title text. Prefer FeaturedIcon plain at size md with glyphShadow off for a bare mark that matches the leading size token. Plain SVG icons still fit that token."
           },
           {
             "name": "trailing",

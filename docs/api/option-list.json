@@ -92,12 +92,12 @@
             "name": "width",
             "type": "\"hug\" | \"fill\" | string",
             "default": "\"hug\"",
-            "description": "Root width for the list and its trigger. hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Select triggers inside follow the same width. Fill and fixed also default the open panel to match the trigger; hug defaults the panel to hug option content. Override with OptionListContent alignItemWithTrigger."
+            "description": "Root width for triggers and always-visible panels (including chrome panel). hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Select triggers inside follow the same width. Fill and fixed also default the open menu to match the trigger; hug defaults the menu to option content. Override with OptionListContent alignItemWithTrigger."
           },
           {
             "name": "itemChrome",
             "type": "ListItemChromeProps",
-            "description": "Default List Item chrome for every OptionListItem (padding, gap, fontSize, radius, and fill props). Per-item chrome props on OptionListItem win. See List Item for the full chrome contract."
+            "description": "Default List Item chrome for every OptionListItem (padding, gap, type size/family/weight/color, radius, fills, and stroke). Per-item chrome props on OptionListItem win. See List Item for the full chrome contract."
           },
           {
             "name": "submenuAnimated",
@@ -149,7 +149,7 @@
       {
         "id": "option-list-content",
         "title": "OptionListContent",
-        "description": "Portaled or inline panel with optional search, scroll, footer, and dismissOnScroll.",
+        "description": "Portaled or inline panel with optional header, search, scroll, footer, and dismissOnScroll.",
         "props": [
           {
             "name": "align",
@@ -187,10 +187,56 @@
             "description": "Render in a portal. Set false for inline previews."
           },
           {
+            "name": "chrome",
+            "type": "\"menu\" | \"plain\" | \"panel\"",
+            "default": "\"menu\"",
+            "description": "menu keeps popover fill, shadow, and radius. plain drops those so the list can sit inside a host surface. panel is a bordered card for always-visible lists."
+          },
+          {
+            "name": "background",
+            "type": "CSS color",
+            "description": "Surface fill for any chrome mode. Sets --df-option-list-surface-bg. Prefer a token such as var(--card) or var(--popover)."
+          },
+          {
+            "name": "foreground",
+            "type": "CSS color",
+            "description": "Surface text color for any chrome mode. Sets --df-option-list-surface-fg. Header label inherits this color."
+          },
+          {
+            "name": "borderColor",
+            "type": "CSS color",
+            "description": "Outer surface stroke only. Sets --df-option-list-surface-border-color. Does not change header, search, or footer rules; use dividerColor for those."
+          },
+          {
+            "name": "borderWidth",
+            "type": "CSS length",
+            "description": "Outer surface stroke width. Sets --df-option-list-surface-border-width. Prefer var(--border-width-hairline)."
+          },
+          {
+            "name": "borderStyle",
+            "type": "CSS border-style",
+            "description": "Outer surface stroke style. Sets --df-option-list-surface-border-style. Default solid."
+          },
+          {
+            "name": "dividerColor",
+            "type": "CSS color",
+            "description": "Hairline rules on header, search, and footer. Sets --df-option-list-divider-color. Defaults to var(--border)."
+          },
+          {
+            "name": "radius",
+            "type": "CSS length",
+            "description": "Surface corner radius for any chrome mode. Sets --df-option-list-surface-radius. Prefer a radius token such as var(--radius-xl)."
+          },
+          {
             "name": "dismissOnScroll",
             "type": "boolean",
             "default": "true",
             "description": "Close when the page scrolls. Scrolling inside the list stays open. Set false to keep the panel following the trigger (it can cover sticky chrome)."
+          },
+          {
+            "name": "header",
+            "type": "ReactNode",
+            "description": "Panel header above the options. Prefer OptionListHeader for a label, description, and edge-to-edge bottom rule. Stacks the panel like search and footer."
           },
           {
             "name": "search",
@@ -203,6 +249,11 @@
             "type": "string",
             "default": "\"Search\"",
             "description": "Placeholder for the search field."
+          },
+          {
+            "name": "searchBackground",
+            "type": "string",
+            "description": "Search field fill. Prefer tokens such as var(--muted). Forwards to SearchInput background. Named separately because background themes the panel surface."
           },
           {
             "name": "searchValue",
@@ -228,8 +279,8 @@
           {
             "name": "scrollMaxHeight",
             "type": "string | number",
-            "default": "\"min(60vh, 24rem)\"",
-            "description": "Max height of the scrollable body before it scrolls (stacked panels default to 16rem). When the panel opens, the selected option scrolls into the list scrollport while list order stays the same."
+            "default": "\"min(60vh, var(--df-menu-max-height))\"",
+            "description": "Max height of the scrollable body before it scrolls (stacked panels default to var(--df-menu-stacked-max-height)). When the panel opens, the selected option scrolls into the list scrollport while list order stays the same."
           },
           {
             "name": "scrollThumbGap",
@@ -252,7 +303,7 @@
       {
         "id": "option-list-item",
         "title": "OptionListItem",
-        "description": "Selectable List Item with value, search filter, and submenu trigger behavior. Forwards List Item presentation props (size, variant, leading, trailing, layout, chrome padding and fills). Selection, highlight, and open state stay owned by Option List. Nested submenu triggers pass the chevron through trailing; List Item renders it. Inside OptionListSubmenu (trigger zone) the row opens the submenu on hover instead of selecting. For standalone rows and asChild links, see List Item.",
+        "description": "Selectable List Item with value, search filter, and submenu trigger behavior. Forwards List Item presentation props (size, variant, leading, trailing, layout, and full chrome: padding, type, fills, stroke, radius). Selection, highlight, and open state stay owned by Option List. Nested submenu triggers pass the chevron through trailing; List Item renders it. Inside OptionListSubmenu (trigger zone) the row opens the submenu on hover instead of selecting. For standalone rows and asChild links, see List Item.",
         "props": [
           {
             "name": "value",
@@ -279,7 +330,7 @@
           {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
-            "description": "Leading slot before the label. Works with inline and stacked layouts. On stacked rows, the icon aligns to the title line. Pass an icon or other node; use \"checkbox\" for multi-select, \"check\" for a leading selected mark, or false to omit."
+            "description": "Leading slot before the label. Works with inline, stacked, and columns layouts. On stacked rows, the icon aligns to the title line. On columns rows, leading hugs text content. Custom nodes are content: set aria-hidden on decorative icons. Pass an icon or other node; use \"checkbox\" for multi-select, \"check\" for a leading selected mark, or false to omit."
           },
           {
             "name": "secondary",
@@ -288,14 +339,14 @@
           },
           {
             "name": "layout",
-            "type": "\"inline\" | \"stacked\"",
+            "type": "\"inline\" | \"stacked\" | \"columns\"",
             "default": "\"inline\"",
-            "description": "inline places secondary beside the label; stacked places it underneath. With leading, the icon aligns to the title line. Select mirrors stacked layout in the trigger value."
+            "description": "inline places secondary beside the label; stacked places it underneath; columns is leading, main, and trailing text with the main label horizontally centered in the row and height from content. With leading on stacked rows, the icon aligns to the title line. Select mirrors stacked layout in the trigger value."
           },
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "End of row slot: badge counter, nested menu chevron, or both. When set, the selected check is hidden unless indicator is forced on. Submenu triggers pass the chevron here; List Item renders the trailing slot."
+            "description": "End of row slot: badge counter, nested menu chevron, measure text, or both. When set, the selected check is hidden unless indicator is forced on. Submenu triggers pass the chevron here; List Item renders the trailing slot."
           },
           {
             "name": "indicator",
@@ -323,9 +374,9 @@
             "description": "List Item chrome padding props. Forwarded to List Item. See List Item for the full cascade and --df-list-item-padding-* tokens."
           },
           {
-            "name": "gap / fontSize / radius",
+            "name": "gap / fontSize / fontFamily / fontWeight / radius",
             "type": "string",
-            "description": "List Item chrome spacing, type size, and radius. Forwarded to List Item."
+            "description": "List Item chrome spacing, type (size, family, weight), and radius. Forwarded to List Item."
           },
           {
             "name": "background / foreground / hoverBackground / hoverForeground",
@@ -336,6 +387,11 @@
             "name": "selectedBackground / selectedForeground / selectedHoverBackground / activeBackground",
             "type": "string",
             "description": "List Item chrome selected and pressed fills. Forwarded to List Item. See List Item for --df-list-item-* tokens."
+          },
+          {
+            "name": "borderWidth / borderColor / borderStyle",
+            "type": "string",
+            "description": "List Item chrome stroke. Forwarded to List Item. Prefer var(--border-width-hairline) and var(--border). Default width is 0."
           },
           {
             "name": "…host attributes",
@@ -498,6 +554,11 @@
             "type": "boolean",
             "default": "true",
             "description": "Show clear control when filled."
+          },
+          {
+            "name": "background",
+            "type": "string",
+            "description": "Search field fill. Prefer tokens such as var(--muted). Same contract as SearchInput background."
           }
         ]
       },
@@ -528,6 +589,33 @@
             "name": "children",
             "type": "ReactNode",
             "description": "Option rows."
+          }
+        ]
+      },
+      {
+        "id": "option-list-header",
+        "title": "OptionListHeader",
+        "description": "Panel title block with an edge-to-edge bottom rule. Distinct from OptionListLabel, which is an in-list group heading.",
+        "props": [
+          {
+            "name": "label",
+            "type": "ReactNode",
+            "description": "Primary panel title (uppercase label style). When set, OptionListContent names the listbox with aria-labelledby."
+          },
+          {
+            "name": "description",
+            "type": "ReactNode",
+            "description": "Supporting copy under the label."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Optional content below the description."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles."
           }
         ]
       },
@@ -564,7 +652,13 @@
           {
             "name": "OptionListSeparator",
             "type": "separator",
-            "description": "Horizontal rule between sections."
+            "description": "Horizontal rule between in-list sections. inset false (default) spans the full content width. inset true follows panel content padding via --df-option-list-separator-inset. For a panel header rule that touches both edges, use OptionListHeader."
+          },
+          {
+            "name": "OptionListSeparator.inset",
+            "type": "boolean",
+            "default": "false",
+            "description": "When true, inset the rule to match group padding plus default row horizontal padding. Override distance with --df-option-list-separator-inset."
           },
           {
             "name": "OptionListScrollUpButton / ScrollDownButton",
@@ -583,35 +677,40 @@
         "title": "Layout & appearance",
         "props": [
           {
-            "name": "Hug trigger",
+            "name": "Hug content",
             "type": "width=\"hug\"",
             "default": "\"hug\"",
-            "description": "Default root width. The trigger sizes to its content."
+            "description": "Default root width. Trigger and inline panel (including chrome panel) size to content."
           },
           {
             "name": "Fill parent",
             "type": "width=\"fill\"",
-            "description": "Stretch the root and trigger to the full width of the parent."
+            "description": "Stretch the root, trigger, and inline panel to the full width of the parent."
           },
           {
             "name": "Fixed width",
             "type": "width CSS length",
-            "description": "Pass a CSS length on OptionList such as 12rem or 200px. Sets --df-option-list-width."
+            "description": "Pass a CSS length on OptionList such as 12rem or 200px. Sets --df-option-list-width on the root."
           },
           {
             "name": "Hug menu content",
             "type": "alignItemWithTrigger={false}",
-            "description": "Panel width follows option content. Default when root width is hug, or pass false to override fill and fixed."
+            "description": "Open menu width follows option content. Default when root width is hug, or pass false to override fill and fixed."
           },
           {
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
-            "description": "Lock panel width to the trigger. Default when root width is fill or fixed."
+            "description": "Lock open menu width to the trigger. Default when root width is fill or fixed."
           },
           {
             "name": "Inline previews",
             "type": "portal={false}",
             "description": "Render the panel in place for docs and nested layouts."
+          },
+          {
+            "name": "Card panel",
+            "type": "chrome=\"panel\"",
+            "description": "Bordered card surface for always-visible lists. Pair with OptionListHeader for a label, description, and edge-to-edge rule. Size with OptionList width (hug, fill, or a CSS length). Theme the surface with background, foreground, borderColor, borderWidth, borderStyle, and radius."
           },
           {
             "name": "Trailing badge counter",
@@ -678,7 +777,7 @@
           {
             "name": "ARIA",
             "type": "listbox",
-            "description": "The panel is a listbox with aria-activedescendant on the active option. The trigger exposes aria-controls to the panel while open."
+            "description": "The panel is a listbox with aria-activedescendant on the active option. When OptionListHeader has a label, the listbox uses aria-labelledby. The trigger exposes aria-controls to the panel while open."
           },
           {
             "name": "High contrast",
@@ -698,10 +797,65 @@
             "description": "Fixed root width when width is a CSS length. Set by the width prop."
           },
           {
+            "name": "--df-input-bg",
+            "type": "CSS color",
+            "description": "Built-in search field fill. Override with searchBackground or OptionListSearch background.",
+            "default": "var(--background)"
+          },
+          {
+            "name": "--df-option-list-surface-bg",
+            "type": "CSS color",
+            "description": "Panel surface fill. Defaults follow chrome (popover or card). Set via background."
+          },
+          {
+            "name": "--df-option-list-surface-fg",
+            "type": "CSS color",
+            "description": "Panel text color. Set via foreground."
+          },
+          {
+            "name": "--df-option-list-surface-border-color",
+            "type": "CSS color",
+            "description": "Outer surface stroke. Set via borderColor."
+          },
+          {
+            "name": "--df-option-list-surface-border-width",
+            "type": "CSS length",
+            "description": "Outer surface stroke width. Set via borderWidth."
+          },
+          {
+            "name": "--df-option-list-surface-border-style",
+            "type": "CSS border-style",
+            "description": "Outer surface stroke style. Set via borderStyle.",
+            "default": "solid"
+          },
+          {
+            "name": "--df-option-list-divider-color",
+            "type": "CSS color",
+            "description": "Header, search, and footer hairline rules. Set via dividerColor.",
+            "default": "var(--border)"
+          },
+          {
+            "name": "--df-option-list-surface-radius",
+            "type": "CSS length",
+            "description": "Surface corner radius. Set via radius."
+          },
+          {
             "name": "--df-option-list-min-width",
             "type": "CSS length",
-            "description": "Minimum panel width.",
-            "default": "12rem"
+            "description": "Minimum open-list width. Defaults to var(--df-menu-min-width).",
+            "default": "var(--df-menu-min-width)"
+          },
+          {
+            "name": "--df-option-list-group-padding",
+            "type": "CSS length",
+            "description": "Padding on OptionListGroup. Used by inset separators.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-option-list-separator-inset",
+            "type": "CSS length",
+            "description": "Horizontal inset when OptionListSeparator inset is true.",
+            "default": "group pad + 3 spacing units"
           },
           {
             "name": "--df-option-list-scroll-thumb-gap",
@@ -730,7 +884,7 @@
           {
             "name": "--df-menu-stacked-max-height",
             "type": "CSS length",
-            "description": "Maximum body height when a footer is present.",
+            "description": "Maximum body height when header, search, or footer stacks the panel.",
             "default": "16rem"
           },
           {

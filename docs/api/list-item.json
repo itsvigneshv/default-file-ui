@@ -20,7 +20,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Configurable row for menus, pickers, TOC, and app navigation. Compose leading, secondary, and trailing slots. Pair with ListItemLabel for section headings and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, and Sidebar compose List Item. Use as=\"button\" for in-page actions. Use asChild to paint the row onto a link. Pass itemChrome on composer roots for shared defaults, or set chrome props on each row. Chrome props set --df-list-item-* variables so padding, gap, type size, radius, and fills can be overridden per row.",
+    "description": "Configurable row for menus, pickers, TOC, and app navigation. Compose leading, secondary, and trailing slots. Pair with ListItemLabel for section headings and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, and Sidebar compose List Item. Use as=\"button\" for in-page actions. Use asChild to paint the row onto a link. Pass itemChrome on composer roots for shared defaults, or set chrome props on each row. Chrome props set --df-list-item-* variables so padding, gap, type (size, family, weight, color), radius, fills, and stroke can be overridden per row.",
     "groups": [
       {
         "id": "list-item",
@@ -66,7 +66,7 @@
           {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
-            "description": "Leading slot. Pass an icon, \"checkbox\" or \"check\" for selection marks, or false to omit."
+            "description": "Leading slot. Pass an icon, \"checkbox\" or \"check\" for selection marks, or false to omit. Custom nodes are content: set aria-hidden on decorative icons. In columns layout, pass text; the slot hugs content instead of the icon box."
           },
           {
             "name": "secondary",
@@ -75,20 +75,20 @@
           },
           {
             "name": "layout",
-            "type": "\"inline\" | \"stacked\"",
+            "type": "\"inline\" | \"stacked\" | \"columns\"",
             "default": "\"inline\"",
-            "description": "inline places secondary beside the label. stacked places it underneath."
+            "description": "inline places secondary beside the label. stacked places it underneath. columns is a three-column text row: leading, main label, and trailing. The main label stays horizontally centered in the row. Leading and trailing hug their tracks. Height follows content. columns does not require secondary."
           },
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "End slot for badges, chevrons, or actions."
+            "description": "End slot for badges, chevrons, measures, or actions. In columns layout, use for end-aligned text such as a size value."
           },
           {
             "name": "indicator",
             "type": "boolean",
             "default": "false",
-            "description": "Show a trailing check when selected."
+            "description": "Reserve an end check slot. The check shows when selected. The slot stays end-aligned with auto space before it; --df-list-item-gap is the minimum space from the label. Long labels truncate."
           },
           {
             "name": "as",
@@ -117,7 +117,7 @@
       {
         "id": "list-item-chrome",
         "title": "Chrome overrides",
-        "description": "String props write --df-list-item-* on the host. Prefer token expressions such as var(--muted) or calc(2 * var(--spacing-unit)). Size and variant still supply defaults when a prop is omitted. OptionListItem and SelectItem forward the same props.",
+        "description": "String props write --df-list-item-* on the host. Prefer token expressions such as var(--muted), var(--border-width-hairline), or calc(2 * var(--spacing-unit)). Size and variant still supply defaults when a prop is omitted. OptionListItem, SelectItem, Combobox, Tag Input, and ContentsNavItem forward the same props. Root itemChrome sets defaults for every row; per-item props win.",
         "props": [
           {
             "name": "padding",
@@ -157,12 +157,22 @@
           {
             "name": "gap",
             "type": "string",
-            "description": "Space between leading, label, and trailing slots. Sets --df-list-item-gap."
+            "description": "Minimum space between leading, label, trailing, and indicator slots. Sets --df-list-item-gap."
           },
           {
             "name": "fontSize",
             "type": "string",
             "description": "Label type size. Prefer type tokens such as var(--df-text-11). Sets --df-list-item-font-size."
+          },
+          {
+            "name": "fontFamily",
+            "type": "string",
+            "description": "Label font family. Prefer family tokens such as var(--df-font-sans) or var(--df-font-mono). Sets --df-list-item-font-family."
+          },
+          {
+            "name": "fontWeight",
+            "type": "string",
+            "description": "Label font weight. Prefer weight tokens such as var(--df-font-weight-semibold). Sets --df-list-item-font-weight. Accent titles default to medium when omitted; muted defaults to normal."
           },
           {
             "name": "background",
@@ -207,7 +217,22 @@
           {
             "name": "radius",
             "type": "string",
-            "description": "Corner radius of the row fill. Prefer radius tokens such as var(--radius-md) or var(--radius-2xl). List Item has no border chrome. Sets --df-list-item-radius."
+            "description": "Corner radius of the row fill and stroke. Prefer radius tokens such as var(--radius-md) or var(--radius-2xl). Sets --df-list-item-radius."
+          },
+          {
+            "name": "borderWidth",
+            "type": "string",
+            "description": "Stroke width. Prefer border tokens such as var(--border-width-hairline). Default 0 (no stroke). Sets --df-list-item-border-width."
+          },
+          {
+            "name": "borderColor",
+            "type": "string",
+            "description": "Stroke color. Prefer var(--border) or other color tokens. Sets --df-list-item-border-color."
+          },
+          {
+            "name": "borderStyle",
+            "type": "string",
+            "description": "Stroke style such as solid or dashed. Default solid. Sets --df-list-item-border-style."
           }
         ]
       },
@@ -310,7 +335,12 @@
           {
             "name": "--df-list-item-gap",
             "type": "CSS length",
-            "description": "Slot gap. Set by the gap prop."
+            "description": "Minimum space between leading, label, trailing, and indicator slots. Set by the gap prop."
+          },
+          {
+            "name": "--df-list-item-indicator-size",
+            "type": "CSS length",
+            "description": "Width and height of the end check slot when indicator is on."
           },
           {
             "name": "--df-list-item-font-size",

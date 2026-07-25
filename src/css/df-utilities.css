@@ -29,10 +29,6 @@
   background-color: var(--border);
 }
 
-.bg-border\/50 {
-  background-color: color-mix(in oklch, var(--border) 50%, var(--background));
-}
-
 .bg-card {
   background-color: var(--card);
 }
@@ -193,10 +189,6 @@
   height: calc(8 * var(--spacing-unit, 0.25rem));
 }
 
-.h-px {
-  height: var(--spacing-px);
-}
-
 .hover\:bg-neutral-200:hover {
   background-color: var(--df-neutral-200);
 }
@@ -279,11 +271,6 @@
   margin-right: calc(0.5 * var(--spacing-unit, 0.25rem));
 }
 
-.my-1 {
-  margin-top: calc(1 * var(--spacing-unit, 0.25rem));
-  margin-bottom: calc(1 * var(--spacing-unit, 0.25rem));
-}
-
 .object-cover {
   object-fit: cover;
 }
@@ -302,10 +289,6 @@
 
 .overflow-visible {
   overflow: visible;
-}
-
-.p-1 {
-  padding: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
 .p-1\.5 {

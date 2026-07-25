@@ -111,7 +111,7 @@
           {
             "name": "itemChrome",
             "type": "ListItemChromeProps",
-            "description": "Default List Item chrome for every row (padding, gap, fontSize, radius, and fill props). Applies to composed ContentsNavItem rows and data-driven branches. Per-item chrome props on ContentsNavItem win. See List Item for the full chrome contract."
+            "description": "Default List Item chrome for every row (padding, gap, type size/family/weight/color, radius, fills, and stroke). Applies to composed ContentsNavItem rows and data-driven branches. Per-item chrome props on ContentsNavItem win. See List Item for the full chrome contract."
           },
           {
             "name": "nestChrome",
@@ -214,7 +214,7 @@
           {
             "name": "padding / gap / fontSize / radius / fills",
             "type": "ListItemChromeProps",
-            "description": "All List Item chrome props forward through. Merge over ContentsNav itemChrome. See List Item for the full list including hoverForeground, selectedForeground, selectedHoverBackground, and activeBackground."
+            "description": "All List Item chrome props forward through. Merge over ContentsNav itemChrome. See List Item for the full list including type (fontSize, fontFamily, fontWeight, foreground), fills, stroke (borderWidth, borderColor, borderStyle), and radius."
           }
         ]
       },

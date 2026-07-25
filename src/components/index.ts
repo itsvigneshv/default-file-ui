@@ -66,6 +66,15 @@ export type {
 export { Separator } from "./df-separator"
 export { Spinner } from "./df-spinner"
 export type { SpinnerProps, SpinnerSize } from "./df-spinner"
+export { FeaturedIcon } from "./df-featured-icon"
+export type {
+  FeaturedIconProps,
+  FeaturedIconVariant,
+  FeaturedIconSize,
+  FeaturedIconColor,
+  FeaturedIconShape,
+  FeaturedIconRadius,
+} from "./df-featured-icon"
 export { Progress } from "./df-progress"
 export type { ProgressProps, ProgressSize } from "./df-progress"
 export { Switch } from "./df-switch"
@@ -210,6 +219,7 @@ export {
   ListItem,
   ListItemLabel,
   ListItemNest,
+  resolveListItemLayout,
   useListItemNestScope,
 } from "./df-list-item"
 export type {
@@ -251,6 +261,7 @@ export {
   OptionListContent,
   OptionListFooter,
   OptionListGroup,
+  OptionListHeader,
   OptionListItem,
   OptionListLabel,
   OptionListScrollDownButton,
@@ -263,13 +274,17 @@ export {
   useOptionListContext,
 } from "./df-option-list"
 export type {
+  OptionListChrome,
   OptionListContentProps,
+  OptionListHeaderProps,
   OptionListItemLayout,
   OptionListItemProps,
   OptionListProps,
   OptionListSearchProps,
   OptionListSubContentProps,
   OptionListSubmenuProps,
+  OptionListSeparatorProps,
+  OptionListSurfaceChromeProps,
   OptionListWidth,
   SelectionMode,
 } from "./df-option-list"

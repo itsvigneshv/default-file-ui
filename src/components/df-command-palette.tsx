@@ -45,6 +45,7 @@ export type CommandPaletteProps = {
   recentIds?: string[]
   onRun?: (command: CommandItem) => void
   placeholder?: string
+  background?: string
   emptyContent?: React.ReactNode
   footer?: React.ReactNode
   className?: string
@@ -99,6 +100,7 @@ function CommandPalette({
   recentIds = [],
   onRun,
   placeholder = "Type a command...",
+  background,
   emptyContent,
   footer,
   className,
@@ -254,6 +256,7 @@ function CommandPalette({
               size="md"
               clearable
               placeholder={placeholder}
+              background={background}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               onClear={() => setQuery("")}

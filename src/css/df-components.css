@@ -2389,14 +2389,25 @@
   padding-right: calc(18 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="search-input"][data-variant="pill"]) {
+  --df-search-input-bg: color-mix(in oklch, var(--muted) 50%, var(--background));
+  --df-search-input-bg-filled: color-mix(
+    in oklch,
+    var(--muted) 70%,
+    var(--background)
+  );
+}
+
 [data-df="search-input"][data-variant="pill"] [data-df="input"].df-input {
   border-radius: var(--radius-full);
   border-color: color-mix(in oklch, var(--border) 70%, var(--background));
-  background-color: color-mix(in oklch, var(--muted) 50%, var(--background));
+  --df-input-bg: var(--df-search-input-bg);
+  background-color: var(--df-input-bg);
   box-shadow: none;
 }
+
 [data-df="search-input"][data-state="filled"][data-variant="pill"] [data-df="input"].df-input {
-  background-color: color-mix(in oklch, var(--muted) 70%, var(--background));
+  --df-input-bg: var(--df-search-input-bg-filled);
   border-color: var(--border);
 }
 
@@ -2530,7 +2541,8 @@
   justify-content: center;
 }
 
-:where([data-df="label-leading"] svg) {
+/* Direct SVG icons only. Nested FeaturedIcon keeps its own glyph scale. */
+:where([data-df="label-leading"] > svg) {
   width: var(--df-label-leading-size);
   height: var(--df-label-leading-size);
 }
@@ -2689,6 +2701,509 @@
 .df-spinner .df-spinner-indicator {
   stroke-linecap: round;
   stroke-dasharray: var(--df-spinner-dasharray);
+}
+
+:where([data-df="featured-icon"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-md);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-md);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-md);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-md);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-md
+  );
+  --df-featured-icon-accent: var(--primary);
+  --df-featured-icon-on-accent: var(--primary-foreground);
+  --df-featured-icon-solid: var(--df-featured-icon-brand-solid);
+  --df-featured-icon-on-solid: var(--df-featured-icon-brand-on-solid);
+  --df-featured-icon-soft-bg: color-mix(
+    in oklch,
+    var(--df-featured-icon-accent) var(--df-featured-icon-soft-tint),
+    var(--background)
+  );
+  --df-featured-icon-halo-bg: color-mix(
+    in oklch,
+    var(--df-featured-icon-solid) var(--df-featured-icon-soft-tint-strong),
+    var(--background)
+  );
+  --df-featured-icon-ring-color: color-mix(
+    in oklch,
+    var(--df-featured-icon-accent) var(--df-featured-icon-ring-strong),
+    transparent
+  );
+  --df-featured-icon-ring-color-soft: color-mix(
+    in oklch,
+    var(--df-featured-icon-accent) var(--df-featured-icon-ring-soft),
+    transparent
+  );
+  --df-featured-icon-bg: transparent;
+  --df-featured-icon-border: transparent;
+  --df-featured-icon-border-soft: transparent;
+  --df-featured-icon-icon: var(--df-featured-icon-accent);
+  --df-featured-icon-elevation: none;
+  --df-featured-icon-plate-fill: var(--background);
+
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--df-featured-icon-size);
+  height: var(--df-featured-icon-size);
+  color: var(--df-featured-icon-icon);
+  isolation: isolate;
+}
+
+:where([data-df="featured-icon"][data-size="2xs"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-2xs);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-2xs);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-2xs);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-2xs);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-2xs
+  );
+}
+
+:where([data-df="featured-icon"][data-size="xs"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-xs);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-xs);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-xs);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-xs);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-xs
+  );
+}
+
+:where([data-df="featured-icon"][data-size="sm"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-sm);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-sm);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-sm);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-sm);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-sm
+  );
+}
+
+:where([data-df="featured-icon"][data-size="md"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-md);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-md);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-md);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-md);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-md
+  );
+}
+
+:where([data-df="featured-icon"][data-size="lg"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-lg);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-lg);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-lg);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-lg);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-lg
+  );
+}
+
+:where([data-df="featured-icon"][data-size="xl"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-xl);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-xl);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-xl);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-xl);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-xl
+  );
+}
+
+:where([data-df="featured-icon"][data-size="2xl"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-2xl);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-2xl);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-2xl);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-2xl);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-2xl
+  );
+}
+
+:where([data-df="featured-icon"][data-size="3xl"]) {
+  --df-featured-icon-size: var(--df-featured-icon-size-3xl);
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-3xl);
+  --df-featured-icon-halo-inner: var(--df-featured-icon-halo-inner-3xl);
+  --df-featured-icon-radius: var(--df-featured-icon-radius-3xl);
+  --df-featured-icon-outline-ring-inset: var(
+    --df-featured-icon-outline-ring-inset-3xl
+  );
+}
+
+:where([data-df="featured-icon"][data-color="brand"]) {
+  --df-featured-icon-accent: var(--primary);
+  --df-featured-icon-on-accent: var(--primary-foreground);
+  --df-featured-icon-solid: var(--df-featured-icon-brand-solid);
+  --df-featured-icon-on-solid: var(--df-featured-icon-brand-on-solid);
+}
+
+:where([data-df="featured-icon"][data-color="muted"]) {
+  --df-featured-icon-accent: var(--muted-foreground);
+  --df-featured-icon-on-accent: var(--background);
+  --df-featured-icon-solid: var(--muted-foreground);
+  --df-featured-icon-on-solid: var(--df-neutral-0);
+}
+
+:where([data-df="featured-icon"][data-color="success"]) {
+  --df-featured-icon-accent: var(--success);
+  --df-featured-icon-on-accent: var(--df-neutral-0);
+  --df-featured-icon-solid: var(--success);
+  --df-featured-icon-on-solid: var(--df-neutral-0);
+}
+
+:where([data-df="featured-icon"][data-color="warning"]) {
+  --df-featured-icon-accent: var(--warning);
+  --df-featured-icon-on-accent: var(--df-neutral-0);
+  --df-featured-icon-solid: var(--warning);
+  --df-featured-icon-on-solid: var(--df-neutral-0);
+}
+
+:where([data-df="featured-icon"][data-color="destructive"]) {
+  --df-featured-icon-accent: var(--destructive);
+  --df-featured-icon-on-accent: var(--df-neutral-0);
+  --df-featured-icon-solid: var(--destructive);
+  --df-featured-icon-on-solid: var(--df-neutral-0);
+}
+
+:where([data-df="featured-icon"][data-shape="circle"]) {
+  border-radius: var(--radius-full);
+}
+
+:where([data-df="featured-icon"][data-shape="square"]) {
+  border-radius: var(--df-featured-icon-radius);
+}
+
+:where([data-df="featured-icon"][data-radius="none"]) {
+  --df-featured-icon-radius: 0;
+  border-radius: 0;
+}
+
+:where([data-df="featured-icon"][data-radius="xxs"]) {
+  --df-featured-icon-radius: var(--radius-xxs);
+  border-radius: var(--radius-xxs);
+}
+
+:where([data-df="featured-icon"][data-radius="xs"]) {
+  --df-featured-icon-radius: var(--radius-xs);
+  border-radius: var(--radius-xs);
+}
+
+:where([data-df="featured-icon"][data-radius="sm"]) {
+  --df-featured-icon-radius: var(--radius-sm);
+  border-radius: var(--radius-sm);
+}
+
+:where([data-df="featured-icon"][data-radius="md"]) {
+  --df-featured-icon-radius: var(--radius-md);
+  border-radius: var(--radius-md);
+}
+
+:where([data-df="featured-icon"][data-radius="lg"]) {
+  --df-featured-icon-radius: var(--radius-lg);
+  border-radius: var(--radius-lg);
+}
+
+:where([data-df="featured-icon"][data-radius="xl"]) {
+  --df-featured-icon-radius: var(--radius-xl);
+  border-radius: var(--radius-xl);
+}
+
+:where([data-df="featured-icon"][data-radius="2xl"]) {
+  --df-featured-icon-radius: var(--radius-2xl);
+  border-radius: var(--radius-2xl);
+}
+
+:where([data-df="featured-icon"][data-radius="3xl"]) {
+  --df-featured-icon-radius: var(--radius-3xl);
+  border-radius: var(--radius-3xl);
+}
+
+:where([data-df="featured-icon"][data-radius="4xl"]) {
+  --df-featured-icon-radius: var(--radius-4xl);
+  border-radius: var(--radius-4xl);
+}
+
+:where([data-df="featured-icon"][data-radius="full"]) {
+  --df-featured-icon-radius: var(--radius-full);
+  border-radius: var(--radius-full);
+}
+
+:where([data-df="featured-icon"] > [data-slot="glyph"]) {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: var(--df-leading-none);
+  color: inherit;
+}
+
+:where([data-df="featured-icon"] > [data-slot="glyph"] svg) {
+  display: block;
+  width: var(--df-featured-icon-glyph);
+  height: var(--df-featured-icon-glyph);
+  flex-shrink: 0;
+}
+
+:where([data-df="featured-icon"][data-variant="soft"]) {
+  --df-featured-icon-bg: var(--df-featured-icon-soft-bg);
+  --df-featured-icon-border: transparent;
+  --df-featured-icon-border-soft: transparent;
+  --df-featured-icon-elevation: none;
+  background-color: var(--df-featured-icon-bg);
+  color: var(--df-featured-icon-icon);
+  box-shadow: inset 0 0 0 var(--border-width-hairline)
+    var(--df-featured-icon-border);
+}
+
+:where([data-df="featured-icon"][data-variant="soft"]:not([data-icon-override])) {
+  --df-featured-icon-icon: var(--df-featured-icon-accent);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"]) {
+  --df-featured-icon-bg: var(--df-featured-icon-halo-bg);
+  --df-featured-icon-border: color-mix(
+    in oklch,
+    var(--df-featured-icon-solid) var(--df-featured-icon-ring-soft),
+    transparent
+  );
+  --df-featured-icon-border-soft: var(--df-featured-icon-border);
+  --df-featured-icon-elevation: none;
+  background-color: var(--df-featured-icon-bg);
+  color: var(--df-featured-icon-icon);
+  box-shadow: inset 0 0 0 var(--border-width-hairline)
+    var(--df-featured-icon-border);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"]:not([data-icon-override])) {
+  --df-featured-icon-icon: var(--df-featured-icon-on-solid);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="2xs"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-2xs);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="xs"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-xs);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="sm"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-sm);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="md"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-md);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="lg"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-lg);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="xl"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-xl);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="2xl"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-2xl);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"][data-size="3xl"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-halo-glyph-3xl);
+}
+
+:where([data-df="featured-icon"][data-icon-size="2xs"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-2xs);
+}
+
+:where([data-df="featured-icon"][data-icon-size="xs"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-xs);
+}
+
+:where([data-df="featured-icon"][data-icon-size="sm"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-sm);
+}
+
+:where([data-df="featured-icon"][data-icon-size="md"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-md);
+}
+
+:where([data-df="featured-icon"][data-icon-size="lg"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-lg);
+}
+
+:where([data-df="featured-icon"][data-icon-size="xl"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-xl);
+}
+
+:where([data-df="featured-icon"][data-icon-size="2xl"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-2xl);
+}
+
+:where([data-df="featured-icon"][data-icon-size="3xl"]) {
+  --df-featured-icon-glyph: var(--df-featured-icon-glyph-3xl);
+}
+
+:where([data-df="featured-icon"][data-variant="halo"]::after) {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: var(--df-featured-icon-halo-inner);
+  height: var(--df-featured-icon-halo-inner);
+  border-radius: inherit;
+  background-color: var(--df-featured-icon-solid);
+  pointer-events: none;
+}
+
+:where([data-df="featured-icon"][data-variant="filled"]) {
+  --df-featured-icon-bg: var(--df-featured-icon-accent);
+  --df-featured-icon-border: color-mix(
+    in oklch,
+    var(--df-featured-icon-on-accent) var(--df-featured-icon-inset-highlight),
+    transparent
+  );
+  --df-featured-icon-border-soft: var(--df-featured-icon-border);
+  --df-featured-icon-elevation: var(--df-featured-icon-filled-shadow);
+  background-color: var(--df-featured-icon-bg);
+  color: var(--df-featured-icon-icon);
+  box-shadow:
+    inset 0 0 0 var(--border-width-hairline) var(--df-featured-icon-border),
+    var(--df-featured-icon-elevation);
+}
+
+:where([data-df="featured-icon"][data-variant="filled"]:not([data-icon-override])) {
+  --df-featured-icon-icon: var(--df-featured-icon-on-accent);
+}
+
+:where([data-df="featured-icon"][data-variant="outline"]) {
+  --df-featured-icon-bg: transparent;
+  --df-featured-icon-border: var(--df-featured-icon-ring-color);
+  --df-featured-icon-border-soft: var(--df-featured-icon-ring-color-soft);
+  --df-featured-icon-elevation: none;
+  background-color: var(--df-featured-icon-bg);
+  color: var(--df-featured-icon-icon);
+}
+
+:where([data-df="featured-icon"][data-variant="outline"]:not([data-icon-override])) {
+  --df-featured-icon-icon: var(--df-featured-icon-accent);
+}
+
+:where([data-df="featured-icon"][data-variant="outline"]::before),
+:where([data-df="featured-icon"][data-variant="outline"]::after) {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  border-radius: inherit;
+  border-style: solid;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+:where([data-df="featured-icon"][data-variant="outline"]::before) {
+  inset: 0;
+  border-width: var(--border-width-hairline);
+  border-color: var(--df-featured-icon-border-soft);
+}
+
+:where([data-df="featured-icon"][data-variant="outline"]::after) {
+  inset: var(--df-featured-icon-outline-ring-inset);
+  border-width: var(--border-width-hairline);
+  border-color: var(--df-featured-icon-border);
+}
+
+:where([data-df="featured-icon"][data-variant="surface"]) {
+  --df-featured-icon-bg: var(--card);
+  --df-featured-icon-border: var(--border);
+  --df-featured-icon-border-soft: var(--border);
+  --df-featured-icon-elevation: var(--df-featured-icon-surface-shadow);
+  background-color: var(--df-featured-icon-bg);
+  color: var(--df-featured-icon-icon);
+  box-shadow:
+    inset 0 0 0 var(--border-width-hairline) var(--df-featured-icon-border),
+    var(--df-featured-icon-elevation);
+}
+
+:where([data-df="featured-icon"][data-variant="surface"]:not([data-icon-override])) {
+  --df-featured-icon-icon: var(--df-featured-icon-accent);
+}
+
+:where([data-df="featured-icon"][data-variant="plate"]) {
+  --df-featured-icon-bg: var(--card);
+  --df-featured-icon-border: var(--border);
+  --df-featured-icon-border-soft: var(--border);
+  --df-featured-icon-elevation: var(--df-featured-icon-plate-shadow);
+  background-color: var(--df-featured-icon-bg);
+  color: var(--df-featured-icon-icon);
+  box-shadow:
+    inset 0 0 0 var(--border-width-hairline) var(--df-featured-icon-border),
+    var(--df-featured-icon-elevation);
+}
+
+:where([data-df="featured-icon"][data-variant="plate"]:not([data-icon-override])) {
+  --df-featured-icon-icon: var(--df-featured-icon-accent);
+}
+
+:where([data-df="featured-icon"][data-variant="plate"]::before) {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: var(--df-featured-icon-plate-inset);
+  border-radius: inherit;
+  background-color: var(--df-featured-icon-plate-fill);
+  box-shadow: inset 0 0 0 var(--border-width-hairline)
+    var(--df-featured-icon-border);
+  pointer-events: none;
+}
+
+:where([data-df="featured-icon"][data-variant="plate"][data-shape="square"]::before),
+:where([data-df="featured-icon"][data-variant="plate"][data-radius]::before) {
+  border-radius: max(
+    0,
+    calc(var(--df-featured-icon-radius) - var(--df-featured-icon-plate-inset))
+  );
+}
+
+:where([data-df="featured-icon"][data-variant="plate"][data-radius="full"]::before) {
+  border-radius: inherit;
+}
+
+:where([data-df="featured-icon"][data-variant="plain"]) {
+  --df-featured-icon-bg: transparent;
+  --df-featured-icon-border: transparent;
+  --df-featured-icon-elevation: none;
+  width: var(--df-featured-icon-glyph);
+  height: var(--df-featured-icon-glyph);
+  background-color: var(--df-featured-icon-bg);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Bare glyph: follow the surface text color unless iconColor overrides. */
+:where([data-df="featured-icon"][data-variant="plain"]:not([data-icon-override])) {
+  color: inherit;
+}
+
+:where([data-df="featured-icon"][data-variant="plain"][data-icon-override]) {
+  color: var(--df-featured-icon-icon);
+}
+
+:where([data-df="featured-icon"][data-variant="plain"] > [data-slot="glyph"] svg) {
+  filter: var(--df-featured-icon-plain-glyph-filter);
+}
+
+:where(
+  [data-df="featured-icon"][data-variant="plain"][data-glyph-shadow="off"]
+    > [data-slot="glyph"]
+    svg
+) {
+  filter: none;
+}
+
+:where([data-df="featured-icon"][data-shadow="off"]) {
+  --df-featured-icon-elevation: none;
 }
 
 :where([data-df="separator"]) {
@@ -4200,13 +4715,13 @@
 }
 
 :where([data-df="scroll-area-scrollbar"][data-variant="edge"]) {
-  right: 0;
+  right: var(--df-scrollbar-edge-inset);
   width: var(--df-scrollbar-thickness);
   padding: 0;
 }
 
 :where([data-df="scroll-area-scrollbar"][data-variant="edge"][data-orientation="horizontal"]) {
-  bottom: 0;
+  bottom: var(--df-scrollbar-edge-inset);
   height: var(--df-scrollbar-thickness);
 }
 
@@ -4249,7 +4764,7 @@
 }
 
 :where([data-df="scroll-area-scrollbar"][data-variant="edge"][data-orientation="vertical"][data-side="left"]) {
-  left: 0;
+  left: var(--df-scrollbar-edge-inset);
 }
 
 :where([data-df="scroll-area"][data-space="auto"][data-visibility="hover"][data-vertical-side="left"] > [data-df="scroll-area-viewport"]),
@@ -4270,7 +4785,7 @@
 }
 
 :where([data-df="scroll-area-scrollbar"][data-variant="edge"][data-orientation="horizontal"][data-side="top"]) {
-  top: 0;
+  top: var(--df-scrollbar-edge-inset);
 }
 
 :where([data-df="scroll-area"][data-space="auto"][data-horizontal-side="top"][data-overflow-x] > [data-df="scroll-area-viewport"]) {
@@ -5674,19 +6189,33 @@
   cursor: pointer;
 }
 
-:where([data-df="option-list-content"]),
-:where([data-df="select-content"]) {
+/* SelectContent renders this host (data-df="option-list-content"). */
+:where([data-df="option-list-content"]) {
+  --df-option-list-surface-bg: var(--popover);
+  --df-option-list-surface-fg: var(--popover-foreground);
+  --df-option-list-surface-radius: var(--radius-2xl);
+  --df-option-list-surface-border-width: 0;
+  --df-option-list-surface-border-color: transparent;
+  --df-option-list-surface-border-style: solid;
+  --df-option-list-divider-color: var(--border);
+  --df-option-list-group-padding: calc(1 * var(--spacing-unit, 0.25rem));
+  --df-option-list-separator-inset: calc(
+    var(--df-option-list-group-padding) + (3 * var(--spacing-unit, 0.25rem))
+  );
   --df-enter-opacity: 0;
   --df-enter-scale: 0.96;
   --df-enter-translate-x: 0;
   --df-enter-translate-y: calc(-1 * var(--df-motion-travel-sm));
   max-height: min(60vh, var(--df-menu-max-height));
-  min-width: var(--df-menu-min-width);
+  min-width: var(--df-option-list-min-width);
   overflow-x: hidden;
   overflow-y: auto;
-  border-radius: var(--radius-2xl);
-  background-color: var(--popover);
-  color: var(--popover-foreground);
+  border-width: var(--df-option-list-surface-border-width);
+  border-style: var(--df-option-list-surface-border-style);
+  border-color: var(--df-option-list-surface-border-color);
+  border-radius: var(--df-option-list-surface-radius);
+  background-color: var(--df-option-list-surface-bg);
+  color: var(--df-option-list-surface-fg);
   box-shadow:
     var(--df-shadow-2xl),
     var(--df-shadow-ring-subtle);
@@ -5697,42 +6226,62 @@
   animation: df-enter var(--df-duration-slow) var(--df-ease-emphasized) both;
 }
 
-:where([data-df="option-list-content"][data-side="top"]),
-:where([data-df="select-content"][data-side="top"]) {
+:where([data-df="option-list-content"][data-side="top"]) {
   --df-enter-translate-y: var(--df-motion-travel-sm);
   transform-origin: center bottom;
 }
 
-:where([data-df="option-list-content"][data-side="left"]),
-:where([data-df="select-content"][data-side="left"]) {
+:where([data-df="option-list-content"][data-side="left"]) {
   --df-enter-translate-x: var(--df-motion-travel-sm);
   --df-enter-translate-y: 0;
   transform-origin: right center;
 }
 
-:where([data-df="option-list-content"][data-side="right"]),
-:where([data-df="select-content"][data-side="right"]) {
+:where([data-df="option-list-content"][data-side="right"]) {
   --df-enter-translate-x: calc(-1 * var(--df-motion-travel-sm));
   --df-enter-translate-y: 0;
   transform-origin: left center;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-df="option-list-content"]),
-  :where([data-df="select-content"]) {
+  :where([data-df="option-list-content"]) {
     animation: none;
     will-change: auto;
   }
 }
 
-:where([data-df="option-list-content"][data-portal="true"]),
-:where([data-df="select-content"][data-portal="true"]) {
+:where([data-df="option-list-content"][data-portal="true"]) {
   z-index: var(--z-overlay);
 }
 
-:where([data-df="option-list-content"][data-portal="false"]),
-:where([data-df="select-content"][data-portal="false"]) {
+:where([data-df="option-list-content"][data-portal="false"]) {
   isolation: isolate;
+}
+
+/* Nested host surfaces: drop popover fill, shadow, radius, and enter motion. */
+:where([data-df="option-list-content"][data-chrome="plain"]) {
+  --df-option-list-surface-bg: transparent;
+  --df-option-list-surface-radius: 0;
+  --df-option-list-surface-border-width: 0;
+  min-width: 0;
+  box-shadow: none;
+  animation: none;
+  will-change: auto;
+}
+
+/* Always-visible card panel: owns border, radius, and card fill. */
+:where([data-df="option-list-content"][data-chrome="panel"]) {
+  --df-option-list-surface-bg: var(--card);
+  --df-option-list-surface-fg: var(--card-foreground);
+  --df-option-list-surface-radius: var(--radius-xl);
+  --df-option-list-surface-border-width: var(--border-width-hairline);
+  --df-option-list-surface-border-color: var(--border);
+  --df-option-list-surface-border-style: solid;
+  overflow: hidden;
+  min-width: 0;
+  box-shadow: none;
+  animation: none;
+  will-change: auto;
 }
 
 :where([data-df="option-list-content"]:has([data-df="option-list-submenu"])),
@@ -5859,9 +6408,35 @@
   bottom: calc(1.5 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="option-list-header"]) {
+  flex-shrink: 0;
+  border-bottom: var(--border-width-hairline) solid
+    var(--df-option-list-divider-color);
+  padding: calc(2.5 * var(--spacing-unit, 0.25rem))
+    calc(3 * var(--spacing-unit, 0.25rem));
+}
+
+:where([data-df="option-list-header-label"]) {
+  color: inherit;
+  font-size: var(--df-text-2xs);
+  font-weight: var(--df-font-weight-semibold);
+  letter-spacing: var(--df-tracking-wide);
+  line-height: var(--df-leading-4);
+  text-transform: uppercase;
+}
+
+:where([data-df="option-list-header-description"]) {
+  margin-top: calc(0.5 * var(--spacing-unit, 0.25rem));
+  color: var(--muted-foreground);
+  font-size: var(--df-text-11);
+  font-weight: var(--df-font-weight-normal);
+  line-height: var(--df-leading-4);
+}
+
 :where([data-df="option-list-search"]) {
   flex-shrink: 0;
-  border-bottom: var(--border-width-hairline) solid var(--border);
+  border-bottom: var(--border-width-hairline) solid
+    var(--df-option-list-divider-color);
   padding: calc(2 * var(--spacing-unit, 0.25rem)) calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
@@ -5918,7 +6493,8 @@
   align-items: center;
   justify-content: space-between;
   gap: calc(2 * var(--spacing-unit, 0.25rem));
-  border-top: var(--border-width-hairline) solid var(--border);
+  border-top: var(--border-width-hairline) solid
+    var(--df-option-list-divider-color);
   padding: calc(2.5 * var(--spacing-unit, 0.25rem)) calc(3 * var(--spacing-unit, 0.25rem));
 }
 
@@ -5926,10 +6502,25 @@
   display: flex;
   flex-direction: column;
   gap: calc(1 * var(--spacing-unit, 0.25rem));
+  padding: var(--df-option-list-group-padding);
 }
 
-:where([data-df="option-list-content"]:not([data-stacked="true"])),
-:where([data-df="select-content"]) {
+:where([data-df="option-list-separator"]) {
+  flex-shrink: 0;
+  height: var(--border-width-hairline);
+  margin-block: calc(1 * var(--spacing-unit, 0.25rem));
+  background-color: color-mix(
+    in oklab,
+    var(--df-option-list-divider-color) 50%,
+    transparent
+  );
+}
+
+:where([data-df="option-list-separator"][data-inset]) {
+  margin-inline: var(--df-option-list-separator-inset);
+}
+
+:where([data-df="option-list-content"]:not([data-stacked="true"])) {
   display: flex;
   flex-direction: column;
   gap: calc(1 * var(--spacing-unit, 0.25rem));
@@ -5938,7 +6529,7 @@
 :where([data-df="list-item"]) {
   --df-list-item-gap: calc(2.5 * var(--spacing-unit, 0.25rem));
   --df-list-item-radius: var(--radius-xl);
-  /* End pad matches the absolute check gutter (icon size + inset). */
+  --df-list-item-indicator-size: calc(4 * var(--spacing-unit, 0.25rem));
   --df-list-item-padding-top: calc(2.5 * var(--spacing-unit, 0.25rem));
   --df-list-item-padding-right: calc(6 * var(--spacing-unit, 0.25rem));
   --df-list-item-padding-bottom: calc(2.5 * var(--spacing-unit, 0.25rem));
@@ -5952,13 +6543,20 @@
   --df-list-item-selected-fg: inherit;
   --df-list-item-selected-hover-bg: var(--accent);
   --df-list-item-active-bg: color-mix(in oklch, var(--accent) 85%, var(--foreground));
+  --df-list-item-border-width: 0;
+  --df-list-item-border-style: solid;
+  --df-list-item-border-color: transparent;
   position: relative;
+  box-sizing: border-box;
   display: flex;
   width: 100%;
   cursor: pointer;
   align-items: center;
   gap: var(--df-list-item-gap);
   border-radius: var(--df-list-item-radius);
+  border-width: var(--df-list-item-border-width);
+  border-style: var(--df-list-item-border-style);
+  border-color: var(--df-list-item-border-color);
   padding-top: var(--df-list-item-padding-top);
   padding-right: var(--df-list-item-padding-right);
   padding-bottom: var(--df-list-item-padding-bottom);
@@ -5969,9 +6567,10 @@
   white-space: nowrap;
   transition: color var(--df-duration-quick) ease;
   text-decoration: none;
-  border: none;
   font: inherit;
+  font-family: var(--df-list-item-font-family, inherit);
   font-size: var(--df-list-item-font-size);
+  font-weight: var(--df-list-item-font-weight, inherit);
   text-align: inherit;
   appearance: none;
 }
@@ -6022,14 +6621,14 @@
 /* Muted owns color recipe. Density lives on muted × size so size is never lost. */
 :where([data-df="list-item"][data-variant="muted"]) {
   --df-list-item-fg: var(--muted-foreground);
-  --df-list-item-hover-bg: color-mix(in oklch, var(--muted) 60%, transparent);
+  --df-list-item-hover-bg: color-mix(in oklch, var(--muted) 80%, transparent);
   --df-list-item-hover-fg: var(--foreground);
   --df-list-item-selected-bg: var(--muted);
   --df-list-item-selected-fg: var(--foreground);
   --df-list-item-selected-hover-bg: var(--muted);
-  --df-list-item-active-bg: color-mix(in oklch, var(--muted) 60%, transparent);
+  --df-list-item-active-bg: color-mix(in oklch, var(--muted) 80%, transparent);
   color: var(--df-list-item-fg);
-  font-weight: var(--df-font-weight-normal);
+  font-weight: var(--df-list-item-font-weight, var(--df-font-weight-normal));
 }
 
 :where([data-df="list-item"][data-variant="muted"][data-size="xs"]) {
@@ -6040,10 +6639,10 @@
   --df-list-item-padding-bottom: calc(1 * var(--spacing-unit, 0.25rem));
   --df-list-item-padding-left: calc(2 * var(--spacing-unit, 0.25rem));
   --df-list-item-font-size: var(--df-text-11);
-  --df-list-item-hover-bg: color-mix(in oklch, var(--muted) 30%, transparent);
-  --df-list-item-selected-bg: color-mix(in oklch, var(--muted) 40%, transparent);
-  --df-list-item-selected-hover-bg: color-mix(in oklch, var(--muted) 30%, transparent);
-  --df-list-item-active-bg: color-mix(in oklch, var(--muted) 30%, transparent);
+  --df-list-item-hover-bg: color-mix(in oklch, var(--muted) 45%, transparent);
+  --df-list-item-selected-bg: color-mix(in oklch, var(--muted) 55%, transparent);
+  --df-list-item-selected-hover-bg: color-mix(in oklch, var(--muted) 45%, transparent);
+  --df-list-item-active-bg: color-mix(in oklch, var(--muted) 45%, transparent);
   font-size: var(--df-list-item-font-size);
   line-height: var(--df-leading-snug, var(--df-leading-4));
 }
@@ -6094,7 +6693,8 @@
 }
 
 :where([data-df="list-item"][data-leading="checkbox"]),
-:where([data-df="list-item"][data-trailing]) {
+:where([data-df="list-item"][data-trailing]),
+:where([data-df="list-item"][data-indicator]) {
   --df-list-item-padding-right: calc(3 * var(--spacing-unit, 0.25rem));
 }
 
@@ -6109,14 +6709,9 @@
   margin-top: var(--df-title-lead-offset);
 }
 
-:where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-trailing"]) {
-  margin-top: var(--df-title-lead-offset);
-}
-
+:where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-trailing"]),
 :where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-indicator"]) {
-  top: calc(
-    var(--df-list-item-stacked-pad-y) + var(--df-title-lead-offset)
-  );
+  margin-top: var(--df-title-lead-offset);
 }
 
 :where([data-df="list-item-copy"]) {
@@ -6126,6 +6721,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: calc(1.5 * var(--spacing-unit, 0.25rem)) calc(2 * var(--spacing-unit, 0.25rem));
+  overflow: hidden;
 }
 
 :where([data-df="list-item-copy"][data-layout="stacked"]) {
@@ -6136,9 +6732,14 @@
 }
 
 :where([data-df="list-item-title"]) {
+  display: block;
   min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   color: var(--foreground);
-  font-weight: var(--df-font-weight-medium);
+  font-family: inherit;
+  font-weight: var(--df-list-item-font-weight, var(--df-font-weight-medium));
+  text-overflow: ellipsis;
 }
 
 :where([data-df="list-item"][data-variant="muted"] [data-df="list-item-title"]) {
@@ -6165,7 +6766,11 @@
   flex-shrink: 0;
   align-items: center;
   gap: calc(1.5 * var(--spacing-unit, 0.25rem));
-  margin-left: auto;
+  margin-inline-start: auto;
+}
+
+:where([data-df="list-item"][data-indicator] [data-df="list-item-trailing"]) {
+  margin-inline-start: 0;
 }
 
 :where([data-df="list-item-leading"]) {
@@ -6179,10 +6784,47 @@
   line-height: 0;
 }
 
-:where([data-df="list-item-leading"] svg) {
+:where(
+  [data-df="list-item"]:not([data-layout="columns"]) [data-df="list-item-leading"] svg
+) {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+:where([data-df="list-item"][data-layout="columns"]) {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+  align-items: center;
+}
+
+:where([data-df="list-item"][data-layout="columns"] [data-df="list-item-leading"]),
+:where([data-df="list-item"][data-layout="columns"] [data-df="list-item-checkbox"]) {
+  grid-column: 1;
+  justify-self: start;
+  width: auto;
+  height: auto;
+  line-height: inherit;
+}
+
+:where([data-df="list-item"][data-layout="columns"] [data-df="list-item-copy"]) {
+  grid-column: 2;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  text-align: center;
+}
+
+:where([data-df="list-item"][data-layout="columns"] [data-df="list-item-title"]) {
+  line-height: inherit;
+  text-align: center;
+}
+
+:where([data-df="list-item"][data-layout="columns"] [data-df="list-item-trailing"]),
+:where([data-df="list-item"][data-layout="columns"] [data-df="list-item-indicator"]) {
+  grid-column: 3;
+  justify-self: end;
+  margin-inline-start: 0;
 }
 
 :where([data-df="list-item-checkbox"]) {
@@ -6239,13 +6881,20 @@
 }
 
 :where([data-df="list-item-indicator"]) {
-  position: absolute;
-  right: calc(2 * var(--spacing-unit, 0.25rem));
-  display: flex;
-  width: calc(4 * var(--spacing-unit, 0.25rem));
-  height: calc(4 * var(--spacing-unit, 0.25rem));
+  display: inline-flex;
+  width: var(--df-list-item-indicator-size);
+  height: var(--df-list-item-indicator-size);
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  margin-inline-start: auto;
+  line-height: 0;
+}
+
+:where([data-df="list-item-indicator"] svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 :where([data-df="list-item-section"]) {
@@ -8550,6 +9199,12 @@
 
 :where([data-df="nav-rail"]),
 .df-nav-rail {
+  --df-nav-rail-bg: var(--background);
+  --df-nav-rail-border: var(--border);
+  --df-nav-rail-fg: var(--muted-foreground);
+  --df-nav-rail-fg-hover: var(--foreground);
+  --df-nav-rail-item-hover-bg: var(--muted);
+  --df-nav-rail-separator: var(--border);
   --df-nav-rail-item-fg: var(--df-nav-rail-fg);
   display: flex;
   flex-shrink: 0;
@@ -11437,6 +12092,27 @@
 
 /* Sidebar: provider layout, gap spacer, and menu hierarchy. */
 :where([data-df="sidebar-provider"]),
+:where([data-df="sidebar-mobile-root"]),
+.df-sidebar-provider,
+.df-sidebar-mobile-root {
+  --df-sidebar-bg: var(--sidebar);
+  --df-sidebar-fg: var(--sidebar-foreground);
+  --df-sidebar-border: var(--sidebar-border);
+  --df-sidebar-separator: var(--df-sidebar-border);
+  --df-sidebar-accent: var(--sidebar-accent);
+  --df-sidebar-accent-fg: var(--sidebar-accent-foreground);
+  --df-sidebar-primary: var(--sidebar-primary);
+  --df-sidebar-primary-fg: var(--sidebar-primary-foreground);
+  --df-sidebar-ring: var(--sidebar-ring);
+  --df-sidebar-group-label-fg: var(--muted-foreground);
+  --df-sidebar-mobile-scrim: color-mix(
+    in oklch,
+    var(--foreground) 40%,
+    transparent
+  );
+}
+
+:where([data-df="sidebar-provider"]),
 .df-sidebar-provider {
   box-sizing: border-box;
   display: flex;
@@ -11661,14 +12337,14 @@
   min-height: 0;
   overflow: hidden;
   padding-block: var(--df-sidebar-padding-block);
-  padding-inline: var(--df-sidebar-padding-inline);
+  padding-inline: 0;
   background-color: var(--df-sidebar-bg);
   color: var(--df-sidebar-fg);
   border-radius: var(--df-sidebar-radius);
   box-shadow: var(--df-sidebar-shadow);
 }
 
-/* Content-facing seam hit target. Placement follows Sidebar data-side and variant inset. */
+/* Content-facing seam hit target. */
 :where([data-df="sidebar-edge"]),
 .df-sidebar-edge {
   position: absolute;
@@ -11807,6 +12483,7 @@
   flex-direction: column;
   flex-shrink: 0;
   gap: var(--df-sidebar-gap);
+  padding-inline: var(--df-sidebar-padding-inline);
   border-radius: var(--df-sidebar-section-radius);
 }
 
@@ -11821,6 +12498,8 @@
 
 :where([data-df="sidebar-content-scroll"]),
 .df-sidebar-content-scroll {
+  --df-scrollbar-track-inset: var(--df-sidebar-scrollbar-track-inset);
+  --df-scrollbar-edge-inset: var(--df-sidebar-scrollbar-track-inset);
   flex: 1 1 auto;
   align-self: stretch;
   height: 100%;
@@ -11832,6 +12511,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--df-sidebar-section-gap);
+  padding-inline: var(--df-sidebar-padding-inline);
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -11868,6 +12548,24 @@
     var(--df-sidebar-motion-fade-delay-expand);
 }
 
+:where([data-df="sidebar-input"] [data-df="search-input"][data-variant="pill"]) {
+  --df-search-input-bg: color-mix(in oklch, var(--muted) 28%, var(--background));
+  --df-search-input-bg-filled: color-mix(
+    in oklch,
+    var(--muted) 48%,
+    var(--background)
+  );
+}
+
+.dark :where([data-df="sidebar-input"] [data-df="search-input"][data-variant="pill"]) {
+  --df-search-input-bg: color-mix(in oklch, var(--df-neutral-0) 12%, var(--sidebar));
+  --df-search-input-bg-filled: color-mix(
+    in oklch,
+    var(--df-neutral-0) 18%,
+    var(--sidebar)
+  );
+}
+
 :where([data-df="sidebar"][data-collapsible="icon"] [data-df="sidebar-input"]),
 .df-sidebar[data-collapsible="icon"] .df-sidebar-input {
   max-height: 0;
@@ -11892,12 +12590,7 @@
 
 :where([data-df="sidebar"][data-collapsible="icon"] [data-df="sidebar-brand-copy"]),
 .df-sidebar[data-collapsible="icon"] [data-df="sidebar-brand-copy"] {
-  opacity: var(--df-opacity-0);
-  visibility: hidden;
-  max-width: 0;
-  overflow: hidden;
-  pointer-events: none;
-  transition-delay: 0s, 0s;
+  display: none;
 }
 
 :where([data-df="sidebar-group"]),
@@ -11942,8 +12635,9 @@
   min-width: 0;
 }
 
-:where([data-df="label"].df-sidebar-group-label [data-df="label-leading"] svg),
-.df-sidebar-group-label [data-df="label-leading"] svg {
+/* Direct SVG icons only. Nested FeaturedIcon keeps its own glyph scale. */
+:where([data-df="label"].df-sidebar-group-label [data-df="label-leading"] > svg),
+.df-sidebar-group-label [data-df="label-leading"] > svg {
   width: var(--df-label-leading-size);
   height: var(--df-label-leading-size);
   flex-shrink: 0;
@@ -12022,6 +12716,23 @@
   list-style: none;
 }
 
+/* Last parent row with a direct nest: trailing space before the next section. */
+:where(
+  [data-df="sidebar-menu-item"]:has(> [data-df="sidebar-menu-sub"]):last-child:not(
+      [data-nest-padding="false"]
+    )
+),
+.df-sidebar-menu-item:has(> [data-df="sidebar-menu-sub"]):last-child:not(
+    [data-nest-padding="false"]
+  ) {
+  padding-bottom: var(--df-sidebar-menu-item-nest-padding-bottom);
+}
+
+:where([data-df="sidebar"][data-collapsible="icon"] [data-df="sidebar-menu-item"]),
+.df-sidebar[data-collapsible="icon"] .df-sidebar-menu-item {
+  padding-bottom: 0;
+}
+
 :where([data-df="sidebar"] [data-df="list-item"]),
 .df-sidebar-menu-button {
   --df-list-item-gap: calc(2 * var(--spacing-unit));
@@ -12045,13 +12756,9 @@
   width: 100%;
   height: var(--df-sidebar-menu-button-height-md);
   align-items: center;
-  gap: calc(2 * var(--spacing-unit));
-  overflow: hidden;
+  gap: var(--df-list-item-gap);
   border: none;
-  border-radius: var(--df-sidebar-item-radius);
-  padding-inline: var(--df-sidebar-item-padding-inline);
-  background: transparent;
-  color: var(--df-sidebar-fg);
+  border-radius: var(--df-list-item-radius);
   font-size: var(--df-list-item-font-size);
   text-align: start;
   cursor: pointer;
@@ -12077,6 +12784,7 @@
 }
 
 :where([data-df="sidebar"] [data-df="list-item"][data-state="selected"]:not([data-disabled])),
+:where([data-df="sidebar"] [data-df="list-item"][aria-selected="true"]:not([data-disabled])),
 .df-sidebar-menu-button[data-state="selected"]:not([data-disabled]) {
   font-weight: var(--df-font-weight-medium);
 }
@@ -12088,7 +12796,7 @@
 
 :where([data-df="sidebar"] [data-df="list-item"]:focus-visible),
 .df-sidebar-menu-button:focus-visible {
-  box-shadow: var(--focus-ring);
+  box-shadow: var(--focus-ring-inset);
 }
 
 :where([data-df="sidebar"] [data-df="list-item"] [data-df="list-item-title"]),
@@ -12121,6 +12829,14 @@
   justify-content: center;
   padding: var(--df-sidebar-item-padding-inline);
   gap: 0;
+  overflow: hidden;
+}
+
+:where(
+  [data-df="sidebar"][data-collapsible="icon"] [data-df="sidebar-menu"]
+),
+.df-sidebar[data-collapsible="icon"] .df-sidebar-menu {
+  align-items: center;
 }
 
 :where(
@@ -12129,6 +12845,7 @@
     [data-df="list-item-copy"]
 ),
 .df-sidebar[data-collapsible="icon"] .df-sidebar-menu-button [data-df="list-item-copy"] {
+  flex: 0 0 0;
   width: 0;
   min-width: 0;
   max-width: 0;
@@ -12139,6 +12856,17 @@
   white-space: nowrap;
   border: 0;
   transition-delay: 0s;
+}
+
+:where(
+  [data-df="sidebar"][data-collapsible="icon"]
+    [data-df="list-item"]
+    [data-df="list-item-trailing"]
+),
+.df-sidebar[data-collapsible="icon"]
+  .df-sidebar-menu-button
+  [data-df="list-item-trailing"] {
+  display: none;
 }
 
 :where([data-df="sidebar-menu-action"]),
@@ -12257,6 +12985,7 @@
   --df-list-item-gap: calc(2 * var(--spacing-unit));
   --df-list-item-radius: var(--df-sidebar-item-radius);
   --df-list-item-font-size: var(--df-text-sm);
+  --df-list-item-bg: transparent;
   --df-list-item-fg: var(--df-sidebar-fg);
   --df-list-item-hover-bg: var(--df-sidebar-accent);
   --df-list-item-hover-fg: var(--df-sidebar-accent-fg);
@@ -12268,13 +12997,9 @@
   height: var(--df-sidebar-menu-button-height-sm);
   min-width: 0;
   align-items: center;
-  gap: calc(2 * var(--spacing-unit));
-  overflow: hidden;
+  gap: var(--df-list-item-gap);
   border: none;
-  border-radius: var(--df-sidebar-item-radius);
-  padding-inline: calc(2 * var(--spacing-unit));
-  background: transparent;
-  color: var(--df-sidebar-fg);
+  border-radius: var(--df-list-item-radius);
   font-size: var(--df-list-item-font-size);
   text-decoration: none;
   outline: none;
@@ -12289,7 +13014,7 @@
 
 :where([data-df="sidebar-menu-sub"] [data-df="list-item"]:focus-visible),
 .df-sidebar-menu-sub-button:focus-visible {
-  box-shadow: var(--focus-ring);
+  box-shadow: var(--focus-ring-inset);
 }
 
 .df-sidebar-trigger {
