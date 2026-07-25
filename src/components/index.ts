@@ -201,14 +201,36 @@ export {
   TooltipTrigger,
 } from "./df-tooltip"
 export type { TooltipVariant } from "./df-tooltip"
-export { ListItem } from "./df-list-item"
+export { ListItem, ListItemLabel, ListItemNest } from "./df-list-item"
 export type {
+  ListItemLabelProps,
+  ListItemLabelVariant,
   ListItemLayout,
   ListItemLeading,
+  ListItemNestChromeProps,
+  ListItemNestProps,
   ListItemProps,
   ListItemSize,
   ListItemVariant,
 } from "./df-list-item"
+export {
+  ContentsNav,
+  ContentsNavHeading,
+  ContentsNavItem,
+  ContentsNavSection,
+  ContentsNavSeparator,
+  useContentsNav,
+} from "./df-contents-nav"
+export type {
+  ContentsNavItemData,
+  ContentsNavItemProps,
+  ContentsNavLayout,
+  ContentsNavProps,
+  ContentsNavScrollRoot,
+  ContentsNavSectionData,
+  ContentsNavSectionProps,
+  ContentsNavVariant,
+} from "./df-contents-nav"
 export {
   OptionList,
   OptionListBody,
@@ -315,6 +337,47 @@ export type {
   DockPanelMobileMaxHeight,
   DockPanelCollapsedAlign,
 } from "./df-dock-panel"
+export {
+  Sidebar,
+  SidebarCollapseTrigger,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarItem,
+  SidebarNav,
+  SidebarSearch,
+  SidebarSeparator,
+  SidebarShortcut,
+  SidebarUser,
+  SidebarUserContent,
+  SidebarUserTrigger,
+  SidebarWorkspace,
+  SidebarWorkspaceContent,
+  SidebarWorkspaceTrigger,
+  useSidebarContext,
+} from "./df-sidebar"
+export type {
+  SidebarCollapseTriggerProps,
+  SidebarContentProps,
+  SidebarFooterProps,
+  SidebarGroupProps,
+  SidebarHeaderProps,
+  SidebarItemProps,
+  SidebarNavProps,
+  SidebarProps,
+  SidebarRadius,
+  SidebarSearchProps,
+  SidebarSeparatorProps,
+  SidebarShortcutProps,
+  SidebarSide,
+  SidebarUserContentProps,
+  SidebarUserProps,
+  SidebarUserTriggerProps,
+  SidebarWorkspaceContentProps,
+  SidebarWorkspaceProps,
+  SidebarWorkspaceTriggerProps,
+} from "./df-sidebar"
 export {
   NavRail,
   NavRailItem,

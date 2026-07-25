@@ -1,0 +1,522 @@
+"use client"
+
+import * as React from "react"
+
+import { useControllableState } from "../hooks"
+import { cn } from "../lib/utils"
+import {
+  ListItem,
+  ListItemLabel,
+  ListItemNest,
+  type ListItemSize,
+  type ListItemVariant,
+} from "./df-list-item"
+
+type ContentsNavVariant = "toc" | "index"
+type ContentsNavLayout = "grouped" | "flat"
+
+type ContentsNavItemData = {
+  id: string
+  title: React.ReactNode
+  /** Pass null to render a non-link row. toc defaults omitted href to #id. */
+  href?: string | null
+  children?: ContentsNavItemData[]
+}
+
+type ContentsNavSectionData = {
+  id?: string
+  label: React.ReactNode
+  divided?: boolean
+  items: ContentsNavItemData[]
+}
+
+type ContentsNavScrollRoot =
+  | Element
+  | null
+  | React.RefObject<Element | null>
+  | (() => Element | null)
+
+type ContentsNavContextValue = {
+  variant: ContentsNavVariant
+  nestLine: boolean
+  itemVariant: ListItemVariant
+  itemSize: ListItemSize
+  nestItemSize: ListItemSize
+  activeId: string
+  setActiveId: (id: string) => void
+  renderItem?: (
+    item: ContentsNavItemData,
+    ctx: { active: boolean; depth: number }
+  ) => React.ReactElement
+}
+
+const ContentsNavContext =
+  React.createContext<ContentsNavContextValue | null>(null)
+
+function useContentsNav() {
+  const ctx = React.useContext(ContentsNavContext)
+  if (!ctx) {
+    throw new Error("Contents Nav parts must be used within ContentsNav")
+  }
+  return ctx
+}
+
+function flattenContentsNavIds(items: ContentsNavItemData[]): string[] {
+  const ids: string[] = []
+  for (const item of items) {
+    ids.push(item.id)
+    if (item.children?.length) {
+      ids.push(...flattenContentsNavIds(item.children))
+    }
+  }
+  return ids
+}
+
+function resolveScrollRoot(scrollRoot: ContentsNavScrollRoot | undefined): Element | null {
+  if (scrollRoot == null) {
+    if (typeof document === "undefined") return null
+    return document.scrollingElement
+  }
+  if (typeof scrollRoot === "function") return scrollRoot()
+  if (scrollRoot instanceof Element) return scrollRoot
+  return scrollRoot.current
+}
+
+/**
+ * Active section id from scroll position inside root.
+ * Uses spyRatio for the primary marker and promotes the last id near the end
+ * of the scrollport when that heading has entered reading position.
+ */
+function activeIdFromScroll(
+  ids: string[],
+  root: Element,
+  spyRatio: number
+): string {
+  const rootRect = root.getBoundingClientRect()
+  const marker = rootRect.top + rootRect.height * spyRatio
+  let current = ids[0] ?? ""
+  for (const id of ids) {
+    const el = document.getElementById(id)
+    if (!el) continue
+    if (el.getBoundingClientRect().top <= marker) current = id
+  }
+
+  const distanceFromBottom =
+    root.scrollHeight - root.scrollTop - root.clientHeight
+  if (distanceFromBottom > 24) return current
+
+  let lastIndex = -1
+  for (let i = ids.length - 1; i >= 0; i--) {
+    if (document.getElementById(ids[i]!)) {
+      lastIndex = i
+      break
+    }
+  }
+  if (lastIndex < 0) return current
+
+  const lastId = ids[lastIndex]!
+  const lastEl = document.getElementById(lastId)
+  if (!lastEl) return current
+
+  const promoteLine = rootRect.top + rootRect.height * Math.min(spyRatio + 0.3, 0.9)
+  if (lastEl.getBoundingClientRect().top <= promoteLine) return lastId
+
+  if (lastIndex > 0) {
+    for (let i = lastIndex - 1; i >= 0; i--) {
+      const prevEl = document.getElementById(ids[i]!)
+      if (!prevEl) continue
+      if (prevEl.getBoundingClientRect().top < rootRect.top) return lastId
+      break
+    }
+  }
+
+  return current
+}
+
+type ContentsNavProps = Omit<React.ComponentProps<"nav">, "title"> & {
+  variant?: ContentsNavVariant
+  /** Optional heading above the list (typical for toc). */
+  title?: React.ReactNode
+  items?: ContentsNavItemData[]
+  sections?: ContentsNavSectionData[]
+  /** Index list shape. grouped uses sections; flat renders items only. */
+  layout?: ContentsNavLayout
+  /** Default nest guide line for toc trees. Per-nest override via ListItemNest. */
+  nestLine?: boolean
+  scrollSpy?: boolean
+  scrollRoot?: ContentsNavScrollRoot
+  /** Fraction of the scrollport height used as the spy marker. */
+  spyRatio?: number
+  activeId?: string
+  defaultActiveId?: string
+  onActiveIdChange?: (id: string) => void
+  itemVariant?: ListItemVariant
+  itemSize?: ListItemSize
+  nestItemSize?: ListItemSize
+  renderItem?: (
+    item: ContentsNavItemData,
+    ctx: { active: boolean; depth: number }
+  ) => React.ReactElement
+}
+
+function ContentsNavHeading({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-df="contents-nav-heading"
+      className={cn(className)}
+      {...props}
+    />
+  )
+}
+
+type ContentsNavSectionProps = React.ComponentProps<"div"> & {
+  label?: React.ReactNode
+  divided?: boolean
+}
+
+function ContentsNavSection({
+  className,
+  label,
+  divided = false,
+  children,
+  ...props
+}: ContentsNavSectionProps) {
+  return (
+    <div
+      data-df="contents-nav-section"
+      data-divided={divided ? "true" : "false"}
+      className={cn(className)}
+      {...props}
+    >
+      {label != null ? (
+        <ListItemLabel variant="nav">{label}</ListItemLabel>
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+type ContentsNavItemProps = Omit<
+  React.ComponentProps<typeof ListItem>,
+  "selected" | "variant" | "size"
+> & {
+  active?: boolean
+  variant?: ListItemVariant
+  size?: ListItemSize
+  href?: string
+  itemId?: string
+}
+
+function ContentsNavItem({
+  className,
+  active,
+  variant,
+  size,
+  href,
+  itemId,
+  asChild,
+  children,
+  onClick,
+  ...props
+}: ContentsNavItemProps) {
+  const ctx = useContentsNav()
+  const resolvedVariant = variant ?? ctx.itemVariant
+  const resolvedSize = size ?? ctx.itemSize
+  const resolvedActive =
+    active ?? (itemId != null ? ctx.activeId === itemId : false)
+  const ariaCurrent = resolvedActive
+    ? ctx.variant === "index"
+      ? "page"
+      : "true"
+    : undefined
+
+  const handleSelect = (event: React.MouseEvent<HTMLElement>) => {
+    if (itemId != null) ctx.setActiveId(itemId)
+    onClick?.(event)
+  }
+
+  if (asChild) {
+    return (
+      <ListItem
+        asChild
+        variant={resolvedVariant}
+        size={resolvedSize}
+        selected={resolvedActive}
+        aria-current={ariaCurrent}
+        className={className}
+        onClick={handleSelect}
+        {...props}
+      >
+        {children}
+      </ListItem>
+    )
+  }
+
+  if (href != null) {
+    return (
+      <ListItem
+        asChild
+        variant={resolvedVariant}
+        size={resolvedSize}
+        selected={resolvedActive}
+        aria-current={ariaCurrent}
+        className={className}
+        onClick={handleSelect}
+        {...props}
+      >
+        <a href={href}>{children}</a>
+      </ListItem>
+    )
+  }
+
+  return (
+    <ListItem
+      variant={resolvedVariant}
+      size={resolvedSize}
+      selected={resolvedActive}
+      aria-current={ariaCurrent}
+      className={className}
+      onClick={handleSelect}
+      {...props}
+    >
+      {children}
+    </ListItem>
+  )
+}
+
+function ContentsNavSeparator({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-df="contents-nav-separator"
+      role="presentation"
+      className={cn(className)}
+      {...props}
+    />
+  )
+}
+
+function ContentsNavBranch({
+  item,
+  depth,
+}: {
+  item: ContentsNavItemData
+  depth: number
+}) {
+  const ctx = useContentsNav()
+  const children = item.children ?? []
+  const hasChildren = children.length > 0
+  const active = ctx.activeId === item.id
+  const size = depth > 0 ? ctx.nestItemSize : ctx.itemSize
+  const href =
+    item.href === null
+      ? undefined
+      : (item.href ?? (ctx.variant === "toc" ? `#${item.id}` : undefined))
+
+  let row: React.ReactNode
+  if (ctx.renderItem) {
+    const custom = ctx.renderItem(item, { active, depth })
+    row = (
+      <ListItem
+        asChild
+        variant={ctx.itemVariant}
+        size={size}
+        selected={active}
+        aria-current={
+          active ? (ctx.variant === "index" ? "page" : "true") : undefined
+        }
+        onClick={() => ctx.setActiveId(item.id)}
+      >
+        {custom}
+      </ListItem>
+    )
+  } else {
+    row = (
+      <ContentsNavItem
+        itemId={item.id}
+        active={active}
+        size={size}
+        href={href}
+      >
+        {item.title}
+      </ContentsNavItem>
+    )
+  }
+
+  return (
+    <div data-df="contents-nav-branch">
+      {row}
+      {hasChildren ? (
+        <ListItemNest
+          line={ctx.nestLine}
+          role="group"
+          aria-label={
+            typeof item.title === "string" ? item.title : undefined
+          }
+        >
+          {children.map((child) => (
+            <ContentsNavBranch key={child.id} item={child} depth={depth + 1} />
+          ))}
+        </ListItemNest>
+      ) : null}
+    </div>
+  )
+}
+
+function ContentsNav({
+  className,
+  variant = "toc",
+  title,
+  items,
+  sections,
+  layout = "grouped",
+  nestLine,
+  scrollSpy,
+  scrollRoot,
+  spyRatio = 0.25,
+  activeId: activeIdProp,
+  defaultActiveId,
+  onActiveIdChange,
+  itemVariant = "muted",
+  itemSize = "md",
+  nestItemSize = "sm",
+  renderItem,
+  children,
+  "aria-label": ariaLabel,
+  ...props
+}: ContentsNavProps) {
+  const resolvedNestLine = nestLine ?? variant === "toc"
+  const resolvedScrollSpy = scrollSpy ?? variant === "toc"
+
+  const spyItems = React.useMemo(() => {
+    if (items?.length) return items
+    if (sections?.length) {
+      return sections.flatMap((section) => section.items)
+    }
+    return []
+  }, [items, sections])
+
+  const flatIds = React.useMemo(
+    () => flattenContentsNavIds(spyItems),
+    [spyItems]
+  )
+
+  const [activeId, setActiveId] = useControllableState({
+    value: activeIdProp,
+    defaultValue: defaultActiveId ?? flatIds[0] ?? "",
+    onChange: onActiveIdChange,
+  })
+
+  const scrollRootRef = React.useRef(scrollRoot)
+  scrollRootRef.current = scrollRoot
+
+  React.useEffect(() => {
+    if (!resolvedScrollSpy || flatIds.length === 0) return
+
+    const update = () => {
+      const root = resolveScrollRoot(scrollRootRef.current)
+      if (!root) return
+      setActiveId(activeIdFromScroll(flatIds, root, spyRatio))
+    }
+
+    update()
+    const root = resolveScrollRoot(scrollRootRef.current)
+    if (!root) return
+
+    root.addEventListener("scroll", update, { passive: true })
+    const ro = new ResizeObserver(update)
+    ro.observe(root)
+    return () => {
+      root.removeEventListener("scroll", update)
+      ro.disconnect()
+    }
+  }, [flatIds, resolvedScrollSpy, setActiveId, spyRatio])
+
+  const contextValue = React.useMemo<ContentsNavContextValue>(
+    () => ({
+      variant,
+      nestLine: resolvedNestLine,
+      itemVariant,
+      itemSize,
+      nestItemSize,
+      activeId,
+      setActiveId,
+      renderItem,
+    }),
+    [
+      activeId,
+      itemSize,
+      itemVariant,
+      nestItemSize,
+      renderItem,
+      resolvedNestLine,
+      setActiveId,
+      variant,
+    ]
+  )
+
+  const hasData = Boolean(items?.length || sections?.length)
+  if (!hasData && children == null) return null
+
+  let body: React.ReactNode = children
+  if (children == null && hasData) {
+    if (variant === "index" && layout === "grouped" && sections?.length) {
+      body = sections.map((section, index) => (
+        <ContentsNavSection
+          key={section.id ?? String(section.label) ?? index}
+          label={section.label}
+          divided={section.divided ?? index > 0}
+        >
+          {section.items.map((item) => (
+            <ContentsNavBranch key={item.id} item={item} depth={0} />
+          ))}
+        </ContentsNavSection>
+      ))
+    } else {
+      body = (items ?? []).map((item) => (
+        <ContentsNavBranch key={item.id} item={item} depth={0} />
+      ))
+    }
+  }
+
+  return (
+    <ContentsNavContext.Provider value={contextValue}>
+      <nav
+        data-df="contents-nav"
+        data-variant={variant}
+        aria-label={
+          ariaLabel ?? (variant === "toc" ? "On this page" : "Contents")
+        }
+        className={cn(className)}
+        {...props}
+      >
+        {title != null ? <ContentsNavHeading>{title}</ContentsNavHeading> : null}
+        {body}
+      </nav>
+    </ContentsNavContext.Provider>
+  )
+}
+
+export {
+  ContentsNav,
+  ContentsNavHeading,
+  ContentsNavItem,
+  ContentsNavSection,
+  ContentsNavSeparator,
+  useContentsNav,
+}
+export type {
+  ContentsNavItemData,
+  ContentsNavLayout,
+  ContentsNavProps,
+  ContentsNavScrollRoot,
+  ContentsNavSectionData,
+  ContentsNavSectionProps,
+  ContentsNavItemProps,
+  ContentsNavVariant,
+}

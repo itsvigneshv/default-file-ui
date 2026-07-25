@@ -348,6 +348,24 @@
       ]
     },
     {
+      "name": "contents-nav",
+      "type": "registry:ui",
+      "title": "Contents Nav",
+      "description": "Page outline and catalogue index built on List Item. Use toc for on-page headings with optional nest line and scroll spy. Use index for sectioned side navigation.",
+      "dependencies": [],
+      "registryDependencies": [
+        "foundation",
+        "list-item"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-contents-nav.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-contents-nav.tsx"
+        }
+      ]
+    },
+    {
       "name": "option-list",
       "type": "registry:ui",
       "title": "Option List",
@@ -541,6 +559,34 @@
           "path": "src/components/df-nav-rail.tsx",
           "type": "registry:ui",
           "target": "default-file-ui/components/df-nav-rail.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "Collapsible labeled primary navigation shell with header, search, groups, items, workspace switcher, and account menu. Prefer Tool Rail for icon mode switching and Dock Panel for inspectors.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "foundation",
+        "list-item",
+        "badge",
+        "search-input",
+        "tooltip",
+        "option-list",
+        "popover",
+        "scroll-area",
+        "separator",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-sidebar.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-sidebar.tsx"
         }
       ]
     },

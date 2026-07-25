@@ -357,11 +357,6 @@
   padding-right: calc(2 * var(--spacing-unit, 0.25rem));
 }
 
-.px-3 {
-  padding-left: calc(3 * var(--spacing-unit, 0.25rem));
-  padding-right: calc(3 * var(--spacing-unit, 0.25rem));
-}
-
 .px-4 {
   padding-left: calc(4 * var(--spacing-unit, 0.25rem));
   padding-right: calc(4 * var(--spacing-unit, 0.25rem));
@@ -380,11 +375,6 @@
 .py-2 {
   padding-top: calc(2 * var(--spacing-unit, 0.25rem));
   padding-bottom: calc(2 * var(--spacing-unit, 0.25rem));
-}
-
-.py-2\.5 {
-  padding-top: calc(2.5 * var(--spacing-unit, 0.25rem));
-  padding-bottom: calc(2.5 * var(--spacing-unit, 0.25rem));
 }
 
 .py-3 {

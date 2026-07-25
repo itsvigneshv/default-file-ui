@@ -17,6 +17,10 @@ import {
   type DfCornerShape,
 } from "../lib/corner-shape"
 import { nearestDarkClass } from "../lib/nearest-theme"
+import {
+  dfPaddingChromeStyle,
+  resolvePaddingSides,
+} from "../lib/padding-chrome"
 import { cn } from "../lib/utils"
 
 type PopoverVariant = "default" | "muted" | "elevated" | "inverse"
@@ -284,11 +288,6 @@ function PopoverContent({
     if (active == null || active === document.body) triggerRef.current?.focus?.()
   }, [open, triggerRef])
 
-  const resolvedPaddingTop = paddingTop ?? paddingY ?? padding
-  const resolvedPaddingRight = paddingRight ?? paddingX ?? padding
-  const resolvedPaddingBottom = paddingBottom ?? paddingY ?? padding
-  const resolvedPaddingLeft = paddingLeft ?? paddingX ?? padding
-
   const chromeStyle = {
     ...(background != null ? { "--df-popover-surface": background } : null),
     ...(foreground != null
@@ -309,18 +308,18 @@ function PopoverContent({
       ? { "--df-popover-radius": POPOVER_RADIUS_VAR[radius] }
       : null),
     ...(gap != null ? { "--df-popover-gap": gap } : null),
-    ...(resolvedPaddingTop != null
-      ? { "--df-popover-inset-top": resolvedPaddingTop }
-      : null),
-    ...(resolvedPaddingRight != null
-      ? { "--df-popover-inset-right": resolvedPaddingRight }
-      : null),
-    ...(resolvedPaddingBottom != null
-      ? { "--df-popover-inset-bottom": resolvedPaddingBottom }
-      : null),
-    ...(resolvedPaddingLeft != null
-      ? { "--df-popover-inset-left": resolvedPaddingLeft }
-      : null),
+    ...dfPaddingChromeStyle(
+      "--df-popover-inset",
+      resolvePaddingSides({
+        padding,
+        paddingX,
+        paddingY,
+        paddingTop,
+        paddingRight,
+        paddingBottom,
+        paddingLeft,
+      })
+    ),
     ...dfCornerShapeStyle(cornerShape),
   } as React.CSSProperties
 

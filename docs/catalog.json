@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T07:12:49.368Z",
+  "generatedAt": "2026-07-25T10:05:13.259Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -200,6 +200,30 @@
       "propCount": 18
     },
     {
+      "slug": "contents-nav",
+      "name": "contents-nav",
+      "title": "Contents Nav",
+      "description": "Page outline and catalogue index built on List Item. Use toc for on-page headings with optional nest line and scroll spy. Use index for sectioned side navigation.",
+      "aliases": [
+        "toc",
+        "table of contents",
+        "on this page",
+        "catalogue index",
+        "side nav",
+        "outline",
+        "contents",
+        "Contents Nav"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation",
+        "list-item"
+      ],
+      "importPath": "@default-file/ui/components/df-contents-nav",
+      "dependencies": [],
+      "propCount": 38
+    },
+    {
       "slug": "dialog",
       "name": "dialog",
       "title": "Dialog",
@@ -375,7 +399,7 @@
       "slug": "list-item",
       "name": "list-item",
       "title": "List Item",
-      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Option List composes this for selectable options.",
+      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List and Contents Nav compose these for selectable options and outlines.",
       "aliases": [
         "list row",
         "menu item",
@@ -392,7 +416,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 21
+      "propCount": 58
     },
     {
       "slug": "number-slider",
@@ -419,7 +443,7 @@
       "slug": "option-list",
       "name": "option-list",
       "title": "Option List",
-      "description": "Picker panel with option rows, search, checks, and footer actions. Configure root width and panel match. Select composes this.",
+      "description": "Picker panel with option rows, search, checks, and footer actions. Rows compose List Item. Configure root width and panel match. Select composes this.",
       "aliases": [
         "options list",
         "select list",
@@ -438,7 +462,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 118
+      "propCount": 125
     },
     {
       "slug": "options-panel",
@@ -594,7 +618,7 @@
       "slug": "select",
       "name": "select",
       "title": "Select",
-      "description": "Single or multi choice field that composes Option List. Configure width and open-list sizing. Closed list selection, not free-text autocomplete.",
+      "description": "Single or multi choice field that composes Option List. Rows use List Item chrome. Configure width and open-list sizing. Closed list selection, not free-text autocomplete.",
       "aliases": [
         "dropdown",
         "dropdown select",
@@ -613,7 +637,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 154
+      "propCount": 161
     },
     {
       "slug": "separator",
@@ -633,6 +657,39 @@
       "importPath": "@default-file/ui/components/df-separator",
       "dependencies": [],
       "propCount": 4
+    },
+    {
+      "slug": "sidebar",
+      "name": "sidebar",
+      "title": "Sidebar",
+      "description": "Collapsible labeled primary navigation shell with configurable chrome, search, groups, workspace switcher, and account menu.",
+      "aliases": [
+        "app sidebar",
+        "navigation sidebar",
+        "vertical nav",
+        "primary nav",
+        "side navigation",
+        "nav shell",
+        "Sidebar"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation",
+        "list-item",
+        "badge",
+        "search-input",
+        "tooltip",
+        "option-list",
+        "popover",
+        "scroll-area",
+        "separator",
+        "button"
+      ],
+      "importPath": "@default-file/ui/components/df-sidebar",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 135
     },
     {
       "slug": "slider",

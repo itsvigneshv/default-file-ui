@@ -4,7 +4,11 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { ChevronDown, ChevronUp } from "lucide-react"
 
-import { ListItem } from "./df-list-item"
+import {
+  ListItem,
+  ListItemLabel,
+  type ListItemProps,
+} from "./df-list-item"
 import { SearchInput } from "./df-search-input"
 import { ScrollArea } from "./df-scroll-area"
 import {
@@ -760,10 +764,8 @@ function scrollSelectedIntoListViewport(
   }
 }
 
-const LIST_ITEM_HOST_SELECTOR =
-  '[data-df="list-item"], [data-df="option-list-item"]'
-const LIST_ITEM_LABEL_SELECTOR =
-  '[data-df="list-item-label"], [data-df="option-list-item-label"]'
+const LIST_ITEM_HOST_SELECTOR = '[data-df="list-item"]'
+const LIST_ITEM_TITLE_SELECTOR = '[data-df="list-item-title"]'
 
 function navigableOptions(root: HTMLElement): HTMLElement[] {
   const items = Array.from(
@@ -777,7 +779,7 @@ function navigableOptions(root: HTMLElement): HTMLElement[] {
 }
 
 function optionText(item: HTMLElement): string {
-  const label = item.querySelector<HTMLElement>(LIST_ITEM_LABEL_SELECTOR)
+  const label = item.querySelector<HTMLElement>(LIST_ITEM_TITLE_SELECTOR)
   return (label?.textContent ?? item.textContent ?? "").trim().toLowerCase()
 }
 
@@ -1094,25 +1096,14 @@ function OptionListLabel({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-df="option-list-label"
-      className={cn("px-3 py-2.5 text-xs text-muted-foreground", className)}
-      {...props}
-    />
-  )
+  return <ListItemLabel variant="menu" className={cn(className)} {...props} />
 }
 
-type OptionListItemLeading = "checkbox" | "check" | React.ReactNode | false
-
-type OptionListItemProps = React.HTMLAttributes<HTMLElement> & {
+type OptionListItemProps = Omit<
+  ListItemProps,
+  "selected" | "highlighted" | "open" | "asChild"
+> & {
   value: string
-  disabled?: boolean
-  leading?: OptionListItemLeading
-  secondary?: React.ReactNode
-  layout?: OptionListItemLayout
-  trailing?: React.ReactNode
-  indicator?: boolean
 }
 
 function optionLabelText(node: React.ReactNode): string {
@@ -1138,6 +1129,7 @@ function OptionListItem({
   id: idProp,
   onClick,
   onMouseEnter,
+  "data-highlighted": dataHighlightedProp,
   ...props
 }: OptionListItemProps) {
   const {
@@ -1167,11 +1159,8 @@ function OptionListItem({
       trailing == null &&
       !isSubmenuTrigger)
   const copyLayout = secondary != null ? layout : "inline"
-  const dataHighlighted = (props as { "data-highlighted"?: string })[
-    "data-highlighted"
-  ]
   const highlighted =
-    (isSubmenuTrigger && submenu?.open) || dataHighlighted != null
+    (isSubmenuTrigger && submenu?.open) || dataHighlightedProp != null
 
   React.useLayoutEffect(() => {
     registerLabel(value, children)

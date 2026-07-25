@@ -2,7 +2,7 @@
   "name": "select",
   "slug": "select",
   "title": "Select",
-  "description": "Single or multi choice field that composes Option List. Configure width and open-list sizing. Closed list selection, not free-text autocomplete.",
+  "description": "Single or multi choice field that composes Option List. Rows use List Item chrome. Configure width and open-list sizing. Closed list selection, not free-text autocomplete.",
   "aliases": [
     "dropdown",
     "dropdown select",
@@ -22,7 +22,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Select composes Option List for the open panel. Configure root width, field chrome, trigger, value display, content, and items below. Root width sets the trigger; open-list width follows that mode unless SelectContent overrides alignItemWithTrigger. The trigger is a combobox with full keyboard support inherited from Option List.",
+    "description": "Select composes Option List for the open panel. SelectItem rows use List Item chrome; see the List Item page for size, muted or accent variants, asChild hosts, and fully configurable standalone rows. Configure root width, field chrome, trigger, value display, content, and items below. Root width sets the trigger; open-list width follows that mode unless SelectContent overrides alignItemWithTrigger. The trigger is a combobox with full keyboard support inherited from Option List.",
     "groups": [
       {
         "id": "select-root",
@@ -500,12 +500,24 @@
       {
         "id": "select-item",
         "title": "SelectItem",
-        "description": "Option row. Same API as OptionListItem, including leading icons, trailing badges, and nested chevrons.",
+        "description": "Option row. Same API as OptionListItem. Forwards List Item presentation props (size, variant, slots, chrome). Selection state stays on Select. Open the List Item page for standalone rows and asChild links.",
         "props": [
           {
             "name": "value",
             "type": "string",
             "description": "Option value stored in Select state."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"md\"",
+            "description": "List Item density. Forwarded to List Item. Use sm for compact nested submenu rows."
+          },
+          {
+            "name": "variant",
+            "type": "\"accent\" | \"muted\"",
+            "default": "\"accent\"",
+            "description": "List Item fill recipe. Forwarded to List Item. accent is the picker default; muted is for quiet nav-style rows."
           },
           {
             "name": "disabled",
@@ -531,7 +543,7 @@
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "End of row slot: badge counter, nested menu chevron, or both. When set, the selected check is hidden unless indicator is forced on."
+            "description": "End of row slot: badge counter, nested menu chevron, or both. When set, the selected check is hidden unless indicator is forced on. Submenu triggers pass the chevron here; List Item renders the trailing slot."
           },
           {
             "name": "indicator",
@@ -549,9 +561,29 @@
             "description": "Additional row styles."
           },
           {
-            "name": "…div attributes",
+            "name": "style",
+            "type": "CSSProperties",
+            "description": "Host style. Merged after List Item chrome CSS variables."
+          },
+          {
+            "name": "padding / paddingX / paddingY / sides",
+            "type": "string",
+            "description": "List Item chrome padding props. Forwarded to List Item. See List Item for the full cascade and --df-list-item-padding-* tokens."
+          },
+          {
+            "name": "gap / fontSize / radius",
+            "type": "string",
+            "description": "List Item chrome spacing, type size, and radius. Forwarded to List Item."
+          },
+          {
+            "name": "background / foreground / hoverBackground / selectedBackground",
+            "type": "string",
+            "description": "List Item chrome surface and state fills. Forwarded to List Item."
+          },
+          {
+            "name": "…host attributes",
             "type": "HTMLAttributes",
-            "description": "Native div props. Use the highlighted data attribute for hover or open parent rows in nested menus."
+            "description": "Native host element props on the List Item row. Use the highlighted data attribute for hover or open parent rows in nested menus."
           }
         ]
       },
@@ -646,7 +678,7 @@
           {
             "name": "SelectLabel",
             "type": "div attrs",
-            "description": "Muted group heading inside the panel. Same as OptionListLabel."
+            "description": "Group heading inside the panel. Same as OptionListLabel (ListItemLabel menu variant). See List Item for section label variants."
           },
           {
             "name": "SelectSeparator",
@@ -707,6 +739,11 @@
             "name": "Match trigger width",
             "type": "alignItemWithTrigger",
             "description": "Lock the menu to the trigger width. Default when root width is fill or fixed."
+          },
+          {
+            "name": "List Item props",
+            "type": "ListItem",
+            "description": "SelectItem is OptionListItem. size, variant, slots, and chrome props forward to List Item. Open the List Item page for the full contract and use outside Select."
           }
         ]
       },

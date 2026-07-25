@@ -1,0 +1,887 @@
+{
+  "name": "sidebar",
+  "slug": "sidebar",
+  "title": "Sidebar",
+  "description": "Collapsible labeled primary navigation shell with configurable chrome, search, groups, workspace switcher, and account menu.",
+  "aliases": [
+    "app sidebar",
+    "navigation sidebar",
+    "vertical nav",
+    "primary nav",
+    "side navigation",
+    "nav shell",
+    "Sidebar"
+  ],
+  "chapter": "structure",
+  "registryDependencies": [
+    "foundation",
+    "list-item",
+    "badge",
+    "search-input",
+    "tooltip",
+    "option-list",
+    "popover",
+    "scroll-area",
+    "separator",
+    "button"
+  ],
+  "importPath": "@default-file/ui/components/df-sidebar",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Collapsible labeled primary navigation shell. Compose Header, Search, Content, Nav, Group, Item, Workspace, User, Separator, Shortcut, and CollapseTrigger. Prefer Tool Rail for icon mode switching and Dock Panel for persistent inspectors. Chrome is tokenized via --df-sidebar-* and semantic --sidebar*.",
+    "groups": [
+      {
+        "id": "sidebar",
+        "title": "Sidebar",
+        "description": "Root landmark. Controllable collapsed width. Pass chrome props or set the matching CSS variables on style. Parts must render inside this root.",
+        "props": [
+          {
+            "name": "collapsed",
+            "type": "boolean",
+            "description": "Controlled collapsed state."
+          },
+          {
+            "name": "defaultCollapsed",
+            "type": "boolean",
+            "default": "false",
+            "description": "Initial collapsed state when uncontrolled."
+          },
+          {
+            "name": "onCollapsedChange",
+            "type": "(collapsed: boolean) => void",
+            "description": "Called when the collapsed state changes."
+          },
+          {
+            "name": "side",
+            "type": "\"left\" | \"right\"",
+            "default": "\"left\"",
+            "description": "Intended edge. Collapsed tooltips open away from the shell (right for left side, left for right side)."
+          },
+          {
+            "name": "width",
+            "type": "string",
+            "description": "Expanded width. Prefer tokens such as var(--df-sidebar-width). Sets --df-sidebar-width."
+          },
+          {
+            "name": "collapsedWidth",
+            "type": "string",
+            "description": "Collapsed width. Prefer tokens such as var(--df-sidebar-width-collapsed). Sets --df-sidebar-width-collapsed."
+          },
+          {
+            "name": "radius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"2xl\"",
+            "description": "Corner radius of the shell. Maps to --df-sidebar-radius."
+          },
+          {
+            "name": "itemRadius",
+            "type": "\"none\" | \"xxs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"full\"",
+            "default": "\"lg\"",
+            "description": "Corner radius for items and triggers. Maps to --df-sidebar-item-radius."
+          },
+          {
+            "name": "cornerShape",
+            "type": "\"round\" | \"smooth\"",
+            "description": "Instance corner curve. Omit to inherit --df-corner-shape from the theme (set at create/init)."
+          },
+          {
+            "name": "background",
+            "type": "string",
+            "description": "Shell background. Prefer var(--sidebar). Sets --df-sidebar-bg."
+          },
+          {
+            "name": "borderColor",
+            "type": "string",
+            "description": "Shell border color. Prefer var(--sidebar-border). Sets --df-sidebar-border."
+          },
+          {
+            "name": "foreground",
+            "type": "string",
+            "description": "Default foreground. Prefer var(--sidebar-foreground). Sets --df-sidebar-fg."
+          },
+          {
+            "name": "shadow",
+            "type": "string",
+            "description": "Box shadow. Prefer var(--df-shadow-panel). Sets --df-sidebar-shadow."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "default": "\"Primary\"",
+            "description": "Accessible name for the landmark and for collapse controls when aria-label is omitted."
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "description": "Overrides label on the aside landmark. Collapse controls still use label unless you set their aria-label."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Compose Header, Search, Content, Footer, CollapseTrigger, and related parts."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the aside root."
+          },
+          {
+            "name": "…aside attributes",
+            "type": "HTMLAttributes",
+            "description": "Native aside attributes on the root."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-header",
+        "title": "SidebarHeader",
+        "description": "Top region for workspace switcher, search, and collapse.",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Typically SidebarWorkspace, SidebarSearch, and CollapseTrigger."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the header."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div attributes on the header."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-content",
+        "title": "SidebarContent",
+        "description": "Scrollable middle region. Wraps children in ScrollArea.",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Typically SidebarNav with groups and items."
+          },
+          {
+            "name": "viewportClassName",
+            "type": "string",
+            "description": "Classes on the ScrollArea viewport."
+          },
+          {
+            "name": "variant",
+            "type": "\"default\" | \"edge\"",
+            "description": "ScrollArea thumb style."
+          },
+          {
+            "name": "thumbShape",
+            "type": "\"rounded\" | \"flat\"",
+            "description": "ScrollArea thumb corner shape."
+          },
+          {
+            "name": "orientation",
+            "type": "\"vertical\" | \"horizontal\" | \"both\"",
+            "default": "\"vertical\"",
+            "description": "ScrollArea axes."
+          },
+          {
+            "name": "side",
+            "type": "\"left\" | \"right\" | \"top\" | \"bottom\"",
+            "description": "ScrollArea thumb edge."
+          },
+          {
+            "name": "visibility",
+            "type": "\"hover\" | \"always\"",
+            "description": "ScrollArea thumb visibility."
+          },
+          {
+            "name": "space",
+            "type": "\"auto\" | \"none\"",
+            "description": "ScrollArea track inset mode."
+          },
+          {
+            "name": "width",
+            "type": "number",
+            "description": "ScrollArea scrollbar thickness in pixels."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the content shell."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div attributes on the content shell."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-footer",
+        "title": "SidebarFooter",
+        "description": "Bottom region for utility items and account menu.",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Typically SidebarItem rows, Separator, and SidebarUser."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the footer."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div attributes on the footer."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-nav",
+        "title": "SidebarNav",
+        "description": "Semantic nav stack for primary destinations and groups.",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "SidebarItem rows and SidebarGroup sections."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the nav."
+          },
+          {
+            "name": "…nav attributes",
+            "type": "HTMLAttributes",
+            "description": "Native nav attributes."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-search",
+        "title": "SidebarSearch",
+        "description": "Expanded mode composes SearchInput. Collapsed mode shows an icon control with a tooltip. onClick runs for both modes so a command palette or focus handoff can share one handler.",
+        "props": [
+          {
+            "name": "shortcut",
+            "type": "ReactNode",
+            "description": "Trailing shortcut chip when expanded. Rendered with SidebarShortcut."
+          },
+          {
+            "name": "collapsedLabel",
+            "type": "string",
+            "default": "\"Search\"",
+            "description": "Tooltip and aria-label when collapsed."
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "default": "\"Search\"",
+            "description": "SearchInput placeholder when expanded."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"sm\"",
+            "description": "SearchInput size when expanded."
+          },
+          {
+            "name": "variant",
+            "type": "\"default\" | \"pill\"",
+            "default": "\"pill\"",
+            "description": "SearchInput variant when expanded."
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "default": "false",
+            "description": "Show the clear control when the field has a value."
+          },
+          {
+            "name": "onClick",
+            "type": "MouseEventHandler",
+            "description": "Click handler for the expanded input and the collapsed icon control."
+          },
+          {
+            "name": "…SearchInput props",
+            "type": "SearchInputProps",
+            "description": "value, defaultValue, onChange, disabled, and related field props. trailing is owned by shortcut."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-group",
+        "title": "SidebarGroup",
+        "description": "Section with optional label and action. Header is omitted while the sidebar is collapsed.",
+        "props": [
+          {
+            "name": "label",
+            "type": "ReactNode",
+            "description": "Section heading via ListItemLabel nav variant."
+          },
+          {
+            "name": "action",
+            "type": "ReactNode",
+            "description": "Optional control beside the label, such as an add button."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "SidebarItem rows."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the group."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native div attributes on the group."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-item",
+        "title": "SidebarItem",
+        "description": "Composes ListItem with muted variant and sm size. Collapsed mode keeps the label for accessibility, hides it visually, and shows a tooltip.",
+        "props": [
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "description": "Leading glyph. Ignored when swatch is set."
+          },
+          {
+            "name": "swatch",
+            "type": "string",
+            "description": "Leading color swatch. Prefer a kit color token such as var(--df-teal-400)."
+          },
+          {
+            "name": "shortcut",
+            "type": "ReactNode",
+            "description": "Trailing shortcut chip when expanded."
+          },
+          {
+            "name": "badge",
+            "type": "ReactNode",
+            "description": "Optional badge on the icon, such as a count."
+          },
+          {
+            "name": "badgeVariant",
+            "type": "BadgeVariant",
+            "default": "\"destructive\"",
+            "description": "Badge tone."
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "default": "false",
+            "description": "Selected row state. Maps to ListItem selected."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "description": "Disables interaction."
+          },
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "description": "Merge row props onto a single child element, usually a link."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "Extra trailing content before the shortcut."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Row label. Also used for aria-label and collapsed tooltip text."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the ListItem host."
+          },
+          {
+            "name": "…div attributes",
+            "type": "HTMLAttributes",
+            "description": "Native attributes forwarded to ListItem."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-shortcut",
+        "title": "SidebarShortcut",
+        "description": "Trailing keyboard hint chrome. Used by SidebarSearch and SidebarItem; can also be composed manually.",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Shortcut text such as Cmd+1."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the shortcut."
+          },
+          {
+            "name": "…span attributes",
+            "type": "HTMLAttributes",
+            "description": "Native span attributes."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-separator",
+        "title": "SidebarSeparator",
+        "description": "Divider between nav blocks. Composes Separator.",
+        "props": [
+          {
+            "name": "orientation",
+            "type": "\"horizontal\" | \"vertical\"",
+            "default": "\"horizontal\"",
+            "description": "Separator axis."
+          },
+          {
+            "name": "decorative",
+            "type": "boolean",
+            "default": "true",
+            "description": "When true, omits separator semantics for assistive tech."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the separator."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-workspace",
+        "title": "SidebarWorkspace",
+        "description": "Workspace switcher host. Wraps OptionList. Compose SidebarWorkspaceTrigger, SidebarWorkspaceContent, and OptionListItem rows.",
+        "props": [
+          {
+            "name": "value",
+            "type": "string | null",
+            "description": "Controlled selected workspace value."
+          },
+          {
+            "name": "defaultValue",
+            "type": "string | null",
+            "description": "Uncontrolled initial workspace value."
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: string | null) => void",
+            "description": "Called when the selected workspace changes."
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled menu open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "default": "false",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when the menu opens or closes."
+          },
+          {
+            "name": "width",
+            "type": "\"hug\" | \"fill\" | string",
+            "default": "\"hug\"",
+            "description": "OptionList width mode for the trigger and panel."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the workspace host."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger, content, and option rows."
+          },
+          {
+            "name": "…OptionList props",
+            "type": "OptionListProps",
+            "description": "selectionMode, closeOnSelect, and related picker props."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-workspace-trigger",
+        "title": "SidebarWorkspaceTrigger",
+        "description": "Opens the workspace menu. Collapsed mode shows the logo with a tooltip.",
+        "props": [
+          {
+            "name": "logo",
+            "type": "ReactNode",
+            "description": "Leading workspace mark."
+          },
+          {
+            "name": "title",
+            "type": "ReactNode",
+            "description": "Workspace name. Required. Used for aria-label and tooltip text."
+          },
+          {
+            "name": "description",
+            "type": "ReactNode",
+            "description": "Secondary plan or meta line when expanded."
+          },
+          {
+            "name": "chevron",
+            "type": "ReactNode",
+            "description": "Trailing chevron. Defaults to ChevronsUpDown."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the trigger button."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-workspace-content",
+        "title": "SidebarWorkspaceContent",
+        "description": "Portaled OptionList panel. Place OptionListItem rows and related OptionList parts inside.",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "away from Sidebar side",
+            "description": "Preferred panel side. Defaults to right when the shell is left, and left when the shell is right."
+          },
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
+            "default": "\"start\"",
+            "description": "Panel alignment along the trigger."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "8",
+            "description": "Gap from the trigger in pixels."
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "description": "Render the panel in a portal."
+          },
+          {
+            "name": "search",
+            "type": "boolean",
+            "description": "Show the built-in OptionList search field."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "OptionListItem rows and related list parts."
+          },
+          {
+            "name": "…OptionListContent props",
+            "type": "OptionListContentProps",
+            "description": "alignOffset, dismissOnScroll, scrollable, footer, and related panel props."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-user",
+        "title": "SidebarUser",
+        "description": "Account menu host. Wraps Popover. Compose SidebarUserTrigger and SidebarUserContent.",
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "description": "Controlled popover open state."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "default": "false",
+            "description": "Uncontrolled initial open state."
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open: boolean) => void",
+            "description": "Called when the popover opens or closes."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the user host."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Trigger and content."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-user-trigger",
+        "title": "SidebarUserTrigger",
+        "description": "Opens the account menu. Collapsed mode shows the avatar with a tooltip.",
+        "props": [
+          {
+            "name": "name",
+            "type": "ReactNode",
+            "description": "Display name. Required. Used for aria-label, tooltip, and Avatar name when string."
+          },
+          {
+            "name": "email",
+            "type": "ReactNode",
+            "description": "Secondary email line when expanded."
+          },
+          {
+            "name": "src",
+            "type": "string",
+            "description": "Avatar image URL for the default Avatar."
+          },
+          {
+            "name": "alt",
+            "type": "string",
+            "description": "Avatar image alt text."
+          },
+          {
+            "name": "avatar",
+            "type": "ReactNode",
+            "description": "Custom avatar node. Replaces the default Avatar."
+          },
+          {
+            "name": "chevron",
+            "type": "ReactNode",
+            "description": "Trailing chevron. Defaults to ChevronsUpDown."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional classes on the trigger button."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-user-content",
+        "title": "SidebarUserContent",
+        "description": "Portaled Popover panel. Compose PopoverHeader, PopoverBody, PopoverFooter, ListItem rows, and related content.",
+        "props": [
+          {
+            "name": "side",
+            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "default": "away from Sidebar side",
+            "description": "Preferred panel side. Defaults to right when the shell is left, and left when the shell is right."
+          },
+          {
+            "name": "align",
+            "type": "\"start\" | \"center\" | \"end\"",
+            "default": "\"end\"",
+            "description": "Panel alignment along the trigger."
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "8",
+            "description": "Gap from the trigger in pixels."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Account menu content."
+          },
+          {
+            "name": "…PopoverContent props",
+            "type": "PopoverContentProps",
+            "description": "variant, size, radius, portal, and related panel props."
+          }
+        ]
+      },
+      {
+        "id": "sidebar-collapse",
+        "title": "SidebarCollapseTrigger",
+        "description": "Toggles collapsed state on the surrounding Sidebar. Renders as a ghost icon-sm Button.",
+        "props": [
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "description": "Optional icon. Defaults to PanelLeft when children are omitted."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Replaces icon when provided."
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "description": "Accessible name. Defaults to Expand {label} or Collapse {label}."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "description": "Native title. Defaults to the same string as aria-label."
+          },
+          {
+            "name": "…Button props",
+            "type": "Button props",
+            "description": "Additional button attributes. size and variant default to icon-sm and ghost."
+          }
+        ]
+      },
+      {
+        "id": "Sidebar tokens-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--df-sidebar-width",
+            "type": "CSS length",
+            "description": "Expanded shell width.",
+            "default": "calc(68 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-width-collapsed",
+            "type": "CSS length",
+            "description": "Collapsed shell width.",
+            "default": "calc(16 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-bg",
+            "type": "CSS color",
+            "description": "Shell background.",
+            "default": "var(--sidebar)"
+          },
+          {
+            "name": "--df-sidebar-fg",
+            "type": "CSS color",
+            "description": "Shell foreground.",
+            "default": "var(--sidebar-foreground)"
+          },
+          {
+            "name": "--df-sidebar-border",
+            "type": "CSS color",
+            "description": "Shell border.",
+            "default": "var(--sidebar-border)"
+          },
+          {
+            "name": "--df-sidebar-accent",
+            "type": "CSS color",
+            "description": "Hover and selected fill.",
+            "default": "var(--sidebar-accent)"
+          },
+          {
+            "name": "--df-sidebar-accent-fg",
+            "type": "CSS color",
+            "description": "Hover and selected foreground.",
+            "default": "var(--sidebar-accent-foreground)"
+          },
+          {
+            "name": "--df-sidebar-primary",
+            "type": "CSS color",
+            "description": "Primary accent.",
+            "default": "var(--sidebar-primary)"
+          },
+          {
+            "name": "--df-sidebar-primary-fg",
+            "type": "CSS color",
+            "description": "Primary accent foreground.",
+            "default": "var(--sidebar-primary-foreground)"
+          },
+          {
+            "name": "--df-sidebar-ring",
+            "type": "CSS color",
+            "description": "Focus ring.",
+            "default": "var(--sidebar-ring)"
+          },
+          {
+            "name": "--df-sidebar-shadow",
+            "type": "CSS box-shadow",
+            "description": "Shell elevation.",
+            "default": "var(--df-shadow-panel)"
+          },
+          {
+            "name": "--df-sidebar-radius",
+            "type": "CSS length",
+            "description": "Shell radius.",
+            "default": "var(--radius-2xl)"
+          },
+          {
+            "name": "--df-sidebar-item-radius",
+            "type": "CSS length",
+            "description": "Item and trigger radius.",
+            "default": "var(--radius-lg)"
+          },
+          {
+            "name": "--df-sidebar-padding",
+            "type": "CSS length",
+            "description": "Shell padding.",
+            "default": "calc(3 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-gap",
+            "type": "CSS length",
+            "description": "Gap between major regions.",
+            "default": "calc(2 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-section-gap",
+            "type": "CSS length",
+            "description": "Gap between nav sections.",
+            "default": "calc(4 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-item-gap",
+            "type": "CSS length",
+            "description": "Gap between rows in a group.",
+            "default": "calc(0.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-swatch-size",
+            "type": "CSS length",
+            "description": "Project swatch size.",
+            "default": "calc(2.5 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-sidebar-swatch-radius",
+            "type": "CSS length",
+            "description": "Project swatch radius.",
+            "default": "var(--radius-sm)"
+          },
+          {
+            "name": "--df-sidebar-shortcut-fg",
+            "type": "CSS color",
+            "description": "Shortcut chip color.",
+            "default": "var(--muted-foreground)"
+          },
+          {
+            "name": "--df-sidebar-group-label-fg",
+            "type": "CSS color",
+            "description": "Group action and label quiet color.",
+            "default": "var(--muted-foreground)"
+          },
+          {
+            "name": "--df-corner-shape",
+            "type": "CSS corner-shape",
+            "description": "Theme corner curve for all kit chrome. round = circular arcs; smooth = continuous squircle. Set with df-ui init --corner-shape, or override on :root. Default round.",
+            "default": "var(--df-corner-shape-round)"
+          }
+        ]
+      }
+    ]
+  }
+}

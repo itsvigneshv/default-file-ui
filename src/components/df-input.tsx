@@ -12,6 +12,11 @@ import {
   dfHoverBorderAttr,
   dfHoverBorderColorStyle,
 } from "../lib/hover-border"
+import {
+  dfPaddingChromeStyle,
+  hasResolvedPadding,
+  resolvePaddingSides,
+} from "../lib/padding-chrome"
 import { cn } from "../lib/utils"
 import { Label } from "./df-label"
 
@@ -295,30 +300,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const describedBy =
       [ariaDescribedBy, hintId].filter(Boolean).join(" ") || undefined
 
-    const resolvedPaddingTop = paddingTop ?? paddingY ?? padding
-    const resolvedPaddingRight = paddingRight ?? paddingX ?? padding
-    const resolvedPaddingBottom = paddingBottom ?? paddingY ?? padding
-    const resolvedPaddingLeft = paddingLeft ?? paddingX ?? padding
-    const hasPaddingStyle =
-      resolvedPaddingTop != null ||
-      resolvedPaddingRight != null ||
-      resolvedPaddingBottom != null ||
-      resolvedPaddingLeft != null
-
-    const paddingStyle = {
-      ...(resolvedPaddingTop != null
-        ? { "--df-input-padding-top": resolvedPaddingTop }
-        : null),
-      ...(resolvedPaddingRight != null
-        ? { "--df-input-padding-right": resolvedPaddingRight }
-        : null),
-      ...(resolvedPaddingBottom != null
-        ? { "--df-input-padding-bottom": resolvedPaddingBottom }
-        : null),
-      ...(resolvedPaddingLeft != null
-        ? { "--df-input-padding-left": resolvedPaddingLeft }
-        : null),
-    } as React.CSSProperties
+    const resolvedPadding = resolvePaddingSides({
+      padding,
+      paddingX,
+      paddingY,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+    })
+    const hasPaddingStyle = hasResolvedPadding(resolvedPadding)
+    const paddingStyle = dfPaddingChromeStyle(
+      "--df-input-padding",
+      resolvedPadding
+    )
 
     const surfaceStyle = {
       ...(background != null ? { "--df-input-bg": background } : null),

@@ -14,12 +14,17 @@ import {
   OptionListScrollUpButton,
   OptionListSeparator,
   useOptionListContext,
+  type OptionListItemProps,
   type OptionListWidth,
 } from "./df-option-list"
 import {
   dfHoverBorderAttr,
   dfHoverBorderColorStyle,
 } from "../lib/hover-border"
+import {
+  dfPaddingChromeStyle,
+  resolvePaddingSides,
+} from "../lib/padding-chrome"
 import { cn } from "../lib/utils"
 
 type SelectSize = "sm" | "md" | "lg"
@@ -637,10 +642,6 @@ function SelectTrigger({
       ? "stacked"
       : undefined
 
-  const resolvedPaddingTop = paddingTop ?? paddingY ?? padding
-  const resolvedPaddingRight = paddingRight ?? paddingX ?? padding
-  const resolvedPaddingBottom = paddingBottom ?? paddingY ?? padding
-  const resolvedPaddingLeft = paddingLeft ?? paddingX ?? padding
   const hoverBorderAttr = dfHoverBorderAttr(hoverBorder)
   const chromeStyle = {
     ...(background != null ? { "--df-select-bg": background } : null),
@@ -653,18 +654,18 @@ function SelectTrigger({
     ...(errorBorderColor != null
       ? { "--df-select-error-border": errorBorderColor }
       : null),
-    ...(resolvedPaddingTop != null
-      ? { "--df-select-padding-top": resolvedPaddingTop }
-      : null),
-    ...(resolvedPaddingRight != null
-      ? { "--df-select-padding-right": resolvedPaddingRight }
-      : null),
-    ...(resolvedPaddingBottom != null
-      ? { "--df-select-padding-bottom": resolvedPaddingBottom }
-      : null),
-    ...(resolvedPaddingLeft != null
-      ? { "--df-select-padding-left": resolvedPaddingLeft }
-      : null),
+    ...dfPaddingChromeStyle(
+      "--df-select-padding",
+      resolvePaddingSides({
+        padding,
+        paddingX,
+        paddingY,
+        paddingTop,
+        paddingRight,
+        paddingBottom,
+        paddingLeft,
+      })
+    ),
   } as React.CSSProperties
 
   const toggleOpen = () => {
@@ -768,6 +769,8 @@ const SelectSeparator = OptionListSeparator
 const SelectScrollUpButton = OptionListScrollUpButton
 const SelectScrollDownButton = OptionListScrollDownButton
 
+type SelectItemProps = OptionListItemProps
+
 export {
   Select,
   SelectContent,
@@ -788,6 +791,7 @@ export {
 }
 export type {
   SelectFieldProps,
+  SelectItemProps,
   SelectLabelPosition,
   SelectSize,
   SelectTriggerProps,
