@@ -18,15 +18,23 @@ Configure an existing React app (also writes `df.json`, the project map):
 npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init
 ```
 
-Add components (copy-source) into your app, resolving dependencies:
+Add components (copy source) into your app, resolving dependencies:
 
 ```bash
 npx --yes -p github:itsvigneshv/default-file-ui#main df-ui add button
 ```
 
-Inspect the detected framework and `df.json`:
+Existing local files stay in your project. Kit releases do not replace them
+unless you choose to upgrade:
 
 ```bash
+df-ui add button --force
+```
+
+Inspect the kit version and `df.json` (init records `version`):
+
+```bash
+npx --yes -p github:itsvigneshv/default-file-ui#main df-ui version
 npx --yes -p github:itsvigneshv/default-file-ui#main df-ui info
 ```
 
@@ -101,7 +109,7 @@ npm install github:itsvigneshv/default-file-ui#main
 @import "@default-file/ui/css/df-color-system.css";
 ```
 
-Copy-source:
+Copy source:
 
 ```bash
 df-ui add color-system
@@ -130,6 +138,12 @@ import { Button } from "@default-file/ui/components/df-button"
 ```
 
 `df-index.css` includes the color system, plus reset, animations, and component styles.
+
+## Ownership and upgrades
+
+- **Copy source (`df-ui add`):** files land in your app. Edit them as product code. New kit releases do not overwrite those files unless you run `df-ui add <item> --force`.
+- **Package imports (`@default-file/ui/...`):** components come from the dependency. Your app files are not rewritten on install. You receive kit changes only when you upgrade that dependency.
+- **Versioning:** the design system uses semver in `package.json`. `df-ui init` writes that version into `df.json`. Use `df-ui version` and `df-ui info` to compare the release with your project.
 
 ## Registry (copy source)
 

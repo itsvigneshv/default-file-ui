@@ -8,7 +8,7 @@ Treat Default File UI as present when any of these are true:
 
 - `@default-file/ui` appears in `package.json` dependencies or the app imports from `@default-file/ui/...`
 - The app imports kit CSS (`df-color-system.css` or `df-index.css`)
-- `df.json` exists (copy source / CLI project config)
+- `df.json` exists (copy source or CLI project config)
 - `df-ui` CLI or the Default File UI MCP server is available
 
 If none apply, skip this file and use the agnostic implementation path in `SKILL.md`.
@@ -18,8 +18,8 @@ If none apply, skip this file and use the agnostic implementation path in `SKILL
 Use without components when the surface only needs kit styling:
 
 - Package: `@import "@default-file/ui/css/df-color-system.css";`
-- Copy-source: `df-ui add color-system`
-- Docs: `df-ui docs colors` / MCP `get_docs` topic `colors`
+- Copy source: `df-ui add color-system`
+- Docs: `df-ui docs colors` or MCP `get_docs` topic `colors`
 
 Contents: color scales, semantic tokens, and utilities. Full kit CSS (`df-index.css`) and components resolve this through foundation.
 
@@ -45,7 +45,7 @@ Catalogue `aliases` are prepared with the docs (curated labels plus title, slug,
 - Theme UI chrome with semantic utilities and `var(--...)` tokens from the kit. Do not hardcode design literals for surfaces, type sizes, radii, borders, or shadows.
 - Color and space with the kit color system (`df-color-system.css` or full `df-index.css`) and kit tokens only.
 - In package mode, import from `@default-file/ui/components/df-*` and ensure kit CSS is loaded (`df-index.css`, or `df-color-system.css` when components are not used).
-- In copy source mode, install missing items with `df-ui add <items>` / MCP `add_components` before recreating them by hand.
+- In copy source mode, install missing items with `df-ui add <items>` or MCP `add_components` before recreating them by hand. Existing local files are kept unless the user asks to upgrade with `--force` or `force: true`.
 - Keep composition and hierarchy decisions from `SKILL.md` for the classified surface mode. The kit supplies parts; it does not replace mode routing, marketing hero rules, workspace shell rules, or critique contracts.
 - For workspace needs, discover tables, inputs, selects, dialogs, menus, sheets, and related registry items before inventing data or form chrome.
 

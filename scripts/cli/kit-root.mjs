@@ -7,6 +7,11 @@ export function kitRoot() {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 }
 
+/** Semver from the kit package.json. */
+export function kitVersion() {
+  return readKitJson("package.json").version
+}
+
 /** Join path segments under the kit package root. */
 export function kitPath(...segments) {
   return path.join(kitRoot(), ...segments)

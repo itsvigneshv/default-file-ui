@@ -13,6 +13,7 @@ import {
   showComponent,
 } from "./discover.mjs"
 import { initCommand } from "./init.mjs"
+import { kitVersion } from "./kit-root.mjs"
 import { installSkill, listSkills, showSkill } from "./skills.mjs"
 
 function jsonResult(data) {
@@ -58,7 +59,7 @@ export async function startMcpServer() {
   const summary = kitSummary()
   const server = new McpServer({
     name: "default-file-ui",
-    version: "0.1.0",
+    version: kitVersion(),
   })
 
   server.registerTool(
@@ -378,7 +379,7 @@ export async function startMcpServer() {
     {
       title: "Add components",
       description:
-        "Copy registry items into a project with dependency resolution (df-ui add). Prefer an explicit cwd. This writes files.",
+        "Copy registry items into a project with dependency resolution (df-ui add). Existing local files are kept unless force is true. Prefer an explicit cwd.",
       inputSchema: {
         names: z
           .array(z.string())
@@ -389,14 +390,21 @@ export async function startMcpServer() {
           .optional()
           .describe("Project directory (default: process cwd)"),
         dir: z.string().optional().describe("Base directory override"),
+        force: z
+          .boolean()
+          .optional()
+          .describe(
+            "Replace existing local files. Default false so customizations stay intact."
+          ),
       },
       annotations: {
         destructiveHint: true,
       },
     },
-    async ({ names, cwd, dir }) => {
+    async ({ names, cwd, dir, force }) => {
       try {
         const argv = [...names]
+        if (force) argv.push("--force")
         if (cwd) argv.push("--cwd", cwd)
         if (dir) argv.push("--dir", dir)
         const result = await captureCommand(() => addCommand(argv))

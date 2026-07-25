@@ -23,12 +23,20 @@ export async function addCommand(args) {
 
   const npmDeps = new Set()
   let written = 0
+  let skipped = 0
 
   for (const item of resolved) {
     for (const dep of item.dependencies ?? []) npmDeps.add(dep)
     for (const file of item.files ?? []) {
       const source = await readSource(cwd, file.path)
       const dest = destinationFor(cwd, baseDir, file.path)
+      if (exists(dest) && !options.force) {
+        skipped += 1
+        console.log(
+          `  = ${path.relative(cwd, dest)} (kept. Pass --force to replace.)`
+        )
+        continue
+      }
       writeText(dest, source)
       written += 1
       console.log(`  + ${path.relative(cwd, dest)}`)
@@ -36,11 +44,16 @@ export async function addCommand(args) {
   }
 
   console.log(
-    `\nAdded ${resolved.length} item(s), ${written} file(s) under ${path.join(
+    `\nAdded ${resolved.length} item(s): ${written} written, ${skipped} kept under ${path.join(
       baseDir,
       "default-file-ui"
     )}.`
   )
+  if (skipped > 0 && !options.force) {
+    console.log(
+      "Existing local files stay intact. Re-run with --force only when you choose to upgrade them."
+    )
+  }
   if (npmDeps.size > 0) {
     console.log(
       `Install peer packages if missing: ${[...npmDeps].join(", ")}`
@@ -125,10 +138,17 @@ async function readSource(cwd, relPath) {
 }
 
 function parseAddArgs(args) {
-  const options = { items: [], cwd: process.cwd(), dir: null, help: false }
+  const options = {
+    items: [],
+    cwd: process.cwd(),
+    dir: null,
+    force: false,
+    help: false,
+  }
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]
     if (arg === "-h" || arg === "--help") options.help = true
+    else if (arg === "--force") options.force = true
     else if (arg === "--cwd") options.cwd = args[++i] ?? process.cwd()
     else if (arg === "--dir") options.dir = args[++i] ?? null
     else if (arg.startsWith("-")) throw new Error(`Unknown option: ${arg}`)
@@ -140,15 +160,19 @@ function parseAddArgs(args) {
 function printAddHelp() {
   console.log(`
 Usage:
-  df-ui add <item> [<item> ...]
+  df-ui add <item> [<item> ...] [--force]
 
 Copies registry items (and their dependencies) into your app under
 <baseDir>/default-file-ui, reading baseDir from df.json when present.
+
+Existing files are kept by default so local customizations stay intact.
+Pass --force only when you choose to replace them with the kit release.
 
 Examples:
   df-ui add color-system
   df-ui add button
   df-ui add select toast
+  df-ui add button --force
   df-ui add button --dir app
 `)
 }

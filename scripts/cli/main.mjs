@@ -10,6 +10,7 @@ import {
 } from "./discovery-commands.mjs"
 import { infoCommand } from "./info.mjs"
 import { initCommand } from "./init.mjs"
+import { kitVersion } from "./kit-root.mjs"
 import { startMcpServer } from "./mcp.mjs"
 import { skillsCommand } from "./skills.mjs"
 
@@ -18,6 +19,11 @@ export async function run(argv) {
 
   if (!command || command === "-h" || command === "--help") {
     printHelp()
+    return
+  }
+
+  if (command === "-V" || command === "--version" || command === "version") {
+    console.log(kitVersion())
     return
   }
 
@@ -86,15 +92,16 @@ export async function run(argv) {
 
 function printHelp() {
   console.log(`
-Default File UI CLI
+Default File UI CLI (v${kitVersion()})
 
 Usage:
   df-ui <command>
 
 Commands:
   init         Scaffold (-t) or configure an existing React app; writes df.json
-  add          Copy registry items into your app (df-ui add button)
-  info         Print detected framework and df.json
+  add          Copy registry items into your app. Keeps existing files unless --force.
+  info         Print kit version, detected framework, and df.json
+  version      Print the design system semver
   frameworks   List supported framework templates
   list         List registry items (components, color-system, foundation)
   show         Show one item with full prop API tables
@@ -109,6 +116,8 @@ Examples:
   npx --yes -p github:itsvigneshv/default-file-ui#main df-ui init -t next
   df-ui init --framework vite --color-scale compact
   df-ui add button select
+  df-ui add button --force
+  df-ui version
   df-ui list --json
   df-ui show button --json
   df-ui cover "settings form with select and toast" --json

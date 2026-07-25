@@ -7,6 +7,7 @@ import {
   DF_JSON,
 } from "./constants.mjs"
 import { exists, readText, writeText } from "./fs-utils.mjs"
+import { kitVersion } from "./kit-root.mjs"
 
 export function defaultBaseDir(cwd) {
   return exists(path.join(cwd, "src")) ? "src" : "."
@@ -31,6 +32,7 @@ export function writeDfConfig(cwd, config) {
 export function buildDfConfig(cwd, framework, options = {}) {
   const baseDir = defaultBaseDir(cwd)
   return {
+    version: options.version ?? kitVersion(),
     framework,
     installMode: options.installMode ?? "package",
     colorScale: options.colorScale ?? "detailed",

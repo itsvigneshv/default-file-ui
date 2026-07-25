@@ -7,7 +7,7 @@ Default File UI is a design system: color system, tokens, components, owned CSS,
 **Color system** (no components):
 
 - Package CSS: `@import "@default-file/ui/css/df-color-system.css";`
-- Copy-source: `df-ui add color-system` then import local `default-file-ui/css/df-color-system.css`
+- Copy source: `df-ui add color-system` then import local `default-file-ui/css/df-color-system.css`
 - Docs: `df-ui docs colors`
 
 **Full kit** (components + color system):
@@ -15,7 +15,9 @@ Default File UI is a design system: color system, tokens, components, owned CSS,
 - Package: `npm install github:itsvigneshv/default-file-ui#main`
 - CSS: `@import "@default-file/ui/css/df-index.css";`
 - Components: `import { Button } from "@default-file/ui/components/df-button"`
-- Copy-source: `df-ui init` then `df-ui add <items>` (resolves `foundation` → `color-system`)
+- Copy source: `df-ui init` then `df-ui add <items>` (resolves `foundation` to `color-system`)
+
+**Ownership:** local copy source files stay in the app. Do not re-add with `--force` unless the user chooses to upgrade those files. Package import updates apply only when the dependency is upgraded. Track versions with `df-ui version`, `df.json` `version`, and `df-ui info`.
 
 ## Discover before you invent
 
@@ -92,6 +94,6 @@ Local install:
 | `get_skill` | Full SKILL.md + reference list |
 | `install_skill` | Copy skill into `.agents/skills` and `.cursor/skills` |
 | `init_project` | Scaffold or configure (writes files) |
-| `add_components` | Copy-source add (writes files) |
+| `add_components` | Copy source add (writes files) |
 
 Prefer an explicit `cwd` for write tools.
