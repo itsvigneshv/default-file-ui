@@ -12,6 +12,7 @@ import {
 import { useControllableState } from "../hooks"
 import { cn } from "../lib/utils"
 import { Dialog, DialogContent } from "./df-dialog"
+import { hasKbdShortcut, Kbd } from "./df-kbd"
 import { SearchInput } from "./df-search-input"
 import { Spinner } from "./df-spinner"
 
@@ -339,9 +340,9 @@ function CommandPalette({
                               entry.ranges
                             )}
                           </span>
-                          {entry.command.shortcut != null ? (
+                          {hasKbdShortcut(entry.command.shortcut) ? (
                             <span data-df="command-palette-shortcut">
-                              {entry.command.shortcut}
+                              <Kbd size="sm">{entry.command.shortcut}</Kbd>
                             </span>
                           ) : null}
                         </div>

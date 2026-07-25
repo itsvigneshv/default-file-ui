@@ -11,10 +11,22 @@ export type {
 export { Badge } from "./df-badge"
 export type {
   BadgeProps,
+  BadgeGap,
   BadgeRadius,
   BadgeSize,
   BadgeVariant,
 } from "./df-badge"
+
+export { StatusDot } from "./df-status-dot"
+export type { StatusDotProps, StatusDotSize } from "./df-status-dot"
+
+export { Kbd, KbdAbbr, KbdContent, hasKbdShortcut } from "./df-kbd"
+export type {
+  KbdProps,
+  KbdSize,
+  KbdAbbrProps,
+  KbdContentProps,
+} from "./df-kbd"
 export type { DfCornerShape } from "../lib/corner-shape"
 export { DF_CORNER_SHAPE_VAR, dfCornerShapeStyle } from "../lib/corner-shape"
 export type {
@@ -210,6 +222,29 @@ export type {
   OptionsPanelFooterProps,
 } from "./df-options-panel"
 export {
+  DropdownMenu,
+  DropdownMenuBody,
+  DropdownMenuContent,
+  DropdownMenuFooter,
+  DropdownMenuHeader,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  useDropdownMenuContext,
+} from "./df-dropdown-menu"
+export type {
+  DropdownMenuBodyProps,
+  DropdownMenuContentProps,
+  DropdownMenuFooterProps,
+  DropdownMenuHeaderProps,
+  DropdownMenuItemProps,
+  DropdownMenuItemTone,
+  DropdownMenuProps,
+  DropdownMenuSurfaceChromeProps,
+  DropdownMenuWidth,
+} from "./df-dropdown-menu"
+export {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -219,7 +254,10 @@ export {
   ListItem,
   ListItemLabel,
   ListItemNest,
+  ListItemSubmenuChevron,
   resolveListItemLayout,
+  LIST_ITEM_HOST_SELECTOR,
+  LIST_ITEM_INTERACTIVE_HOST_SELECTOR,
   useListItemNestScope,
 } from "./df-list-item"
 export type {
@@ -229,6 +267,7 @@ export type {
   ListItemLabelVariant,
   ListItemLayout,
   ListItemLeading,
+  ListItemLeadingFit,
   ListItemProps,
   ListItemSize,
   ListItemVariant,
@@ -374,6 +413,7 @@ export {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarFooterSection,
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
@@ -390,6 +430,7 @@ export {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarProfileMenu,
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
@@ -412,6 +453,7 @@ export type {
   SidebarMenuButtonVariant,
   SidebarMenuItemProps,
   SidebarMenuSubButtonProps,
+  SidebarFooterSectionProps,
   SidebarProps,
   SidebarProviderProps,
   SidebarScrollbar,

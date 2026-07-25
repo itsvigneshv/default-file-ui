@@ -7,6 +7,7 @@ import { useControllableState } from "../hooks"
 import {
   enabledComboboxIndexes,
   filterComboboxOptions,
+  isComboboxOptionInteractive,
   mergeComboboxOptions,
   moveComboboxActiveIndex,
   resolveComboboxCommit,
@@ -202,7 +203,8 @@ function ComboboxActiveSync({ filtered }: { filtered: ComboboxOption[] }) {
     }
     if (activeValue == null) return
     const stillValid = filtered.some(
-      (option) => option.value === activeValue && !option.disabled
+      (option) =>
+        option.value === activeValue && isComboboxOptionInteractive(option)
     )
     if (!stillValid) setActiveValue(null)
   }, [activeValue, filtered, open, setActiveValue, valuesKey])
@@ -302,7 +304,7 @@ function Combobox({
         onValueChange={(next) => {
           if (next == null) return
           const option = filtered.find((entry) => entry.value === next)
-          if (option == null || option.disabled) return
+          if (option == null || !isComboboxOptionInteractive(option)) return
           setText(option.label)
           setOpen(false)
           inputRef.current?.focus()
@@ -350,6 +352,7 @@ function Combobox({
                 key={option.value}
                 value={option.value}
                 disabled={option.disabled}
+                readOnly={option.readOnly}
               >
                 {option.label}
               </OptionListItem>

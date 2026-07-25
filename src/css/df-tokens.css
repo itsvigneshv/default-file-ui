@@ -1,4 +1,6 @@
 :root {
+  color-scheme: light;
+
   /* Destructive status colors (red scale). */
   --df-destructive: var(--df-red-550);
   --df-destructive-bright: var(--df-red-400);
@@ -105,6 +107,37 @@
   --df-underline-offset: calc(var(--spacing-unit));
   --df-layer-promote-z: 0.01px;
   --df-badge-dismiss-inset: calc(-0.5 * var(--spacing-unit));
+  /* Secondary and outline chrome, stepped above accent and muted surfaces. */
+  --df-badge-secondary-bg: var(--df-neutral-100);
+  --df-badge-secondary-fg: var(--secondary-foreground);
+  --df-badge-outline-border: var(--df-neutral-200);
+  /* Unitless spacing-scale steps for Badge gap defaults (multiplied by --spacing-unit). */
+  --df-badge-gap-xs: 0.5;
+  --df-badge-gap-sm: 0.5;
+  --df-badge-gap-md: 1;
+  --df-badge-gap-lg: 1;
+  --df-badge-gap-xl: 1.5;
+  /* Filled status mark for online, live, and similar chips. */
+  --df-status-dot-size-xs: calc(1.5 * var(--spacing-unit));
+  --df-status-dot-size-sm: calc(1.75 * var(--spacing-unit));
+  --df-status-dot-size-md: calc(2 * var(--spacing-unit));
+  --df-status-dot-size-lg: calc(2.25 * var(--spacing-unit));
+  --df-status-dot-size-xl: calc(2.5 * var(--spacing-unit));
+  /* Kbd */
+  --df-kbd-bg: var(--df-neutral-100);
+  --df-kbd-fg: var(--muted-foreground);
+  --df-kbd-radius: var(--radius-sm);
+  --df-kbd-font-size-sm: var(--df-text-xs);
+  --df-kbd-font-size-md: var(--df-text-xs);
+  --df-kbd-height-sm: calc(5 * var(--spacing-unit));
+  --df-kbd-height-md: calc(5.5 * var(--spacing-unit));
+  --df-kbd-padding-inline-sm: calc(2 * var(--spacing-unit));
+  --df-kbd-padding-inline-md: calc(2.5 * var(--spacing-unit));
+  --df-kbd-min-width-sm: calc(5 * var(--spacing-unit));
+  --df-kbd-min-width-md: calc(5.5 * var(--spacing-unit));
+  --df-kbd-glyph-gap: 0.12em;
+  --df-kbd-mod-optical-shift: 0em;
+  --df-kbd-punct-optical-shift: 0em;
   --df-button-badge-size: calc(4 * var(--spacing-unit));
   --df-button-badge-pad-inline: calc(1 * var(--spacing-unit));
   --df-button-badge-inset: calc(1 * var(--spacing-unit));
@@ -858,8 +891,10 @@
   --df-sidebar-item-padding-inline: calc(2 * var(--spacing-unit));
   --df-sidebar-gap: calc(3 * var(--spacing-unit));
   --df-sidebar-section-gap: calc(2 * var(--spacing-unit));
+  --df-sidebar-footer-section-padding-block-end: var(--df-sidebar-section-gap);
   --df-sidebar-group-gap: 0px;
   --df-sidebar-scrollbar-track-inset: calc(1 * var(--spacing-unit));
+  --df-sidebar-scrollbar-edge-inset: 0px;
   --df-sidebar-group-padding-block-start: 0px;
   --df-sidebar-group-padding-block-end: 0px;
   --df-sidebar-group-padding-inline-start: 0px;
@@ -1078,6 +1113,86 @@
   --df-menu-max-height: 24rem;
   --df-submenu-min-width: 18rem;
   --df-submenu-max-height: 28rem;
+  /* Dropdown Menu action surface. */
+  --df-dropdown-menu-min-width: 14rem;
+  --df-dropdown-menu-max-width: 20rem;
+  --df-dropdown-menu-radius: var(--radius-2xl);
+  --df-dropdown-menu-border-width: var(--border-width-hairline);
+  --df-dropdown-menu-border-style: solid;
+  --df-dropdown-menu-border-color: var(--border);
+  --df-dropdown-menu-bg: var(--popover);
+  --df-dropdown-menu-fg: var(--popover-foreground);
+  --df-dropdown-menu-shadow: none;
+  --df-dropdown-menu-padding: calc(2 * var(--spacing-unit));
+  --df-dropdown-menu-padding-top: var(--df-dropdown-menu-padding);
+  --df-dropdown-menu-padding-right: var(--df-dropdown-menu-padding);
+  --df-dropdown-menu-padding-bottom: var(--df-dropdown-menu-padding);
+  --df-dropdown-menu-padding-left: var(--df-dropdown-menu-padding);
+  --df-dropdown-menu-gap: calc(1 * var(--spacing-unit));
+  --df-dropdown-menu-item-gap: calc(0.5 * var(--spacing-unit));
+  --df-dropdown-menu-divider-color: var(--border);
+  --df-dropdown-menu-header-gap: calc(2.5 * var(--spacing-unit));
+  --df-dropdown-menu-header-copy-gap: calc(0.5 * var(--spacing-unit));
+  --df-dropdown-menu-header-meta-gap: calc(1.5 * var(--spacing-unit));
+  --df-dropdown-menu-header-padding-top: calc(3 * var(--spacing-unit));
+  --df-dropdown-menu-header-padding-right: calc(3 * var(--spacing-unit));
+  --df-dropdown-menu-header-padding-bottom: calc(3 * var(--spacing-unit));
+  --df-dropdown-menu-header-padding-left: calc(3 * var(--spacing-unit));
+  --df-dropdown-menu-header-bg: transparent;
+  /* Matches title line-height + copy gap + description line-height. */
+  --df-dropdown-menu-header-avatar-size: calc(
+    var(--df-leading-5) + var(--df-dropdown-menu-header-copy-gap) +
+      var(--df-leading-4)
+  );
+  --df-dropdown-menu-title-color: inherit;
+  --df-dropdown-menu-title-size: var(--df-text-sm);
+  --df-dropdown-menu-title-weight: var(--df-font-weight-semibold);
+  --df-dropdown-menu-description-size: var(--df-text-11);
+  --df-dropdown-menu-description-color: var(--muted-foreground);
+  --df-dropdown-menu-body-gap: var(--df-dropdown-menu-item-gap);
+  --df-dropdown-menu-body-padding-top: 0px;
+  --df-dropdown-menu-body-padding-right: 0px;
+  --df-dropdown-menu-body-padding-bottom: 0px;
+  --df-dropdown-menu-body-padding-left: 0px;
+  --df-dropdown-menu-body-max-height: min(60vh, var(--df-menu-max-height));
+  --df-dropdown-menu-scroll-thumb-gap: calc(1 * var(--spacing-unit));
+  --df-dropdown-menu-scroll-track-width: calc(2.5 * var(--spacing-unit));
+  --df-dropdown-menu-item-radius: var(--radius-lg);
+  --df-dropdown-menu-item-padding-inline: calc(2.5 * var(--spacing-unit));
+  --df-dropdown-menu-label-size: var(--df-text-11);
+  --df-dropdown-menu-label-color: var(--muted-foreground);
+  --df-dropdown-menu-label-padding-top: calc(1.5 * var(--spacing-unit));
+  --df-dropdown-menu-label-padding-right: calc(2 * var(--spacing-unit));
+  --df-dropdown-menu-label-padding-bottom: calc(1 * var(--spacing-unit));
+  --df-dropdown-menu-label-padding-left: calc(2 * var(--spacing-unit));
+  --df-dropdown-menu-separator-margin-block: calc(1 * var(--spacing-unit));
+  --df-dropdown-menu-shortcut-gap: calc(4 * var(--spacing-unit));
+  --df-dropdown-menu-submenu-open-duration: var(--df-duration-slow);
+  --df-dropdown-menu-submenu-close-duration: var(--df-duration-fast);
+  --df-dropdown-menu-footer-size: var(--df-text-2xs);
+  --df-dropdown-menu-footer-color: var(--muted-foreground);
+  --df-dropdown-menu-item-success-bg: color-mix(
+    in oklch,
+    var(--success) 16%,
+    var(--popover)
+  );
+  --df-dropdown-menu-item-success-fg: var(--success);
+  --df-dropdown-menu-item-success-hover-bg: color-mix(
+    in oklch,
+    var(--success) 22%,
+    var(--popover)
+  );
+  /* Ink at rest; soft wash on hover. */
+  --df-dropdown-menu-item-destructive-bg: transparent;
+  --df-dropdown-menu-item-destructive-fg: var(--destructive);
+  --df-dropdown-menu-item-destructive-hover-bg: color-mix(
+    in oklch,
+    var(--destructive) 12%,
+    transparent
+  );
+  --df-dropdown-menu-dot-size: calc(2 * var(--spacing-unit));
+  --df-dropdown-menu-open-duration: var(--df-duration-slower);
+  --df-dropdown-menu-close-duration: var(--df-duration-quick);
   /* Toast and Toaster chrome. */
   --df-toaster-width: 22rem;
   --df-toaster-gap: calc(2 * var(--spacing-unit));
@@ -1593,6 +1708,8 @@
 }
 
 .dark {
+  color-scheme: dark;
+
   --background: var(--df-neutral-950);
   --foreground: var(--df-neutral-0);
   --card: var(--df-neutral-900);
@@ -1618,10 +1735,29 @@
   --muted-foreground: var(--df-neutral-400);
   --accent: var(--df-neutral-800);
   --accent-foreground: var(--df-neutral-0);
+  --df-badge-secondary-bg: var(--df-neutral-700);
+  --df-badge-secondary-fg: var(--secondary-foreground);
+  --df-badge-outline-border: color-mix(
+    in oklch,
+    var(--df-neutral-0) 22%,
+    transparent
+  );
+  --df-kbd-bg: var(--df-neutral-700);
+  --df-kbd-fg: var(--muted-foreground);
   --destructive: var(--df-destructive-bright);
   --label-required: var(--destructive);
   --border: color-mix(in oklch, var(--df-neutral-0) 10%, transparent);
-  --input: color-mix(in oklch, var(--df-neutral-0) 15%, transparent);
+  --input: color-mix(in oklch, var(--df-neutral-0) 15%, var(--background));
+  --df-button-outline-fill: color-mix(
+    in oklch,
+    var(--df-neutral-0) 10%,
+    var(--background)
+  );
+  --df-button-outline-fill-hover: color-mix(
+    in oklch,
+    var(--df-neutral-0) 16%,
+    var(--background)
+  );
   --ring: var(--df-neutral-500);
   --brand-ink: var(--df-neutral-0);
   --brand-ink-foreground: var(--df-neutral-950);

@@ -42,7 +42,7 @@
           {
             "name": "items",
             "type": "ContentsNavItemData[]",
-            "description": "Tree or flat rows. Each item needs id and title. Optional href and children. toc defaults href to #id when omitted. Pass href null for a non-link row."
+            "description": "Tree or flat rows. Each item needs id and title. Optional href, children, disabled, and readOnly. toc defaults href to #id when omitted. Pass href null for a non-link row. readOnly keeps size and selected chrome without hover or activation."
           },
           {
             "name": "sections",
@@ -178,7 +178,7 @@
       {
         "id": "contents-nav-item",
         "title": "ContentsNavItem",
-        "description": "Row over List Item. Reads defaults from ContentsNav. Supports asChild and href.",
+        "description": "Row over List Item. Reads defaults from ContentsNav. Supports asChild and href. Forwards List Item interaction props including disabled and readOnly.",
         "props": [
           {
             "name": "active",
@@ -200,6 +200,18 @@
             "type": "boolean",
             "default": "false",
             "description": "Paint List Item onto a single child element such as a link."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "description": "Non-interactive row. Forwarded to List Item. Dims the row and blocks activation."
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "default": "false",
+            "description": "Presentational row. Forwarded to List Item. Keeps size, variant, and selected appearance with no hover, press, or activation."
           },
           {
             "name": "size",

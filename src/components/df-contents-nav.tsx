@@ -25,6 +25,8 @@ type ContentsNavItemData = {
   title: React.ReactNode
   /** Pass null to render a non-link row. toc defaults omitted href to #id. */
   href?: string | null
+  disabled?: boolean
+  readOnly?: boolean
   children?: ContentsNavItemData[]
 }
 
@@ -235,6 +237,8 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
       asChild,
       children,
       onClick,
+      disabled,
+      readOnly,
       ...props
     },
     ref
@@ -250,8 +254,13 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
         ? "page"
         : "true"
       : undefined
+    const blockInteraction = Boolean(disabled || readOnly)
 
     const handleSelect = (event: React.MouseEvent<HTMLElement>) => {
+      if (blockInteraction) {
+        event.preventDefault()
+        return
+      }
       if (itemId != null) ctx.setActiveId(itemId)
       onClick?.(event)
     }
@@ -266,6 +275,8 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
           variant={resolvedVariant}
           size={resolvedSize}
           selected={resolvedActive}
+          disabled={disabled}
+          readOnly={readOnly}
           aria-current={ariaCurrent}
           className={className}
           onClick={handleSelect}
@@ -285,6 +296,8 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
           variant={resolvedVariant}
           size={resolvedSize}
           selected={resolvedActive}
+          disabled={disabled}
+          readOnly={readOnly}
           aria-current={ariaCurrent}
           className={className}
           onClick={handleSelect}
@@ -302,6 +315,8 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
         variant={resolvedVariant}
         size={resolvedSize}
         selected={resolvedActive}
+        disabled={disabled}
+        readOnly={readOnly}
         aria-current={ariaCurrent}
         className={className}
         onClick={handleSelect}
@@ -346,17 +361,26 @@ function ContentsNavBranch({
   let row: React.ReactNode
   if (ctx.renderItem) {
     const custom = ctx.renderItem(item, { active, depth })
+    const blockInteraction = Boolean(item.disabled || item.readOnly)
     row = (
       <ListItem
+        {...ctx.itemChrome}
         asChild
         variant={ctx.itemVariant}
         size={size}
         selected={active}
+        disabled={item.disabled}
+        readOnly={item.readOnly}
         aria-current={
           active ? (ctx.variant === "index" ? "page" : "true") : undefined
         }
-        onClick={() => ctx.setActiveId(item.id)}
-        {...ctx.itemChrome}
+        onClick={(event) => {
+          if (blockInteraction) {
+            event.preventDefault()
+            return
+          }
+          ctx.setActiveId(item.id)
+        }}
       >
         {custom}
       </ListItem>
@@ -368,6 +392,8 @@ function ContentsNavBranch({
         active={active}
         size={size}
         href={href}
+        disabled={item.disabled}
+        readOnly={item.readOnly}
       >
         {item.title}
       </ContentsNavItem>

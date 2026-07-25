@@ -1,6 +1,7 @@
 export {
   enabledComboboxIndexes,
   filterComboboxOptions,
+  isComboboxOptionInteractive,
   mergeComboboxOptions,
   moveComboboxActiveIndex,
   resolveComboboxCommit,

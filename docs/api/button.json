@@ -186,13 +186,13 @@
           {
             "name": "--df-button-outline-fill",
             "type": "CSS color",
-            "description": "Outline variant resting fill. Overridden when transparent is true.",
+            "description": "Outline variant resting fill from the theme tables (:root and .dark). Overridden when transparent is true.",
             "default": "color-mix(in oklch, var(--input) 30%, var(--background))"
           },
           {
             "name": "--df-button-outline-fill-hover",
             "type": "CSS color",
-            "description": "Outline variant hover fill.",
+            "description": "Outline variant hover fill from the theme tables (:root and .dark).",
             "default": "color-mix(in oklch, var(--input) 50%, var(--background))"
           },
           {

@@ -2,7 +2,7 @@
   "name": "list-item",
   "slug": "list-item",
   "title": "List Item",
-  "description": "Configurable row with leading, secondary, trailing, density, muted or accent variants, and as=\"button\" or asChild link hosts. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, and Sidebar compose these for selectable options, outlines, and app nav.",
+  "description": "Configurable row with leading, secondary, trailing, density, muted or accent variants, readOnly presentational rows, and as=\"button\" or asChild link hosts. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, Sidebar, and Dropdown Menu compose these for selectable options, outlines, and app nav.",
   "aliases": [
     "list row",
     "menu item",
@@ -20,7 +20,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Configurable row for menus, pickers, TOC, and app navigation. Compose leading, secondary, and trailing slots. Pair with ListItemLabel for section headings and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, and Sidebar compose List Item. Use as=\"button\" for in-page actions. Use asChild to paint the row onto a link. Pass itemChrome on composer roots for shared defaults, or set chrome props on each row. Chrome props set --df-list-item-* variables so padding, gap, type (size, family, weight, color), radius, fills, and stroke can be overridden per row.",
+    "description": "Configurable row for menus, pickers, TOC, and app navigation. Compose leading, secondary, and trailing slots. Pair with ListItemLabel for section headings and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, Sidebar, and Dropdown Menu compose List Item. Use as=\"button\" for in-page actions. Use asChild to paint the row onto a link. Pass itemChrome on composer roots for shared defaults, or set chrome props on each row. Chrome props set --df-list-item-* variables so padding, gap, type (size, family, weight, color), radius, fills, and stroke can be overridden per row.",
     "groups": [
       {
         "id": "list-item",
@@ -55,7 +55,13 @@
             "name": "disabled",
             "type": "boolean",
             "default": "false",
-            "description": "Non-interactive row. Sets aria-disabled. On as=\"button\", also sets the native disabled attribute."
+            "description": "Non-interactive row. Sets aria-disabled and dims the row. On as=\"button\", also sets the native disabled attribute."
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "default": "false",
+            "description": "Presentational row for reading only. Keeps size, variant, and selected appearance with no hover, press, focus, or activation. Distinct from disabled, which dims the row. Option List, Select, Dropdown Menu, Contents Nav, and Combobox options skip or forward readOnly through the same contract."
           },
           {
             "name": "open",
@@ -66,12 +72,18 @@
           {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
-            "description": "Leading slot. Pass an icon, \"checkbox\" or \"check\" for selection marks, or false to omit. Custom nodes are content: set aria-hidden on decorative icons. In columns layout, pass text; the slot hugs content instead of the icon box."
+            "description": "Leading slot. Pass an icon, \"checkbox\" or \"check\" for selection marks, or false to omit. Icons use the icon track by default. For Avatar or other non-icon marks, set leadingFit to content. In columns layout, pass text; the slot hugs content. Set aria-hidden on decorative icons."
+          },
+          {
+            "name": "leadingFit",
+            "type": "\"icon\" | \"content\"",
+            "default": "\"icon\"",
+            "description": "Track size for custom leading nodes. icon keeps the mark box used by row icons. content sizes the track to the node. Use content for Avatar, media, or text marks. Ignored for checkbox and check. Stacked rows with content center the leading, label stack, and trailing as one group."
           },
           {
             "name": "secondary",
             "type": "ReactNode",
-            "description": "Supporting copy beside or under the label."
+            "description": "Supporting copy beside or under the label. Long title and secondary text truncate with an ellipsis when the row is narrower than the copy."
           },
           {
             "name": "layout",
@@ -82,7 +94,7 @@
           {
             "name": "trailing",
             "type": "ReactNode",
-            "description": "End slot for badges, chevrons, measures, or actions. In columns layout, use for end-aligned text such as a size value."
+            "description": "End slot for badges, chevrons, measures, or actions. Stays end-aligned with margin-inline-start auto when the row spans its parent. For nested menu affordances, pass ListItemSubmenuChevron so size matches the indicator slot. When List Item is an OptionListTrigger render host, set OptionList width fill (or a fixed length) so the row has width to push against. In columns layout, use for end-aligned text such as a size value."
           },
           {
             "name": "indicator",
@@ -256,6 +268,18 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles."
+          }
+        ]
+      },
+      {
+        "id": "list-item-submenu-chevron",
+        "title": "ListItemSubmenuChevron",
+        "description": "Nested menu affordance for the trailing slot. Uses the same size box as the indicator check and muted foreground. Dropdown Menu injects it when a submenu trigger has no custom trailing. Pass it from Option List and Sidebar rows that open nested panels.",
+        "props": [
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the chevron host."
           }
         ]
       },

@@ -84,6 +84,18 @@
             "description": "Called when the panel opens or closes."
           },
           {
+            "name": "openOnHover",
+            "type": "boolean",
+            "default": "false",
+            "description": "Open when the pointer enters the trigger. Stay open while the pointer is over the trigger, the panel, or nested OptionListSubContent panels. Pointer leave closes after hoverCloseDelay. Click, Enter, and Space open when closed; they do not toggle closed. Escape, pointer leave, or outside dismiss closes. Nested OptionListSubmenu hover remains independent for child levels."
+          },
+          {
+            "name": "hoverCloseDelay",
+            "type": "number",
+            "default": "60",
+            "description": "Milliseconds before closing after pointer leave when openOnHover is true. Shares the default delay used by OptionListSubmenu closeDelay."
+          },
+          {
             "name": "closeOnSelect",
             "type": "boolean",
             "description": "Close after choosing a row. Defaults to true in single mode, false in multiple."
@@ -92,7 +104,7 @@
             "name": "width",
             "type": "\"hug\" | \"fill\" | string",
             "default": "\"hug\"",
-            "description": "Root width for triggers and always-visible panels (including chrome panel). hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Select triggers inside follow the same width. Fill and fixed also default the open menu to match the trigger; hug defaults the menu to option content. Override with OptionListContent alignItemWithTrigger."
+            "description": "Root width for triggers and always-visible panels (including chrome panel). hug sizes to content. fill stretches the root and trigger hosts to the parent, including OptionListTrigger render hosts such as List Item or Badge. Pass a CSS length such as 12rem for a fixed width. Select triggers inside follow the same width. Fill and fixed also default the open menu to match the trigger; hug defaults the menu to option content. Override with OptionListContent alignItemWithTrigger. Use fill for sidebar and rail rows so List Item trailing icons stay end-aligned."
           },
           {
             "name": "itemChrome",
@@ -122,12 +134,12 @@
       {
         "id": "option-list-trigger",
         "title": "OptionListTrigger",
-        "description": "Opens and closes the option list. Use render to compose onto Badge or another host.",
+        "description": "Opens and closes the option list. Use render to compose onto List Item, Badge, or another host. When OptionList width is fill or fixed, the render host stretches to that width so List Item trailing slots stay end-aligned.",
         "props": [
           {
             "name": "render",
             "type": "ReactElement",
-            "description": "Host element to clone trigger behavior onto (for example Badge). Owns click, keyboard, and anchor ref."
+            "description": "Host element to clone trigger behavior onto (for example List Item or Badge). Owns click, keyboard, hover open when openOnHover is set, and the anchor ref. Marks the host with data-df-option-list-trigger."
           },
           {
             "name": "children",
@@ -303,7 +315,7 @@
       {
         "id": "option-list-item",
         "title": "OptionListItem",
-        "description": "Selectable List Item with value, search filter, and submenu trigger behavior. Forwards List Item presentation props (size, variant, leading, trailing, layout, and full chrome: padding, type, fills, stroke, radius). Selection, highlight, and open state stay owned by Option List. Nested submenu triggers pass the chevron through trailing; List Item renders it. Inside OptionListSubmenu (trigger zone) the row opens the submenu on hover instead of selecting. For standalone rows and asChild links, see List Item.",
+        "description": "Selectable List Item with value, search filter, and submenu trigger behavior. Forwards List Item presentation props (size, variant, leading, trailing, layout, and full chrome: padding, type, fills, stroke, radius). Selection, highlight, and open state stay owned by Option List. Nested submenu triggers pass ListItemSubmenuChevron (or Badge plus that chevron) through trailing. Inside OptionListSubmenu (trigger zone) the row opens the submenu on hover instead of selecting. For standalone rows and asChild links, see List Item.",
         "props": [
           {
             "name": "value",
@@ -328,9 +340,20 @@
             "description": "Not selectable row."
           },
           {
+            "name": "readOnly",
+            "type": "boolean",
+            "description": "Presentational row. Forwarded to List Item. Not selectable and no hover chrome. Keeps resting and selected appearance."
+          },
+          {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
-            "description": "Leading slot before the label. Works with inline, stacked, and columns layouts. On stacked rows, the icon aligns to the title line. On columns rows, leading hugs text content. Custom nodes are content: set aria-hidden on decorative icons. Pass an icon or other node; use \"checkbox\" for multi-select, \"check\" for a leading selected mark, or false to omit."
+            "description": "Leading slot before the label. Works with inline, stacked, and columns layouts. On stacked rows, icons align to the title line. For Avatar or other non-icon marks, set leadingFit to content. On columns rows, leading hugs text. Set aria-hidden on decorative icons. Pass an icon or other node; use \"checkbox\" for multi-select, \"check\" for a leading selected mark, or false to omit."
+          },
+          {
+            "name": "leadingFit",
+            "type": "\"icon\" | \"content\"",
+            "default": "\"icon\"",
+            "description": "Forwarded to List Item. icon keeps the mark box. content sizes the track to Avatar and other non-icon nodes. See List Item leadingFit."
           },
           {
             "name": "secondary",
@@ -685,7 +708,7 @@
           {
             "name": "Fill parent",
             "type": "width=\"fill\"",
-            "description": "Stretch the root, trigger, and inline panel to the full width of the parent."
+            "description": "Stretch the root and trigger hosts to the full width of the parent. Applies to the native OptionListTrigger button and to render hosts (List Item, Badge, and similar). Required for sidebar and rail rows when a trailing chevron or badge must sit on the content end."
           },
           {
             "name": "Fixed width",
@@ -718,9 +741,14 @@
             "description": "Number badge at the end of the row. Right padding matches checkbox rows; selected check stays hidden."
           },
           {
+            "name": "Hover flyout",
+            "type": "openOnHover",
+            "description": "Open the root panel from a trigger on pointer enter. Keep the pointer over the trigger, panel, or nested submenu panels to stay open. Click, Enter, and Space open when closed without toggle-close. Compose OptionListTrigger onto List Item for sidebar and rail rows. Set width fill so the trigger row spans the rail and trailing icons stay end-aligned."
+          },
+          {
             "name": "Nested submenu row",
             "type": "OptionListSubmenu + SubContent",
-            "description": "Hover the parent row to open the child panel on the right. Nest Submenu trees for three or more levels. Use trailing for badge + ChevronRight. Control motion with submenuAnimated / animated (boolean) and submenuOpenDuration / submenuCloseDuration or openDuration / closeDuration (ms)."
+            "description": "Hover the parent row to open the child panel on the right. Nest Submenu trees for three or more levels. Use trailing for Badge plus ListItemSubmenuChevron. Control motion with submenuAnimated / animated (boolean) and submenuOpenDuration / submenuCloseDuration or openDuration / closeDuration (ms)."
           },
           {
             "name": "Instant nested menus",

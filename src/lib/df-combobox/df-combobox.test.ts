@@ -14,6 +14,7 @@ const OPTIONS: ComboboxOption[] = [
   { value: "design", label: "Design" },
   { value: "ship", label: "Ship", disabled: true },
   { value: "polish", label: "Polish" },
+  { value: "archive", label: "Archive", readOnly: true },
 ]
 
 test("filterComboboxOptions matches label or value substrings", () => {
@@ -23,7 +24,7 @@ test("filterComboboxOptions matches label or value substrings", () => {
   assert.deepEqual(filterComboboxOptions(OPTIONS, "SHIP"), [
     { value: "ship", label: "Ship", disabled: true },
   ])
-  assert.equal(filterComboboxOptions(OPTIONS, "").length, 3)
+  assert.equal(filterComboboxOptions(OPTIONS, "").length, 4)
 })
 
 test("mergeComboboxOptions prefers the first value occurrence", () => {
@@ -51,6 +52,18 @@ test("moveComboboxActiveIndex wraps across enabled options only", () => {
   assert.equal(moveComboboxActiveIndex(2, -1, enabled), 0)
 })
 
+test("enabledComboboxIndexes skips disabled and readOnly options", () => {
+  assert.deepEqual(
+    enabledComboboxIndexes([
+      { value: "a", label: "A" },
+      { value: "b", label: "B", disabled: true },
+      { value: "c", label: "C", readOnly: true },
+      { value: "d", label: "D" },
+    ]),
+    [0, 3]
+  )
+})
+
 test("resolveComboboxCommit prefers the active option over custom text", () => {
   assert.deepEqual(
     resolveComboboxCommit({
@@ -64,6 +77,15 @@ test("resolveComboboxCommit prefers the active option over custom text", () => {
   assert.deepEqual(
     resolveComboboxCommit({
       activeIndex: 1,
+      filtered: OPTIONS,
+      query: "custom",
+      allowCustomValue: true,
+    }),
+    { kind: "custom", value: "custom" }
+  )
+  assert.deepEqual(
+    resolveComboboxCommit({
+      activeIndex: 3,
       filtered: OPTIONS,
       query: "custom",
       allowCustomValue: true,

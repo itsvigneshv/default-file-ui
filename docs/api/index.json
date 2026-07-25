@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T17:50:48.404Z",
+  "generatedAt": "2026-07-25T20:50:24.321Z",
   "source": "docs/api",
   "colorSystem": {
     "registryName": "color-system",
@@ -54,7 +54,7 @@
       ],
       "importPath": "@default-file/ui/components/df-badge",
       "dependencies": [],
-      "propCount": 27
+      "propCount": 38
     },
     {
       "slug": "border-glow",
@@ -186,7 +186,7 @@
       ],
       "importPath": "@default-file/ui/components/df-contents-nav",
       "dependencies": [],
-      "propCount": 41
+      "propCount": 43
     },
     {
       "slug": "dialog",
@@ -238,6 +238,32 @@
         "lucide-react"
       ],
       "propCount": 73
+    },
+    {
+      "slug": "dropdown-menu",
+      "name": "dropdown-menu",
+      "title": "Dropdown Menu",
+      "description": "Anchored action menu with header, body, and footer. Rows compose List Item. Prefer Option List for pickers that keep a selected value.",
+      "aliases": [
+        "action menu",
+        "three dot menu",
+        "kebab menu",
+        "profile menu",
+        "account menu",
+        "overflow menu",
+        "button menu",
+        "Dropdown Menu"
+      ],
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation",
+        "list-item",
+        "scroll-area",
+        "kbd"
+      ],
+      "importPath": "@default-file/ui/components/df-dropdown-menu",
+      "dependencies": [],
+      "propCount": 113
     },
     {
       "slug": "featured-icon",
@@ -363,6 +389,26 @@
       "propCount": 108
     },
     {
+      "slug": "kbd",
+      "name": "kbd",
+      "title": "Kbd",
+      "description": "Keyboard hint chip for shortcuts and key chords.",
+      "aliases": [
+        "keyboard shortcut",
+        "keycap",
+        "hotkey",
+        "shortcut chip",
+        "kbd"
+      ],
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-kbd",
+      "dependencies": [],
+      "propCount": 26
+    },
+    {
       "slug": "label",
       "name": "label",
       "title": "Label",
@@ -386,7 +432,7 @@
       "slug": "list-item",
       "name": "list-item",
       "title": "List Item",
-      "description": "Configurable row with leading, secondary, trailing, density, muted or accent variants, and as=\"button\" or asChild link hosts. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, and Sidebar compose these for selectable options, outlines, and app nav.",
+      "description": "Configurable row with leading, secondary, trailing, density, muted or accent variants, readOnly presentational rows, and as=\"button\" or asChild link hosts. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, Sidebar, and Dropdown Menu compose these for selectable options, outlines, and app nav.",
       "aliases": [
         "list row",
         "menu item",
@@ -403,7 +449,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 73
+      "propCount": 76
     },
     {
       "slug": "number-slider",
@@ -449,7 +495,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 155
+      "propCount": 160
     },
     {
       "slug": "options-panel",
@@ -624,7 +670,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 176
+      "propCount": 178
     },
     {
       "slug": "separator",
@@ -676,7 +722,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 157
+      "propCount": 184
     },
     {
       "slug": "slider",
@@ -737,6 +783,26 @@
       "importPath": "@default-file/ui/components/df-spinner",
       "dependencies": [],
       "propCount": 11
+    },
+    {
+      "slug": "status-dot",
+      "name": "status-dot",
+      "title": "Status Dot",
+      "description": "Filled presence mark for online, live, and similar status chips.",
+      "aliases": [
+        "presence dot",
+        "online dot",
+        "live indicator",
+        "status indicator",
+        "Status Dot"
+      ],
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-status-dot",
+      "dependencies": [],
+      "propCount": 8
     },
     {
       "slug": "switch",

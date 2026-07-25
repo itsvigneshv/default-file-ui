@@ -592,9 +592,20 @@
             "description": "Not selectable row."
           },
           {
+            "name": "readOnly",
+            "type": "boolean",
+            "description": "Presentational row. Forwarded to List Item. Not selectable and no hover chrome. Keeps resting and selected appearance."
+          },
+          {
             "name": "leading",
             "type": "\"checkbox\" | \"check\" | ReactNode | false",
             "description": "Option List leading slot. Pass an icon or other node for row icons; works with layout stacked. Use \"checkbox\" for multi-select. Pair with SelectTrigger leadingIcon when the trigger should mirror the selected icon."
+          },
+          {
+            "name": "leadingFit",
+            "type": "\"icon\" | \"content\"",
+            "default": "\"icon\"",
+            "description": "Forwarded to List Item. icon keeps the mark box. content sizes the track to Avatar and other non-icon nodes. See List Item leadingFit."
           },
           {
             "name": "secondary",

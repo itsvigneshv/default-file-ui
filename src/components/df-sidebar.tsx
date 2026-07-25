@@ -12,6 +12,10 @@ import {
 import { useFocusTrap } from "../lib/df-focus-trap"
 import { nearestDarkClass } from "../lib/nearest-theme"
 import { shouldInsertSidebarContentSeparator } from "../lib/df-sidebar/sidebar-content-separators"
+import {
+  resolveSidebarHeightMode,
+  type SidebarHeightMode,
+} from "../lib/df-sidebar/sidebar-height-mode"
 import { cn, composeRefs } from "../lib/utils"
 import { Button } from "./df-button"
 import { Label } from "./df-label"
@@ -38,7 +42,6 @@ type SidebarSide = "left" | "right"
 type SidebarVariant = "docked" | "floating" | "inset"
 type SidebarCollapsible = "offcanvas" | "icon" | "none"
 type SidebarLayout = "app" | "frame"
-type SidebarHeightMode = "fill" | "fixed"
 type SidebarScrollbar = "thumb" | "edge"
 type SidebarMenuButtonSize = "sm" | "md" | "lg"
 type SidebarMenuButtonVariant = "default" | "outline"
@@ -144,6 +147,10 @@ type SidebarProviderProps = React.ComponentProps<"div"> & {
   onOpenChange?: (open: boolean) => void
   /** Fixed viewport chrome (app) or absolute chrome inside a sized host (frame). */
   layout?: SidebarLayout
+  /**
+   * Stretch to the viewport (app) or host (frame).
+   * Ignored when height is set. When false, height hugs content.
+   */
   fillHeight?: boolean
   height?: string
   label?: string
@@ -151,17 +158,20 @@ type SidebarProviderProps = React.ComponentProps<"div"> & {
   side?: SidebarSide
   variant?: SidebarVariant
   collapsible?: SidebarCollapsible
-  /** Desktop seam double-click toggle. Ignored when collapsible is none. */
+  /**
+   * Desktop seam double-click toggle. Ignored when collapsible is none.
+   * Unavailable in frame layout while offcanvas is collapsed.
+   */
   edgeCollapse?: boolean
   /** Seam hover accent when edgeCollapse is enabled. */
   edgeBorder?: boolean
   width?: string
-  /** Prefer omitting so the default tracks paddingInline. */
+  /** Omit to track paddingInline for --df-sidebar-width-icon. */
   iconWidth?: string
   mobileWidth?: string
   padding?: string
   paddingBlock?: string
-  /** Also feeds the default --df-sidebar-width-icon unless iconWidth is set. */
+  /** Feeds default --df-sidebar-width-icon unless iconWidth is set. */
   paddingInline?: string
   radius?: string
   sectionRadius?: string
@@ -255,7 +265,7 @@ function SidebarProvider({
   }, [keyboardShortcut, toggleSidebar])
 
   const state = open ? "expanded" : "collapsed"
-  const heightMode: SidebarHeightMode = height != null ? "fixed" : "fill"
+  const heightMode = resolveSidebarHeightMode(height, fillHeight)
 
   const value = React.useMemo<SidebarContextValue>(
     () => ({
@@ -595,6 +605,10 @@ type SidebarSectionProps = React.ComponentProps<"div"> & {
   radius?: string
 }
 
+type SidebarFooterSectionProps = SidebarSectionProps & {
+  paddingBlockEnd?: string | false
+}
+
 type SidebarGroupContextValue = {
   collapsible: boolean
   open: boolean
@@ -644,6 +658,38 @@ function SidebarHeader({
           ...(radius != null
             ? { "--df-sidebar-section-radius": radius }
             : null),
+          ...style,
+        } as React.CSSProperties
+      }
+      {...props}
+    />
+  )
+}
+
+function SidebarFooterSection({
+  className,
+  style,
+  radius,
+  paddingBlockEnd,
+  ...props
+}: SidebarFooterSectionProps) {
+  return (
+    <div
+      data-df="sidebar-footer-section"
+      className={cn("df-sidebar-footer-section", className)}
+      style={
+        {
+          ...(radius != null
+            ? { "--df-sidebar-section-radius": radius }
+            : null),
+          ...(paddingBlockEnd === false
+            ? { "--df-sidebar-footer-section-padding-block-end": "0px" }
+            : typeof paddingBlockEnd === "string"
+              ? {
+                  "--df-sidebar-footer-section-padding-block-end":
+                    paddingBlockEnd,
+                }
+              : null),
           ...style,
         } as React.CSSProperties
       }
@@ -1096,6 +1142,19 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
   )
 }
 
+function SidebarProfileMenu({
+  className,
+  ...props
+}: React.ComponentProps<"ul">) {
+  return (
+    <ul
+      data-df="sidebar-profile-menu"
+      className={cn("df-sidebar-profile-menu", className)}
+      {...props}
+    />
+  )
+}
+
 type SidebarMenuItemProps = React.ComponentProps<"li"> & {
   /** Shown when the sidebar is icon-collapsed on desktop. */
   tooltip?: React.ReactNode
@@ -1402,6 +1461,7 @@ export {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarFooterSection,
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
@@ -1418,6 +1478,7 @@ export {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarProfileMenu,
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
@@ -1442,6 +1503,7 @@ export type {
   SidebarMenuItemProps,
   SidebarMenuSubButtonProps,
   SidebarProps,
+  SidebarFooterSectionProps,
   SidebarProviderProps,
   SidebarSectionProps,
   SidebarScrollbar,

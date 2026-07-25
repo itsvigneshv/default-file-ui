@@ -24,6 +24,7 @@ import {
 } from "../lib/df-context-menu"
 import { nearestDarkClass } from "../lib/nearest-theme"
 import { cn } from "../lib/utils"
+import { hasKbdShortcut, Kbd } from "./df-kbd"
 
 const SUBMENU_OPEN_DELAY_MS = 120
 const SUBMENU_CLOSE_DELAY_MS = 100
@@ -582,12 +583,14 @@ function ContextMenuItemRow({
           </span>
         ) : null}
         <span data-df="context-menu-label">{item.label}</span>
-        {item.shortcut != null ? (
-          <span data-df="context-menu-shortcut">{item.shortcut}</span>
+        {hasKbdShortcut(item.shortcut) ? (
+          <span data-df="context-menu-shortcut">
+            <Kbd size="sm">{item.shortcut}</Kbd>
+          </span>
         ) : null}
         {hasSubmenu ? (
           <span data-df="context-menu-chevron" aria-hidden>
-            <ChevronRight className="size-4" />
+            <ChevronRight />
           </span>
         ) : null}
       </div>
@@ -640,9 +643,9 @@ function ContextMenuItemRow({
                       </span>
                     ) : null}
                     <span data-df="context-menu-label">{entry.label}</span>
-                    {entry.shortcut != null ? (
+                    {hasKbdShortcut(entry.shortcut) ? (
                       <span data-df="context-menu-shortcut">
-                        {entry.shortcut}
+                        <Kbd size="sm">{entry.shortcut}</Kbd>
                       </span>
                     ) : null}
                   </div>

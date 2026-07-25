@@ -2,6 +2,11 @@ export type ComboboxOption = {
   value: string
   label: string
   disabled?: boolean
+  readOnly?: boolean
+}
+
+export function isComboboxOptionInteractive(option: ComboboxOption): boolean {
+  return !option.disabled && !option.readOnly
 }
 
 /** Case-insensitive substring filter that preserves source order. */
@@ -64,7 +69,7 @@ export function enabledComboboxIndexes(
 ): number[] {
   const indexes: number[] = []
   options.forEach((option, index) => {
-    if (!option.disabled) indexes.push(index)
+    if (isComboboxOptionInteractive(option)) indexes.push(index)
   })
   return indexes
 }
@@ -84,7 +89,7 @@ export function resolveComboboxCommit(options: {
   const { activeIndex, filtered, query, allowCustomValue } = options
   if (activeIndex != null) {
     const option = filtered[activeIndex]
-    if (option != null && !option.disabled) {
+    if (option != null && isComboboxOptionInteractive(option)) {
       return { kind: "option", option }
     }
   }

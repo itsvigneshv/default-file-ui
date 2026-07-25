@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check } from "lucide-react"
+import { Check, ChevronRight } from "lucide-react"
 
 import {
   dfPaddingChromeStyle,
@@ -15,7 +15,11 @@ type ListItemVariant = "accent" | "muted"
 type ListItemLabelVariant = "menu" | "nav"
 type ListItemLayout = "inline" | "stacked" | "columns"
 type ListItemLeading = "checkbox" | "check" | React.ReactNode | false
+type ListItemLeadingFit = "icon" | "content"
 type ListItemAs = "div" | "button"
+
+const LIST_ITEM_HOST_SELECTOR = '[data-df="list-item"]'
+const LIST_ITEM_INTERACTIVE_HOST_SELECTOR = `${LIST_ITEM_HOST_SELECTOR}:not([data-disabled]):not([data-readonly])`
 
 /** stacked requires secondary; otherwise keep the requested layout. */
 function resolveListItemLayout(
@@ -23,6 +27,26 @@ function resolveListItemLayout(
   secondary: React.ReactNode | null | undefined
 ): ListItemLayout {
   return layout === "stacked" && secondary == null ? "inline" : layout
+}
+
+function isActivationKey(key: string): boolean {
+  return key === "Enter" || key === " "
+}
+
+function blockListItemKeyDown(
+  event: React.KeyboardEvent<HTMLElement>,
+  disabled: boolean,
+  readOnly: boolean
+): boolean {
+  if (disabled) {
+    event.preventDefault()
+    return true
+  }
+  if (readOnly) {
+    if (isActivationKey(event.key)) event.preventDefault()
+    return true
+  }
+  return false
 }
 
 type ListItemChromeProps = PaddingChromeProps & {
@@ -56,8 +80,15 @@ type ListItemProps = Omit<React.HTMLAttributes<HTMLElement>, "children"> &
     selected?: boolean
     highlighted?: boolean
     disabled?: boolean
+    /** Presentational row: no hover, press, focus, or activation. Keeps resting and selected chrome. */
+    readOnly?: boolean
     open?: boolean
     leading?: ListItemLeading
+    /**
+     * Track size for custom leading nodes. icon is the default mark box.
+     * Use content for Avatar, text marks, or other nodes wider than the icon track.
+     */
+    leadingFit?: ListItemLeadingFit
     secondary?: React.ReactNode
     layout?: ListItemLayout
     trailing?: React.ReactNode
@@ -80,6 +111,13 @@ function resolveLeadingAttr(
   if (leading === "check") return "check"
   if (leading != null && leading !== false) return "custom"
   return undefined
+}
+
+function resolveLeadingFitAttr(
+  leading: ListItemLeading | undefined,
+  leadingFit: ListItemLeadingFit
+): ListItemLeadingFit | undefined {
+  return resolveLeadingAttr(leading) === "custom" ? leadingFit : undefined
 }
 
 function listItemChromeStyle({
@@ -239,8 +277,10 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       selected = false,
       highlighted = false,
       disabled = false,
+      readOnly = false,
       open = false,
       leading,
+      leadingFit = "icon",
       secondary,
       layout = "inline",
       trailing,
@@ -279,8 +319,9 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
   ) {
     const copyLayout = resolveListItemLayout(layout, secondary)
     const dataState = selected ? "selected" : "idle"
+    const blockInteraction = disabled || readOnly
     const dataHighlighted =
-      highlighted || dataHighlightedProp != null
+      !blockInteraction && (highlighted || dataHighlightedProp != null)
 
     const chromeStyle = listItemChromeStyle({
       padding,
@@ -316,11 +357,26 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       "data-open": open ? ("" as const) : undefined,
       "data-layout": copyLayout,
       "data-disabled": disabled ? ("" as const) : undefined,
+      "data-readonly": readOnly ? ("" as const) : undefined,
       "data-leading": resolveLeadingAttr(leading),
+      "data-leading-fit": resolveLeadingFitAttr(leading, leadingFit),
       "data-trailing": trailing != null ? ("" as const) : undefined,
       "data-indicator": indicator ? ("" as const) : undefined,
       "data-highlighted": dataHighlighted ? ("" as const) : undefined,
       "aria-disabled": disabled || undefined,
+    }
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      if (blockInteraction) {
+        event.preventDefault()
+        return
+      }
+      onClick?.(event)
+    }
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+      if (blockListItemKeyDown(event, disabled, readOnly)) return
+      onKeyDown?.(event)
     }
 
     if (asChild) {
@@ -338,9 +394,9 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
         ref: composeRefs(ref, childPropsRef, childOwnRef),
         className: cn(sharedClassName, child.props.className),
         style: { ...chromeStyle, ...child.props.style, ...style },
-        tabIndex: disabled ? -1 : child.props.tabIndex,
+        tabIndex: blockInteraction ? -1 : child.props.tabIndex,
         onClick: (event: React.MouseEvent<HTMLElement>) => {
-          if (disabled) {
+          if (blockInteraction) {
             event.preventDefault()
             return
           }
@@ -348,10 +404,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
           onClick?.(event)
         },
         onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
-          if (disabled) {
-            event.preventDefault()
-            return
-          }
+          if (blockListItemKeyDown(event, disabled, readOnly)) return
           child.props.onKeyDown?.(event)
           onKeyDown?.(event)
         },
@@ -392,8 +445,9 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
           className={sharedClassName}
           style={{ ...chromeStyle, ...style }}
           disabled={disabled || undefined}
-          onClick={onClick}
-          onKeyDown={onKeyDown}
+          tabIndex={readOnly ? -1 : buttonProps.tabIndex}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
         >
           {slots}
         </button>
@@ -407,8 +461,9 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
         ref={ref as React.Ref<HTMLDivElement>}
         className={sharedClassName}
         style={{ ...chromeStyle, ...style }}
-        onClick={onClick}
-        onKeyDown={onKeyDown}
+        tabIndex={readOnly ? -1 : props.tabIndex}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
       >
         {slots}
       </div>
@@ -436,13 +491,36 @@ function ListItemLabel({
   )
 }
 
+function ListItemSubmenuChevron({
+  className,
+  ...props
+}: Omit<React.ComponentProps<"span">, "children">) {
+  return (
+    <span
+      data-df="list-item-submenu-chevron"
+      aria-hidden
+      className={cn(className)}
+      {...props}
+    >
+      <ChevronRight />
+    </span>
+  )
+}
+
 export { ListItemNest, useListItemNestScope } from "./df-list-item-nest"
 export type {
   ListItemNestChromeProps,
   ListItemNestProps,
 } from "./df-list-item-nest"
 
-export { ListItem, ListItemLabel, resolveListItemLayout }
+export {
+  ListItem,
+  ListItemLabel,
+  ListItemSubmenuChevron,
+  LIST_ITEM_HOST_SELECTOR,
+  LIST_ITEM_INTERACTIVE_HOST_SELECTOR,
+  resolveListItemLayout,
+}
 export type {
   ListItemAs,
   ListItemChromeProps,
@@ -450,6 +528,7 @@ export type {
   ListItemLabelVariant,
   ListItemLayout,
   ListItemLeading,
+  ListItemLeadingFit,
   ListItemProps,
   ListItemSize,
   ListItemVariant,

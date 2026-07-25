@@ -161,6 +161,38 @@
       ]
     },
     {
+      "name": "status-dot",
+      "type": "registry:ui",
+      "title": "Status Dot",
+      "description": "Filled status mark for online, live, and similar presence chips.",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-status-dot.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-status-dot.tsx"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "description": "Keyboard hint chip for shortcuts and key chords in menus and lists.",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-kbd.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-kbd.tsx"
+        }
+      ]
+    },
+    {
       "name": "featured-icon",
       "type": "registry:ui",
       "title": "Featured Icon",
@@ -346,6 +378,25 @@
       "description": "Anchored floating panel for short content. Prefer Options Panel when the surface needs inputs, buttons, or other composed controls."
     },
     {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "Anchored action menu with header, body, and footer for profile menus, three-dot menus, and toolbar actions. Body owns role menu. Rows compose List Item. Prefer Option List for pickers that keep a selected value.",
+      "registryDependencies": [
+        "foundation",
+        "list-item",
+        "scroll-area",
+        "kbd"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-dropdown-menu.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-dropdown-menu.tsx"
+        }
+      ]
+    },
+    {
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
@@ -365,7 +416,7 @@
       "name": "list-item",
       "type": "registry:ui",
       "title": "List Item",
-      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Includes ListItemLabel and ListItemNest. Option List, Select, Combobox, Tag Input, and Contents Nav compose this for selectable options and outlines.",
+      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Includes ListItemLabel and ListItemNest. Option List, Select, Combobox, Tag Input, Contents Nav, and Dropdown Menu compose this for selectable options, outlines, and action menus.",
       "dependencies": [
         "lucide-react"
       ],

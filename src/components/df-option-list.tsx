@@ -7,6 +7,8 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   ListItem,
   ListItemLabel,
+  LIST_ITEM_HOST_SELECTOR,
+  LIST_ITEM_INTERACTIVE_HOST_SELECTOR,
   resolveListItemLayout,
   type ListItemChromeProps,
   type ListItemLayout,
@@ -21,6 +23,7 @@ import {
   useDismiss,
   useIsClient,
 } from "../hooks"
+import { nearestDarkClass } from "../lib/nearest-theme"
 import { cn, composeRefs } from "../lib/utils"
 
 type SelectionMode = "single" | "multiple"
@@ -37,6 +40,9 @@ type OptionListContextValue = {
   isSelected: (value: string) => boolean
   open: boolean
   setOpen: (open: boolean) => void
+  openOnHover: boolean
+  cancelHoverClose: () => void
+  scheduleHoverClose: () => void
   triggerRef: React.RefObject<HTMLElement | null>
   listboxId: string
   activeValue: string | null
@@ -76,6 +82,7 @@ function useOptionListContext() {
 
 const DEFAULT_SUBMENU_OPEN_DURATION = 180
 const DEFAULT_SUBMENU_CLOSE_DURATION = 90
+const DEFAULT_HOVER_CLOSE_DELAY = 60
 
 type OptionListSubmenuMotion = {
   animated: boolean
@@ -114,7 +121,7 @@ function OptionListSubmenu({
   animated,
   openDuration,
   closeDuration,
-  closeDelay = 60,
+  closeDelay = DEFAULT_HOVER_CLOSE_DELAY,
   children,
 }: OptionListSubmenuProps) {
   const root = useOptionListContext()
@@ -183,8 +190,13 @@ function OptionListSubmenu({
           data-df="option-list-submenu"
           data-state={isOpen ? "open" : "closed"}
           data-animated={motion.animated ? "true" : "false"}
-          onMouseEnter={cancelClose}
-          onMouseLeave={scheduleClose}
+          onMouseEnter={() => {
+            cancelClose()
+            if (root.openOnHover) root.cancelHoverClose()
+          }}
+          onMouseLeave={() => {
+            scheduleClose()
+          }}
         >
           {children}
         </div>
@@ -216,8 +228,11 @@ function OptionListSubContent({
   openDuration,
   closeDuration,
   onAnimationEnd,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }: OptionListSubContentProps) {
+  const root = useOptionListContext()
   const submenu = React.useContext(OptionListSubmenuStateContext)
   if (!submenu) {
     throw new Error("OptionListSubContent must be used within OptionListSubmenu")
@@ -303,8 +318,16 @@ function OptionListSubContent({
                 minWidth: "var(--df-menu-min-width)",
               }
         }
-        onMouseEnter={submenu.cancelClose}
-        onMouseLeave={submenu.scheduleClose}
+        onMouseEnter={(event) => {
+          onMouseEnter?.(event)
+          submenu.cancelClose()
+          if (root.openOnHover) root.cancelHoverClose()
+        }}
+        onMouseLeave={(event) => {
+          onMouseLeave?.(event)
+          submenu.scheduleClose()
+          if (root.openOnHover) root.scheduleHoverClose()
+        }}
         onAnimationEnd={(event) => {
           onAnimationEnd?.(event)
           if (event.target !== event.currentTarget) return
@@ -317,7 +340,16 @@ function OptionListSubContent({
   )
 
   if (!portal) return panel
-  return createPortal(panel, document.body)
+
+  return createPortal(
+    <div
+      data-df="option-list-portal"
+      className={nearestDarkClass(triggerRef.current)}
+    >
+      {panel}
+    </div>,
+    document.body
+  )
 }
 
 /** Root and trigger width: hug content, fill the parent, or a fixed CSS length. */
@@ -346,6 +378,10 @@ type OptionListProps = {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
+  /** Open on pointer enter. Click, Enter, and Space open when closed; Escape and leave close. */
+  openOnHover?: boolean
+  /** Delay in milliseconds before closing after pointer leave when openOnHover is true. */
+  hoverCloseDelay?: number
   closeOnSelect?: boolean
   width?: OptionListWidth
   submenuAnimated?: boolean
@@ -367,6 +403,8 @@ function OptionList({
   open,
   defaultOpen = false,
   onOpenChange,
+  openOnHover = false,
+  hoverCloseDelay = DEFAULT_HOVER_CLOSE_DELAY,
   closeOnSelect,
   width = "hug",
   submenuAnimated = true,
@@ -395,6 +433,9 @@ function OptionList({
   const [activeValue, setActiveValue] = React.useState<string | null>(null)
   const [, setLabelsVersion] = React.useState(0)
   const triggerRef = React.useRef<HTMLElement | null>(null)
+  const hoverCloseTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  )
   const reactId = React.useId()
   const listboxId = `df-option-list-${reactId.replace(/:/g, "")}`
   const optionDomId = React.useCallback(
@@ -405,6 +446,33 @@ function OptionList({
   const labels = React.useRef(new Map<string, React.ReactNode>())
   const secondaries = React.useRef(new Map<string, React.ReactNode | null>())
   const layouts = React.useRef(new Map<string, OptionListItemLayout>())
+
+  const cancelHoverClose = React.useCallback(() => {
+    if (hoverCloseTimerRef.current != null) {
+      clearTimeout(hoverCloseTimerRef.current)
+      hoverCloseTimerRef.current = null
+    }
+    if (openOnHover) setIsOpen(true)
+  }, [openOnHover, setIsOpen])
+
+  const scheduleHoverClose = React.useCallback(() => {
+    if (!openOnHover) return
+    if (hoverCloseTimerRef.current != null) {
+      clearTimeout(hoverCloseTimerRef.current)
+    }
+    hoverCloseTimerRef.current = setTimeout(() => {
+      setIsOpen(false)
+      hoverCloseTimerRef.current = null
+    }, hoverCloseDelay)
+  }, [hoverCloseDelay, openOnHover, setIsOpen])
+
+  React.useEffect(() => {
+    return () => {
+      if (hoverCloseTimerRef.current != null) {
+        clearTimeout(hoverCloseTimerRef.current)
+      }
+    }
+  }, [])
 
   const resolvedCloseOnSelect =
     closeOnSelect ?? selectionMode === "single"
@@ -488,6 +556,9 @@ function OptionList({
         isSelected,
         open: isOpen,
         setOpen: setIsOpen,
+        openOnHover,
+        cancelHoverClose,
+        scheduleHoverClose,
         triggerRef,
         listboxId,
         activeValue,
@@ -525,17 +596,31 @@ function OptionListTrigger({
   render,
   onClick,
   onKeyDown,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   render?: React.ReactElement
 }) {
-  const { open, setOpen, triggerRef, listboxId } = useOptionListContext()
+  const {
+    open,
+    setOpen,
+    openOnHover,
+    cancelHoverClose,
+    scheduleHoverClose,
+    triggerRef,
+    listboxId,
+  } = useOptionListContext()
 
   const toggleOpen = () => setOpen(!open)
 
   const onTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
     onClick?.(event as React.MouseEvent<HTMLButtonElement>)
     if (event.defaultPrevented) return
+    if (openOnHover) {
+      if (!open) setOpen(true)
+      return
+    }
     toggleOpen()
   }
 
@@ -544,6 +629,10 @@ function OptionListTrigger({
     if (event.defaultPrevented) return
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
+      if (openOnHover) {
+        if (!open) setOpen(true)
+        return
+      }
       toggleOpen()
     }
     if (event.key === "ArrowDown") {
@@ -556,7 +645,27 @@ function OptionListTrigger({
     }
   }
 
+  const onTriggerMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
+    onMouseEnter?.(event as React.MouseEvent<HTMLButtonElement>)
+    if (openOnHover) cancelHoverClose()
+  }
+
+  const onTriggerMouseLeave = (event: React.MouseEvent<HTMLElement>) => {
+    onMouseLeave?.(event as React.MouseEvent<HTMLButtonElement>)
+    if (openOnHover) scheduleHoverClose()
+  }
+
   if (render) {
+    const renderProps = render.props as {
+      role?: string
+      tabIndex?: number
+      className?: string
+      children?: React.ReactNode
+      onClick?: (event: React.MouseEvent<HTMLElement>) => void
+      onKeyDown?: (event: React.KeyboardEvent<HTMLElement>) => void
+      onMouseEnter?: (event: React.MouseEvent<HTMLElement>) => void
+      onMouseLeave?: (event: React.MouseEvent<HTMLElement>) => void
+    }
     return React.cloneElement(render, {
       ...props,
       ref: triggerRef as React.Ref<HTMLElement>,
@@ -564,16 +673,30 @@ function OptionListTrigger({
       "aria-expanded": open,
       "aria-haspopup": "listbox",
       "aria-controls": open ? listboxId : undefined,
-      role: (render.props as { role?: string }).role ?? "button",
-      tabIndex: (render.props as { tabIndex?: number }).tabIndex ?? 0,
-      className: cn(
-        className,
-        (render.props as { className?: string }).className
-      ),
-      onClick: onTriggerClick,
-      onKeyDown: onTriggerKeyDown,
-      children:
-        children ?? (render.props as { children?: React.ReactNode }).children,
+      role: renderProps.role ?? "button",
+      tabIndex: renderProps.tabIndex ?? 0,
+      className: cn(className, renderProps.className),
+      onClick: (event: React.MouseEvent<HTMLElement>) => {
+        renderProps.onClick?.(event)
+        if (event.defaultPrevented) return
+        onTriggerClick(event)
+      },
+      onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+        renderProps.onKeyDown?.(event)
+        if (event.defaultPrevented) return
+        onTriggerKeyDown(event)
+      },
+      onMouseEnter: (event: React.MouseEvent<HTMLElement>) => {
+        renderProps.onMouseEnter?.(event)
+        if (event.defaultPrevented) return
+        onTriggerMouseEnter(event)
+      },
+      onMouseLeave: (event: React.MouseEvent<HTMLElement>) => {
+        renderProps.onMouseLeave?.(event)
+        if (event.defaultPrevented) return
+        onTriggerMouseLeave(event)
+      },
+      children: children ?? renderProps.children,
     } as never)
   }
 
@@ -589,6 +712,8 @@ function OptionListTrigger({
       aria-controls={open ? listboxId : undefined}
       onClick={onTriggerClick}
       onKeyDown={onTriggerKeyDown}
+      onMouseEnter={onTriggerMouseEnter}
+      onMouseLeave={onTriggerMouseLeave}
     >
       {children}
     </button>
@@ -904,14 +1029,11 @@ function scrollSelectedIntoListViewport(
   }
 }
 
-const LIST_ITEM_HOST_SELECTOR = '[data-df="list-item"]'
 const LIST_ITEM_TITLE_SELECTOR = '[data-df="list-item-title"]'
 
 function navigableOptions(root: HTMLElement): HTMLElement[] {
   const items = Array.from(
-    root.querySelectorAll<HTMLElement>(
-      `${LIST_ITEM_HOST_SELECTOR}:not([data-disabled])`
-    )
+    root.querySelectorAll<HTMLElement>(LIST_ITEM_INTERACTIVE_HOST_SELECTOR)
   )
   return items.filter(
     (item) => item.closest('[data-df="option-list-content"]') === root
@@ -953,11 +1075,16 @@ function OptionListContent({
   header,
   footer,
   style,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }: OptionListContentProps) {
   const {
     open,
     setOpen,
+    openOnHover,
+    cancelHoverClose,
+    scheduleHoverClose,
     triggerRef,
     listboxId,
     activeValue,
@@ -1244,6 +1371,14 @@ function OptionListContent({
       className={cn(className)}
       style={{ ...surfaceStyle, ...layoutStyle, ...style }}
       onKeyDown={handleListKeyDown}
+      onMouseEnter={(event) => {
+        onMouseEnter?.(event)
+        if (openOnHover) cancelHoverClose()
+      }}
+      onMouseLeave={(event) => {
+        onMouseLeave?.(event)
+        if (openOnHover) scheduleHoverClose()
+      }}
     >
       {resolvedHeader.node}
       {search ? (
@@ -1262,7 +1397,15 @@ function OptionListContent({
 
   if (!portal) return panel
 
-  return createPortal(panel, document.body)
+  return createPortal(
+    <div
+      data-df="option-list-portal"
+      className={nearestDarkClass(triggerRef.current)}
+    >
+      {panel}
+    </div>,
+    document.body
+  )
 }
 
 function OptionListLabel({
@@ -1296,6 +1439,7 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
       children,
       value,
       disabled,
+      readOnly,
       leading,
       secondary,
       layout = "inline",
@@ -1328,7 +1472,9 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
     const isSubmenuTrigger = Boolean(submenu && inTriggerZone)
 
     const selected = isSelected(value)
-    const keyboardActive = !disabled && !isSubmenuTrigger && activeValue === value
+    const blockInteraction = Boolean(disabled || readOnly)
+    const keyboardActive =
+      !blockInteraction && !isSubmenuTrigger && activeValue === value
     const showCheckbox = leading === "checkbox"
     const showTrailingIndicator =
       indicator ??
@@ -1376,6 +1522,7 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
         selected={isSubmenuTrigger ? false : selected}
         highlighted={highlighted}
         disabled={disabled}
+        readOnly={readOnly}
         open={Boolean(isSubmenuTrigger && submenu?.open)}
         leading={leading}
         secondary={secondary}
@@ -1388,11 +1535,11 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
         className={cn(className)}
         onMouseEnter={(event) => {
           onMouseEnter?.(event)
-          if (!disabled && !isSubmenuTrigger) setActiveValue(value)
+          if (!blockInteraction && !isSubmenuTrigger) setActiveValue(value)
         }}
         onClick={(event) => {
           onClick?.(event)
-          if (disabled || event.defaultPrevented) return
+          if (blockInteraction || event.defaultPrevented) return
           if (isSubmenuTrigger) {
             submenu?.cancelClose()
             return
