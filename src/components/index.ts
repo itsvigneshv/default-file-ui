@@ -57,7 +57,12 @@ export type {
   InputRadius,
 } from "./df-input"
 export { Label } from "./df-label"
-export type { LabelMarkVariant, LabelProps } from "./df-label"
+export type {
+  LabelAs,
+  LabelInsetAlign,
+  LabelMarkVariant,
+  LabelProps,
+} from "./df-label"
 export { Separator } from "./df-separator"
 export { Spinner } from "./df-spinner"
 export type { SpinnerProps, SpinnerSize } from "./df-spinner"
@@ -201,18 +206,27 @@ export {
   TooltipTrigger,
 } from "./df-tooltip"
 export type { TooltipVariant } from "./df-tooltip"
-export { ListItem, ListItemLabel, ListItemNest } from "./df-list-item"
+export {
+  ListItem,
+  ListItemLabel,
+  ListItemNest,
+  useListItemNestScope,
+} from "./df-list-item"
 export type {
+  ListItemAs,
+  ListItemChromeProps,
   ListItemLabelProps,
   ListItemLabelVariant,
   ListItemLayout,
   ListItemLeading,
-  ListItemNestChromeProps,
-  ListItemNestProps,
   ListItemProps,
   ListItemSize,
   ListItemVariant,
 } from "./df-list-item"
+export type {
+  ListItemNestChromeProps,
+  ListItemNestProps,
+} from "./df-list-item-nest"
 export {
   ContentsNav,
   ContentsNavHeading,
@@ -277,7 +291,11 @@ export {
   SelectValueBadge,
   SelectValueSummary,
 } from "./df-select"
-export type { SelectSize, SelectValueRenderContext } from "./df-select"
+export type {
+  SelectProps,
+  SelectSize,
+  SelectValueRenderContext,
+} from "./df-select"
 export { ColorPicker } from "./df-color-picker"
 export type { ColorPickerProps, ColorPickerTrailing } from "./df-color-picker"
 export { Toaster, toast, setToastPosition, Toast } from "./df-toast"
@@ -339,44 +357,54 @@ export type {
 } from "./df-dock-panel"
 export {
   Sidebar,
-  SidebarCollapseTrigger,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
-  SidebarItem,
-  SidebarNav,
-  SidebarSearch,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
   SidebarSeparator,
-  SidebarShortcut,
-  SidebarUser,
-  SidebarUserContent,
-  SidebarUserTrigger,
-  SidebarWorkspace,
-  SidebarWorkspaceContent,
-  SidebarWorkspaceTrigger,
-  useSidebarContext,
+  SidebarTrigger,
+  useSidebar,
 } from "./df-sidebar"
 export type {
-  SidebarCollapseTriggerProps,
+  SidebarCollapsible,
   SidebarContentProps,
-  SidebarFooterProps,
+  SidebarGroupActionProps,
+  SidebarGroupContentProps,
+  SidebarGroupLabelProps,
   SidebarGroupProps,
-  SidebarHeaderProps,
-  SidebarItemProps,
-  SidebarNavProps,
+  SidebarHeightMode,
+  SidebarInputProps,
+  SidebarInsetProps,
+  SidebarLayout,
+  SidebarMenuActionProps,
+  SidebarMenuButtonProps,
+  SidebarMenuButtonSize,
+  SidebarMenuButtonVariant,
+  SidebarMenuItemProps,
+  SidebarMenuSubButtonProps,
   SidebarProps,
-  SidebarRadius,
-  SidebarSearchProps,
+  SidebarProviderProps,
+  SidebarScrollbar,
+  SidebarSectionProps,
   SidebarSeparatorProps,
-  SidebarShortcutProps,
   SidebarSide,
-  SidebarUserContentProps,
-  SidebarUserProps,
-  SidebarUserTriggerProps,
-  SidebarWorkspaceContentProps,
-  SidebarWorkspaceProps,
-  SidebarWorkspaceTriggerProps,
+  SidebarTriggerProps,
+  SidebarVariant,
 } from "./df-sidebar"
 export {
   NavRail,

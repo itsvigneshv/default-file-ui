@@ -8,13 +8,14 @@ import {
   resolvePaddingSides,
   type PaddingChromeProps,
 } from "../lib/padding-chrome"
-import { cn } from "../lib/utils"
+import { cn, composeRefs } from "../lib/utils"
 
-type ListItemSize = "sm" | "md" | "lg"
+type ListItemSize = "xs" | "sm" | "md" | "lg"
 type ListItemVariant = "accent" | "muted"
 type ListItemLabelVariant = "menu" | "nav"
 type ListItemLayout = "inline" | "stacked"
 type ListItemLeading = "checkbox" | "check" | React.ReactNode | false
+type ListItemAs = "div" | "button"
 
 type ListItemChromeProps = PaddingChromeProps & {
   gap?: string
@@ -22,7 +23,11 @@ type ListItemChromeProps = PaddingChromeProps & {
   background?: string
   foreground?: string
   hoverBackground?: string
+  hoverForeground?: string
   selectedBackground?: string
+  selectedForeground?: string
+  selectedHoverBackground?: string
+  activeBackground?: string
   radius?: string
 }
 
@@ -44,6 +49,8 @@ type ListItemProps = Omit<React.HTMLAttributes<HTMLElement>, "children"> &
     layout?: ListItemLayout
     trailing?: React.ReactNode
     indicator?: boolean
+    /** Native host when not using asChild. Ignored when asChild is true. */
+    as?: ListItemAs
     /**
      * When true, do not render a wrapper. Pass one child element (usually a link).
      * That element becomes the row and keeps its own href or routing.
@@ -75,7 +82,11 @@ function listItemChromeStyle({
   background,
   foreground,
   hoverBackground,
+  hoverForeground,
   selectedBackground,
+  selectedForeground,
+  selectedHoverBackground,
+  activeBackground,
   radius,
 }: ListItemChromeProps): React.CSSProperties {
   return {
@@ -98,11 +109,24 @@ function listItemChromeStyle({
     ...(hoverBackground != null
       ? { "--df-list-item-hover-bg": hoverBackground }
       : null),
+    ...(hoverForeground != null
+      ? { "--df-list-item-hover-fg": hoverForeground }
+      : null),
     ...(selectedBackground != null
       ? {
           "--df-list-item-selected-bg": selectedBackground,
-          "--df-list-item-selected-hover-bg": selectedBackground,
+          "--df-list-item-selected-hover-bg":
+            selectedHoverBackground ?? selectedBackground,
         }
+      : null),
+    ...(selectedForeground != null
+      ? { "--df-list-item-selected-fg": selectedForeground }
+      : null),
+    ...(selectedHoverBackground != null
+      ? { "--df-list-item-selected-hover-bg": selectedHoverBackground }
+      : null),
+    ...(activeBackground != null
+      ? { "--df-list-item-active-bg": activeBackground }
       : null),
     ...(radius != null ? { "--df-list-item-radius": radius } : null),
   } as React.CSSProperties
@@ -192,6 +216,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       layout = "inline",
       trailing,
       indicator = false,
+      as: asProp = "div",
       asChild = false,
       onClick,
       onKeyDown,
@@ -207,7 +232,11 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       background,
       foreground,
       hoverBackground,
+      hoverForeground,
       selectedBackground,
+      selectedForeground,
+      selectedHoverBackground,
+      activeBackground,
       radius,
       "data-highlighted": dataHighlightedProp,
       ...props
@@ -215,7 +244,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
     ref
   ) {
     const copyLayout = secondary != null ? layout : "inline"
-    const dataState = open ? "open" : selected ? "selected" : "idle"
+    const dataState = selected ? "selected" : "idle"
     const dataHighlighted =
       highlighted || dataHighlightedProp != null
 
@@ -232,7 +261,11 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       background,
       foreground,
       hoverBackground,
+      hoverForeground,
       selectedBackground,
+      selectedForeground,
+      selectedHoverBackground,
+      activeBackground,
       radius,
     })
     const sharedClassName = cn(className)
@@ -241,6 +274,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       "data-size": size,
       "data-variant": variant,
       "data-state": dataState,
+      "data-open": open ? ("" as const) : undefined,
       "data-layout": copyLayout,
       "data-disabled": disabled ? ("" as const) : undefined,
       "data-leading": resolveLeadingAttr(leading),
@@ -255,10 +289,13 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
         throw new Error("ListItem asChild requires a single React element child.")
       }
 
+      const childPropsRef = child.props.ref
+      const childOwnRef = (child as { ref?: React.Ref<HTMLElement | null> }).ref
+
       return React.cloneElement(child, {
         ...props,
         ...sharedData,
-        ref: ref as React.Ref<HTMLElement>,
+        ref: composeRefs(ref, childPropsRef, childOwnRef),
         className: cn(sharedClassName, child.props.className),
         style: { ...chromeStyle, ...child.props.style, ...style },
         tabIndex: disabled ? -1 : child.props.tabIndex,
@@ -292,6 +329,37 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       } as ListItemHostProps)
     }
 
+    const slots = (
+      <ListItemSlots
+        label={children}
+        leading={leading}
+        secondary={secondary}
+        layout={copyLayout}
+        trailing={trailing}
+        indicator={indicator}
+        selected={selected}
+      />
+    )
+
+    if (asProp === "button") {
+      const buttonProps = props as React.ButtonHTMLAttributes<HTMLButtonElement>
+      return (
+        <button
+          {...buttonProps}
+          {...sharedData}
+          ref={ref as React.Ref<HTMLButtonElement>}
+          type={buttonProps.type ?? "button"}
+          className={sharedClassName}
+          style={{ ...chromeStyle, ...style }}
+          disabled={disabled || undefined}
+          onClick={onClick}
+          onKeyDown={onKeyDown}
+        >
+          {slots}
+        </button>
+      )
+    }
+
     return (
       <div
         {...props}
@@ -302,15 +370,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
         onClick={onClick}
         onKeyDown={onKeyDown}
       >
-        <ListItemSlots
-          label={children}
-          leading={leading}
-          secondary={secondary}
-          layout={copyLayout}
-          trailing={trailing}
-          indicator={indicator}
-          selected={selected}
-        />
+        {slots}
       </div>
     )
   }
@@ -336,85 +396,20 @@ function ListItemLabel({
   )
 }
 
-type ListItemNestChromeProps = {
-  /** Outer inset before the nest group. Sets --df-list-item-nest-indent. */
-  indent?: string
-  /** Inner pad after the guide line. Sets --df-list-item-nest-pad. */
-  pad?: string
-  /** Gap between nested rows. Sets --df-list-item-nest-gap. */
-  gap?: string
-  /** Guide line thickness. Sets --df-list-item-nest-line-width. */
-  lineWidth?: string
-  /** Guide line color. Prefer var(--border). Sets --df-list-item-nest-line-color. */
-  lineColor?: string
-}
-
-type ListItemNestProps = React.ComponentProps<"div"> &
-  ListItemNestChromeProps & {
-    /** When true, paints the nest guide line. */
-    line?: boolean
-  }
-
-function listItemNestChromeStyle({
-  indent,
-  pad,
-  gap,
-  lineWidth,
-  lineColor,
-}: ListItemNestChromeProps): React.CSSProperties {
-  return {
-    ...(indent != null ? { "--df-list-item-nest-indent": indent } : null),
-    ...(pad != null ? { "--df-list-item-nest-pad": pad } : null),
-    ...(gap != null ? { "--df-list-item-nest-gap": gap } : null),
-    ...(lineWidth != null
-      ? { "--df-list-item-nest-line-width": lineWidth }
-      : null),
-    ...(lineColor != null
-      ? { "--df-list-item-nest-line-color": lineColor }
-      : null),
-  } as React.CSSProperties
-}
-
-function ListItemNest({
-  className,
-  style,
-  line = true,
-  indent,
-  pad,
-  gap,
-  lineWidth,
-  lineColor,
-  ...props
-}: ListItemNestProps) {
-  return (
-    <div
-      data-df="list-item-nest"
-      data-line={line ? "true" : "false"}
-      className={cn(className)}
-      style={{
-        ...listItemNestChromeStyle({
-          indent,
-          pad,
-          gap,
-          lineWidth,
-          lineColor,
-        }),
-        ...style,
-      }}
-      {...props}
-    />
-  )
-}
-
-export { ListItem, ListItemLabel, ListItemNest }
+export { ListItemNest, useListItemNestScope } from "./df-list-item-nest"
 export type {
+  ListItemNestChromeProps,
+  ListItemNestProps,
+} from "./df-list-item-nest"
+
+export { ListItem, ListItemLabel }
+export type {
+  ListItemAs,
   ListItemChromeProps,
   ListItemLabelProps,
   ListItemLabelVariant,
   ListItemLayout,
   ListItemLeading,
-  ListItemNestChromeProps,
-  ListItemNestProps,
   ListItemProps,
   ListItemSize,
   ListItemVariant,

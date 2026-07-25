@@ -1,0 +1,18 @@
+{
+  "name": "skeleton",
+  "type": "registry:ui",
+  "title": "Skeleton",
+  "description": "Placeholder surface for loading text, blocks, and circles.",
+  "dependencies": [],
+  "registryDependencies": [
+    "foundation"
+  ],
+  "files": [
+    {
+      "path": "src/components/df-skeleton.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\"\r\n\r\nimport { cn } from \"../lib/utils\"\r\n\r\ntype SkeletonShape = \"text\" | \"block\" | \"circle\"\r\n\r\ntype SkeletonProps = React.HTMLAttributes<HTMLDivElement> & {\r\n  shape?: SkeletonShape\r\n  width?: string\r\n  height?: string\r\n}\r\n\r\nfunction Skeleton({\r\n  className,\r\n  shape = \"text\",\r\n  width,\r\n  height,\r\n  style,\r\n  ...props\r\n}: SkeletonProps) {\r\n  return (\r\n    <div\r\n      data-df=\"skeleton\"\r\n      data-shape={shape}\r\n      aria-hidden\r\n      className={cn(className)}\r\n      style={{\r\n        ...(width != null ? { width } : null),\r\n        ...(height != null ? { height } : null),\r\n        ...style,\r\n      }}\r\n      {...props}\r\n    />\r\n  )\r\n}\r\n\r\nexport { Skeleton }\r\nexport type { SkeletonProps, SkeletonShape }\r\n",
+      "target": "default-file-ui/components/df-skeleton.tsx"
+    }
+  ]
+}

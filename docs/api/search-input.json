@@ -20,7 +20,7 @@
     "lucide-react"
   ],
   "api": {
-    "description": "Search field with clear control, sizes, icon placement, and Input hover border controls. SearchBar is an alias.",
+    "description": "Search field with clear control, sizes, icon placement, and Input hover border controls. Block padding stays equal; Input optical shift is disabled. SearchBar is an alias.",
     "groups": [
       {
         "id": "search-input",

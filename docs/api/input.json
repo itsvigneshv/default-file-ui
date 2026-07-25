@@ -98,6 +98,17 @@
             "description": "Meta on the label row. Forwards to Label trailing when outside. Supports Badge or any node."
           },
           {
+            "name": "labelInsetAlign",
+            "type": "\"left\" | \"content\" | \"custom\"",
+            "default": "\"left\"",
+            "description": "Outside label inset. Forwards to Label insetAlign. content tracks paddingLeft when set, otherwise --df-control-content-inset-inline."
+          },
+          {
+            "name": "labelInsetSize",
+            "type": "string",
+            "description": "Outside label custom inset. Forwards to Label insetSize when labelInsetAlign is custom."
+          },
+          {
             "name": "labelColor",
             "type": "string",
             "description": "Label color. Prefer tokens such as var(--foreground). Sets --df-input-label."
@@ -497,8 +508,8 @@
           {
             "name": "--df-input-padding-right",
             "type": "CSS length",
-            "description": "Right content padding. Set by padding, paddingX, or paddingRight.",
-            "default": "calc(3 * var(--spacing-unit))"
+            "description": "Right content padding. Set by padding, paddingX, or paddingRight. Defaults to --df-control-content-inset-inline.",
+            "default": "var(--df-control-content-inset-inline)"
           },
           {
             "name": "--df-input-padding-bottom",
@@ -509,8 +520,8 @@
           {
             "name": "--df-input-padding-left",
             "type": "CSS length",
-            "description": "Left content padding. Set by padding, paddingX, or paddingLeft. Icons and floating labels follow this inset.",
-            "default": "calc(3 * var(--spacing-unit))"
+            "description": "Left content padding. Set by padding, paddingX, or paddingLeft. Icons and floating labels follow this inset. Defaults to --df-control-content-inset-inline.",
+            "default": "var(--df-control-content-inset-inline)"
           },
           {
             "name": "--df-hover-border",

@@ -402,7 +402,7 @@
             "name": "--df-demo-stage-height",
             "type": "CSS length",
             "description": "Shared height for docs workspace stage frames.",
-            "default": "calc(112 * var(--spacing-unit))"
+            "default": "600px"
           }
         ]
       }

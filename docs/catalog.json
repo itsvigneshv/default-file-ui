@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T10:05:13.259Z",
+  "generatedAt": "2026-07-25T14:42:18.128Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -123,6 +123,8 @@
         "action button",
         "icon button",
         "plain icon button",
+        "outline button",
+        "transparent outline",
         "Button"
       ],
       "chapter": "actions",
@@ -133,7 +135,7 @@
       ],
       "importPath": "@default-file/ui/components/df-button",
       "dependencies": [],
-      "propCount": 40
+      "propCount": 43
     },
     {
       "slug": "choice-chip",
@@ -221,7 +223,7 @@
       ],
       "importPath": "@default-file/ui/components/df-contents-nav",
       "dependencies": [],
-      "propCount": 38
+      "propCount": 41
     },
     {
       "slug": "dialog",
@@ -374,17 +376,18 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 104
+      "propCount": 106
     },
     {
       "slug": "label",
       "name": "label",
       "title": "Label",
-      "description": "Accessible labels with required, optional, subtext, and a trailing slot for Badge or meta.",
+      "description": "Field and section labels with leading and trailing slots, required and optional marks, subtext, control inset alignment, and typography chrome.",
       "aliases": [
         "field label",
         "form label",
         "accessible label",
+        "section label",
         "Label"
       ],
       "chapter": "inputs",
@@ -393,13 +396,13 @@
       ],
       "importPath": "@default-file/ui/components/df-label",
       "dependencies": [],
-      "propCount": 25
+      "propCount": 47
     },
     {
       "slug": "list-item",
       "name": "list-item",
       "title": "List Item",
-      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List and Contents Nav compose these for selectable options and outlines.",
+      "description": "Configurable row with leading, secondary, trailing, density, muted or accent variants, and as=\"button\" or asChild link hosts. Includes ListItemLabel for menu and nav section headings, and ListItemNest for indented child groups with an optional guide line. Option List, Select, Combobox, Tag Input, Contents Nav, and Sidebar compose these for selectable options, outlines, and app nav.",
       "aliases": [
         "list row",
         "menu item",
@@ -416,7 +419,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 58
+      "propCount": 67
     },
     {
       "slug": "number-slider",
@@ -462,7 +465,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 125
+      "propCount": 127
     },
     {
       "slug": "options-panel",
@@ -637,7 +640,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 161
+      "propCount": 165
     },
     {
       "slug": "separator",
@@ -662,34 +665,34 @@
       "slug": "sidebar",
       "name": "sidebar",
       "title": "Sidebar",
-      "description": "Collapsible labeled primary navigation shell with configurable chrome, search, groups, workspace switcher, and account menu.",
+      "description": "Composable primary navigation with provider state, height modes, docked floating or inset variants, icon or offcanvas collapse, configurable seam edgeCollapse and edgeBorder with directional dual-tone cursor, collapsible groups with chevron toggles, List Item menu rows, kit ScrollArea content, menu hierarchy, and SidebarSeparator rules between sections.",
       "aliases": [
         "app sidebar",
         "navigation sidebar",
         "vertical nav",
         "primary nav",
         "side navigation",
-        "nav shell",
+        "labeled nav",
+        "app shell nav",
         "Sidebar"
       ],
       "chapter": "structure",
       "registryDependencies": [
         "foundation",
+        "button",
+        "label",
         "list-item",
-        "badge",
         "search-input",
         "tooltip",
-        "option-list",
-        "popover",
-        "scroll-area",
         "separator",
-        "button"
+        "skeleton",
+        "scroll-area"
       ],
       "importPath": "@default-file/ui/components/df-sidebar",
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 135
+      "propCount": 148
     },
     {
       "slug": "slider",

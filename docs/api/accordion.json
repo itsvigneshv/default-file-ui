@@ -186,7 +186,7 @@
       {
         "id": "accordion-content",
         "title": "AccordionContent",
-        "description": "Animated panel for the item body. Uses grid row expand and collapse with reduced motion support.",
+        "description": "Animated panel for the item body. Uses grid row expand and collapse with reduced motion support. Closed panels set inert so focus cannot enter hidden content.",
         "props": [
           {
             "name": "children",

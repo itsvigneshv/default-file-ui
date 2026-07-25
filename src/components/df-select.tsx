@@ -3,7 +3,8 @@
 import * as React from "react"
 import { ChevronDown, CircleHelp, X } from "lucide-react"
 
-import { Label } from "./df-label"
+import { Label, type LabelInsetAlign } from "./df-label"
+import type { ListItemChromeProps } from "./df-list-item"
 import {
   OptionList,
   OptionListContent,
@@ -64,6 +65,8 @@ type SelectFieldProps = React.HTMLAttributes<HTMLDivElement> & {
   hintId?: string
   labelColor?: string
   labelClassName?: string
+  labelInsetAlign?: LabelInsetAlign
+  labelInsetSize?: string
   invalidLabel?: boolean
   errorLabelColor?: string
   overlapLabelBackground?: string
@@ -122,7 +125,7 @@ function resolveSelectSize(size: SelectSize | "default"): SelectSize {
 }
 
 function focusSelectTriggerFromLabel(
-  event: React.MouseEvent<HTMLLabelElement>,
+  event: React.MouseEvent<HTMLElement>,
   htmlFor?: string
 ) {
   if (event.defaultPrevented || !htmlFor) return
@@ -130,6 +133,26 @@ function focusSelectTriggerFromLabel(
   if (control?.getAttribute("data-df") !== "select-trigger") return
   event.preventDefault()
   control.focus()
+}
+
+type SelectProps = {
+  selectionMode?: "single" | "multiple"
+  value?: string | null
+  defaultValue?: string | null
+  onValueChange?: (value: string | null) => void
+  values?: string[]
+  defaultValues?: string[]
+  onValuesChange?: (values: string[]) => void
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  closeOnSelect?: boolean
+  width?: OptionListWidth
+  disabled?: boolean
+  invalid?: boolean
+  /** Default List Item chrome for every SelectItem. Per-item props win. */
+  itemChrome?: ListItemChromeProps
+  children: React.ReactNode
 }
 
 function Select({
@@ -147,24 +170,9 @@ function Select({
   width = "hug",
   disabled = false,
   invalid = false,
+  itemChrome,
   children,
-}: {
-  selectionMode?: "single" | "multiple"
-  value?: string | null
-  defaultValue?: string | null
-  onValueChange?: (value: string | null) => void
-  values?: string[]
-  defaultValues?: string[]
-  onValuesChange?: (values: string[]) => void
-  open?: boolean
-  defaultOpen?: boolean
-  onOpenChange?: (open: boolean) => void
-  closeOnSelect?: boolean
-  width?: OptionListWidth
-  disabled?: boolean
-  invalid?: boolean
-  children: React.ReactNode
-}) {
+}: SelectProps) {
   return (
     <OptionList
       selectionMode={selectionMode}
@@ -179,6 +187,7 @@ function Select({
       onOpenChange={onOpenChange}
       closeOnSelect={closeOnSelect}
       width={width}
+      itemChrome={itemChrome}
     >
       <SelectExtrasContext.Provider value={{ disabled, invalid }}>
         <SelectDisabledSync disabled={disabled} />
@@ -212,6 +221,8 @@ function SelectField({
   hintId,
   labelColor,
   labelClassName,
+  labelInsetAlign,
+  labelInsetSize,
   invalidLabel = true,
   errorLabelColor,
   overlapLabelBackground,
@@ -329,6 +340,8 @@ function SelectField({
             help={help}
             subtext={subtext}
             className={labelClassName}
+            insetAlign={labelInsetAlign}
+            insetSize={labelInsetSize}
           >
             {label}
           </SelectFieldLabel>
@@ -793,6 +806,7 @@ export type {
   SelectFieldProps,
   SelectItemProps,
   SelectLabelPosition,
+  SelectProps,
   SelectSize,
   SelectTriggerProps,
   SelectVariant,

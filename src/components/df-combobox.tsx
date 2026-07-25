@@ -13,6 +13,7 @@ import {
   type ComboboxOption,
 } from "../lib/df-combobox"
 import { cn } from "../lib/utils"
+import type { ListItemChromeProps } from "./df-list-item"
 import {
   OptionList,
   OptionListContent,
@@ -42,6 +43,8 @@ export type ComboboxProps = {
   id?: string
   className?: string
   emptyContent?: React.ReactNode
+  /** Default List Item chrome for every option row. Forwarded to OptionList. */
+  itemChrome?: ListItemChromeProps
   "aria-label"?: string
 }
 
@@ -225,6 +228,7 @@ function Combobox({
   id,
   className,
   emptyContent,
+  itemChrome,
   "aria-label": ariaLabel,
 }: ComboboxProps) {
   const [text, setText] = useControllableState<string>({
@@ -313,6 +317,7 @@ function Combobox({
         }}
         closeOnSelect
         width="fill"
+        itemChrome={itemChrome}
       >
         <ComboboxActiveSync filtered={filtered} />
         <ComboboxField

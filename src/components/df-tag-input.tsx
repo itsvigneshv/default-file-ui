@@ -11,6 +11,7 @@ import {
   type TagCommitRejectReason,
 } from "../lib/df-tag-input"
 import { cn } from "../lib/utils"
+import type { ListItemChromeProps } from "./df-list-item"
 import {
   OptionList,
   OptionListContent,
@@ -33,6 +34,8 @@ export type TagInputProps = {
   id?: string
   className?: string
   "aria-label"?: string
+  /** Default List Item chrome for suggestion rows. Forwarded to OptionList. */
+  itemChrome?: ListItemChromeProps
   onReject?: (tag: string, reason: Exclude<TagCommitRejectReason, "empty">) => void
 }
 
@@ -222,6 +225,7 @@ function TagInput({
   id,
   className,
   "aria-label": ariaLabel,
+  itemChrome,
   onReject,
 }: TagInputProps) {
   const [tags, setTags] = useControllableState<string[]>({
@@ -326,6 +330,7 @@ function TagInput({
         }}
         closeOnSelect
         width="fill"
+        itemChrome={itemChrome}
       >
         <TagInputField
           tags={tags}

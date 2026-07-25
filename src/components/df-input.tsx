@@ -18,7 +18,7 @@ import {
   resolvePaddingSides,
 } from "../lib/padding-chrome"
 import { cn } from "../lib/utils"
-import { Label } from "./df-label"
+import { Label, type LabelInsetAlign } from "./df-label"
 
 type InputVariant = "primary" | "secondary"
 type InputLabelPosition = "outside" | "inside"
@@ -56,6 +56,8 @@ type InputProps = Omit<
   label?: React.ReactNode
   labelPosition?: InputLabelPosition
   labelTrailing?: React.ReactNode
+  labelInsetAlign?: LabelInsetAlign
+  labelInsetSize?: string
   labelColor?: string
   background?: string
   borderColor?: string
@@ -174,6 +176,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       label,
       labelPosition = "outside",
       labelTrailing,
+      labelInsetAlign,
+      labelInsetSize,
       labelColor,
       background,
       borderColor,
@@ -352,10 +356,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ? { "--df-input-error-label": errorLabelColor }
         : null),
       ...(hintColor != null ? { "--df-input-hint": hintColor } : null),
+      ...(hasOutsideLabel
+        ? {
+            "--df-label-inset-content":
+              resolvedPadding.left ??
+              "var(--df-control-content-inset-inline)",
+          }
+        : null),
     } as React.CSSProperties
 
     const hasRootTone =
-      labelColor != null || errorLabelColor != null || hintColor != null
+      labelColor != null ||
+      errorLabelColor != null ||
+      hintColor != null ||
+      hasOutsideLabel
     const hoverBorderAttr = dfHoverBorderAttr(hoverBorder)
 
     const fieldStyle = shellOwnsChrome
@@ -616,7 +630,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         style={hasRootTone ? rootToneStyle : undefined}
       >
         {hasOutsideLabel ? (
-          <Label htmlFor={inputId} trailing={labelTrailing}>
+          <Label
+            htmlFor={inputId}
+            trailing={labelTrailing}
+            insetAlign={labelInsetAlign}
+            insetSize={labelInsetSize}
+          >
             {label}
           </Label>
         ) : null}

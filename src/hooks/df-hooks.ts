@@ -574,4 +574,31 @@ export function useAnchoredPosition({
   return placement
 }
 
+/** True when the viewport is below the kit md breakpoint (mobile chrome). */
+/** Matches `--df-breakpoint-md` in df-tokens.css. */
+export const DF_BREAKPOINT_MD_PX = 768
+
+export function useIsMobile(breakpointPx = DF_BREAKPOINT_MD_PX) {
+  const query = `(max-width: ${breakpointPx - 1}px)`
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+        return () => {}
+      }
+      const media = window.matchMedia(query)
+      media.addEventListener("change", onStoreChange)
+      return () => media.removeEventListener("change", onStoreChange)
+    },
+    [query]
+  )
+  const getSnapshot = useCallback(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return false
+    }
+    return window.matchMedia(query).matches
+  }, [query])
+  const getServerSnapshot = useCallback(() => false, [])
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+}
+
 export type { Align, AnchoredPlacement, Side }

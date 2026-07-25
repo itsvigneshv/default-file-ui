@@ -95,6 +95,11 @@
             "description": "Root width for the list and its trigger. hug sizes to content. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Select triggers inside follow the same width. Fill and fixed also default the open panel to match the trigger; hug defaults the panel to hug option content. Override with OptionListContent alignItemWithTrigger."
           },
           {
+            "name": "itemChrome",
+            "type": "ListItemChromeProps",
+            "description": "Default List Item chrome for every OptionListItem (padding, gap, fontSize, radius, and fill props). Per-item chrome props on OptionListItem win. See List Item for the full chrome contract."
+          },
+          {
             "name": "submenuAnimated",
             "type": "boolean",
             "default": "true",
@@ -323,14 +328,19 @@
             "description": "List Item chrome spacing, type size, and radius. Forwarded to List Item."
           },
           {
-            "name": "background / foreground / hoverBackground / selectedBackground",
+            "name": "background / foreground / hoverBackground / hoverForeground",
             "type": "string",
-            "description": "List Item chrome surface and state fills. Forwarded to List Item."
+            "description": "List Item chrome resting and hover fills and label colors. Forwarded to List Item. Root OptionList or Select itemChrome supplies defaults; these props win per row."
+          },
+          {
+            "name": "selectedBackground / selectedForeground / selectedHoverBackground / activeBackground",
+            "type": "string",
+            "description": "List Item chrome selected and pressed fills. Forwarded to List Item. See List Item for --df-list-item-* tokens."
           },
           {
             "name": "…host attributes",
             "type": "HTMLAttributes",
-            "description": "Native host element props on the List Item row. Use the highlighted data attribute for hover or open parent rows in nested menus."
+            "description": "Native host element props on the List Item row. Use the highlighted data attribute for hover or open parent rows in nested menus. Ref is composed with the Option List submenu trigger ref."
           }
         ]
       },

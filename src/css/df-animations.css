@@ -363,6 +363,7 @@
 }
 
 .df-accordion-panel > div {
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -371,6 +372,30 @@
 }
 
 .df-accordion-chevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+.df-sidebar-group-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--df-sidebar-motion-duration)
+    var(--df-sidebar-motion-ease);
+}
+
+.df-sidebar-group-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.df-sidebar-group-panel > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.df-sidebar-group-chevron {
+  transition: transform var(--df-sidebar-motion-duration) var(--df-sidebar-motion-ease);
+}
+
+.df-sidebar-group-chevron[data-open="true"] {
   transform: rotate(180deg);
 }
 
@@ -414,7 +439,9 @@
   .df-reveal-emphasis,
   .df-auto-tab-panel,
   .df-accordion-panel,
-  .df-accordion-chevron {
+  .df-accordion-chevron,
+  .df-sidebar-group-panel,
+  .df-sidebar-group-chevron {
     transition: none !important;
   }
 

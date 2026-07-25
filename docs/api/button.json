@@ -8,6 +8,8 @@
     "action button",
     "icon button",
     "plain icon button",
+    "outline button",
+    "transparent outline",
     "Button"
   ],
   "chapter": "actions",
@@ -19,7 +21,7 @@
   "importPath": "@default-file/ui/components/df-button",
   "dependencies": [],
   "api": {
-    "description": "Primary actions with variants, text and icon sizes, optional leading or trailing content, loading state, and a corner count badge. plain is the icon-only variant with no resting plate. Use glyphShadow to control the plain icon drop shadow on busy surfaces.",
+    "description": "Primary actions with variants, text and icon sizes, optional leading or trailing content, loading state, and a corner count badge. plain is the icon-only variant with no resting plate. Use glyphShadow to control the plain icon drop shadow on busy surfaces. Use transparent on outline to drop the resting fill.",
     "groups": [
       {
         "id": "button",
@@ -29,7 +31,7 @@
             "name": "variant",
             "type": "\"default\" | \"outline\" | \"secondary\" | \"ghost\" | \"destructive\" | \"link\" | \"plain\"",
             "default": "\"default\"",
-            "description": "Visual style of the button. plain is icon-only chrome with no resting plate; hover and focus expand a soft pad around the glyph without shifting layout. Use ghost for labeled transparent actions on UI chrome. Prefer plain on media, gradients, and dense overlays. Give plain buttons an aria-label. link is inline text with no control height or horizontal padding."
+            "description": "Visual style of the button. plain is icon-only chrome with no resting plate; hover and focus expand a soft pad around the glyph without shifting layout. Use ghost for labeled transparent actions on UI chrome. Prefer plain on media, gradients, and dense overlays. Give plain buttons an aria-label. link is inline text with no control height or horizontal padding. On outline, set transparent to drop the resting fill."
           },
           {
             "name": "size",
@@ -42,6 +44,12 @@
             "type": "boolean",
             "default": "true",
             "description": "Link variant only. When true, show underline on hover. Set false to keep the label plain on hover."
+          },
+          {
+            "name": "transparent",
+            "type": "boolean",
+            "default": "false",
+            "description": "Outline variant only. When true, drop the resting fill (data-transparent). Theme the filled plate with --df-button-outline-fill. Hover and expanded washes stay for affordance. Ignored on other variants."
           },
           {
             "name": "glyphShadow",
@@ -124,7 +132,7 @@
           {
             "name": "dfButtonClass",
             "type": "(opts?: { variant?, size?, className? }) => string",
-            "description": "Builds the same class string Button uses internally. Resolves plain with a non-icon size to icon-xs, matching Button. For link hosts, set the underline data attribute to hover or none to match the underline prop. For plain icon hosts without glyph shadow, set data-glyph-shadow to off."
+            "description": "Builds the same class string Button uses internally. Resolves plain with a non-icon size to icon-xs, matching Button. For link hosts, set the underline data attribute to hover or none to match the underline prop. For outline hosts without a resting fill, set data-transparent. For plain icon hosts without glyph shadow, set data-glyph-shadow to off."
           }
         ]
       },
@@ -174,6 +182,18 @@
             "type": "CSS color",
             "description": "Outline variant border.",
             "default": "var(--df-neutral-100)"
+          },
+          {
+            "name": "--df-button-outline-fill",
+            "type": "CSS color",
+            "description": "Outline variant resting fill. Overridden when transparent is true.",
+            "default": "color-mix(in oklch, var(--input) 30%, var(--background))"
+          },
+          {
+            "name": "--df-button-outline-fill-hover",
+            "type": "CSS color",
+            "description": "Outline variant hover fill.",
+            "default": "color-mix(in oklch, var(--input) 50%, var(--background))"
           },
           {
             "name": "--muted",

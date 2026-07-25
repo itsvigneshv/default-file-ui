@@ -47,6 +47,8 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
    */
   size?: ButtonSize
   underline?: boolean
+  /** Outline only. When true, drop the resting fill (data-transparent). */
+  transparent?: boolean
   /**
    * Plain icon only. When true, apply the glyph drop shadow for busy surfaces.
    * Set false to turn the shadow off. Customize the filter with
@@ -152,6 +154,7 @@ function Button({
   variant = "default",
   size = "default",
   underline = true,
+  transparent = false,
   glyphShadow = true,
   type = "button",
   leading,
@@ -176,6 +179,7 @@ function Button({
 
   const iconOnly = isIconButtonSize(resolvedSize)
   const plainIcon = variant === "plain" && iconOnly
+  const outlineTransparent = variant === "outline" && transparent
   let resolvedLeading = leading
   let resolvedTrailing = trailing
   let resolvedChildren = children
@@ -216,6 +220,7 @@ function Button({
       data-underline={
         variant === "link" ? (underline ? "hover" : "none") : undefined
       }
+      data-transparent={outlineTransparent ? "" : undefined}
       data-glyph-shadow={plainIcon && !glyphShadow ? "off" : undefined}
       data-loading={isLoading ? "" : undefined}
       data-loading-appearance={isLoading ? loadingAppearance : undefined}

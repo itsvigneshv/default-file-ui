@@ -7,6 +7,7 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   ListItem,
   ListItemLabel,
+  type ListItemChromeProps,
   type ListItemProps,
 } from "./df-list-item"
 import { SearchInput } from "./df-search-input"
@@ -18,7 +19,7 @@ import {
   useDismiss,
   useIsClient,
 } from "../hooks"
-import { cn } from "../lib/utils"
+import { cn, composeRefs } from "../lib/utils"
 
 type SelectionMode = "single" | "multiple"
 type OptionListItemLayout = "inline" | "stacked"
@@ -55,6 +56,8 @@ type OptionListContextValue = {
   submenuAnimated: boolean
   submenuOpenDuration: number
   submenuCloseDuration: number
+  /** Default List Item chrome for every OptionListItem. Per-item props win. */
+  itemChrome?: ListItemChromeProps
 }
 
 const OptionListContext = React.createContext<OptionListContextValue | null>(
@@ -346,6 +349,8 @@ type OptionListProps = {
   submenuAnimated?: boolean
   submenuOpenDuration?: number
   submenuCloseDuration?: number
+  /** Default List Item chrome for every OptionListItem. Per-item props win. */
+  itemChrome?: ListItemChromeProps
   children: React.ReactNode
 }
 
@@ -365,6 +370,7 @@ function OptionList({
   submenuAnimated = true,
   submenuOpenDuration = DEFAULT_SUBMENU_OPEN_DURATION,
   submenuCloseDuration = DEFAULT_SUBMENU_CLOSE_DURATION,
+  itemChrome,
   children,
 }: OptionListProps) {
   const resolvedWidth = resolveOptionListWidth(width)
@@ -497,6 +503,7 @@ function OptionList({
         submenuAnimated,
         submenuOpenDuration,
         submenuCloseDuration,
+        itemChrome,
       }}
     >
       <div
@@ -1116,116 +1123,123 @@ function optionLabelText(node: React.ReactNode): string {
   return ""
 }
 
-function OptionListItem({
-  className,
-  children,
-  value,
-  disabled,
-  leading,
-  secondary,
-  layout = "inline",
-  trailing,
-  indicator,
-  id: idProp,
-  onClick,
-  onMouseEnter,
-  "data-highlighted": dataHighlightedProp,
-  ...props
-}: OptionListItemProps) {
-  const {
-    isSelected,
-    toggleValue,
-    setOpen,
-    setActiveValue,
-    registerLabel,
-    registerSecondary,
-    closeOnSelect,
-    searchQuery,
-    selectionMode,
-    activeValue,
-    optionDomId,
-  } = useOptionListContext()
-  const submenu = React.useContext(OptionListSubmenuStateContext)
-  const inTriggerZone = React.useContext(OptionListSubmenuTriggerZoneContext)
-  const isSubmenuTrigger = Boolean(submenu && inTriggerZone)
-
-  const selected = isSelected(value)
-  const keyboardActive = !disabled && !isSubmenuTrigger && activeValue === value
-  const showCheckbox = leading === "checkbox"
-  const showTrailingIndicator =
-    indicator ??
-    (!showCheckbox &&
-      selectionMode === "single" &&
-      trailing == null &&
-      !isSubmenuTrigger)
-  const copyLayout = secondary != null ? layout : "inline"
-  const highlighted =
-    (isSubmenuTrigger && submenu?.open) || dataHighlightedProp != null
-
-  React.useLayoutEffect(() => {
-    registerLabel(value, children)
-    registerSecondary(value, secondary, copyLayout)
-  }, [children, copyLayout, registerLabel, registerSecondary, secondary, value])
-
-  const query = searchQuery.trim().toLowerCase()
-  if (query) {
-    const haystack =
-      `${optionLabelText(children)} ${optionLabelText(secondary)} ${optionLabelText(trailing)}`
-        .toLowerCase()
-        .trim()
-    if (!haystack.includes(query)) return null
-  }
-
-  const setItemRef = React.useCallback(
-    (node: HTMLElement | null) => {
-      if (isSubmenuTrigger && submenu) {
-        submenu.triggerRef.current = node
-      }
+const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
+  function OptionListItem(
+    {
+      className,
+      children,
+      value,
+      disabled,
+      leading,
+      secondary,
+      layout = "inline",
+      trailing,
+      indicator,
+      id: idProp,
+      onClick,
+      onMouseEnter,
+      "data-highlighted": dataHighlightedProp,
+      ...props
     },
-    [isSubmenuTrigger, submenu]
-  )
+    ref
+  ) {
+    const {
+      isSelected,
+      toggleValue,
+      setOpen,
+      setActiveValue,
+      registerLabel,
+      registerSecondary,
+      closeOnSelect,
+      searchQuery,
+      selectionMode,
+      activeValue,
+      optionDomId,
+      itemChrome,
+    } = useOptionListContext()
+    const submenu = React.useContext(OptionListSubmenuStateContext)
+    const inTriggerZone = React.useContext(OptionListSubmenuTriggerZoneContext)
+    const isSubmenuTrigger = Boolean(submenu && inTriggerZone)
 
-  return (
-    <ListItem
-      {...props}
-      ref={setItemRef}
-      id={idProp ?? (isSubmenuTrigger ? undefined : optionDomId(value))}
-      role={isSubmenuTrigger ? "menuitem" : "option"}
-      aria-selected={isSubmenuTrigger ? undefined : selected}
-      aria-haspopup={isSubmenuTrigger ? "menu" : undefined}
-      aria-expanded={isSubmenuTrigger ? submenu?.open : undefined}
-      selected={isSubmenuTrigger ? false : selected}
-      highlighted={highlighted}
-      disabled={disabled}
-      open={Boolean(isSubmenuTrigger && submenu?.open)}
-      leading={leading}
-      secondary={secondary}
-      layout={copyLayout}
-      trailing={trailing}
-      indicator={showTrailingIndicator}
-      data-value={value}
-      data-active={keyboardActive ? "" : undefined}
-      data-submenu-trigger={isSubmenuTrigger ? "" : undefined}
-      className={cn(className)}
-      onMouseEnter={(event) => {
-        onMouseEnter?.(event)
-        if (!disabled && !isSubmenuTrigger) setActiveValue(value)
-      }}
-      onClick={(event) => {
-        onClick?.(event)
-        if (disabled || event.defaultPrevented) return
-        if (isSubmenuTrigger) {
-          submenu?.cancelClose()
-          return
+    const selected = isSelected(value)
+    const keyboardActive = !disabled && !isSubmenuTrigger && activeValue === value
+    const showCheckbox = leading === "checkbox"
+    const showTrailingIndicator =
+      indicator ??
+      (!showCheckbox &&
+        selectionMode === "single" &&
+        trailing == null &&
+        !isSubmenuTrigger)
+    const copyLayout = secondary != null ? layout : "inline"
+    const highlighted =
+      (isSubmenuTrigger && submenu?.open) || dataHighlightedProp != null
+
+    React.useLayoutEffect(() => {
+      registerLabel(value, children)
+      registerSecondary(value, secondary, copyLayout)
+    }, [children, copyLayout, registerLabel, registerSecondary, secondary, value])
+
+    const query = searchQuery.trim().toLowerCase()
+    if (query) {
+      const haystack =
+        `${optionLabelText(children)} ${optionLabelText(secondary)} ${optionLabelText(trailing)}`
+          .toLowerCase()
+          .trim()
+      if (!haystack.includes(query)) return null
+    }
+
+    const setItemRef = React.useCallback(
+      (node: HTMLElement | null) => {
+        if (isSubmenuTrigger && submenu) {
+          submenu.triggerRef.current = node
         }
-        toggleValue(value)
-        if (closeOnSelect) setOpen(false)
-      }}
-    >
-      {children}
-    </ListItem>
-  )
-}
+      },
+      [isSubmenuTrigger, submenu]
+    )
+
+    return (
+      <ListItem
+        {...itemChrome}
+        {...props}
+        ref={composeRefs(ref, setItemRef)}
+        id={idProp ?? (isSubmenuTrigger ? undefined : optionDomId(value))}
+        role={isSubmenuTrigger ? "menuitem" : "option"}
+        aria-selected={isSubmenuTrigger ? undefined : selected}
+        aria-haspopup={isSubmenuTrigger ? "menu" : undefined}
+        aria-expanded={isSubmenuTrigger ? submenu?.open : undefined}
+        selected={isSubmenuTrigger ? false : selected}
+        highlighted={highlighted}
+        disabled={disabled}
+        open={Boolean(isSubmenuTrigger && submenu?.open)}
+        leading={leading}
+        secondary={secondary}
+        layout={copyLayout}
+        trailing={trailing}
+        indicator={showTrailingIndicator}
+        data-value={value}
+        data-active={keyboardActive ? "" : undefined}
+        data-submenu-trigger={isSubmenuTrigger ? "" : undefined}
+        className={cn(className)}
+        onMouseEnter={(event) => {
+          onMouseEnter?.(event)
+          if (!disabled && !isSubmenuTrigger) setActiveValue(value)
+        }}
+        onClick={(event) => {
+          onClick?.(event)
+          if (disabled || event.defaultPrevented) return
+          if (isSubmenuTrigger) {
+            submenu?.cancelClose()
+            return
+          }
+          toggleValue(value)
+          if (closeOnSelect) setOpen(false)
+        }}
+      >
+        {children}
+      </ListItem>
+    )
+  }
+)
 
 function OptionListSeparator({
   className,

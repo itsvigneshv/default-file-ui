@@ -563,6 +563,7 @@ function AccordionContent({
 
   return (
     <div
+      {...props}
       id={contentId}
       role="region"
       aria-labelledby={triggerId}
@@ -571,8 +572,8 @@ function AccordionContent({
       data-open={open ? "true" : "false"}
       data-leading={hasLeading ? "true" : undefined}
       hidden={!open && !forceMount ? true : undefined}
+      inert={!open ? true : undefined}
       className="df-accordion-panel"
-      {...props}
       style={contentStyle}
     >
       <div>

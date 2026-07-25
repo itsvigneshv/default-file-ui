@@ -94,6 +94,11 @@
             "description": "Root and trigger width. hug sizes to the value. fill stretches to the parent. Pass a CSS length such as 12rem for a fixed width. Fill and fixed also default the open list to match the trigger; hug defaults the list to hug option content. Override with SelectContent alignItemWithTrigger."
           },
           {
+            "name": "itemChrome",
+            "type": "ListItemChromeProps",
+            "description": "Default List Item chrome for every SelectItem. Forwarded to OptionList. Per-item chrome props on SelectItem win. See List Item for the full chrome contract."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "default": "false",
@@ -167,6 +172,17 @@
             "name": "labelClassName",
             "type": "string",
             "description": "Additional classes on the owned Label."
+          },
+          {
+            "name": "labelInsetAlign",
+            "type": "\"left\" | \"content\" | \"custom\"",
+            "default": "\"left\"",
+            "description": "Outside label inset. Forwards to Label insetAlign. content uses --df-label-inset-content on the field, which tracks --df-select-overlap-inset and --df-control-content-inset-inline."
+          },
+          {
+            "name": "labelInsetSize",
+            "type": "string",
+            "description": "Outside label custom inset. Forwards to Label insetSize when labelInsetAlign is custom."
           },
           {
             "name": "invalidLabel",
@@ -576,14 +592,19 @@
             "description": "List Item chrome spacing, type size, and radius. Forwarded to List Item."
           },
           {
-            "name": "background / foreground / hoverBackground / selectedBackground",
+            "name": "background / foreground / hoverBackground / hoverForeground",
             "type": "string",
-            "description": "List Item chrome surface and state fills. Forwarded to List Item."
+            "description": "List Item chrome resting and hover fills and label colors. Forwarded to List Item. Root OptionList or Select itemChrome supplies defaults; these props win per row."
+          },
+          {
+            "name": "selectedBackground / selectedForeground / selectedHoverBackground / activeBackground",
+            "type": "string",
+            "description": "List Item chrome selected and pressed fills. Forwarded to List Item. See List Item for --df-list-item-* tokens."
           },
           {
             "name": "…host attributes",
             "type": "HTMLAttributes",
-            "description": "Native host element props on the List Item row. Use the highlighted data attribute for hover or open parent rows in nested menus."
+            "description": "Native host element props on the List Item row. Use the highlighted data attribute for hover or open parent rows in nested menus. Ref is composed with the Option List submenu trigger ref."
           }
         ]
       },
@@ -805,8 +826,8 @@
           {
             "name": "--df-select-padding-right",
             "type": "CSS length",
-            "description": "Right content padding. Set by padding, paddingX, or paddingRight. Inset label defaults to calc(3.5 * var(--spacing-unit)).",
-            "default": "calc(3 * var(--spacing-unit))"
+            "description": "Right content padding. Set by padding, paddingX, or paddingRight. Defaults to --df-control-content-inset-inline. Inset label defaults to calc(3.5 * var(--spacing-unit)).",
+            "default": "var(--df-control-content-inset-inline)"
           },
           {
             "name": "--df-select-padding-bottom",
@@ -817,8 +838,8 @@
           {
             "name": "--df-select-padding-left",
             "type": "CSS length",
-            "description": "Left content padding. Set by padding, paddingX, or paddingLeft. Inset label defaults to calc(3.5 * var(--spacing-unit)).",
-            "default": "calc(3 * var(--spacing-unit))"
+            "description": "Left content padding. Set by padding, paddingX, or paddingLeft. Defaults to --df-control-content-inset-inline. Inset label defaults to calc(3.5 * var(--spacing-unit)).",
+            "default": "var(--df-control-content-inset-inline)"
           },
           {
             "name": "--df-select-hint",
@@ -847,8 +868,8 @@
           {
             "name": "--df-select-overlap-inset",
             "type": "CSS length",
-            "description": "Leading inset for the overlap label. Set by SelectField overlapInset.",
-            "default": "calc(3 * var(--spacing-unit))"
+            "description": "Leading inset for the overlap label. Set by SelectField overlapInset. Defaults to --df-control-content-inset-inline. Outside Label content mode on the field tracks this value.",
+            "default": "var(--df-control-content-inset-inline)"
           },
           {
             "name": "--df-select-overlap-label-pad",

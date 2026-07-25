@@ -99,15 +99,24 @@
           },
           {
             "name": "itemSize",
-            "type": "\"sm\" | \"md\" | \"lg\"",
-            "default": "\"md\"",
-            "description": "Default List Item size for top-level rows."
+            "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+            "description": "Default List Item size for top-level rows. Defaults to \"sm\" for toc and \"md\" for index."
           },
           {
             "name": "nestItemSize",
-            "type": "\"sm\" | \"md\" | \"lg\"",
-            "default": "\"sm\"",
+            "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+            "default": "\"xs\"",
             "description": "Default List Item size for nested rows."
+          },
+          {
+            "name": "itemChrome",
+            "type": "ListItemChromeProps",
+            "description": "Default List Item chrome for every row (padding, gap, fontSize, radius, and fill props). Applies to composed ContentsNavItem rows and data-driven branches. Per-item chrome props on ContentsNavItem win. See List Item for the full chrome contract."
+          },
+          {
+            "name": "nestChrome",
+            "type": "ListItemNestChromeProps",
+            "description": "Default ListItemNest chrome for data-driven child groups (indent, pad, gap, lineWidth, lineColor). nestLine still controls whether the guide line paints. Composed ListItemNest instances set their own props."
           },
           {
             "name": "renderItem",
@@ -194,13 +203,18 @@
           },
           {
             "name": "size",
-            "type": "\"sm\" | \"md\" | \"lg\"",
-            "description": "Overrides the ContentsNav item or nest size default."
+            "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+            "description": "Overrides the size default. Outside ListItemNest, defaults to itemSize. Inside ListItemNest, defaults to nestItemSize."
           },
           {
             "name": "variant",
             "type": "\"accent\" | \"muted\"",
             "description": "Overrides the ContentsNav itemVariant default."
+          },
+          {
+            "name": "padding / gap / fontSize / radius / fills",
+            "type": "ListItemChromeProps",
+            "description": "All List Item chrome props forward through. Merge over ContentsNav itemChrome. See List Item for the full list including hoverForeground, selectedForeground, selectedHoverBackground, and activeBackground."
           }
         ]
       },

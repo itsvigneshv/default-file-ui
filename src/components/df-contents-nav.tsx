@@ -7,10 +7,15 @@ import { cn } from "../lib/utils"
 import {
   ListItem,
   ListItemLabel,
-  ListItemNest,
+  type ListItemChromeProps,
   type ListItemSize,
   type ListItemVariant,
 } from "./df-list-item"
+import {
+  ListItemNest,
+  useListItemNestScope,
+  type ListItemNestChromeProps,
+} from "./df-list-item-nest"
 
 type ContentsNavVariant = "toc" | "index"
 type ContentsNavLayout = "grouped" | "flat"
@@ -42,6 +47,10 @@ type ContentsNavContextValue = {
   itemVariant: ListItemVariant
   itemSize: ListItemSize
   nestItemSize: ListItemSize
+  /** Default List Item chrome for every row. Per-item props win. */
+  itemChrome?: ListItemChromeProps
+  /** Default ListItemNest chrome for data-driven child groups. */
+  nestChrome?: ListItemNestChromeProps
   activeId: string
   setActiveId: (id: string) => void
   renderItem?: (
@@ -153,6 +162,10 @@ type ContentsNavProps = Omit<React.ComponentProps<"nav">, "title"> & {
   itemVariant?: ListItemVariant
   itemSize?: ListItemSize
   nestItemSize?: ListItemSize
+  /** Default List Item chrome for every row. Per-item props win. */
+  itemChrome?: ListItemChromeProps
+  /** Default ListItemNest chrome for data-driven child groups. */
+  nestChrome?: ListItemNestChromeProps
   renderItem?: (
     item: ContentsNavItemData,
     ctx: { active: boolean; depth: number }
@@ -210,82 +223,94 @@ type ContentsNavItemProps = Omit<
   itemId?: string
 }
 
-function ContentsNavItem({
-  className,
-  active,
-  variant,
-  size,
-  href,
-  itemId,
-  asChild,
-  children,
-  onClick,
-  ...props
-}: ContentsNavItemProps) {
-  const ctx = useContentsNav()
-  const resolvedVariant = variant ?? ctx.itemVariant
-  const resolvedSize = size ?? ctx.itemSize
-  const resolvedActive =
-    active ?? (itemId != null ? ctx.activeId === itemId : false)
-  const ariaCurrent = resolvedActive
-    ? ctx.variant === "index"
-      ? "page"
-      : "true"
-    : undefined
+const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
+  function ContentsNavItem(
+    {
+      className,
+      active,
+      variant,
+      size,
+      href,
+      itemId,
+      asChild,
+      children,
+      onClick,
+      ...props
+    },
+    ref
+  ) {
+    const ctx = useContentsNav()
+    const inNest = useListItemNestScope()
+    const resolvedVariant = variant ?? ctx.itemVariant
+    const resolvedSize = size ?? (inNest ? ctx.nestItemSize : ctx.itemSize)
+    const resolvedActive =
+      active ?? (itemId != null ? ctx.activeId === itemId : false)
+    const ariaCurrent = resolvedActive
+      ? ctx.variant === "index"
+        ? "page"
+        : "true"
+      : undefined
 
-  const handleSelect = (event: React.MouseEvent<HTMLElement>) => {
-    if (itemId != null) ctx.setActiveId(itemId)
-    onClick?.(event)
-  }
+    const handleSelect = (event: React.MouseEvent<HTMLElement>) => {
+      if (itemId != null) ctx.setActiveId(itemId)
+      onClick?.(event)
+    }
 
-  if (asChild) {
+    if (asChild) {
+      return (
+        <ListItem
+          {...ctx.itemChrome}
+          {...props}
+          ref={ref}
+          asChild
+          variant={resolvedVariant}
+          size={resolvedSize}
+          selected={resolvedActive}
+          aria-current={ariaCurrent}
+          className={className}
+          onClick={handleSelect}
+        >
+          {children}
+        </ListItem>
+      )
+    }
+
+    if (href != null) {
+      return (
+        <ListItem
+          {...ctx.itemChrome}
+          {...props}
+          ref={ref}
+          asChild
+          variant={resolvedVariant}
+          size={resolvedSize}
+          selected={resolvedActive}
+          aria-current={ariaCurrent}
+          className={className}
+          onClick={handleSelect}
+        >
+          <a href={href}>{children}</a>
+        </ListItem>
+      )
+    }
+
     return (
       <ListItem
-        asChild
+        {...ctx.itemChrome}
+        {...props}
+        ref={ref}
         variant={resolvedVariant}
         size={resolvedSize}
         selected={resolvedActive}
         aria-current={ariaCurrent}
         className={className}
         onClick={handleSelect}
-        {...props}
       >
         {children}
       </ListItem>
     )
   }
-
-  if (href != null) {
-    return (
-      <ListItem
-        asChild
-        variant={resolvedVariant}
-        size={resolvedSize}
-        selected={resolvedActive}
-        aria-current={ariaCurrent}
-        className={className}
-        onClick={handleSelect}
-        {...props}
-      >
-        <a href={href}>{children}</a>
-      </ListItem>
-    )
-  }
-
-  return (
-    <ListItem
-      variant={resolvedVariant}
-      size={resolvedSize}
-      selected={resolvedActive}
-      aria-current={ariaCurrent}
-      className={className}
-      onClick={handleSelect}
-      {...props}
-    >
-      {children}
-    </ListItem>
-  )
-}
+)
 
 function ContentsNavSeparator({
   className,
@@ -331,6 +356,7 @@ function ContentsNavBranch({
           active ? (ctx.variant === "index" ? "page" : "true") : undefined
         }
         onClick={() => ctx.setActiveId(item.id)}
+        {...ctx.itemChrome}
       >
         {custom}
       </ListItem>
@@ -353,6 +379,7 @@ function ContentsNavBranch({
       {row}
       {hasChildren ? (
         <ListItemNest
+          {...ctx.nestChrome}
           line={ctx.nestLine}
           role="group"
           aria-label={
@@ -383,8 +410,10 @@ function ContentsNav({
   defaultActiveId,
   onActiveIdChange,
   itemVariant = "muted",
-  itemSize = "md",
-  nestItemSize = "sm",
+  itemSize: itemSizeProp,
+  nestItemSize: nestItemSizeProp,
+  itemChrome,
+  nestChrome,
   renderItem,
   children,
   "aria-label": ariaLabel,
@@ -392,6 +421,8 @@ function ContentsNav({
 }: ContentsNavProps) {
   const resolvedNestLine = nestLine ?? variant === "toc"
   const resolvedScrollSpy = scrollSpy ?? variant === "toc"
+  const itemSize = itemSizeProp ?? (variant === "toc" ? "sm" : "md")
+  const nestItemSize = nestItemSizeProp ?? "xs"
 
   const spyItems = React.useMemo(() => {
     if (items?.length) return items
@@ -444,14 +475,18 @@ function ContentsNav({
       itemVariant,
       itemSize,
       nestItemSize,
+      itemChrome,
+      nestChrome,
       activeId,
       setActiveId,
       renderItem,
     }),
     [
       activeId,
+      itemChrome,
       itemSize,
       itemVariant,
+      nestChrome,
       nestItemSize,
       renderItem,
       resolvedNestLine,

@@ -240,7 +240,7 @@ function ScrollArea({
       data-overflow-x={trackHorizontal && hThumb.visible ? "" : undefined}
       data-vertical-side={verticalSide}
       data-horizontal-side={horizontalSide}
-      className={cn("relative", className)}
+      className={cn("df-scroll-area", "relative", className)}
       {...props}
       onMouseEnter={(event) => {
         props.onMouseEnter?.(event)
@@ -254,7 +254,7 @@ function ScrollArea({
       <div
         ref={setViewportRef}
         data-df="scroll-area-viewport"
-        className={cn(viewportClassName)}
+        className={cn("df-scroll-area-viewport", viewportClassName)}
       >
         {children}
       </div>

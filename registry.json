@@ -96,6 +96,22 @@
       ]
     },
     {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Placeholder surface for loading text, blocks, and circles.",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-skeleton.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-skeleton.tsx"
+        }
+      ]
+    },
+    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
@@ -167,6 +183,7 @@
       "name": "label",
       "type": "registry:ui",
       "title": "Label",
+      "description": "Field and section label with leading and trailing slots, required and optional marks, subtext, control inset alignment, and typography chrome. Use as label for form controls and as div for section titles.",
       "registryDependencies": [
         "foundation"
       ],
@@ -332,7 +349,7 @@
       "name": "list-item",
       "type": "registry:ui",
       "title": "List Item",
-      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Option List composes this for selectable options.",
+      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Includes ListItemLabel and ListItemNest. Option List, Select, Combobox, Tag Input, and Contents Nav compose this for selectable options and outlines.",
       "dependencies": [
         "lucide-react"
       ],
@@ -344,6 +361,11 @@
           "path": "src/components/df-list-item.tsx",
           "type": "registry:ui",
           "target": "default-file-ui/components/df-list-item.tsx"
+        },
+        {
+          "path": "src/components/df-list-item-nest.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-list-item-nest.tsx"
         }
       ]
     },
@@ -566,21 +588,20 @@
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",
-      "description": "Collapsible labeled primary navigation shell with header, search, groups, items, workspace switcher, and account menu. Prefer Tool Rail for icon mode switching and Dock Panel for inspectors.",
+      "description": "Composable primary navigation with provider state, height modes, docked floating or inset variants, icon or offcanvas collapse, collapsible groups with chevron toggles, List Item menu rows, kit ScrollArea content, and a menu hierarchy. Prefer Tool Rail for icon mode switching and Dock Panel for inspectors.",
       "dependencies": [
         "lucide-react"
       ],
       "registryDependencies": [
         "foundation",
+        "button",
+        "label",
         "list-item",
-        "badge",
         "search-input",
         "tooltip",
-        "option-list",
-        "popover",
-        "scroll-area",
         "separator",
-        "button"
+        "skeleton",
+        "scroll-area"
       ],
       "files": [
         {
