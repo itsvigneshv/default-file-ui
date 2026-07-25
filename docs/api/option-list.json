@@ -13,6 +13,7 @@
   "chapter": "inputs",
   "registryDependencies": [
     "foundation",
+    "list-item",
     "search-input",
     "scroll-area"
   ],
@@ -246,7 +247,7 @@
       {
         "id": "option-list-item",
         "title": "OptionListItem",
-        "description": "Selectable row with leading control, secondary copy, trailing badge or chevron, and selection indicator. Inside OptionListSubmenu (trigger zone) it opens the submenu on hover instead of selecting.",
+        "description": "Selectable ListItem with value, search filter, and submenu trigger behavior. Row chrome comes from ListItem. Inside OptionListSubmenu (trigger zone) it opens the submenu on hover instead of selecting.",
         "props": [
           {
             "name": "value",

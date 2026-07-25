@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T06:04:11.120Z",
+  "generatedAt": "2026-07-25T07:12:49.368Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -372,6 +372,29 @@
       "propCount": 25
     },
     {
+      "slug": "list-item",
+      "name": "list-item",
+      "title": "List Item",
+      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Option List composes this for selectable options.",
+      "aliases": [
+        "list row",
+        "menu item",
+        "nav item",
+        "option row",
+        "line item",
+        "List Item"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-list-item",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 21
+    },
+    {
       "slug": "number-slider",
       "name": "number-slider",
       "title": "Number Slider",
@@ -407,6 +430,7 @@
       "chapter": "inputs",
       "registryDependencies": [
         "foundation",
+        "list-item",
         "search-input",
         "scroll-area"
       ],

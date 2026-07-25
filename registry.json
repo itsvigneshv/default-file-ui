@@ -329,6 +329,25 @@
       ]
     },
     {
+      "name": "list-item",
+      "type": "registry:ui",
+      "title": "List Item",
+      "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Option List composes this for selectable options.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "foundation"
+      ],
+      "files": [
+        {
+          "path": "src/components/df-list-item.tsx",
+          "type": "registry:ui",
+          "target": "default-file-ui/components/df-list-item.tsx"
+        }
+      ]
+    },
+    {
       "name": "option-list",
       "type": "registry:ui",
       "title": "Option List",
@@ -338,6 +357,7 @@
       ],
       "registryDependencies": [
         "foundation",
+        "list-item",
         "search-input",
         "scroll-area"
       ],

@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import { createPortal } from "react-dom"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
+import { ListItem } from "./df-list-item"
 import { SearchInput } from "./df-search-input"
 import { ScrollArea } from "./df-scroll-area"
 import {
@@ -759,10 +760,15 @@ function scrollSelectedIntoListViewport(
   }
 }
 
+const LIST_ITEM_HOST_SELECTOR =
+  '[data-df="list-item"], [data-df="option-list-item"]'
+const LIST_ITEM_LABEL_SELECTOR =
+  '[data-df="list-item-label"], [data-df="option-list-item-label"]'
+
 function navigableOptions(root: HTMLElement): HTMLElement[] {
   const items = Array.from(
     root.querySelectorAll<HTMLElement>(
-      '[data-df="option-list-item"]:not([data-disabled])'
+      `${LIST_ITEM_HOST_SELECTOR}:not([data-disabled])`
     )
   )
   return items.filter(
@@ -771,9 +777,7 @@ function navigableOptions(root: HTMLElement): HTMLElement[] {
 }
 
 function optionText(item: HTMLElement): string {
-  const label = item.querySelector<HTMLElement>(
-    '[data-df="option-list-item-label"]'
-  )
+  const label = item.querySelector<HTMLElement>(LIST_ITEM_LABEL_SELECTOR)
   return (label?.textContent ?? item.textContent ?? "").trim().toLowerCase()
 }
 
@@ -850,7 +854,7 @@ function OptionListContent({
     const root = contentRef.current
     if (!root) return
     const selected = root.querySelector<HTMLElement>(
-      '[data-df="option-list-item"][data-state="selected"]'
+      `${LIST_ITEM_HOST_SELECTOR}[data-state="selected"]`
     )
     if (!selected) return
     scrollSelectedIntoListViewport(selected, root)
@@ -1101,7 +1105,7 @@ function OptionListLabel({
 
 type OptionListItemLeading = "checkbox" | "check" | React.ReactNode | false
 
-type OptionListItemProps = React.HTMLAttributes<HTMLDivElement> & {
+type OptionListItemProps = React.HTMLAttributes<HTMLElement> & {
   value: string
   disabled?: boolean
   leading?: OptionListItemLeading
@@ -1183,33 +1187,8 @@ function OptionListItem({
     if (!haystack.includes(query)) return null
   }
 
-  let leadingNode: React.ReactNode = null
-  if (leading === "checkbox") {
-    leadingNode = (
-      <span
-        data-df="option-list-checkbox"
-        data-state={selected ? "checked" : "unchecked"}
-        aria-hidden
-      >
-        {selected ? <Check className="size-3" strokeWidth={3} /> : null}
-      </span>
-    )
-  } else if (leading === "check") {
-    leadingNode = selected ? (
-      <Check className="size-4 shrink-0" aria-hidden />
-    ) : (
-      <span className="size-4 shrink-0" aria-hidden />
-    )
-  } else if (leading != null && leading !== false) {
-    leadingNode = (
-      <span data-df="option-list-item-leading" aria-hidden>
-        {leading}
-      </span>
-    )
-  }
-
   const setItemRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLElement | null) => {
       if (isSubmenuTrigger && submenu) {
         submenu.triggerRef.current = node
       }
@@ -1218,7 +1197,7 @@ function OptionListItem({
   )
 
   return (
-    <div
+    <ListItem
       {...props}
       ref={setItemRef}
       id={idProp ?? (isSubmenuTrigger ? undefined : optionDomId(value))}
@@ -1226,24 +1205,18 @@ function OptionListItem({
       aria-selected={isSubmenuTrigger ? undefined : selected}
       aria-haspopup={isSubmenuTrigger ? "menu" : undefined}
       aria-expanded={isSubmenuTrigger ? submenu?.open : undefined}
-      data-df="option-list-item"
+      selected={isSubmenuTrigger ? false : selected}
+      highlighted={highlighted}
+      disabled={disabled}
+      open={Boolean(isSubmenuTrigger && submenu?.open)}
+      leading={leading}
+      secondary={secondary}
+      layout={copyLayout}
+      trailing={trailing}
+      indicator={showTrailingIndicator}
       data-value={value}
       data-active={keyboardActive ? "" : undefined}
-      data-state={
-        isSubmenuTrigger
-          ? submenu?.open
-            ? "open"
-            : "idle"
-          : selected
-            ? "selected"
-            : "idle"
-      }
-      data-layout={copyLayout}
-      data-disabled={disabled ? "" : undefined}
-      data-leading={showCheckbox ? "checkbox" : leading ? "custom" : undefined}
-      data-trailing={trailing != null ? "" : undefined}
       data-submenu-trigger={isSubmenuTrigger ? "" : undefined}
-      data-highlighted={highlighted ? "" : undefined}
       className={cn(className)}
       onMouseEnter={(event) => {
         onMouseEnter?.(event)
@@ -1260,22 +1233,8 @@ function OptionListItem({
         if (closeOnSelect) setOpen(false)
       }}
     >
-      {leadingNode}
-      <span data-df="option-list-item-copy" data-layout={copyLayout}>
-        <span data-df="option-list-item-label">{children}</span>
-        {secondary != null ? (
-          <span data-df="option-list-item-secondary">{secondary}</span>
-        ) : null}
-      </span>
-      {trailing != null ? (
-        <span data-df="option-list-item-trailing">{trailing}</span>
-      ) : null}
-      {showTrailingIndicator && selected ? (
-        <span data-df="option-list-item-indicator">
-          <Check className="pointer-events-none size-4" />
-        </span>
-      ) : null}
-    </div>
+      {children}
+    </ListItem>
   )
 }
 

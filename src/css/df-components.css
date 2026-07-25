@@ -88,6 +88,7 @@
   [data-df="select-value-badge-remove"],
   [data-df="option-list-trigger"],
   [data-df="option-list-item"],
+  [data-df="list-item"],
   [data-df="option-list-scroll-up-button"],
   [data-df="option-list-scroll-down-button"],
   [data-df="popover-trigger"],
@@ -5438,6 +5439,7 @@
 }
 
 :where([data-df="select-value"]:has([data-df="badge"])),
+:where([data-df="list-item-label"]:has([data-df="badge"])),
 :where([data-df="option-list-item-label"]:has([data-df="badge"])) {
   display: inline-flex;
   max-width: 100%;
@@ -5453,6 +5455,7 @@
 }
 
 :where([data-df="select-value"]:has([data-df="badge"]) > :first-child),
+:where([data-df="list-item-label"]:has([data-df="badge"]) > :first-child),
 :where([data-df="option-list-item-label"]:has([data-df="badge"]) > :first-child) {
   min-width: 0;
   overflow: hidden;
@@ -5461,6 +5464,7 @@
 }
 
 :where([data-df="select-value"] [data-df="badge"]),
+:where([data-df="list-item-label"] [data-df="badge"]),
 :where([data-df="option-list-item-label"] [data-df="badge"]) {
   flex-shrink: 0;
 }
@@ -5731,23 +5735,33 @@
   position: relative;
 }
 
+:where([data-df="option-list-submenu"][data-animated="false"] [data-df="list-item"][data-submenu-trigger]),
 :where([data-df="option-list-submenu"][data-animated="false"] [data-df="option-list-item"][data-submenu-trigger]),
+:where([data-df="option-list-submenu"][data-animated="false"] [data-df="list-item-trailing"] svg),
 :where([data-df="option-list-submenu"][data-animated="false"] [data-df="option-list-item-trailing"] svg) {
   transition: none;
 }
 
-:where([data-df="option-list-submenu"][data-animated="false"] [data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg) {
+:where([data-df="option-list-submenu"][data-animated="false"] [data-df="list-item"][data-submenu-trigger][data-state="open"] [data-df="list-item-trailing"] svg),
+:where([data-df="option-list-submenu"][data-animated="false"] [data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg),
+:where([data-df="option-list-submenu"][data-animated="false"] [data-df="list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg),
+:where([data-df="option-list-submenu"][data-animated="false"] [data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="list-item-trailing"] svg) {
   transform: none;
 }
 
+:where([data-df="list-item"][data-submenu-trigger]),
 :where([data-df="option-list-item"][data-submenu-trigger]) {
   transition: color var(--df-duration-moderate) var(--df-ease-emphasized);
 }
 
+:where([data-df="list-item-trailing"] svg),
 :where([data-df="option-list-item-trailing"] svg) {
   transition: transform var(--df-duration-slow) var(--df-ease-emphasized);
 }
 
+:where([data-df="list-item"][data-submenu-trigger][data-state="open"] [data-df="list-item-trailing"] svg),
+:where([data-df="list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg),
+:where([data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="list-item-trailing"] svg),
 :where([data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg) {
   transform: translateX(var(--border-width-thick));
 }
@@ -5758,11 +5772,16 @@
     animation: none;
   }
 
+  :where([data-df="list-item"][data-submenu-trigger]),
   :where([data-df="option-list-item"][data-submenu-trigger]),
+  :where([data-df="list-item-trailing"] svg),
   :where([data-df="option-list-item-trailing"] svg) {
     transition: none;
   }
 
+  :where([data-df="list-item"][data-submenu-trigger][data-state="open"] [data-df="list-item-trailing"] svg),
+  :where([data-df="list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg),
+  :where([data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="list-item-trailing"] svg),
   :where([data-df="option-list-item"][data-submenu-trigger][data-state="open"] [data-df="option-list-item-trailing"] svg) {
     transform: none;
   }
@@ -5871,6 +5890,7 @@
   gap: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="list-item"]),
 :where([data-df="option-list-item"]),
 :where([data-df="select-item"]) {
   position: relative;
@@ -5889,8 +5909,47 @@
   outline: none;
   white-space: nowrap;
   transition: color var(--df-duration-quick) ease;
+  text-decoration: none;
 }
 
+:where([data-df="list-item"][data-size="sm"]) {
+  gap: calc(2 * var(--spacing-unit, 0.25rem));
+  border-radius: var(--radius-md);
+  padding: calc(1 * var(--spacing-unit, 0.25rem))
+    calc(2 * var(--spacing-unit, 0.25rem));
+  font-size: var(--df-text-11);
+}
+
+:where([data-df="list-item"][data-size="lg"]) {
+  gap: calc(3 * var(--spacing-unit, 0.25rem));
+  padding: calc(3 * var(--spacing-unit, 0.25rem))
+    calc(6 * var(--spacing-unit, 0.25rem))
+    calc(3 * var(--spacing-unit, 0.25rem))
+    calc(3.5 * var(--spacing-unit, 0.25rem));
+  font-size: var(--df-text-base);
+}
+
+:where([data-df="list-item"][data-variant="muted"]) {
+  border-radius: var(--radius-lg);
+  padding: calc(2 * var(--spacing-unit, 0.25rem))
+    calc(3 * var(--spacing-unit, 0.25rem));
+  color: var(--muted-foreground);
+  font-weight: var(--df-font-weight-normal);
+}
+
+:where([data-df="list-item"][data-variant="muted"][data-size="sm"]) {
+  border-radius: var(--radius-md);
+  padding: calc(1 * var(--spacing-unit, 0.25rem))
+    calc(2 * var(--spacing-unit, 0.25rem));
+  font-size: var(--df-text-11);
+  line-height: var(--df-leading-snug, var(--df-leading-4));
+}
+
+:where([data-df="list-item"][data-variant="muted"][data-size="md"]) {
+  font-size: var(--df-text-sm);
+}
+
+:where([data-df="list-item"][data-layout="stacked"]),
 :where([data-df="option-list-item"][data-layout="stacked"]),
 :where([data-df="select-item"][data-layout="stacked"]) {
   --df-title-line: var(--df-leading-5);
@@ -5903,6 +5962,8 @@
   white-space: normal;
 }
 
+:where([data-df="list-item"][data-leading="checkbox"]),
+:where([data-df="list-item"][data-trailing]),
 :where([data-df="option-list-item"][data-leading="checkbox"]),
 :where([data-df="option-list-item"][data-trailing]),
 :where([data-df="select-item"][data-leading="checkbox"]),
@@ -5910,6 +5971,7 @@
   padding-right: calc(3 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="list-item"][data-layout="stacked"][data-leading]),
 :where([data-df="option-list-item"][data-layout="stacked"][data-leading]),
 :where([data-df="select-item"][data-layout="stacked"][data-leading]) {
   --df-option-list-stacked-pad-y: calc(3 * var(--spacing-unit, 0.25rem));
@@ -5917,6 +5979,12 @@
   padding-bottom: var(--df-option-list-stacked-pad-y);
 }
 
+:where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-checkbox"]),
+:where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-leading"]),
+:where([data-df="list-item"][data-layout="stacked"] [data-df="option-list-checkbox"]),
+:where([data-df="list-item"][data-layout="stacked"] [data-df="option-list-item-leading"]),
+:where([data-df="option-list-item"][data-layout="stacked"] [data-df="list-item-checkbox"]),
+:where([data-df="option-list-item"][data-layout="stacked"] [data-df="list-item-leading"]),
 :where([data-df="option-list-item"][data-layout="stacked"] [data-df="option-list-checkbox"]),
 :where([data-df="option-list-item"][data-layout="stacked"] [data-df="option-list-item-leading"]),
 :where([data-df="select-item"][data-layout="stacked"] [data-df="option-list-checkbox"]),
@@ -5924,11 +5992,17 @@
   margin-top: var(--df-title-lead-offset);
 }
 
+:where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-trailing"]),
+:where([data-df="list-item"][data-layout="stacked"] [data-df="option-list-item-trailing"]),
+:where([data-df="option-list-item"][data-layout="stacked"] [data-df="list-item-trailing"]),
 :where([data-df="option-list-item"][data-layout="stacked"] [data-df="option-list-item-trailing"]),
 :where([data-df="select-item"][data-layout="stacked"] [data-df="option-list-item-trailing"]) {
   margin-top: var(--df-title-lead-offset);
 }
 
+:where([data-df="list-item"][data-layout="stacked"] [data-df="list-item-indicator"]),
+:where([data-df="list-item"][data-layout="stacked"] [data-df="option-list-item-indicator"]),
+:where([data-df="option-list-item"][data-layout="stacked"] [data-df="list-item-indicator"]),
 :where([data-df="option-list-item"][data-layout="stacked"] [data-df="option-list-item-indicator"]),
 :where([data-df="select-item"][data-layout="stacked"] [data-df="option-list-item-indicator"]) {
   top: calc(
@@ -5936,6 +6010,7 @@
   );
 }
 
+:where([data-df="list-item-copy"]),
 :where([data-df="option-list-item-copy"]) {
   display: flex;
   min-width: 0;
@@ -5945,6 +6020,7 @@
   gap: calc(1.5 * var(--spacing-unit, 0.25rem)) calc(2 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="list-item-copy"][data-layout="stacked"]),
 :where([data-df="option-list-item-copy"][data-layout="stacked"]) {
   flex-direction: column;
   flex-wrap: nowrap;
@@ -5952,26 +6028,40 @@
   gap: calc(0.5 * var(--spacing-unit, 0.25rem));
 }
 
+:where([data-df="list-item-label"]),
 :where([data-df="option-list-item-label"]) {
   min-width: 0;
   color: var(--foreground);
   font-weight: var(--df-font-weight-medium);
 }
 
+:where([data-df="list-item"][data-variant="muted"] [data-df="list-item-label"]) {
+  color: inherit;
+  font-weight: inherit;
+}
+
+:where([data-df="list-item-copy"][data-layout="stacked"] [data-df="list-item-label"]),
+:where([data-df="list-item-copy"][data-layout="stacked"] [data-df="option-list-item-label"]),
+:where([data-df="option-list-item-copy"][data-layout="stacked"] [data-df="list-item-label"]),
 :where([data-df="option-list-item-copy"][data-layout="stacked"] [data-df="option-list-item-label"]) {
   line-height: var(--df-title-line, var(--df-leading-5));
 }
 
+:where([data-df="list-item-secondary"]),
 :where([data-df="option-list-item-secondary"]) {
   color: var(--muted-foreground);
   font-weight: var(--df-font-weight-normal);
 }
 
+:where([data-df="list-item-copy"][data-layout="stacked"] [data-df="list-item-secondary"]),
+:where([data-df="list-item-copy"][data-layout="stacked"] [data-df="option-list-item-secondary"]),
+:where([data-df="option-list-item-copy"][data-layout="stacked"] [data-df="list-item-secondary"]),
 :where([data-df="option-list-item-copy"][data-layout="stacked"] [data-df="option-list-item-secondary"]) {
   font-size: var(--df-text-xs);
   line-height: var(--df-leading-4);
 }
 
+:where([data-df="list-item-trailing"]),
 :where([data-df="option-list-item-trailing"]) {
   display: inline-flex;
   flex-shrink: 0;
@@ -5980,6 +6070,7 @@
   margin-left: auto;
 }
 
+:where([data-df="list-item-leading"]),
 :where([data-df="option-list-item-leading"]) {
   display: inline-flex;
   width: calc(4 * var(--spacing-unit, 0.25rem));
@@ -5991,12 +6082,14 @@
   line-height: 0;
 }
 
+:where([data-df="list-item-leading"] svg),
 :where([data-df="option-list-item-leading"] svg) {
   display: block;
   width: 100%;
   height: 100%;
 }
 
+:where([data-df="list-item-checkbox"]),
 :where([data-df="option-list-checkbox"]) {
   display: inline-flex;
   width: calc(4 * var(--spacing-unit, 0.25rem));
@@ -6011,11 +6104,16 @@
   transition: border-color var(--df-duration-quick) ease;
 }
 
+:where([data-df="list-item-checkbox"][data-state="checked"]),
 :where([data-df="option-list-checkbox"][data-state="checked"]) {
   border-color: var(--primary);
   background: var(--primary);
 }
 
+:where([data-df="list-item"][data-variant="accent"]:hover:not([data-disabled])),
+:where([data-df="list-item"][data-variant="accent"][data-highlighted]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="accent"][data-active]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="accent"]:focus-visible:not([data-disabled])),
 :where([data-df="option-list-item"]:hover:not([data-disabled])),
 :where([data-df="option-list-item"][data-highlighted]:not([data-disabled])),
 :where([data-df="option-list-item"][data-active]:not([data-disabled])),
@@ -6028,11 +6126,14 @@
   color: var(--accent-foreground);
 }
 
+:where([data-df="list-item"][data-variant="accent"]:active:not([data-disabled])),
 :where([data-df="option-list-item"]:active:not([data-disabled])),
 :where([data-df="select-item"]:active:not([data-disabled])) {
   background-color: color-mix(in oklch, var(--accent) 85%, var(--foreground));
 }
 
+:where([data-df="list-item"][data-variant="accent"][data-state="selected"]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="accent"][aria-selected="true"]:not([data-disabled])),
 :where([data-df="option-list-item"][data-state="selected"]:not([data-disabled])),
 :where([data-df="option-list-item"][aria-selected="true"]:not([data-disabled])),
 :where([data-df="select-item"][data-state="selected"]:not([data-disabled])),
@@ -6040,6 +6141,9 @@
   background-color: color-mix(in oklch, var(--accent) 70%, transparent);
 }
 
+:where([data-df="list-item"][data-variant="accent"][data-state="selected"]:hover:not([data-disabled])),
+:where([data-df="list-item"][data-variant="accent"][data-state="selected"][data-highlighted]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="accent"][data-state="selected"][data-active]:not([data-disabled])),
 :where([data-df="option-list-item"][data-state="selected"]:hover:not([data-disabled])),
 :where([data-df="option-list-item"][data-state="selected"][data-highlighted]:not([data-disabled])),
 :where([data-df="option-list-item"][data-state="selected"][data-active]:not([data-disabled])),
@@ -6049,6 +6153,31 @@
   background-color: var(--accent);
 }
 
+:where([data-df="list-item"][data-variant="muted"]:hover:not([data-disabled])),
+:where([data-df="list-item"][data-variant="muted"][data-highlighted]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="muted"][data-active]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="muted"]:focus-visible:not([data-disabled])) {
+  background-color: color-mix(in oklch, var(--muted) 60%, transparent);
+  color: var(--foreground);
+}
+
+:where([data-df="list-item"][data-variant="muted"][data-size="sm"]:hover:not([data-disabled])),
+:where([data-df="list-item"][data-variant="muted"][data-size="sm"][data-highlighted]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="muted"][data-size="sm"][data-active]:not([data-disabled])) {
+  background-color: color-mix(in oklch, var(--muted) 30%, transparent);
+}
+
+:where([data-df="list-item"][data-variant="muted"][data-state="selected"]:not([data-disabled])),
+:where([data-df="list-item"][data-variant="muted"][aria-selected="true"]:not([data-disabled])) {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+:where([data-df="list-item"][data-variant="muted"][data-size="sm"][data-state="selected"]:not([data-disabled])) {
+  background-color: color-mix(in oklch, var(--muted) 40%, transparent);
+}
+
+:where([data-df="list-item"][data-disabled]),
 :where([data-df="option-list-item"][data-disabled]),
 :where([data-df="select-item"][data-disabled]) {
   cursor: not-allowed;
@@ -6056,6 +6185,7 @@
   opacity: var(--opacity-disabled);
 }
 
+:where([data-df="list-item-indicator"]),
 :where([data-df="option-list-item-indicator"]),
 :where([data-df="select-item-indicator"]) {
   position: absolute;
@@ -8650,6 +8780,9 @@
   }
 
   :where(
+    [data-df="list-item"][data-state="selected"]:not([data-disabled]),
+    [data-df="list-item"][data-highlighted]:not([data-disabled]),
+    [data-df="list-item"][data-active]:not([data-disabled]),
     [data-df="option-list-item"][data-state="selected"]:not([data-disabled]),
     [data-df="option-list-item"][data-highlighted]:not([data-disabled]),
     [data-df="option-list-item"][data-active]:not([data-disabled])

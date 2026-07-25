@@ -1,0 +1,155 @@
+{
+  "name": "list-item",
+  "slug": "list-item",
+  "title": "List Item",
+  "description": "Presentational row with leading, secondary, trailing, density, and muted or accent variants. Option List composes this for selectable options.",
+  "aliases": [
+    "list row",
+    "menu item",
+    "nav item",
+    "option row",
+    "line item",
+    "List Item"
+  ],
+  "chapter": "structure",
+  "registryDependencies": [
+    "foundation"
+  ],
+  "importPath": "@default-file/ui/components/df-list-item",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "api": {
+    "description": "Presentational row for menus, pickers, and navigation. Compose leading, secondary, and trailing slots. Option List wraps this for selection. Use asChild to merge onto a link host.",
+    "groups": [
+      {
+        "id": "list-item",
+        "title": "ListItem",
+        "description": "Row chrome, density, and presentational state.",
+        "props": [
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "default": "\"md\"",
+            "description": "Density and type size. md matches Option List rows. sm is compact for nested nav. lg is roomier."
+          },
+          {
+            "name": "variant",
+            "type": "\"accent\" | \"muted\"",
+            "default": "\"accent\"",
+            "description": "accent uses picker hover and selected fills. muted uses quiet nav fills for catalogue and TOC rows."
+          },
+          {
+            "name": "selected",
+            "type": "boolean",
+            "default": "false",
+            "description": "Selected or current row appearance."
+          },
+          {
+            "name": "highlighted",
+            "type": "boolean",
+            "default": "false",
+            "description": "Hover or keyboard highlight without selecting."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "description": "Non-interactive row. Sets aria-disabled."
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "default": "false",
+            "description": "Open state for submenu-style rows."
+          },
+          {
+            "name": "leading",
+            "type": "\"checkbox\" | \"check\" | ReactNode | false",
+            "description": "Leading slot. Pass an icon, \"checkbox\" or \"check\" for selection marks, or false to omit."
+          },
+          {
+            "name": "secondary",
+            "type": "ReactNode",
+            "description": "Supporting copy beside or under the label."
+          },
+          {
+            "name": "layout",
+            "type": "\"inline\" | \"stacked\"",
+            "default": "\"inline\"",
+            "description": "inline places secondary beside the label. stacked places it underneath."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "End slot for badges, chevrons, or actions."
+          },
+          {
+            "name": "indicator",
+            "type": "boolean",
+            "default": "false",
+            "description": "Show a trailing check when selected."
+          },
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "description": "Merge row props onto a single child element such as a link. The child label becomes the row label."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Label text, or a single host element when asChild is true."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the host."
+          }
+        ]
+      },
+      {
+        "id": "list-item-tokens",
+        "title": "Tokens",
+        "description": "Theme defaults live on :root. Override these globally or on a local host.",
+        "props": [
+          {
+            "name": "--accent",
+            "type": "CSS color",
+            "description": "Accent variant hover and selected fill."
+          },
+          {
+            "name": "--muted",
+            "type": "CSS color",
+            "description": "Muted variant selected and hover fills."
+          },
+          {
+            "name": "--muted-foreground",
+            "type": "CSS color",
+            "description": "Muted variant resting label color."
+          },
+          {
+            "name": "--radius-xl",
+            "type": "CSS length",
+            "description": "Default row radius (accent)."
+          },
+          {
+            "name": "--radius-lg",
+            "type": "CSS length",
+            "description": "Muted row radius."
+          },
+          {
+            "name": "--df-text-sm",
+            "type": "CSS length",
+            "description": "Default md type size."
+          },
+          {
+            "name": "--df-text-11",
+            "type": "CSS length",
+            "description": "sm type size."
+          }
+        ]
+      }
+    ]
+  }
+}
