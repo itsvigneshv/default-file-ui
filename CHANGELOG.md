@@ -2,6 +2,10 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.27.12
+
+- Align Featured Icon, Option List, Dropdown Menu, Editor, and anchor-position chrome styles with the Label, Badge, and Select CSS custom property contract.
+
 ## 0.27.11
 
 - Add `cssVars` to build React style objects from CSS custom properties.

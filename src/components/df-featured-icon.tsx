@@ -1,6 +1,5 @@
 import * as React from "react"
 
-import { cssVars } from "../lib/css-vars"
 import { cn } from "../lib/utils"
 
 type FeaturedIconVariant =
@@ -101,17 +100,30 @@ function chromeStyle(options: {
   style?: React.CSSProperties
 }): React.CSSProperties | undefined {
   const { background, borderColor, iconColor, style } = options
-  const overrides: React.CSSProperties = {
-    ...cssVars({
-      "--df-featured-icon-bg": background,
-      "--df-featured-icon-border": borderColor,
-      "--df-featured-icon-border-soft": borderColor,
-      "--df-featured-icon-icon": iconColor,
-    }),
-    ...(iconColor != null ? { color: iconColor } : null),
+  if (
+    background == null &&
+    borderColor == null &&
+    iconColor == null &&
+    style == null
+  ) {
+    return undefined
   }
-  if (Object.keys(overrides).length === 0 && style == null) return undefined
-  return { ...overrides, ...style }
+  return {
+    ...(background != null ? { "--df-featured-icon-bg": background } : null),
+    ...(borderColor != null
+      ? {
+          "--df-featured-icon-border": borderColor,
+          "--df-featured-icon-border-soft": borderColor,
+        }
+      : null),
+    ...(iconColor != null
+      ? {
+          "--df-featured-icon-icon": iconColor,
+          color: iconColor,
+        }
+      : null),
+    ...style,
+  } as React.CSSProperties
 }
 
 const FeaturedIcon = React.forwardRef<HTMLDivElement, FeaturedIconProps>(

@@ -23,7 +23,6 @@ import {
   useDismiss,
   useIsClient,
 } from "../hooks"
-import { cssVars } from "../lib/css-vars"
 import { nearestDarkClass } from "../lib/nearest-theme"
 import { cn, composeRefs } from "../lib/utils"
 
@@ -281,10 +280,10 @@ function OptionListSubContent({
   const mounted = useIsClient()
   if (!mounted || !present) return null
 
-  const motionStyle = cssVars({
+  const motionStyle = {
     "--df-submenu-open-duration": `${motion.openDuration}ms`,
     "--df-submenu-close-duration": `${motion.closeDuration}ms`,
-  })
+  } as React.CSSProperties
 
   const panel = (
     <OptionListSubmenuTriggerZoneContext.Provider value={false}>
