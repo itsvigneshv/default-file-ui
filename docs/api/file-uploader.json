@@ -54,13 +54,13 @@
           {
             "name": "pickFile",
             "type": "(files: FileList | null | undefined) => File | undefined",
-            "description": "Choose a candidate from a drop or browse list. Defaults to the first image file."
+            "description": "Choose a candidate from a drop, browse, or paste list. Defaults to the first image file. Paste gathers files from clipboard files and items."
           },
           {
             "name": "enablePaste",
             "type": "boolean",
             "default": "true",
-            "description": "Listen for image paste on the window while mounted."
+            "description": "Listen for file paste on the window while mounted. Uses pickFile when set; otherwise the first clipboard image."
           },
           {
             "name": "disabled",

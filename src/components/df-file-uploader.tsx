@@ -52,6 +52,31 @@ function pickImageFile(files: FileList | null | undefined): File | undefined {
   return undefined
 }
 
+function fileListFromClipboard(
+  data: DataTransfer | null | undefined
+): FileList | undefined {
+  if (!data) return undefined
+  const transfer = new DataTransfer()
+  const seen = new Set<string>()
+  const push = (file: File | null) => {
+    if (!file) return
+    const key = `${file.name}:${file.size}:${file.type}:${file.lastModified}`
+    if (seen.has(key)) return
+    seen.add(key)
+    transfer.items.add(file)
+  }
+  if (data.files?.length) {
+    for (const file of Array.from(data.files)) push(file)
+  }
+  if (data.items?.length) {
+    for (const item of Array.from(data.items)) {
+      if (item.kind !== "file") continue
+      push(item.getAsFile())
+    }
+  }
+  return transfer.files.length ? transfer.files : undefined
+}
+
 function FileUploader({
   disabled = false,
   accept = "image/png,image/jpeg,image/webp,image/gif",
@@ -146,21 +171,12 @@ function FileUploader({
     if (disabled || !enablePaste) return
 
     const onPaste = (event: ClipboardEvent) => {
-      if (usesDefaultImagePick) {
-        const items = event.clipboardData?.items
-        if (!items) return
-        for (const item of items) {
-          if (!item.type.startsWith("image/")) continue
-          const file = item.getAsFile() ?? undefined
-          if (!acceptCandidate(file)) return
-          event.preventDefault()
-          onFile(file)
-          return
-        }
-        return
-      }
-      const file = pickFile(event.clipboardData?.files)
-      if (!file || !acceptCandidate(file)) return
+      const files = fileListFromClipboard(event.clipboardData)
+      const file = usesDefaultImagePick
+        ? pickImageFile(files)
+        : pickFile(files)
+      if (!file) return
+      if (!acceptCandidate(file)) return
       event.preventDefault()
       onFile(file)
     }

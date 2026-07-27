@@ -2,6 +2,11 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.27.10
+
+- Collect clipboard paste files from both `files` and `items` so custom `pickFile` consumers receive image pastes.
+- Add `--home-tool-preview-scan-note` for Studio Scan Note card media fill.
+
 ## 0.27.9
 
 - Regenerate registry payloads so Kbd install matches the live chord baseline model.
