@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
+import { cssVars } from "../lib/css-vars"
+
 function isSameControllableValue<T>(a: T, b: T): boolean {
   if (Object.is(a, b)) return true
   if (Array.isArray(a) && Array.isArray(b)) {
@@ -251,9 +253,9 @@ function arrowCrossStyle(
     Math.max(cross, inset),
     Math.max(inset, axisSize - inset)
   )
-  return {
-    ["--df-anchor-arrow-cross" as string]: `${clamped}px`,
-  }
+  return cssVars({
+    "--df-anchor-arrow-cross": `${clamped}px`,
+  })
 }
 
 type AnchoredPlacement = {
@@ -458,7 +460,7 @@ export function useAnchoredPosition({
       ...(maxHeight != null ? { maxHeight } : null),
       zIndex: 50,
       visibility: "visible",
-      ["--anchor-width" as string]: `${t.width}px`,
+      ...cssVars({ "--anchor-width": `${t.width}px` }),
     }
 
     if (resolvedSide === "left" || resolvedSide === "right") {

@@ -2,6 +2,14 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.27.11
+
+- Add `cssVars` to build React style objects from CSS custom properties.
+- Route Featured Icon chrome overrides through `cssVars`.
+- Route Option List, Dropdown Menu, Editor, and anchor-position custom properties through `cssVars`.
+- Keep Kbd child flattening on `Children.toArray`.
+- Use a boolean mark check for Option List parts so nested child walks stay typed after a negative match.
+
 ## 0.27.10
 
 - Collect clipboard paste files from both `files` and `items` so custom `pickFile` consumers receive image pastes.

@@ -12,6 +12,7 @@ import {
   type Align,
   type Side,
 } from "../hooks"
+import { cssVars } from "../lib/css-vars"
 import {
   dfPaddingChromeStyle,
   resolvePaddingSides,
@@ -470,16 +471,12 @@ function DropdownMenuContent({
       })
     ),
     ...(gap != null ? { "--df-dropdown-menu-gap": gap } : null),
-    ...(openDuration != null
-      ? {
-          ["--df-dropdown-menu-open-duration" as string]: `${openDuration}ms`,
-        }
-      : null),
-    ...(closeDuration != null
-      ? {
-          ["--df-dropdown-menu-close-duration" as string]: `${closeDuration}ms`,
-        }
-      : null),
+    ...cssVars({
+      "--df-dropdown-menu-open-duration":
+        openDuration != null ? `${openDuration}ms` : null,
+      "--df-dropdown-menu-close-duration":
+        closeDuration != null ? `${closeDuration}ms` : null,
+    }),
     ...resolvedWidth.style,
   } as React.CSSProperties
 
@@ -1335,18 +1332,12 @@ function DropdownMenuSubContent({
     dividerColor,
   })
 
-  const motionStyle = {
-    ...(motion.openDuration != null
-      ? {
-          ["--df-dropdown-menu-submenu-open-duration" as string]: `${motion.openDuration}ms`,
-        }
-      : null),
-    ...(motion.closeDuration != null
-      ? {
-          ["--df-dropdown-menu-submenu-close-duration" as string]: `${motion.closeDuration}ms`,
-        }
-      : null),
-  }
+  const motionStyle = cssVars({
+    "--df-dropdown-menu-submenu-open-duration":
+      motion.openDuration != null ? `${motion.openDuration}ms` : null,
+    "--df-dropdown-menu-submenu-close-duration":
+      motion.closeDuration != null ? `${motion.closeDuration}ms` : null,
+  })
 
   const panel = (
     <DropdownMenuSubmenuTriggerZoneContext.Provider value={false}>

@@ -46,6 +46,7 @@ import {
   type InlineNode,
   type MarkType,
 } from "../lib/df-editor"
+import { cssVars } from "../lib/css-vars"
 import { cn } from "../lib/utils"
 import { Button } from "./df-button"
 
@@ -766,7 +767,7 @@ function Editor({
   const showStatic = toolbar === "static" || toolbar === "both"
   const empty = isDocEmpty(state.doc)
   const style = minHeight
-    ? ({ ["--df-editor-min-height" as string]: minHeight } as React.CSSProperties)
+    ? cssVars({ "--df-editor-min-height": minHeight })
     : undefined
 
   return (

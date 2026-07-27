@@ -23,6 +23,7 @@ import {
   useDismiss,
   useIsClient,
 } from "../hooks"
+import { cssVars } from "../lib/css-vars"
 import { nearestDarkClass } from "../lib/nearest-theme"
 import { cn, composeRefs } from "../lib/utils"
 
@@ -280,10 +281,10 @@ function OptionListSubContent({
   const mounted = useIsClient()
   if (!mounted || !present) return null
 
-  const motionStyle = {
-    ["--df-submenu-open-duration" as string]: `${motion.openDuration}ms`,
-    ["--df-submenu-close-duration" as string]: `${motion.closeDuration}ms`,
-  }
+  const motionStyle = cssVars({
+    "--df-submenu-open-duration": `${motion.openDuration}ms`,
+    "--df-submenu-close-duration": `${motion.closeDuration}ms`,
+  })
 
   const panel = (
     <OptionListSubmenuTriggerZoneContext.Provider value={false}>
@@ -835,10 +836,7 @@ function markOptionListPart<T extends object>(part: T, mark: symbol): T {
   return part
 }
 
-function isOptionListPart(
-  node: React.ReactNode,
-  mark: symbol
-): node is React.ReactElement {
+function isOptionListPart(node: React.ReactNode, mark: symbol): boolean {
   if (!React.isValidElement(node)) return false
   const type = node.type as { [key: symbol]: unknown } | string
   return typeof type !== "string" && Boolean(type[mark])

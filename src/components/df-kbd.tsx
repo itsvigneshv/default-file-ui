@@ -164,10 +164,7 @@ function renderKbdString(
 }
 
 function renderKbdChildren(children: React.ReactNode): React.ReactNode {
-  const parts = React.Children.toArray(children).filter(
-    (child) => child != null && child !== false && child !== true
-  )
-  return renderKbdChord(parts)
+  return renderKbdChord(React.Children.toArray(children))
 }
 
 const Kbd = React.forwardRef<HTMLElement, KbdProps>(function Kbd(

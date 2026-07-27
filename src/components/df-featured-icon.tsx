@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { cssVars } from "../lib/css-vars"
 import { cn } from "../lib/utils"
 
 type FeaturedIconVariant =
@@ -100,17 +101,14 @@ function chromeStyle(options: {
   style?: React.CSSProperties
 }): React.CSSProperties | undefined {
   const { background, borderColor, iconColor, style } = options
-  const overrides: React.CSSProperties = {}
-  if (background != null) {
-    overrides["--df-featured-icon-bg" as string] = background
-  }
-  if (borderColor != null) {
-    overrides["--df-featured-icon-border" as string] = borderColor
-    overrides["--df-featured-icon-border-soft" as string] = borderColor
-  }
-  if (iconColor != null) {
-    overrides["--df-featured-icon-icon" as string] = iconColor
-    overrides.color = iconColor
+  const overrides: React.CSSProperties = {
+    ...cssVars({
+      "--df-featured-icon-bg": background,
+      "--df-featured-icon-border": borderColor,
+      "--df-featured-icon-border-soft": borderColor,
+      "--df-featured-icon-icon": iconColor,
+    }),
+    ...(iconColor != null ? { color: iconColor } : null),
   }
   if (Object.keys(overrides).length === 0 && style == null) return undefined
   return { ...overrides, ...style }
