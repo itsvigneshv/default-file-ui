@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T09:57:52.840Z",
+  "generatedAt": "2026-07-28T16:59:31.908Z",
   "source": "docs/api",
   "colorSystem": {
     "registryName": "color-system",
@@ -168,7 +168,7 @@
       "slug": "contents-nav",
       "name": "contents-nav",
       "title": "Contents Nav",
-      "description": "Page outline and catalogue index built on List Item. Use toc for on-page headings with optional nest line and scroll spy. Use index for sectioned side navigation.",
+      "description": "Page outline and catalogue index composed with List Item. Use toc for on-page headings with optional nest line and scroll spy. Use index for sectioned side navigation.",
       "aliases": [
         "toc",
         "table of contents",

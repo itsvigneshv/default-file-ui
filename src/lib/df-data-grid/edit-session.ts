@@ -13,7 +13,7 @@ export type EditSessionEventInput =
     }
 
 /**
- * Resolve Enter, Escape, and focus-leave while a cell is in edit mode.
+ * Resolve Enter, Escape, and focus leave while a cell is in edit mode.
  * Events already handled by the editor (defaultPrevented) are left alone.
  */
 export function resolveEditSessionEvent(

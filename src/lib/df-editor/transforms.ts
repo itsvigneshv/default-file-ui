@@ -188,7 +188,7 @@ function sameEditableContainer(a: EditorPath, b: EditorPath): boolean {
 /**
  * Toggle an inline mark over the current selection.
  * Contract: when the selection spans more than one editable container
- * (different blocks or list items), this is a no-op and returns the input state.
+ * (different blocks or list items), this returns the input state unchanged.
  */
 export function toggleMark(
   state: EditorState,
@@ -209,9 +209,7 @@ export function toggleMark(
   const to = Math.max(from, Math.min(end.offset, plain.length))
 
   if (isCollapsed) {
-    // Caret toggles are applied by wrapping an empty typed mark run:
-    // insert a zero-width run only when there is adjacent marked text to flip.
-    // Wave 1: caret toggle is a no-op without a range.
+    // Caret mark toggle requires a range; a collapsed caret leaves state unchanged.
     return state
   }
 
@@ -546,8 +544,7 @@ export function deleteSelection(state: EditorState): EditorState {
   const { start, end, isCollapsed } = normalizeSelection(state.selection)
   if (isCollapsed) return state
   if (!sameEditableContainer(start.path, end.path)) {
-    // Multi-block delete collapses to deleting within the start container to the end,
-    // then removes intervening blocks. Keep wave 1 simple: no-op across containers.
+    // Ranges that span containers are not deleted; state stays unchanged.
     return state
   }
 
@@ -824,7 +821,7 @@ export function mergeBlocks(state: EditorState): EditorState {
 }
 
 export function indentListItem(state: EditorState): EditorState {
-  // Wave 1 lists are flat; indent is a no-op reserved for nested lists later.
+  // Flat lists only; indent does not change nesting.
   return state
 }
 

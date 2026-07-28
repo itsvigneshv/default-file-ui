@@ -50,7 +50,7 @@ export function dayOffsetFrom(
 }
 
 /**
- * Build a Sunday-start month grid covering every day shown on the calendar
+ * Build a Sunday start month grid covering every day shown on the calendar
  * surface for `month` (`yyyy-mm` or any date in that month).
  */
 export function buildMonthGrid(

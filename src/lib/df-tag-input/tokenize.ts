@@ -6,7 +6,7 @@ export const PASTE_SEPARATORS = /[,;\s]+/
 
 /**
  * Typing commits only on Enter or comma.
- * Space is not a commit key, so multi-word tags can be typed.
+ * Space is not a commit key, so multi word tags can be typed.
  */
 export const TYPE_COMMIT_SEPARATORS = /[,;]+/
 
@@ -21,7 +21,7 @@ export function tokenizeTagText(
     .filter((part) => part.length > 0)
 }
 
-/** Case-insensitive identity key for duplicate checks. */
+/** Case insensitive identity key for duplicate checks. */
 export function tagKey(tag: string): string {
   return tag.trim().toLowerCase()
 }
@@ -104,7 +104,7 @@ export function commitTagBatch(
   return { tags, accepted, rejected }
 }
 
-/** Filter suggestion labels by the current draft (case-insensitive substring). */
+/** Filter suggestion labels by the current draft (case insensitive substring). */
 export function filterTagSuggestions(
   suggestions: readonly string[],
   draft: string,

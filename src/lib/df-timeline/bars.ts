@@ -30,7 +30,7 @@ function clampProgress(value: number | undefined): number | null {
 
 /**
  * Project row dates onto the scale as bar rectangles.
- * Rows missing both dates produce no bar. A single missing bound yields an open-ended bar.
+ * Rows missing both dates produce no bar. A single missing bound yields an open ended bar.
  */
 export function layoutTimelineBars(
   rows: readonly TimelineBarInput[],

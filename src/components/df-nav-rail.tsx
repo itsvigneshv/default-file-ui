@@ -35,7 +35,7 @@ type NavRailProps = Omit<React.ComponentProps<"nav">, "color"> & {
   /** Edge the rail sits on. Controls inner border side and axis (vertical or horizontal). */
   side?: NavRailSide
   /**
-   * Cross-axis size of the rail. Prefer tokens such as var(--df-nav-rail-width).
+   * Cross axis size of the rail. Prefer tokens such as var(--df-nav-rail-width).
    * On left or right this is the rail width. On top or bottom this is the rail height.
    * Sets --df-nav-rail-width.
    */
@@ -47,7 +47,7 @@ type NavRailProps = Omit<React.ComponentProps<"nav">, "color"> & {
   cornerShape?: DfCornerShape
   /** Rail background. Prefer tokens such as var(--background). Sets --df-nav-rail-bg. */
   background?: string
-  /** Inner-edge border color. Prefer tokens such as var(--border). Sets --df-nav-rail-border. */
+  /** Inner edge border color. Prefer tokens such as var(--border). Sets --df-nav-rail-border. */
   borderColor?: string
   /**
    * Resting icon and label color. Prefer tokens such as var(--muted-foreground).
@@ -55,7 +55,7 @@ type NavRailProps = Omit<React.ComponentProps<"nav">, "color"> & {
    */
   iconColor?: string
   /**
-   * Active icon-plate fill. Prefer tokens such as var(--df-nav-rail-item-active-bg).
+   * Active icon plate fill. Prefer tokens such as var(--df-nav-rail-item-active-bg).
    * Sets --df-nav-rail-item-active-bg on this instance.
    */
   activeBackground?: string
@@ -70,7 +70,7 @@ type NavRailProps = Omit<React.ComponentProps<"nav">, "color"> & {
    */
   shadow?: string
   /**
-   * When true and shadow is omitted, applies the side-matched edge shadow token.
+   * When true and shadow is omitted, applies the side matched edge shadow token.
    */
   edgeShadow?: boolean
   /**
@@ -173,7 +173,7 @@ type NavRailItemProps = Omit<React.ComponentProps<"button">, "children"> & {
    */
   iconColor?: string
   /**
-   * Active icon-plate fill for this item. Prefer tokens.
+   * Active icon plate fill for this item. Prefer tokens.
    * Sets --df-nav-rail-item-active-bg.
    */
   activeBackground?: string

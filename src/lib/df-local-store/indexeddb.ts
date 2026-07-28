@@ -91,7 +91,7 @@ type StoredRow = {
 
 /**
  * IndexedDB LocalStore adapter.
- * Writes degrade to a reported no-op when the database is unavailable or full.
+ * Writes degrade to a reported noop when the database is unavailable or full.
  */
 export function createIndexedDbLocalStore(
   options: IndexedDbLocalStoreOptions = {}

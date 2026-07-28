@@ -45,7 +45,7 @@ function mergeRanges(indices: number[]): MatchRange[] {
 }
 
 /**
- * Case-insensitive subsequence match with bonuses for exact prefixes,
+ * Case insensitive subsequence match with bonuses for exact prefixes,
  * word starts, and consecutive runs. Returns null when the query does not match.
  */
 export function scoreFuzzy(query: string, text: string): FuzzyScore | null {

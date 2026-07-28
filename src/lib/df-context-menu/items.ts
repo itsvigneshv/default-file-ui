@@ -40,7 +40,7 @@ export function findAction(
   return null
 }
 
-/** Enabled action entries in document order (top-level only). */
+/** Enabled action entries in document order (top level only). */
 export function navigableActions(
   entries: ContextMenuEntry[]
 ): ContextMenuActionBase[] {
@@ -77,7 +77,7 @@ export function edgeActionId(
   return edge === "start" ? items[0]!.id : items[items.length - 1]!.id
 }
 
-/** First-letter typeahead over enabled item labels. */
+/** First letter typeahead over enabled item labels. */
 export function typeaheadActionId(
   entries: ContextMenuEntry[],
   query: string,

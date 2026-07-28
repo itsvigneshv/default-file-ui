@@ -23,7 +23,7 @@ type ContentsNavLayout = "grouped" | "flat"
 type ContentsNavItemData = {
   id: string
   title: React.ReactNode
-  /** Pass null to render a non-link row. toc defaults omitted href to #id. */
+  /** Pass null to render a row without a link. toc defaults omitted href to #id. */
   href?: string | null
   disabled?: boolean
   readOnly?: boolean
@@ -49,9 +49,9 @@ type ContentsNavContextValue = {
   itemVariant: ListItemVariant
   itemSize: ListItemSize
   nestItemSize: ListItemSize
-  /** Default List Item chrome for every row. Per-item props win. */
+  /** Default List Item chrome for every row. Per item props win. */
   itemChrome?: ListItemChromeProps
-  /** Default ListItemNest chrome for data-driven child groups. */
+  /** Default ListItemNest chrome for data driven child groups. */
   nestChrome?: ListItemNestChromeProps
   activeId: string
   setActiveId: (id: string) => void
@@ -152,7 +152,7 @@ type ContentsNavProps = Omit<React.ComponentProps<"nav">, "title"> & {
   sections?: ContentsNavSectionData[]
   /** Index list shape. grouped uses sections; flat renders items only. */
   layout?: ContentsNavLayout
-  /** Default nest guide line for toc trees. Per-nest override via ListItemNest. */
+  /** Default nest guide line for toc trees. Per nest override via ListItemNest. */
   nestLine?: boolean
   scrollSpy?: boolean
   scrollRoot?: ContentsNavScrollRoot
@@ -164,9 +164,9 @@ type ContentsNavProps = Omit<React.ComponentProps<"nav">, "title"> & {
   itemVariant?: ListItemVariant
   itemSize?: ListItemSize
   nestItemSize?: ListItemSize
-  /** Default List Item chrome for every row. Per-item props win. */
+  /** Default List Item chrome for every row. Per item props win. */
   itemChrome?: ListItemChromeProps
-  /** Default ListItemNest chrome for data-driven child groups. */
+  /** Default ListItemNest chrome for data driven child groups. */
   nestChrome?: ListItemNestChromeProps
   renderItem?: (
     item: ContentsNavItemData,

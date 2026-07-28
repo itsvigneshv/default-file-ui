@@ -43,7 +43,7 @@ type DropdownMenuSurfaceChromeProps = {
   borderWidth?: string
   borderStyle?: string
   radius?: string
-  /** Panel box-shadow. Off by default. Pass a kit elevation token, or none or false. */
+  /** Panel shadow. Off by default. Pass a kit elevation token, or none or false. */
   shadow?: string | false
   dividerColor?: string
 }
@@ -305,7 +305,7 @@ type DropdownMenuContentProps = React.HTMLAttributes<HTMLDivElement> &
     openDuration?: number
     closeDuration?: number
     gap?: string
-    /** Default List Item density for rows in this panel. Per-item size wins. */
+    /** Default List Item density for rows in this panel. Per item size wins. */
     itemSize?: ListItemSize
   }
 

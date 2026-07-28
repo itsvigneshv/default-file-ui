@@ -10,7 +10,7 @@ export type LocalStoreEntry<T> = {
   value: T
 }
 
-/** Typed async key-value store with per-entry metadata. */
+/** Typed async key value store with per entry metadata. */
 export type LocalStore = {
   get<T>(key: string): Promise<LocalStoreEntry<T> | undefined>
   set<T>(key: string, entry: LocalStoreEntry<T>): Promise<LocalStoreWriteStatus>

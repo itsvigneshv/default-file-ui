@@ -44,7 +44,7 @@ function unitsFromDelta(deltaPx: number, stride: number): number {
   if (!Number.isFinite(deltaPx) || !Number.isFinite(stride) || stride <= 0) {
     return 0
   }
-  // Half-cell hysteresis with symmetric midpoint rounding away from zero.
+  // Half cell hysteresis with symmetric midpoint rounding away from zero.
   const ratio = deltaPx / stride
   const sign = ratio < 0 ? -1 : 1
   return sign * Math.round(Math.abs(ratio))

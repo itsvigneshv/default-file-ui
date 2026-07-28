@@ -84,11 +84,11 @@ export function useBoardDnd<T extends BoardCard>(options: {
   columns: BoardColumn<T>[]
   onChange: (columns: BoardColumn<T>[]) => void
   disabled?: boolean
-  /** Opt-in edge auto-scroll while pointer dragging. */
+  /** Opt in edge auto scroll while pointer dragging. */
   autoScroll?: BoardAutoScrollOption
-  /** Opt-in portal ghost; host mounts `DragOverlay` with `overlay`. */
+  /** Opt in portal ghost; host mounts `DragOverlay` with `overlay`. */
   overlay?: boolean
-  /** Opt-in multi-item drag when the active id is in this set. */
+  /** Opt in multi item drag when the active id is in this set. */
   selectedIds?: ReadonlySet<string> | readonly string[]
   /** Called with ordered movers and insertion point after a successful drop. */
   onDropCommit?: (commit: {
@@ -97,7 +97,7 @@ export function useBoardDnd<T extends BoardCard>(options: {
     columnId: string
     insertIndex: number
   }) => void
-  /** Opt-in per-slot drop indicator state. */
+  /** Opt in per slot drop indicator state. */
   dropIndicators?: boolean
 }) {
   const {

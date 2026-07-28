@@ -12,7 +12,7 @@ export function isSafeHref(href: string): boolean {
 
   const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(value)
   if (!schemeMatch) {
-    // Relative, hash, or protocol-relative-looking without scheme token.
+    // Relative, hash, or protocol relative looking without scheme token.
     if (value.startsWith("//")) return false
     return true
   }

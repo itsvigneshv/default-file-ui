@@ -333,9 +333,9 @@ This voice applies to **how findings are written**. It does **not** limit usage,
 
 Write each finding as:
 
-1. **Observation** — what is present or missing in the UI (concrete region or pattern)
-2. **Impact** — why it matters for this surface (match the mode)
-3. **Recommendation** — the structural change to make next
+1. **Observation**: what is present or missing in the UI (concrete region or pattern)
+2. **Impact**: why it matters for this surface (match the mode)
+3. **Recommendation**: the structural change to make next
 
 Impact by mode:
 
@@ -406,7 +406,7 @@ spec | problem : <one line rationale>
 3.
 
 ### Top 3 quick wins
-1. <change> — <why it improves clarity or the user goal>
+1. <change>: <why it improves clarity or the user goal>
 2.
 3.
 

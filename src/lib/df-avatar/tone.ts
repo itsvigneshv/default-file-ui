@@ -1,5 +1,5 @@
 /**
- * Mid-tone kit scale steps used for initials avatars.
+ * Mid tone kit scale steps used for initials avatars.
  * Values are CSS custom property names without the surrounding var().
  */
 export const AVATAR_TONE_TOKENS = [
@@ -23,7 +23,7 @@ export const AVATAR_TONE_TOKENS = [
 
 export type AvatarToneToken = (typeof AVATAR_TONE_TOKENS)[number]
 
-/** Stable non-cryptographic hash of a display name. */
+/** Stable hash of a display name. Not for cryptography. */
 export function hashName(name: string): number {
   let hash = 2166136261
   for (let i = 0; i < name.length; i++) {

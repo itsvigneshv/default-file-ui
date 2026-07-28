@@ -4,7 +4,7 @@ import { cn } from "../lib/utils"
 import { Badge, type BadgeVariant } from "./df-badge"
 import { Spinner, type SpinnerSize } from "./df-spinner"
 
-/** Visual style. plain is icon-only with no resting plate. */
+/** Visual style. plain is icon only with no resting plate. */
 type ButtonVariant =
   | "default"
   | "outline"

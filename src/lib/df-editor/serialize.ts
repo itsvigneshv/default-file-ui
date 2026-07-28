@@ -89,7 +89,7 @@ function flatten(nodes: readonly InlineNode[]): FlatSeg[] {
   return segs
 }
 
-/** Outer-to-inner mark order for delimiter emission. Italic uses `_` to avoid `*`/`**` collisions. */
+/** Outer to inner mark order for delimiter emission. Italic uses `_` to avoid `*`/`**` collisions. */
 const MARK_ORDER: MarkType[] = ["strikethrough", "bold", "italic"]
 
 function openMark(mark: MarkType): string {

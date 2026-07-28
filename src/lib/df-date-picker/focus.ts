@@ -11,7 +11,7 @@ import {
 
 export type CalendarFocusMove = {
   focusIso: string
-  /** True when the focused day leaves the previously visible month. */
+  /** True when the focused day leaves the prior visible month. */
   monthChanged: boolean
   monthIso: string
 }
@@ -61,10 +61,10 @@ function toMove(
 }
 
 /**
- * Move roving focus across a Sunday-start month grid.
+ * Move roving focus across a Sunday start month grid.
  * Arrow keys step by day or week; Home/End bound the week;
- * PageUp/PageDown shift the UTC month while preserving day-of-month.
- * Disabled and out-of-range days are skipped in the travel direction.
+ * PageUp/PageDown shift the UTC month while preserving day of month.
+ * Disabled and out of range days are skipped in the travel direction.
  */
 export function moveCalendarFocus(
   focusIso: string,

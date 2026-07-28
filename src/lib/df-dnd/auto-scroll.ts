@@ -1,6 +1,6 @@
-/** Pure edge-proximity scroll velocity for pointer drag auto-scroll. */
+/** Pure edge proximity scroll velocity for pointer drag auto scroll. */
 
-/** Edge zone thickness in CSS pixels where auto-scroll activates. */
+/** Edge zone thickness in CSS pixels where auto scroll activates. */
 export const DF_DND_AUTO_SCROLL_ZONE_PX = 48
 
 /** Peak scroll speed in CSS pixels per animation frame. */

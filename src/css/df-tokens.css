@@ -25,7 +25,7 @@
   --input: var(--df-neutral-100);
   --ring: var(--df-neutral-400);
 
-  /* High-contrast ink surfaces. Near-black in light; near-white in dark. */
+  /* High contrast ink surfaces. Near black in light; near white in dark. */
   --brand-ink: var(--df-neutral-950);
   --brand-ink-foreground: var(--df-neutral-0);
   --brand-ink-fg-body: color-mix(
@@ -471,7 +471,7 @@
   --df-scrollbar-min-thumb-edge: 20px;
   /* Keeps thumbs inside rounded overflow shells at the track ends. */
   --df-scrollbar-track-inset: calc(2 * var(--spacing-unit, 0.25rem));
-  /* Content-facing inset for the edge variant. 0 keeps the accent flush. */
+  /* Content facing inset for the edge variant. 0 keeps the accent flush. */
   --df-scrollbar-edge-inset: 0px;
   --df-scrollbar-track-size: calc(2.5 * var(--spacing-unit, 0.25rem));
   --df-tabs-indicator-thickness: var(--border-width-thick);

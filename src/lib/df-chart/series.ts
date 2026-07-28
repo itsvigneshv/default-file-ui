@@ -70,7 +70,7 @@ export function polylinePath(points: readonly SvgPoint[]): string {
     .join(" ")
 }
 
-/** Cumulative burndown-style remaining series from daily burn values. */
+/** Cumulative burndown style remaining series from daily burn values. */
 export function remainingFromBurns(
   startRemaining: number,
   burns: readonly number[]

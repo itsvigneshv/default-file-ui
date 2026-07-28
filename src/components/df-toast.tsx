@@ -254,7 +254,7 @@ type ToastProps = React.ComponentProps<"div"> &
     /** Compact action control shown before dismiss. */
     action?: ToastAction
     onDismiss?: () => void
-    /** Pause the live auto-dismiss timer while the action is hovered or focused. */
+    /** Pause the live auto dismiss timer while the action is hovered or focused. */
     onActionPauseChange?: (paused: boolean) => void
   }
 

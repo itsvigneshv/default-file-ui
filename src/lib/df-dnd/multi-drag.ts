@@ -27,7 +27,7 @@ export function boardVisualOrder<T extends { id: string }>(
 }
 
 /**
- * Remove a contiguous visual-order group and splice it at `toIndex` in the remaining list.
+ * Remove a contiguous visual order group and splice it at `toIndex` in the remaining list.
  * `toIndex` is measured against the list after movers are removed.
  */
 export function moveGroupInList<T extends { id: string }>(

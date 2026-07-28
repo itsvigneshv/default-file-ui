@@ -139,7 +139,7 @@ function backwardPath(input: {
 }
 
 /**
- * Build SVG path strings for finish-to-start dependency edges.
+ * Build SVG path strings for finish to start dependency edges.
  * Paths exit the right of the source bar and enter the left of the target bar.
  * Backward targets loop around with rounded elbows.
  */

@@ -159,7 +159,7 @@ type SidebarProviderProps = React.ComponentProps<"div"> & {
   variant?: SidebarVariant
   collapsible?: SidebarCollapsible
   /**
-   * Desktop seam double-click toggle. Ignored when collapsible is none.
+   * Desktop seam double click toggle. Ignored when collapsible is none.
    * Unavailable in frame layout while offcanvas is collapsed.
    */
   edgeCollapse?: boolean
@@ -1156,7 +1156,7 @@ function SidebarProfileMenu({
 }
 
 type SidebarMenuItemProps = React.ComponentProps<"li"> & {
-  /** Shown when the sidebar is icon-collapsed on desktop. */
+  /** Shown when the sidebar is icon collapsed on desktop. */
   tooltip?: React.ReactNode
   nestPaddingBottom?: string | false
 }

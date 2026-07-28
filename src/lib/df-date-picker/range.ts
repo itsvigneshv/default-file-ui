@@ -29,7 +29,7 @@ export function applyRangeClick(
 }
 
 /**
- * Same as pointer clicks: reject out-of-range and disabled days without
+ * Same as pointer clicks: reject out of range and disabled days without
  * mutating the draft.
  */
 export function applyBoundedRangeClick(

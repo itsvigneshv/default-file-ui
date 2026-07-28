@@ -10,9 +10,9 @@ Hold critiques to the **industry craft bar** in `SKILL.md`: senior product desig
 
 Write findings like a senior frontend product review. This is about clarity of critique, not locking usage to any product category. Each weak or missing axis needs:
 
-1. **Observation** — concrete UI evidence
-2. **Impact** — why it matters for this surface (match the classified mode and the user's actual goal)
-3. **Recommendation** — the next structural change
+1. **Observation**: concrete UI evidence
+2. **Impact**: why it matters for this surface (match the classified mode and the user's actual goal)
+3. **Recommendation**: the next structural change
 
 Prefer clear impact language over taste language. Fail findings that only say the UI looks plain, trendy, or gallery ready without stating impact. Stay usage agnostic: critique the frontend the user asked for; do not force mobile, dashboard, or marketing framing when that is not the brief.
 

@@ -15,7 +15,7 @@ export type SelectionClickResult = {
   anchorIndex: number | null
 }
 
-/** Compute the next selected id set for a row activation, including shift-range multi-select. */
+/** Compute the next selected id set for a row activation, including shift range multi select. */
 export function nextSelectionFromClick(
   input: SelectionClickInput
 ): SelectionClickResult {

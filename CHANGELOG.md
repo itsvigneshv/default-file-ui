@@ -2,6 +2,11 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.27.13
+
+- Clean kit comments and docs copy: remove em dashes, drop unnecessary English hyphens, and keep only contract-level notes.
+- Prefer composed with List Item in Contents Nav and Dropdown Menu descriptions.
+
 ## 0.27.12
 
 - Align Featured Icon, Option List, Dropdown Menu, Editor, and anchor-position chrome styles with the Label, Badge, and Select CSS custom property contract.

@@ -9,7 +9,7 @@ export function isComboboxOptionInteractive(option: ComboboxOption): boolean {
   return !option.disabled && !option.readOnly
 }
 
-/** Case-insensitive substring filter that preserves source order. */
+/** Case insensitive substring filter that preserves source order. */
 export function filterComboboxOptions(
   options: readonly ComboboxOption[],
   query: string

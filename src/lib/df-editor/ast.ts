@@ -1,4 +1,4 @@
-/** Markdown-backed AST for df-editor. Public value is always a markdown string. */
+/** Markdown backed AST for df-editor. Public value is always a markdown string. */
 
 export type MarkType = "bold" | "italic" | "code" | "strikethrough"
 

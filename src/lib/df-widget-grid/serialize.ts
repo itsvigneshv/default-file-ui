@@ -78,7 +78,7 @@ function parseItem(value: unknown): WidgetLayoutItem | null {
   return item
 }
 
-/** Serialize a layout into a plain JSON-safe array. */
+/** Serialize a layout into a plain JSON safe array. */
 export function serializeLayout(
   layout: readonly WidgetLayoutItem[]
 ): Array<Record<string, unknown>> {

@@ -14,7 +14,7 @@
   --df-corner-shape: var(--df-corner-shape-smooth);
 }
 
-/* Cap-height label centering for leading-none flex chrome. */
+/* Cap height label centering for leading-none flex chrome. */
 :where(
   [data-df="badge"],
   [data-df="choice-chip"],
@@ -1186,7 +1186,7 @@
   --df-status-dot-size: var(--df-status-dot-size-xl);
 }
 
-/* Kbd: fixed-height chip; chord row shares one alphabetic baseline. */
+/* Kbd: fixed height chip; chord row shares one alphabetic baseline. */
 :where([data-df="kbd"]) {
   box-sizing: border-box;
   display: inline-flex;
@@ -6118,7 +6118,7 @@
   white-space: normal;
 }
 
-/* Box-aligned content keeps flex centering without the baseline shift. */
+/* Box aligned content keeps flex centering without the baseline shift. */
 :where([data-df="select-value"]:has([data-df="select-value-badge"])),
 :where([data-df="select-trigger"][data-label-position="inset"] [data-df="select-value"]) {
   margin-bottom: 0;
@@ -6378,7 +6378,7 @@
   will-change: auto;
 }
 
-/* Always-visible card panel: owns border, radius, and card fill. */
+/* Always visible card panel: owns border, radius, and card fill. */
 :where([data-df="option-list-content"][data-chrome="panel"]) {
   --df-option-list-surface-bg: var(--card);
   --df-option-list-surface-fg: var(--card-foreground);
@@ -6617,7 +6617,7 @@
   gap: calc(1 * var(--spacing-unit, 0.25rem));
 }
 
-/* Dropdown Menu: action menu surface (profile, three-dot, toolbar). */
+/* Dropdown Menu: action menu surface (profile, three dot, toolbar). */
 :where([data-df="dropdown-menu-content"]) {
   --df-dropdown-menu-bg: var(--popover);
   --df-dropdown-menu-fg: var(--popover-foreground);
@@ -12968,7 +12968,7 @@
   height: auto;
 }
 
-/* Content-facing seam hit target. */
+/* Content facing seam hit target. */
 :where([data-df="sidebar-edge"]),
 .df-sidebar-edge {
   position: absolute;
@@ -13171,13 +13171,13 @@
   background-color: var(--df-sidebar-separator);
 }
 
-/* Inset panel-level separators to match header and footer inline padding. */
+/* Inset panel level separators to match header and footer inline padding. */
 :where([data-df="sidebar-panel"] > [data-df="separator"].df-sidebar-separator) {
   width: auto;
   margin-inline: var(--df-sidebar-padding-inline);
 }
 
-/* Collapse panel section-gap after FooterSection so paddingBlockEnd owns that air. */
+/* Collapse panel section gap after FooterSection so paddingBlockEnd owns that air. */
 :where(
   [data-df="sidebar-panel"] > [data-df="sidebar-footer-section"] + [data-df="separator"].df-sidebar-separator
 ),

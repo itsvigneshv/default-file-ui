@@ -51,21 +51,21 @@ type TextMarkProps = {
   active?: boolean
   /**
    * Single annotation shape. highlight is a marker wash, underline a
-   * hand-drawn baseline, circle a hand-drawn oval. Ignored when layers is set.
+   * hand drawn baseline, circle a hand drawn oval. Ignored when layers is set.
    */
   kind?: TextMarkKind
   /** Stacked annotations on the same span, drawn in order. */
   layers?: TextMarkLayer[]
-  /** CSS color for the single-kind path. Defaults to --df-text-mark. */
+  /** CSS color for the single kind path. Defaults to --df-text-mark. */
   color?: string
   /** Optional text color while active. Omit to keep inherited ink. */
   activeColor?: string
-  /** Stroke thickness in CSS pixels for the single-kind path. */
+  /** Stroke thickness in CSS pixels for the single kind path. */
   strokeWidth?: number
-  /** Draw duration in milliseconds for the single-kind path. */
+  /** Draw duration in milliseconds for the single kind path. */
   duration?: number
   /**
-   * Extra sketch passes for the single-kind path.
+   * Extra sketch passes for the single kind path.
    * Default 3 for underline and circle.
    */
   iterations?: number
@@ -134,8 +134,8 @@ function pinSvgs(host: HTMLElement) {
 }
 
 /**
- * Animated hand-drawn mark for inline text.
- * Supports marker washes, hand-drawn underlines, and hand-drawn circles.
+ * Animated hand drawn mark for inline text.
+ * Supports marker washes, hand drawn underlines, and hand drawn circles.
  * Glyphs sit above the annotation so copy stays readable.
  */
 function TextMark({
@@ -215,7 +215,7 @@ function TextMark({
         group.hide()
         return
       }
-      // Skip show until the target has a non-zero layout box.
+      // Skip show until the target has a layout box with size.
       if (!hasLaidOutGlyphs(target)) return
       group.hide()
       group.show()

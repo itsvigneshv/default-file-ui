@@ -1,4 +1,4 @@
-/** Per-slot drop indicator placement for hosts that render a drop line. */
+/** Per slot drop indicator placement for hosts that render a drop line. */
 
 export type DropIndicatorPlacement = "before" | "after" | "into"
 
@@ -13,7 +13,7 @@ export const EMPTY_DROP_INDICATOR: DropIndicatorState = {
 }
 
 /**
- * Map an insertion index over non-dragging item ids to a before/after indicator.
+ * Map an insertion index over non dragging item ids to a before/after indicator.
  * `into` is reserved for tree hosts that set it explicitly.
  */
 export function dropIndicatorFromInsertIndex(

@@ -132,7 +132,7 @@ export function normalizeLayout(
 }
 
 /**
- * Remove vertical gaps while preserving left-to-right, top-to-bottom order.
+ * Remove vertical gaps while preserving left to right, top to bottom order.
  */
 export function compactLayout(
   layout: readonly WidgetLayoutItem[],

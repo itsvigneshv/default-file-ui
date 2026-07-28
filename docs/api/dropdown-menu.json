@@ -23,7 +23,7 @@
   "importPath": "@default-file/ui/components/df-dropdown-menu",
   "dependencies": [],
   "api": {
-    "description": "Anchored action menu for profile menus, workspace switchers, three-dot menus, and toolbar actions. Compose Content with Header, Body, and Footer. Items fire onSelect and close by default. Rows compose List Item. Prefer Option List when the panel should keep a selected value without running a command.",
+    "description": "Anchored action menu for profile menus, workspace switchers, three dot menus, and toolbar actions. Compose Content with Header, Body, and Footer. Items fire onSelect and close by default. Rows compose List Item. Prefer Option List when the panel should keep a selected value without running a command.",
     "groups": [
       {
         "id": "dropdown-menu",
@@ -353,7 +353,7 @@
       {
         "id": "dropdown-menu-item",
         "title": "DropdownMenuItem",
-        "description": "Action row built on List Item. Place inside DropdownMenuBody. Activates onSelect, then closes when closeOnSelect is true.",
+        "description": "Action row composed with List Item. Place inside DropdownMenuBody. Activates onSelect, then closes when closeOnSelect is true.",
         "props": [
           {
             "name": "onSelect",
@@ -642,7 +642,7 @@
       {
         "id": "dropdown-menu-footer",
         "title": "DropdownMenuFooter",
-        "description": "Muted meta row under the body, such as version or legal copy. Built on List Item. Defaults to readOnly. Use asChild for a link host.",
+        "description": "Muted meta row under the body, such as version or legal copy. Composed with List Item. Defaults to readOnly. Use asChild for a link host.",
         "props": [
           {
             "name": "leading",

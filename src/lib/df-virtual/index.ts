@@ -24,7 +24,7 @@ export type UseVirtualRowsResult = {
   measureElement: (node: Element | null | undefined) => void
 }
 
-/** Normalize a fixed or per-index size into the estimator shape the windowing engine expects. */
+/** Normalize a fixed or per index size into the estimator shape the windowing engine expects. */
 export function resolveEstimateSize(
   estimateSize: UseVirtualRowsOptions["estimateSize"]
 ): (index: number) => number {

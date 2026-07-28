@@ -1,4 +1,4 @@
-/** Flat-tree drop resolution for indent and outdent by pointer x-offset. */
+/** Flat tree drop resolution for indent and outdent by pointer x offset. */
 
 /** Horizontal pixels per depth step when resolving indent. */
 export const DF_DND_TREE_INDENT_PX = 24
@@ -15,7 +15,7 @@ export type TreeDropTarget = {
   depth: number
 }
 
-/** Depth from list-relative pointer x, floored by the indent threshold. */
+/** Depth from list relative pointer x, floored by the indent threshold. */
 export function depthFromOffsetX(
   offsetX: number,
   indentThreshold: number = DF_DND_TREE_INDENT_PX
@@ -26,7 +26,7 @@ export function depthFromOffsetX(
   return Math.floor(offsetX / indentThreshold)
 }
 
-/** Collect a node id and every contiguous descendant in flat pre-order. */
+/** Collect a node id and every contiguous descendant in flat preorder. */
 export function collectSubtreeIds(
   nodes: readonly TreeFlatNode[],
   rootId: string
@@ -127,7 +127,7 @@ export function resolveTreeDrop(options: {
 
 /**
  * Move one node to a resolved tree drop target and recompute depths for its subtree.
- * Sibling order among non-moved nodes is preserved.
+ * Sibling order among non moved nodes is preserved.
  * A node cannot be dropped into its own subtree.
  */
 export function applyTreeDrop<T extends TreeFlatNode>(

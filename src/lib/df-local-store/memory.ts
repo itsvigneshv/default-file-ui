@@ -1,6 +1,6 @@
 import type { LocalStore, LocalStoreEntry, LocalStoreWriteStatus } from "./types"
 
-/** In-memory LocalStore for tests and SSR guards. */
+/** In memory LocalStore for tests and SSR guards. */
 export function createMemoryLocalStore(): LocalStore {
   const map = new Map<string, LocalStoreEntry<unknown>>()
 

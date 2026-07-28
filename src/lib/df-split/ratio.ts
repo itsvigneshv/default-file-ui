@@ -5,7 +5,7 @@ export type SplitRatioBounds = {
 
 const DEFAULT_BOUNDS: SplitRatioBounds = { min: 0.15, max: 0.85 }
 
-/** Clamp a primary-pane ratio into inclusive bounds. */
+/** Clamp a primary pane ratio into inclusive bounds. */
 export function clampRatio(
   ratio: number,
   bounds: SplitRatioBounds = DEFAULT_BOUNDS

@@ -32,7 +32,7 @@ const SPACE_RULES: Rule[] = [
 
 /**
  * Match markdown autoformat prefixes at the start of the current paragraph.
- * Invoke after inserting a trailing space (or newline for a fence-only paragraph).
+ * Invoke after inserting a trailing space (or newline for a paragraph that is only a fence).
  */
 export function matchInputRule(
   state: EditorState,

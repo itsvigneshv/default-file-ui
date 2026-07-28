@@ -29,7 +29,7 @@ type BadgeRadius =
   | "4xl"
   | "full"
 
-/** Design-scale units for space between leading, label, trailing, and count. */
+/** Design scale units for space between leading, label, trailing, and count. */
 type BadgeGap = number | "none"
 
 type BadgeProps = React.HTMLAttributes<HTMLElement> & {
@@ -39,7 +39,7 @@ type BadgeProps = React.HTMLAttributes<HTMLElement> & {
   cornerShape?: DfCornerShape
   /**
    * Space between leading, label, trailing, and count.
-   * Design-scale units (one unit = --spacing-unit). Omit to use the size default.
+   * Design scale units (one unit = --spacing-unit). Omit to use the size default.
    */
   gap?: BadgeGap
   /** Content before the label, such as a status icon. */

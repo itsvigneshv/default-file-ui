@@ -68,7 +68,7 @@ export type TreeItemBindings = {
 
 /**
  * Nested list reorder foundation over a flat `{ id, parentId, depth }` array.
- * Pointer x-offset resolves indent and outdent; Y uses the sortable insert index.
+ * Pointer x offset resolves indent and outdent; Y uses the sortable insert index.
  */
 export function useTreeDnd<T extends TreeFlatNode>(options: {
   nodes: readonly T[]

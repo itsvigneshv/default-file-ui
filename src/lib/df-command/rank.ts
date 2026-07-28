@@ -42,7 +42,7 @@ export function rankRecentFirst<T extends RankableCommand>(
   return ranked
 }
 
-/** Score and sort commands for a non-empty query. */
+/** Score and sort commands for a non empty query. */
 export function rankByQuery<T extends RankableCommand>(
   commands: T[],
   query: string

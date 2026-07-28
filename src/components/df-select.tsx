@@ -150,7 +150,7 @@ type SelectProps = {
   width?: OptionListWidth
   disabled?: boolean
   invalid?: boolean
-  /** Default List Item chrome for every SelectItem. Per-item props win. */
+  /** Default List Item chrome for every SelectItem. Per item props win. */
   itemChrome?: ListItemChromeProps
   children: React.ReactNode
 }

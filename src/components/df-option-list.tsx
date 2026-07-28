@@ -64,7 +64,7 @@ type OptionListContextValue = {
   submenuAnimated: boolean
   submenuOpenDuration: number
   submenuCloseDuration: number
-  /** Default List Item chrome for every OptionListItem. Per-item props win. */
+  /** Default List Item chrome for every OptionListItem. Per item props win. */
   itemChrome?: ListItemChromeProps
 }
 
@@ -387,7 +387,7 @@ type OptionListProps = {
   submenuAnimated?: boolean
   submenuOpenDuration?: number
   submenuCloseDuration?: number
-  /** Default List Item chrome for every OptionListItem. Per-item props win. */
+  /** Default List Item chrome for every OptionListItem. Per item props win. */
   itemChrome?: ListItemChromeProps
   children: React.ReactNode
 }
@@ -863,7 +863,7 @@ type OptionListHeaderProps = React.ComponentProps<"div"> & {
   labelId?: string
 }
 
-/** Panel header with an edge-to-edge bottom rule. */
+/** Panel header with an edge to edge bottom rule. */
 function OptionListHeader({
   className,
   label,
@@ -970,7 +970,7 @@ type OptionListContentProps = React.HTMLAttributes<HTMLDivElement> &
     /**
      * menu keeps popover fill, shadow, and radius.
      * plain drops those so the list can sit inside a host surface.
-     * panel is a bordered card surface for always-visible lists.
+     * panel is a bordered card surface for always visible lists.
      */
     chrome?: OptionListChrome
     dismissOnScroll?: boolean

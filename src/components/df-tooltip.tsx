@@ -56,7 +56,7 @@ function Tooltip({
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   delayDuration?: number
-  /** Auto-hide while open, in ms. Point mode defaults to --df-duration-tip-hold. */
+  /** Auto hide while open, in ms. Point mode defaults to --df-duration-tip-hold. */
   dismissDuration?: number
   /** Viewport point to anchor content when there is no trigger element. */
   anchorPoint?: TooltipAnchorPoint | null

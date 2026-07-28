@@ -2,7 +2,7 @@
   "name": "contents-nav",
   "slug": "contents-nav",
   "title": "Contents Nav",
-  "description": "Page outline and catalogue index built on List Item. Use toc for on-page headings with optional nest line and scroll spy. Use index for sectioned side navigation.",
+  "description": "Page outline and catalogue index composed with List Item. Use toc for on-page headings with optional nest line and scroll spy. Use index for sectioned side navigation.",
   "aliases": [
     "toc",
     "table of contents",
@@ -21,7 +21,7 @@
   "importPath": "@default-file/ui/components/df-contents-nav",
   "dependencies": [],
   "api": {
-    "description": "Page outline and catalogue index built on List Item. Use variant toc for on-page headings with nested rows, optional nest guide line, and scroll spy. Use variant index for sectioned side navigation. Pass scrollRoot for the host scrollport. Compose with ContentsNavHeading, ContentsNavSection, ContentsNavItem, and ListItemNest, or pass items and sections.",
+    "description": "Page outline and catalogue index composed with List Item. Use variant toc for on-page headings with nested rows, optional nest guide line, and scroll spy. Use variant index for sectioned side navigation. Pass scrollRoot for the host scrollport. Compose with ContentsNavHeading, ContentsNavSection, ContentsNavItem, and ListItemNest, or pass items and sections.",
     "groups": [
       {
         "id": "contents-nav",
