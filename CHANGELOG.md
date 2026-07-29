@@ -2,6 +2,10 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.29.7
+
+- Include `lucide-react` as a kit `devDependency` so git-install `prepare` can compile component types.
+
 ## 0.29.6
 
 - Build `dist` on install from git so App Hosting and other github consumers receive compiled components.
