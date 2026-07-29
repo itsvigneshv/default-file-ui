@@ -24,6 +24,7 @@ function ChoiceChip({
       data-df="choice-chip"
       data-size={size}
       data-selected={selected ? "true" : undefined}
+      aria-pressed={selected == null ? undefined : selected}
       className={cn(className)}
       {...props}
     />

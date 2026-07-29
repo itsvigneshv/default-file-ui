@@ -8,15 +8,18 @@ import {
   useControllableState,
   useIsClient,
   useIsMobile,
+  useIsomorphicLayoutEffect,
+  useNearestDarkClass,
 } from "../hooks"
 import { useFocusTrap } from "../lib/df-focus-trap"
-import { nearestDarkClass } from "../lib/nearest-theme"
+import { useDfStrings } from "../lib/df-intl"
 import { shouldInsertSidebarContentSeparator } from "../lib/df-sidebar/sidebar-content-separators"
 import {
   resolveSidebarHeightMode,
   type SidebarHeightMode,
 } from "../lib/df-sidebar/sidebar-height-mode"
-import { cn, composeRefs } from "../lib/utils"
+import { sanitizeHref } from "../lib/df-url"
+import { cn, composeEventHandlers, composeRefs } from "../lib/utils"
 import { Button } from "./df-button"
 import { Label } from "./df-label"
 import { ListItem } from "./df-list-item"
@@ -53,13 +56,13 @@ function scrollVariantForScrollbar(
 }
 
 type SidebarGroupPaddingInput = {
-  padding?: string
-  paddingBlock?: string
-  paddingInline?: string
-  paddingBlockStart?: string
-  paddingBlockEnd?: string
-  paddingInlineStart?: string
-  paddingInlineEnd?: string
+  padding?: string | undefined
+  paddingBlock?: string | undefined
+  paddingInline?: string | undefined
+  paddingBlockStart?: string | undefined
+  paddingBlockEnd?: string | undefined
+  paddingInlineStart?: string | undefined
+  paddingInlineEnd?: string | undefined
 }
 
 function sidebarGroupPaddingStyle(
@@ -195,7 +198,7 @@ function SidebarProvider({
   layout = "app",
   fillHeight = true,
   height,
-  label = "Sidebar",
+  label: labelProp,
   keyboardShortcut = true,
   side = "left",
   variant = "docked",
@@ -227,6 +230,8 @@ function SidebarProvider({
   ref,
   ...props
 }: SidebarProviderProps) {
+  const s = useDfStrings()
+  const label = labelProp ?? s.sidebarLabel
   const isMobile = useIsMobile()
   const hostRef = React.useRef<HTMLDivElement | null>(null)
   const [openMobile, setOpenMobile] = React.useState(false)
@@ -407,6 +412,7 @@ function SidebarMobilePanel({
   const panelRef = React.useRef<HTMLDivElement | null>(null)
   const triggerRef = React.useRef<HTMLElement | null>(null)
   const titleId = React.useId()
+  const portalThemeClass = useNearestDarkClass(hostRef, openMobile)
 
   useFocusTrap({
     open: openMobile,
@@ -421,7 +427,7 @@ function SidebarMobilePanel({
     <div
       data-df="sidebar-mobile-root"
       data-side={side}
-      className={nearestDarkClass(hostRef.current)}
+      className={portalThemeClass}
     >
       <div
         data-df="sidebar-mobile-scrim"
@@ -532,6 +538,7 @@ function SidebarEdgeToggle({
   side: SidebarSide
   border: boolean
 }) {
+  const s = useDfStrings()
   const { toggleSidebar, label, state } = useSidebar()
   const expanded = state === "expanded"
   const emphasize: "left" | "right" =
@@ -546,8 +553,8 @@ function SidebarEdgeToggle({
       aria-hidden
       title={
         expanded
-          ? `Double-click to collapse ${label}`
-          : `Double-click to expand ${label}`
+          ? s.sidebarCollapseHint(label)
+          : s.sidebarExpandHint(label)
       }
       onDoubleClick={(event) => {
         event.preventDefault()
@@ -566,6 +573,7 @@ function SidebarTrigger({
   "aria-label": ariaLabel,
   ...props
 }: SidebarTriggerProps) {
+  const s = useDfStrings()
   const { toggleSidebar, label, state, isMobile, openMobile } = useSidebar()
   const expanded = isMobile ? openMobile : state === "expanded"
   return (
@@ -573,14 +581,14 @@ function SidebarTrigger({
       type="button"
       size="icon-sm"
       className={cn("df-sidebar-trigger", className)}
-      onClick={(event) => {
-        onClick?.(event)
-        if (!event.defaultPrevented) toggleSidebar()
-      }}
       {...props}
       variant="ghost"
+      onClick={composeEventHandlers(onClick, () => {
+        toggleSidebar()
+      })}
       aria-label={
-        ariaLabel ?? (expanded ? `Collapse ${label}` : `Expand ${label}`)
+        ariaLabel ??
+        (expanded ? s.sidebarCollapse(label) : s.sidebarExpand(label))
       }
       aria-expanded={expanded}
     >
@@ -974,6 +982,7 @@ function SidebarGroupLabel({
   fontWeight,
   ...props
 }: SidebarGroupLabelProps) {
+  const s = useDfStrings()
   const { state, collapsible: sidebarCollapsible } = useSidebar()
   const group = useSidebarGroupOptional()
   const hideFromAssistive =
@@ -981,7 +990,7 @@ function SidebarGroupLabel({
   const setLabelPresent = group?.setLabelPresent
   const registerLabel = group != null && !asChild
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!registerLabel || setLabelPresent == null) return
     setLabelPresent(true)
     return () => setLabelPresent(false)
@@ -993,7 +1002,9 @@ function SidebarGroupLabel({
         id={group.triggerId}
         aria-expanded={group.open}
         aria-controls={group.contentId}
-        aria-label={group.open ? "Collapse section" : "Expand section"}
+        aria-label={
+          group.open ? s.sidebarCollapseSection : s.sidebarExpandSection
+        }
         onClick={() => {
           group.toggle()
         }}
@@ -1437,10 +1448,17 @@ function SidebarMenuSubButton({
     const childProps = children.props as {
       children?: React.ReactNode
     }
+    const { href, ...restProps } = props
+    const safeHref =
+      typeof href === "string" ? (sanitizeHref(href) ?? undefined) : href
     const { leading, label } = splitSidebarMenuChildren(childProps.children)
     const linkChild = React.cloneElement(
       children as React.ReactElement<{ children?: React.ReactNode }>,
-      { ...props, children: label }
+      {
+        ...restProps,
+        ...(href !== undefined ? { href: safeHref } : null),
+        children: label,
+      }
     )
     return (
       <ListItem asChild leading={leading} {...sharedListProps}>
@@ -1450,9 +1468,14 @@ function SidebarMenuSubButton({
   }
 
   const { leading, label } = splitSidebarMenuChildren(children)
+  const { href, ...anchorProps } = props
+  const safeHref =
+    typeof href === "string" ? (sanitizeHref(href) ?? undefined) : href
   return (
     <ListItem asChild leading={leading} {...sharedListProps}>
-      <a {...props}>{label}</a>
+      <a {...anchorProps} href={safeHref}>
+        {label}
+      </a>
     </ListItem>
   )
 }

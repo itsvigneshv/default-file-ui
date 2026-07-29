@@ -3,7 +3,9 @@
 import * as React from "react"
 
 import { useControllableState } from "../hooks"
-import { cn } from "../lib/utils"
+import { useDfStrings } from "../lib/df-intl"
+import { sanitizeHref } from "../lib/df-url"
+import { cn, composeEventHandlers } from "../lib/utils"
 import {
   ListItem,
   ListItemLabel,
@@ -50,15 +52,17 @@ type ContentsNavContextValue = {
   itemSize: ListItemSize
   nestItemSize: ListItemSize
   /** Default List Item chrome for every row. Per item props win. */
-  itemChrome?: ListItemChromeProps
+  itemChrome?: ListItemChromeProps | undefined
   /** Default ListItemNest chrome for data driven child groups. */
-  nestChrome?: ListItemNestChromeProps
+  nestChrome?: ListItemNestChromeProps | undefined
   activeId: string
   setActiveId: (id: string) => void
-  renderItem?: (
-    item: ContentsNavItemData,
-    ctx: { active: boolean; depth: number }
-  ) => React.ReactElement
+  renderItem?:
+    | ((
+        item: ContentsNavItemData,
+        ctx: { active: boolean; depth: number }
+      ) => React.ReactElement)
+    | undefined
 }
 
 const ContentsNavContext =
@@ -218,11 +222,11 @@ type ContentsNavItemProps = Omit<
   React.ComponentProps<typeof ListItem>,
   "selected" | "variant" | "size"
 > & {
-  active?: boolean
-  variant?: ListItemVariant
-  size?: ListItemSize
-  href?: string
-  itemId?: string
+  active?: boolean | undefined
+  variant?: ListItemVariant | undefined
+  size?: ListItemSize | undefined
+  href?: string | undefined
+  itemId?: string | undefined
 }
 
 const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
@@ -261,8 +265,9 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
         event.preventDefault()
         return
       }
-      if (itemId != null) ctx.setActiveId(itemId)
-      onClick?.(event)
+      composeEventHandlers(onClick, () => {
+        if (itemId != null) ctx.setActiveId(itemId)
+      })(event)
     }
 
     if (asChild) {
@@ -287,24 +292,27 @@ const ContentsNavItem = React.forwardRef<HTMLElement, ContentsNavItemProps>(
     }
 
     if (href != null) {
-      return (
-        <ListItem
-          {...ctx.itemChrome}
-          {...props}
-          ref={ref}
-          asChild
-          variant={resolvedVariant}
-          size={resolvedSize}
-          selected={resolvedActive}
-          disabled={disabled}
-          readOnly={readOnly}
-          aria-current={ariaCurrent}
-          className={className}
-          onClick={handleSelect}
-        >
-          <a href={href}>{children}</a>
-        </ListItem>
-      )
+      const safeHref = sanitizeHref(href)
+      if (safeHref != null) {
+        return (
+          <ListItem
+            {...ctx.itemChrome}
+            {...props}
+            ref={ref}
+            asChild
+            variant={resolvedVariant}
+            size={resolvedSize}
+            selected={resolvedActive}
+            disabled={disabled}
+            readOnly={readOnly}
+            aria-current={ariaCurrent}
+            className={className}
+            onClick={handleSelect}
+          >
+            <a href={safeHref}>{children}</a>
+          </ListItem>
+        )
+      }
     }
 
     return (
@@ -445,6 +453,7 @@ function ContentsNav({
   "aria-label": ariaLabel,
   ...props
 }: ContentsNavProps) {
+  const s = useDfStrings()
   const resolvedNestLine = nestLine ?? variant === "toc"
   const resolvedScrollSpy = scrollSpy ?? variant === "toc"
   const itemSize = itemSizeProp ?? (variant === "toc" ? "sm" : "md")
@@ -469,20 +478,17 @@ function ContentsNav({
     onChange: onActiveIdChange,
   })
 
-  const scrollRootRef = React.useRef(scrollRoot)
-  scrollRootRef.current = scrollRoot
-
   React.useEffect(() => {
     if (!resolvedScrollSpy || flatIds.length === 0) return
 
     const update = () => {
-      const root = resolveScrollRoot(scrollRootRef.current)
+      const root = resolveScrollRoot(scrollRoot)
       if (!root) return
       setActiveId(activeIdFromScroll(flatIds, root, spyRatio))
     }
 
     update()
-    const root = resolveScrollRoot(scrollRootRef.current)
+    const root = resolveScrollRoot(scrollRoot)
     if (!root) return
 
     root.addEventListener("scroll", update, { passive: true })
@@ -492,7 +498,7 @@ function ContentsNav({
       root.removeEventListener("scroll", update)
       ro.disconnect()
     }
-  }, [flatIds, resolvedScrollSpy, setActiveId, spyRatio])
+  }, [flatIds, resolvedScrollSpy, scrollRoot, setActiveId, spyRatio])
 
   const contextValue = React.useMemo<ContentsNavContextValue>(
     () => ({
@@ -529,7 +535,7 @@ function ContentsNav({
     if (variant === "index" && layout === "grouped" && sections?.length) {
       body = sections.map((section, index) => (
         <ContentsNavSection
-          key={section.id ?? String(section.label) ?? index}
+          key={section.id ?? String(section.label)}
           label={section.label}
           divided={section.divided ?? index > 0}
         >
@@ -551,7 +557,8 @@ function ContentsNav({
         data-df="contents-nav"
         data-variant={variant}
         aria-label={
-          ariaLabel ?? (variant === "toc" ? "On this page" : "Contents")
+          ariaLabel ??
+          (variant === "toc" ? s.contentsNavToc : s.contentsNavIndex)
         }
         className={cn(className)}
         {...props}

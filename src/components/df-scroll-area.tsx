@@ -2,7 +2,8 @@
 
 import * as React from "react"
 
-import { cn } from "../lib/utils"
+import { useCssPx, useDragGesture, useIsomorphicLayoutEffect, useLatestRef } from "../hooks"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type ScrollAreaVariant = "default" | "edge"
 type ScrollAreaThumbShape = "rounded" | "flat"
@@ -12,26 +13,26 @@ type ScrollAreaVisibility = "hover" | "always"
 type ScrollAreaSpace = "auto" | "none"
 
 type ScrollAreaProps = React.ComponentProps<"div"> & {
-  viewportClassName?: string
-  viewportRef?: React.Ref<HTMLDivElement>
+  viewportClassName?: string | undefined
+  viewportRef?: React.Ref<HTMLDivElement> | undefined
   /**
    * Layer above the viewport and below scrollbar thumbs.
    * Use for interactive surfaces that must share the scrollport geometry.
    */
-  overlay?: React.ReactNode
-  overlayClassName?: string
-  variant?: ScrollAreaVariant
-  thumbShape?: ScrollAreaThumbShape
-  orientation?: ScrollAreaOrientation
-  side?: ScrollAreaSide
-  visibility?: ScrollAreaVisibility
+  overlay?: React.ReactNode | undefined
+  overlayClassName?: string | undefined
+  variant?: ScrollAreaVariant | undefined
+  thumbShape?: ScrollAreaThumbShape | undefined
+  orientation?: ScrollAreaOrientation | undefined
+  side?: ScrollAreaSide | undefined
+  visibility?: ScrollAreaVisibility | undefined
   /**
    * Track inset. `auto` reserves a gutter so the bar can appear without
    * shifting content. `none` overlays with no inset. Defaults to `none` for
    * edge, `auto` otherwise.
    */
-  space?: ScrollAreaSpace
-  width?: number
+  space?: ScrollAreaSpace | undefined
+  width?: number | undefined
 }
 
 function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
@@ -42,13 +43,20 @@ function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
 type ThumbState = { size: number; offset: number; visible: boolean }
 const HIDDEN_THUMB: ThumbState = { size: 0, offset: 0, visible: false }
 
-function readCssPx(token: string, fallback: number): number {
-  if (typeof document === "undefined") return fallback
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(token)
-    .trim()
-  const px = Number.parseFloat(raw)
-  return Number.isFinite(px) && px > 0 ? px : fallback
+type VerticalThumbDragData = {
+  start: number
+  startScroll: number
+  maxScroll: number
+  maxOffset: number
+  viewport: HTMLDivElement
+}
+
+type HorizontalThumbDragData = {
+  start: number
+  startScroll: number
+  maxScroll: number
+  maxOffset: number
+  viewport: HTMLDivElement
 }
 
 function trackContentSize(
@@ -87,6 +95,7 @@ function ScrollArea({
   width,
   ...props
 }: ScrollAreaProps) {
+  const rootRef = React.useRef<HTMLDivElement>(null)
   const viewportRef = React.useRef<HTMLDivElement>(null)
   const setViewportRef = React.useCallback(
     (node: HTMLDivElement | null) => {
@@ -100,6 +109,7 @@ function ScrollArea({
   const vThumbRef = React.useRef<HTMLDivElement>(null)
   const hThumbRef = React.useRef<HTMLDivElement>(null)
   const hideTimerRef = React.useRef<number | null>(null)
+  const thumbDrag = useDragGesture()
   const [vThumb, setVThumb] = React.useState<ThumbState>(HIDDEN_THUMB)
   const [hThumb, setHThumb] = React.useState<ThumbState>(HIDDEN_THUMB)
   const [scrolling, setScrolling] = React.useState(false)
@@ -107,10 +117,9 @@ function ScrollArea({
 
   const trackVertical = orientation === "vertical" || orientation === "both"
   const trackHorizontal = orientation === "horizontal" || orientation === "both"
-  const minThumb =
-    variant === "edge"
-      ? readCssPx("--df-scrollbar-min-thumb-edge", 20)
-      : readCssPx("--df-scrollbar-min-thumb", 24)
+  const minThumbDefault = useCssPx(rootRef, "--df-scrollbar-min-thumb", 24)
+  const minThumbEdge = useCssPx(rootRef, "--df-scrollbar-min-thumb-edge", 20)
+  const minThumb = variant === "edge" ? minThumbEdge : minThumbDefault
   const verticalSide = side === "left" ? "left" : "right"
   const horizontalSide = side === "top" ? "top" : "bottom"
   const resolvedSpace = space ?? (variant === "edge" ? "none" : "auto")
@@ -161,8 +170,10 @@ function ScrollArea({
     }, 900)
   }, [])
 
+  const markScrollingRef = useLatestRef(markScrolling)
+
   // Measure before paint so overflow state does not shift layout after first frame.
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const el = viewportRef.current
     if (!el) return
     const onScroll = () => {
@@ -190,39 +201,87 @@ function ScrollArea({
     }
   }, [syncThumb, markScrolling])
 
-  const startDrag =
-    (axis: "x" | "y") => (event: React.PointerEvent<HTMLDivElement>) => {
+  const onVerticalThumbPointerDown = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
       const el = viewportRef.current
       if (!el) return
       event.preventDefault()
       markScrolling()
-      const vertical = axis === "y"
-      const start = vertical ? event.clientY : event.clientX
-      const startScroll = vertical ? el.scrollTop : el.scrollLeft
-      const client = vertical ? el.clientHeight : el.clientWidth
-      const scrollSize = vertical ? el.scrollHeight : el.scrollWidth
-      const thumbSize = vertical ? vThumb.size : hThumb.size
-      const trackSize = vertical
-        ? (trackContentSize(vTrackRef.current, "y") || client)
-        : (trackContentSize(hTrackRef.current, "x") || client)
+      const start = event.clientY
+      const startScroll = el.scrollTop
+      const client = el.clientHeight
+      const scrollSize = el.scrollHeight
+      const thumbSize = vThumb.size
+      const trackSize = trackContentSize(vTrackRef.current, "y") || client
       const maxScroll = scrollSize - client
       const maxOffset = trackSize - thumbSize
+      const data: VerticalThumbDragData = {
+        start,
+        startScroll,
+        maxScroll,
+        maxOffset,
+        viewport: el,
+      }
+      thumbDrag.begin(
+        event,
+        data,
+        {
+          onMove: (moveEvent, session) => {
+            if (session.maxOffset <= 0) return
+            markScrollingRef.current()
+            const delta = moveEvent.clientY - session.start
+            const next =
+              session.startScroll +
+              (delta / session.maxOffset) * session.maxScroll
+            session.viewport.scrollTop = next
+          },
+        },
+        { capture: false }
+      )
+    },
+    [markScrolling, markScrollingRef, thumbDrag, vThumb.size]
+  )
 
-      const onMove = (e: PointerEvent) => {
-        if (maxOffset <= 0) return
-        markScrolling()
-        const delta = (vertical ? e.clientY : e.clientX) - start
-        const next = startScroll + (delta / maxOffset) * maxScroll
-        if (vertical) el.scrollTop = next
-        else el.scrollLeft = next
+  const onHorizontalThumbPointerDown = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const el = viewportRef.current
+      if (!el) return
+      event.preventDefault()
+      markScrolling()
+      const start = event.clientX
+      const startScroll = el.scrollLeft
+      const client = el.clientWidth
+      const scrollSize = el.scrollWidth
+      const thumbSize = hThumb.size
+      const trackSize = trackContentSize(hTrackRef.current, "x") || client
+      const maxScroll = scrollSize - client
+      const maxOffset = trackSize - thumbSize
+      const data: HorizontalThumbDragData = {
+        start,
+        startScroll,
+        maxScroll,
+        maxOffset,
+        viewport: el,
       }
-      const onUp = () => {
-        window.removeEventListener("pointermove", onMove)
-        window.removeEventListener("pointerup", onUp)
-      }
-      window.addEventListener("pointermove", onMove)
-      window.addEventListener("pointerup", onUp)
-    }
+      thumbDrag.begin(
+        event,
+        data,
+        {
+          onMove: (moveEvent, session) => {
+            if (session.maxOffset <= 0) return
+            markScrollingRef.current()
+            const delta = moveEvent.clientX - session.start
+            const next =
+              session.startScroll +
+              (delta / session.maxOffset) * session.maxScroll
+            session.viewport.scrollLeft = next
+          },
+        },
+        { capture: false }
+      )
+    },
+    [hThumb.size, markScrolling, markScrollingRef, thumbDrag]
+  )
 
   const active = visibility === "always" || hovered || scrolling
   const showVBar = trackVertical && vThumb.visible && active
@@ -242,13 +301,16 @@ function ScrollArea({
       data-horizontal-side={horizontalSide}
       className={cn("df-scroll-area", "relative", className)}
       {...props}
+      ref={rootRef}
       onMouseEnter={(event) => {
-        props.onMouseEnter?.(event)
-        setHovered(true)
+        composeEventHandlers(props.onMouseEnter, () => {
+          setHovered(true)
+        })(event)
       }}
       onMouseLeave={(event) => {
-        props.onMouseLeave?.(event)
-        setHovered(false)
+        composeEventHandlers(props.onMouseLeave, () => {
+          setHovered(false)
+        })(event)
       }}
     >
       <div
@@ -286,7 +348,7 @@ function ScrollArea({
             data-df="scroll-area-thumb"
             data-variant={variant}
             data-thumb-shape={thumbShape}
-            onPointerDown={startDrag("y")}
+            onPointerDown={onVerticalThumbPointerDown}
             style={{
               height: vThumb.size,
               transform: `translateY(${vThumb.offset}px)`,
@@ -314,7 +376,7 @@ function ScrollArea({
             data-df="scroll-area-thumb"
             data-variant={variant}
             data-thumb-shape={thumbShape}
-            onPointerDown={startDrag("x")}
+            onPointerDown={onHorizontalThumbPointerDown}
             style={{
               width: hThumb.size,
               transform: `translateX(${hThumb.offset}px)`,

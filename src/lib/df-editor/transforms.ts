@@ -43,7 +43,7 @@ export type BlockTypeName =
   | "divider"
 
 export type SetBlockTypeAttrs = {
-  level?: 1 | 2 | 3
+  level?: 1 | 2 | 3 | undefined
 }
 
 function cloneDoc(doc: EditorDoc): EditorDoc {
@@ -73,8 +73,12 @@ function mergeTextNodes(nodes: InlineNode[]): InlineNode[] {
 
 function flattenInlineSegments(
   nodes: readonly InlineNode[]
-): Array<{ text: string; marks: TextInline; linkHref?: string }> {
-  const segs: Array<{ text: string; marks: TextInline; linkHref?: string }> = []
+): Array<{ text: string; marks: TextInline; linkHref?: string | undefined }> {
+  const segs: Array<{
+    text: string
+    marks: TextInline
+    linkHref?: string | undefined
+  }> = []
   for (const node of nodes) {
     if (node.type === "link") {
       for (const child of node.children) {
@@ -88,7 +92,11 @@ function flattenInlineSegments(
 }
 
 function rebuildInlines(
-  segs: Array<{ text: string; marks: TextInline; linkHref?: string }>
+  segs: Array<{
+    text: string
+    marks: TextInline
+    linkHref?: string | undefined
+  }>
 ): InlineNode[] {
   const nodes: InlineNode[] = []
   for (const seg of segs) {

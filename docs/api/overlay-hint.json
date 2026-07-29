@@ -148,40 +148,14 @@
             "name": "style",
             "type": "CSSProperties",
             "description": "Inline styles. Override --overlay-hint-bg, --overlay-hint-border, --overlay-hint-fg, --overlay-hint-shadow, --overlay-hint-blur, or --overlay-hint-radius directly."
-          },
-          {
-            "name": "…HTML attributes",
-            "type": "HTMLAttributes<HTMLDivElement>",
-            "description": "Standard element attributes (id, title, aria-*, etc.)."
           }
         ]
       },
       {
         "id": "overlay-hint-exports",
         "title": "Exports",
-        "description": "Named exports from the Overlay Hint module.",
-        "props": [
-          {
-            "name": "OverlayHint",
-            "type": "component",
-            "description": "The hint pill component."
-          },
-          {
-            "name": "OVERLAY_HINT_SEPARATOR",
-            "type": "\"·\"",
-            "description": "Default middle dot separator constant. Reuse when you want the stock separator explicitly."
-          },
-          {
-            "name": "OverlayHintSize",
-            "type": "\"sm\" | \"md\"",
-            "description": "Marquee density type. sm is compact; md is the default."
-          },
-          {
-            "name": "OverlayHintClickTarget",
-            "type": "\"chip\" | \"action\"",
-            "description": "Marquee hit target type. chip is the whole hint; action is the trailing control only."
-          }
-        ]
+        "description": "Named exports from the Overlay Hint module: OverlayHint component; OVERLAY_HINT_SEPARATOR middle-dot constant; OverlayHintSize (sm | md); OverlayHintClickTarget (chip | action).",
+        "props": []
       },
       {
         "id": "overlay-hint-tokens",

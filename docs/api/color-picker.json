@@ -78,34 +78,14 @@
       {
         "id": "color-picker-parts",
         "title": "Parts",
-        "props": [
-          {
-            "name": "data-df=\"color-picker-trigger\"",
-            "type": "part",
-            "description": "Pill shell for trailing hex or clear. Owns resting and hover border chrome."
-          },
-          {
-            "name": "data-hover-border",
-            "type": "part attribute",
-            "description": "true or false when hoverBorder is set. Omit to inherit data-df-hover-border from the host."
-          },
-          {
-            "name": "data-trailing",
-            "type": "part attribute",
-            "description": "hex or clear on the pill trigger."
-          }
-        ]
+        "description": "DOM structure markers for styling and tests. These are not component props. data-df=\"color-picker-trigger\": Pill shell for trailing hex or clear. Owns resting and hover border chrome. data-trailing: hex or clear on the pill trigger. data-hover-border: true or false when hoverBorder is set; omit to inherit the host theme.",
+        "props": []
       },
       {
         "id": "color-picker-layout",
         "title": "Layout & appearance",
-        "props": [
-          {
-            "name": "Popover editors",
-            "type": "internal UI",
-            "description": "Opened panel supports hex, rgb, hsl, and hsb channel modes (not separate props). Placement flips when there is not enough space."
-          }
-        ]
+        "description": "Popover editors (internal UI): Opened panel supports hex, rgb, hsl, and hsb channel modes (not separate props). Placement flips when there is not enough space.",
+        "props": []
       },
       {
         "id": "color-picker-tokens",

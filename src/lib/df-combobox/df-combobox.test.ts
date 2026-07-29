@@ -7,6 +7,7 @@ import {
   mergeComboboxOptions,
   moveComboboxActiveIndex,
   resolveComboboxCommit,
+  resolveComboboxDisplayText,
   type ComboboxOption,
 } from "./filter.ts"
 
@@ -62,6 +63,16 @@ test("enabledComboboxIndexes skips disabled and readOnly options", () => {
     ]),
     [0, 3]
   )
+})
+
+test("resolveComboboxDisplayText prefers the matching option label", () => {
+  assert.equal(resolveComboboxDisplayText("", OPTIONS, false), "")
+  assert.equal(resolveComboboxDisplayText("polish", OPTIONS, false), "Polish")
+  assert.equal(
+    resolveComboboxDisplayText("custom", OPTIONS, true),
+    "custom"
+  )
+  assert.equal(resolveComboboxDisplayText("missing", OPTIONS, false), "")
 })
 
 test("resolveComboboxCommit prefers the active option over custom text", () => {

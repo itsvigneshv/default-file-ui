@@ -29,23 +29,59 @@ const CHAPTER_TAGS = {
   chrome: ["toolbar", "dock", "floating", "tool", "controls", "bar"],
 }
 
+/**
+ * Dedicated capability gaps. Each rule lists whole labels that mean "this need
+ * is present in the query" and "this item is a dedicated primitive for it".
+ * Satisfaction is exact label match on name, title, or alias, never a substring
+ * hit inside a longer alias.
+ */
 const NEED_SYNONYMS = [
   {
-    patterns: /\b(table|data.?grid|datagrid)\b/i,
+    tokens: ["table", "data table", "data grid", "data-grid", "datagrid"],
     gap: "Table or data-grid primitive",
-    suggestion: "Build tables with owned markup and kit tokens (text, border, muted).",
+    suggestion:
+      "Build tables with owned markup and kit tokens (text, border, muted).",
     related: ["scroll-area", "separator", "badge"],
   },
   {
-    patterns: /\b(checkbox|radio)\b/i,
+    tokens: ["checkbox", "radio", "radio group", "radio-group"],
     gap: "Standalone checkbox or radio primitive",
-    suggestion: "Use choice-chip, toggle-group, content-switcher, or select/option-list for choices.",
-    related: ["choice-chip", "toggle-group", "content-switcher", "select", "option-list"],
+    suggestion:
+      "Use choice-chip, toggle-group, content-switcher, or select/option-list for choices.",
+    related: [
+      "choice-chip",
+      "toggle-group",
+      "content-switcher",
+      "select",
+      "option-list",
+    ],
   },
   {
-    patterns: /\b(avatar|breadcrumb|pagination|skeleton)\b/i,
-    gap: "Specialty chrome not yet in the registry",
-    suggestion: "Compose with badge, separator, and kit tokens, or request a registry item.",
+    tokens: ["avatar"],
+    gap: "Avatar primitive",
+    suggestion:
+      "Compose with badge, separator, and kit tokens, or request a registry item.",
+    related: ["badge", "separator", "overlay-hint"],
+  },
+  {
+    tokens: ["breadcrumb"],
+    gap: "Breadcrumb primitive",
+    suggestion:
+      "Compose with badge, separator, and kit tokens, or request a registry item.",
+    related: ["badge", "separator", "overlay-hint"],
+  },
+  {
+    tokens: ["pagination"],
+    gap: "Pagination primitive",
+    suggestion:
+      "Compose with badge, separator, and kit tokens, or request a registry item.",
+    related: ["badge", "separator", "overlay-hint"],
+  },
+  {
+    tokens: ["skeleton"],
+    gap: "Skeleton primitive",
+    suggestion:
+      "Compose with badge, separator, and kit tokens, or request a registry item.",
     related: ["badge", "separator", "overlay-hint"],
   },
 ]
@@ -217,6 +253,105 @@ function hasExactLabelMatch(item, query) {
   return itemAliasLabels(item).includes(q)
 }
 
+/** True when the item's name, title, or an alias is exactly this capability token. */
+function itemSatisfiesToken(item, token) {
+  return hasExactLabelMatch(item, token)
+}
+
+/**
+ * True when the need requests this token as its own label, not only as a word
+ * inside a longer alias phrase that already appears in the need (for example
+ * "table" inside "table of contents").
+ */
+function needRequestsToken(normalizedNeed, token, items) {
+  const tokenNorm = normalizeLabel(token)
+  if (!tokenNorm || !needIncludesLabel(normalizedNeed, tokenNorm)) return false
+
+  let remainder = ` ${normalizedNeed} `
+  for (const item of items) {
+    for (const aliasNorm of itemAliasLabels(item)) {
+      if (!aliasNorm.includes(" ")) continue
+      if (aliasNorm === tokenNorm) continue
+      if (!needIncludesLabel(aliasNorm, tokenNorm)) continue
+      if (!needIncludesLabel(normalizedNeed, aliasNorm)) continue
+      remainder = remainder.split(` ${aliasNorm} `).join(" ")
+    }
+  }
+  return needIncludesLabel(remainder.replace(/\s+/g, " ").trim(), tokenNorm)
+}
+
+/** Coverage report for a free-text UI need (covered, partial, or gap). */
+export function checkCoverage(need) {
+  const query = String(need ?? "").trim()
+  const normalizedNeed = normalizeLabel(query)
+  const { items, byName } = loadBundle()
+  const matched = matchNeedToItems(query, items)
+  const gaps = []
+
+  for (const rule of NEED_SYNONYMS) {
+    const requested = rule.tokens.filter((token) =>
+      needRequestsToken(normalizedNeed, token, items)
+    )
+    if (requested.length === 0) continue
+    const dedicatedMissing = !requested.some((token) =>
+      items.some((item) => itemSatisfiesToken(item, token))
+    )
+    if (dedicatedMissing) {
+      gaps.push({
+        need: rule.gap,
+        suggestion: rule.suggestion,
+        related: rule.related.filter((name) => byName.has(name)),
+      })
+    }
+  }
+
+  // Form surfaces: suggest core form primitives when form-like language appears
+  if (/\b(form|settings|profile|login|signup)\b/i.test(query)) {
+    for (const name of ["input", "label", "button"]) {
+      if (!matched.some((m) => m.name === name) && byName.has(name)) {
+        matched.push({
+          name,
+          title: byName.get(name).title,
+          reason: "Common form control",
+        })
+      }
+    }
+  }
+
+  for (const hint of COMPOSE_HINTS) {
+    if (!hint.patterns.test(query)) continue
+    if (hint.alsoRequires && !hint.alsoRequires.test(query)) continue
+    for (const name of hint.include) {
+      if (matched.some((m) => m.name === name) || !byName.has(name)) continue
+      matched.push({
+        name,
+        title: byName.get(name).title,
+        reason: hint.reason,
+      })
+    }
+  }
+
+  let status = "gap"
+  if (matched.length > 0 && gaps.length === 0) status = "covered"
+  else if (matched.length > 0) status = "partial"
+
+  const installNames = matched.map((m) => m.name)
+  return {
+    query,
+    status,
+    matched,
+    gaps,
+    installHint:
+      installNames.length > 0 ? `df-ui add ${installNames.join(" ")}` : null,
+    summary:
+      status === "covered"
+        ? `Kit covers this surface with ${matched.length} item(s).`
+        : status === "partial"
+          ? `Kit partially covers this surface (${matched.length} match(es), ${gaps.length} gap(s)).`
+          : "No strong registry matches. Review gaps and compose with foundation tokens.",
+  }
+}
+
 const CHAPTER_FILTER_ALIASES = {
   chrome: "toolbars",
 }
@@ -381,76 +516,6 @@ function matchNeedToItems(needText, items) {
     seen.add(row.name)
     return true
   })
-}
-
-/** Coverage report for a free-text UI need (covered, partial, or gap). */
-export function checkCoverage(need) {
-  const query = String(need ?? "").trim()
-  const { items, byName } = loadBundle()
-  const matched = matchNeedToItems(query, items)
-  const gaps = []
-
-  for (const rule of NEED_SYNONYMS) {
-    if (!rule.patterns.test(query)) continue
-    const dedicatedMissing = !items.some(
-      (item) =>
-        rule.patterns.test(item.name) ||
-        (item.aliases ?? []).some((alias) => rule.patterns.test(alias))
-    )
-    if (dedicatedMissing) {
-      gaps.push({
-        need: rule.gap,
-        suggestion: rule.suggestion,
-        related: rule.related.filter((name) => byName.has(name)),
-      })
-    }
-  }
-
-  // Form surfaces: suggest core form primitives when form-like language appears
-  if (/\b(form|settings|profile|login|signup)\b/i.test(query)) {
-    for (const name of ["input", "label", "button"]) {
-      if (!matched.some((m) => m.name === name) && byName.has(name)) {
-        matched.push({
-          name,
-          title: byName.get(name).title,
-          reason: "Common form control",
-        })
-      }
-    }
-  }
-
-  for (const hint of COMPOSE_HINTS) {
-    if (!hint.patterns.test(query)) continue
-    if (hint.alsoRequires && !hint.alsoRequires.test(query)) continue
-    for (const name of hint.include) {
-      if (matched.some((m) => m.name === name) || !byName.has(name)) continue
-      matched.push({
-        name,
-        title: byName.get(name).title,
-        reason: hint.reason,
-      })
-    }
-  }
-
-  let status = "gap"
-  if (matched.length > 0 && gaps.length === 0) status = "covered"
-  else if (matched.length > 0) status = "partial"
-
-  const installNames = matched.map((m) => m.name)
-  return {
-    query,
-    status,
-    matched,
-    gaps,
-    installHint:
-      installNames.length > 0 ? `df-ui add ${installNames.join(" ")}` : null,
-    summary:
-      status === "covered"
-        ? `Kit covers this surface with ${matched.length} item(s).`
-        : status === "partial"
-          ? `Kit partially covers this surface (${matched.length} match(es), ${gaps.length} gap(s)).`
-          : "No strong registry matches. Review gaps and compose with foundation tokens.",
-  }
 }
 
 /** Install, MCP, tokens, and foundation guidance shipped with the kit. */

@@ -7,6 +7,12 @@ type EmptyStateProps = React.HTMLAttributes<HTMLDivElement> & {
   title: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactNode
+  /**
+   * When true, exposes `role="status"` so assistive technology announces the
+   * empty state as it appears, for example after a search returns no results.
+   * Keep false for a static empty illustration that is part of the initial page.
+   */
+  announce?: boolean
 }
 
 function EmptyState({
@@ -15,6 +21,7 @@ function EmptyState({
   title,
   description,
   action,
+  announce = false,
   ...props
 }: EmptyStateProps) {
   return (
@@ -22,6 +29,7 @@ function EmptyState({
       data-df="empty-state"
       className={cn(className)}
       {...props}
+      role={announce ? "status" : props.role}
     >
       {glyph != null ? (
         <div data-df="empty-state-glyph" aria-hidden>

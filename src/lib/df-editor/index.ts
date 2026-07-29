@@ -44,6 +44,7 @@ export {
   type TaskItemNode,
   type TaskListBlock,
   type TextInline,
+  type TextMarks,
 } from "./ast"
 
 export { parseMarkdown } from "./parse"

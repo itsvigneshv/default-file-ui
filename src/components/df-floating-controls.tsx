@@ -2,8 +2,9 @@
 
 import * as React from "react"
 
+import { useRovingTabIndex, type RovingItemProps } from "../hooks"
 import { Separator } from "./df-separator"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers, composeRefs } from "../lib/utils"
 
 type FloatingControlsVariant = "surface" | "overlay"
 type FloatingControlsPadding = "none" | "sm" | "default" | "lg" | "2xl"
@@ -57,6 +58,97 @@ type FloatingControlsProps = React.HTMLAttributes<HTMLDivElement> & {
   items?: FloatingControlsEntry[]
 }
 
+type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  leading?: React.ReactNode | undefined
+  trailing?: React.ReactNode | undefined
+  tone?: "ghost" | "solid" | undefined
+}
+
+type FloatingControlsRovingContextValue = {
+  claimIndex: () => number
+  getItemProps: (index: number) => RovingItemProps
+}
+
+const FloatingControlsRovingContext =
+  React.createContext<FloatingControlsRovingContextValue | null>(null)
+
+const FloatingControlsItem = React.forwardRef<
+  HTMLButtonElement,
+  FloatingControlsItemProps
+>(function FloatingControlsItem(
+  {
+    className,
+    leading,
+    trailing,
+    tone = "ghost",
+    type = "button",
+    children,
+    onFocus,
+    onKeyDown,
+    ...props
+  },
+  ref
+) {
+  const roving = React.useContext(FloatingControlsRovingContext)
+  const index = roving != null ? roving.claimIndex() : -1
+  const itemProps =
+    roving != null && index >= 0 ? roving.getItemProps(index) : null
+
+  return (
+    <button
+      type={type}
+      ref={composeRefs(ref, itemProps?.ref)}
+      data-df="floating-controls-item"
+      data-tone={tone}
+      className={cn("df-floating-controls-item", className)}
+      tabIndex={itemProps?.tabIndex}
+      {...props}
+      onFocus={(event) => {
+        if (itemProps) {
+          composeEventHandlers(onFocus, itemProps.onFocus)(event)
+          return
+        }
+        onFocus?.(event)
+      }}
+      onKeyDown={(event) => {
+        if (itemProps) {
+          composeEventHandlers(onKeyDown, itemProps.onKeyDown)(event)
+          return
+        }
+        onKeyDown?.(event)
+      }}
+    >
+      {leading != null && (
+        <span
+          className="df-floating-controls-item-slot"
+          data-df="floating-controls-item-slot"
+          data-slot="leading"
+          data-icon="inline-start"
+        >
+          {leading}
+        </span>
+      )}
+      {children}
+      {trailing != null && (
+        <span
+          className="df-floating-controls-item-slot"
+          data-df="floating-controls-item-slot"
+          data-slot="trailing"
+          data-icon="inline-end"
+        >
+          {trailing}
+        </span>
+      )}
+    </button>
+  )
+})
+
+function isFloatingControlsItemElement(
+  node: React.ReactNode
+): node is React.ReactElement<FloatingControlsItemProps> {
+  return React.isValidElement(node) && node.type === FloatingControlsItem
+}
+
 function FloatingControls({
   className,
   variant = "surface",
@@ -70,15 +162,11 @@ function FloatingControls({
     children ??
     (items?.map((entry, index) => {
       const key =
-        ("key" in entry && entry.key) ||
-        `${entry.type ?? "item"}-${index}`
+        ("key" in entry && entry.key) || `${entry.type ?? "item"}-${index}`
 
       if (entry.type === "divider") {
         return (
-          <FloatingControlsDivider
-            key={key}
-            className={entry.className}
-          >
+          <FloatingControlsDivider key={key} className={entry.className}>
             {entry.children}
           </FloatingControlsDivider>
         )
@@ -120,66 +208,41 @@ function FloatingControls({
       )
     }))
 
-  return (
-    <div
-      role="toolbar"
-      data-df="floating-controls"
-      data-variant={variant}
-      data-padding={padding}
-      data-radius={radius}
-      className={cn("df-floating-controls", className)}
-      {...props}
-    >
-      {content}
-    </div>
-  )
-}
+  const childArray = React.Children.toArray(content)
+  const itemDisabledFlags: boolean[] = []
+  for (const child of childArray) {
+    if (isFloatingControlsItemElement(child)) {
+      itemDisabledFlags.push(Boolean(child.props.disabled))
+    }
+  }
 
-type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  leading?: React.ReactNode
-  trailing?: React.ReactNode
-  tone?: "ghost" | "solid"
-}
+  const { getItemProps } = useRovingTabIndex({
+    count: itemDisabledFlags.length,
+    orientation: "horizontal",
+    isItemDisabled: (index) => itemDisabledFlags[index] ?? false,
+  })
 
-function FloatingControlsItem({
-  className,
-  leading,
-  trailing,
-  tone = "ghost",
-  type = "button",
-  children,
-  ...props
-}: FloatingControlsItemProps) {
+  let nextItemIndex = 0
+  const rovingValue: FloatingControlsRovingContextValue = {
+    claimIndex: () => nextItemIndex++,
+    getItemProps,
+  }
+
   return (
-    <button
-      type={type}
-      data-df="floating-controls-item"
-      data-tone={tone}
-      className={cn("df-floating-controls-item", className)}
-      {...props}
-    >
-      {leading != null && (
-        <span
-          className="df-floating-controls-item-slot"
-          data-df="floating-controls-item-slot"
-          data-slot="leading"
-          data-icon="inline-start"
-        >
-          {leading}
-        </span>
-      )}
-      {children}
-      {trailing != null && (
-        <span
-          className="df-floating-controls-item-slot"
-          data-df="floating-controls-item-slot"
-          data-slot="trailing"
-          data-icon="inline-end"
-        >
-          {trailing}
-        </span>
-      )}
-    </button>
+    <FloatingControlsRovingContext.Provider value={rovingValue}>
+      <div
+        role="toolbar"
+        aria-orientation="horizontal"
+        data-df="floating-controls"
+        data-variant={variant}
+        data-padding={padding}
+        data-radius={radius}
+        className={cn("df-floating-controls", className)}
+        {...props}
+      >
+        {content}
+      </div>
+    </FloatingControlsRovingContext.Provider>
   )
 }
 

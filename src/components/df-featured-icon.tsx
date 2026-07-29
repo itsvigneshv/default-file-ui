@@ -94,10 +94,10 @@ function resolveShape(
 }
 
 function chromeStyle(options: {
-  background?: string
-  borderColor?: string
-  iconColor?: string
-  style?: React.CSSProperties
+  background?: string | undefined
+  borderColor?: string | undefined
+  iconColor?: string | undefined
+  style?: React.CSSProperties | undefined
 }): React.CSSProperties | undefined {
   const { background, borderColor, iconColor, style } = options
   if (

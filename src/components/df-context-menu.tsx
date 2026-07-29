@@ -10,6 +10,7 @@ import {
   useControllableState,
   useDismiss,
   useIsClient,
+  useIsomorphicLayoutEffect,
   type AnchorRect,
 } from "../hooks"
 import {
@@ -54,7 +55,7 @@ type MenuSession = {
   items: ContextMenuEntry[]
   anchor: AnchorRect
   trigger: HTMLElement | null
-  themeClass?: "dark"
+  themeClass?: "dark" | undefined
 }
 
 type MenuListener = () => void
@@ -147,10 +148,10 @@ type ContextMenuSurfaceProps = {
   open: boolean
   items: ContextMenuEntry[]
   anchor: AnchorRect | null
-  triggerRef?: React.RefObject<HTMLElement | null>
-  themeClass?: "dark"
+  triggerRef?: React.RefObject<HTMLElement | null> | undefined
+  themeClass?: "dark" | undefined
   onClose: () => void
-  onSelect?: (item: ContextMenuActionEntry) => void
+  onSelect?: ((item: ContextMenuActionEntry) => void) | undefined
 }
 
 function ContextMenuSurface({
@@ -807,7 +808,7 @@ function ContextMenuHost() {
   )
   const triggerRef = React.useRef<HTMLElement | null>(null)
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     triggerRef.current = session?.trigger ?? null
   }, [session])
 

@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { sanitizeCssColor } from "../lib/df-css-value"
 import { cn } from "../lib/utils"
 
 type SpectrumGradientStop = {
@@ -29,15 +30,21 @@ type SpectrumTextProps = {
 }
 
 function colorsToStops(colors: string[]): SpectrumGradientStop[] {
-  const stops =
-    colors.length > 0 && colors[0] === colors[colors.length - 1]
-      ? colors
-      : [...colors, colors[0]]
+  const first = colors[0]
+  if (first === undefined) return [...DEFAULT_SPECTRUM_STOPS]
+  const lastColor = colors[colors.length - 1]
+  const stops = lastColor === first ? colors : [...colors, first]
   const last = Math.max(stops.length - 1, 1)
   return stops.map((color, index) => ({
     offset: index / last,
     color,
   }))
+}
+
+function sanitizeSpectrumColors(colors: string[]): string[] {
+  return colors
+    .map((color) => sanitizeCssColor(color))
+    .filter((color): color is string => color != null)
 }
 
 function usesCssVariables(colors: string[]): boolean {
@@ -48,8 +55,11 @@ function buildSpectrumFillSvg(stops: SpectrumGradientStop[]): string {
   const stopMarkup = stops
     .map((stop) => {
       const offset = `${(stop.offset * 100).toFixed(2)}%`
-      return `<stop offset="${offset}" stop-color="${stop.color}"/>`
+      const color = sanitizeCssColor(stop.color)
+      if (color == null) return ""
+      return `<stop offset="${offset}" stop-color="${color}"/>`
     })
+    .filter(Boolean)
     .join("")
 
   return [
@@ -69,10 +79,11 @@ function spectrumFillDataUri(stops: SpectrumGradientStop[]): string {
 }
 
 function spectrumCssGradient(colors: string[]): string {
+  const safe = sanitizeSpectrumColors(colors)
   const stops =
-    colors.length > 0 && colors[0] === colors[colors.length - 1]
-      ? colors
-      : [...colors, colors[0]]
+    safe.length > 0 && safe[0] === safe[safe.length - 1]
+      ? safe
+      : [...safe, safe[0]]
   return `linear-gradient(135deg, ${stops.join(", ")})`
 }
 
@@ -83,10 +94,14 @@ const SpectrumText = React.memo(function SpectrumText({
   speed = 1,
 }: SpectrumTextProps) {
   const safeSpeed = Number.isFinite(speed) && speed > 0 ? speed : 1
-  const fillColors =
-    colors != null && colors.length > 0
-      ? colors
-      : [...DEFAULT_SPECTRUM_COLORS]
+  const fillColors = (() => {
+    const raw =
+      colors != null && colors.length > 0
+        ? colors
+        : [...DEFAULT_SPECTRUM_COLORS]
+    const safe = sanitizeSpectrumColors(raw)
+    return safe.length > 0 ? safe : [...DEFAULT_SPECTRUM_COLORS]
+  })()
   const backgroundImage = usesCssVariables(fillColors)
     ? spectrumCssGradient(fillColors)
     : spectrumFillDataUri(colorsToStops(fillColors))

@@ -81,11 +81,6 @@
             "name": "children",
             "type": "ReactNode",
             "description": "Trigger content when not using render."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Applied when rendering the default button host."
           }
         ]
       },

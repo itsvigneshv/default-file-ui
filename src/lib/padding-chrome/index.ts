@@ -1,20 +1,20 @@
 import type * as React from "react"
 
 type PaddingChromeProps = {
-  padding?: string
-  paddingX?: string
-  paddingY?: string
-  paddingTop?: string
-  paddingRight?: string
-  paddingBottom?: string
-  paddingLeft?: string
+  padding?: string | undefined
+  paddingX?: string | undefined
+  paddingY?: string | undefined
+  paddingTop?: string | undefined
+  paddingRight?: string | undefined
+  paddingBottom?: string | undefined
+  paddingLeft?: string | undefined
 }
 
 type ResolvedPaddingSides = {
-  top?: string
-  right?: string
-  bottom?: string
-  left?: string
+  top?: string | undefined
+  right?: string | undefined
+  bottom?: string | undefined
+  left?: string | undefined
 }
 
 function resolvePaddingSides({

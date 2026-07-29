@@ -32,11 +32,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles on the mark."
-          },
-          {
-            "name": "…HTML attributes",
-            "type": "HTMLAttributes<HTMLSpanElement>",
-            "description": "Standard element attributes. Decorative by default (aria-hidden). Set aria-hidden false and an accessible name when the mark is meaningful without adjacent text."
           }
         ]
       },
@@ -55,25 +50,25 @@
             "name": "--df-status-dot-size-sm",
             "type": "CSS length",
             "description": "sm diameter.",
-            "default": "calc(1.75 * var(--spacing-unit))"
+            "default": "calc(2 * var(--spacing-unit))"
           },
           {
             "name": "--df-status-dot-size-md",
             "type": "CSS length",
             "description": "md diameter. Default when size is omitted outside a sized host.",
-            "default": "calc(2 * var(--spacing-unit))"
+            "default": "calc(2.5 * var(--spacing-unit))"
           },
           {
             "name": "--df-status-dot-size-lg",
             "type": "CSS length",
             "description": "lg diameter.",
-            "default": "calc(2.25 * var(--spacing-unit))"
+            "default": "calc(3 * var(--spacing-unit))"
           },
           {
             "name": "--df-status-dot-size-xl",
             "type": "CSS length",
             "description": "xl diameter.",
-            "default": "calc(2.5 * var(--spacing-unit))"
+            "default": "calc(3.5 * var(--spacing-unit))"
           }
         ]
       }

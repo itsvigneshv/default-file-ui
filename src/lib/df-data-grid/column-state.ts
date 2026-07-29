@@ -1,15 +1,15 @@
 export type DataGridColumnState = {
   id: string
-  width?: number
-  hidden?: boolean
+  width?: number | undefined
+  hidden?: boolean | undefined
 }
 
 export type DataGridColumnInput = {
   id: string
-  width?: number
-  minWidth?: number
-  hidden?: boolean
-  resizable?: boolean
+  width?: number | undefined
+  minWidth?: number | undefined
+  hidden?: boolean | undefined
+  resizable?: boolean | undefined
 }
 
 export type ResolvedDataGridColumn<T extends DataGridColumnInput> = T & {

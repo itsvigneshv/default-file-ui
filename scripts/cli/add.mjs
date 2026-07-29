@@ -113,18 +113,52 @@ function printNextSteps(resolved) {
 }
 
 function destinationFor(cwd, baseDir, sourcePath) {
+  if (typeof sourcePath !== "string" || sourcePath.length === 0) {
+    throw new Error("Registry file path must be a non-empty string.")
+  }
+  if (path.isAbsolute(sourcePath)) {
+    throw new Error(
+      `Registry file path must be relative, received absolute path: ${sourcePath}`
+    )
+  }
+
   const relative = sourcePath.replace(/^src\//, "")
-  return path.join(cwd, baseDir, "default-file-ui", relative)
+  const targetRoot = path.resolve(cwd, baseDir, "default-file-ui")
+  const destination = path.resolve(targetRoot, relative)
+  const rootWithSep = targetRoot.endsWith(path.sep)
+    ? targetRoot
+    : `${targetRoot}${path.sep}`
+
+  if (destination !== targetRoot && !destination.startsWith(rootWithSep)) {
+    throw new Error(
+      `Registry file path escapes the install root (${path.relative(cwd, targetRoot)}): ${sourcePath}`
+    )
+  }
+
+  return destination
+}
+
+function parseRegistryJson(text, sourceLabel) {
+  try {
+    return JSON.parse(text)
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error)
+    throw new Error(
+      `Could not parse registry.json from ${sourceLabel}: ${detail}. Reinstall @default-file/ui or check the remote registry payload.`
+    )
+  }
 }
 
 async function loadRegistry(cwd) {
   const local = path.join(cwd, LOCAL_PKG, "registry.json")
-  if (exists(local)) return JSON.parse(readText(local))
+  if (exists(local)) {
+    return parseRegistryJson(readText(local), local)
+  }
   const res = await fetch(`${RAW_BASE}/registry.json`)
   if (!res.ok) {
     throw new Error(`Could not load registry.json (HTTP ${res.status}).`)
   }
-  return res.json()
+  return parseRegistryJson(await res.text(), `${RAW_BASE}/registry.json`)
 }
 
 async function readSource(cwd, relPath) {

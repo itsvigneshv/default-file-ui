@@ -187,8 +187,48 @@ async function testHelpers() {
 
   const gap = checkCoverage("data table with pagination")
   assert.ok(gap.status === "partial" || gap.status === "gap")
-  assert.ok(gap.gaps.length > 0)
+  assert.ok(
+    gap.matched.some((row) => row.name === "data-grid"),
+    "data table need should match the registered data-grid"
+  )
+  assert.ok(
+    !gap.gaps.some((entry) => /table|data-grid/i.test(entry.need)),
+    "registered data-grid must close the table/data-grid gap"
+  )
+  assert.ok(
+    gap.gaps.some((entry) => /pagination/i.test(entry.need)),
+    "pagination need must report its own gap when no pagination item exists"
+  )
+  assert.ok(
+    !gap.matched.some((row) => row.name === "contents-nav"),
+    "contents-nav must not satisfy a data table need"
+  )
   console.log(`gap cover: ${gap.status}, gaps=${gap.gaps.length}`)
+
+  const tocCover = checkCoverage("table of contents")
+  assert.ok(
+    tocCover.matched.some((row) => row.name === "contents-nav"),
+    "table of contents should match contents-nav"
+  )
+  assert.ok(
+    !tocCover.gaps.some((entry) => /table|data-grid/i.test(entry.need)),
+    "TOC query must not open a false data-table gap from the word table"
+  )
+
+  const skeletonCover = checkCoverage("skeleton placeholder")
+  assert.ok(
+    !skeletonCover.gaps.some((entry) => /skeleton/i.test(entry.need)),
+    "registered skeleton must close the skeleton gap"
+  )
+  const avatarCover = checkCoverage("user avatar")
+  assert.ok(
+    !avatarCover.gaps.some((entry) => /avatar/i.test(entry.need)),
+    "registered avatar must close the avatar gap"
+  )
+  assert.ok(
+    avatarCover.matched.some((row) => row.name === "avatar"),
+    "avatar need should match the registered avatar"
+  )
 
   const tokens = listTokens()
   assert.ok(tokens.tokenCount > 50)

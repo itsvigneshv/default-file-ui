@@ -5,6 +5,8 @@ import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
+import { sanitizeHref } from "../lib/df-url"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 type OverlayHintVariant = "default" | "muted" | "marquee"
@@ -51,7 +53,7 @@ function renderLabelContent({
   separator,
   children,
 }: {
-  parts?: React.ReactNode[]
+  parts?: React.ReactNode[] | undefined
   separator: React.ReactNode
   children: React.ReactNode
 }) {
@@ -104,12 +106,13 @@ function MarqueeActionControl({
   scheme,
 }: {
   action: React.ReactNode
-  actionLabel?: string
-  actionHref?: string
-  onAction?: React.MouseEventHandler<HTMLElement>
+  actionLabel?: string | undefined
+  actionHref?: string | undefined
+  onAction?: React.MouseEventHandler<HTMLElement> | undefined
   interactive: boolean
-  scheme?: OverlayHintScheme
+  scheme?: OverlayHintScheme | undefined
 }) {
+  const s = useDfStrings()
   const surfaceClass = scheme === "dark" ? "dark" : undefined
   const actionClassName = cn("df-overlay-hint-action", surfaceClass)
 
@@ -132,22 +135,25 @@ function MarqueeActionControl({
   }
 
   if (actionHref != null) {
-    return (
-      <a
-        href={actionHref}
-        className={dfButtonClass({
-          variant: MARQUEE_ACTION_VARIANT,
-          size: MARQUEE_ACTION_SIZE,
-          className: actionClassName,
-        })}
-        data-df="button"
-        data-variant={MARQUEE_ACTION_VARIANT}
-        data-size={MARQUEE_ACTION_SIZE}
-        aria-label={actionLabel ?? "Open"}
-      >
-        {action}
-      </a>
-    )
+    const safeHref = sanitizeHref(actionHref)
+    if (safeHref != null) {
+      return (
+        <a
+          href={safeHref}
+          className={dfButtonClass({
+            variant: MARQUEE_ACTION_VARIANT,
+            size: MARQUEE_ACTION_SIZE,
+            className: actionClassName,
+          })}
+          data-df="button"
+          data-variant={MARQUEE_ACTION_VARIANT}
+          data-size={MARQUEE_ACTION_SIZE}
+          aria-label={actionLabel ?? s.overlayHintOpen}
+        >
+          {action}
+        </a>
+      )
+    }
   }
 
   return (
@@ -156,7 +162,7 @@ function MarqueeActionControl({
       variant={MARQUEE_ACTION_VARIANT}
       size={MARQUEE_ACTION_SIZE}
       className={actionClassName}
-      aria-label={actionLabel ?? "Action"}
+      aria-label={actionLabel ?? s.overlayHintAction}
       onClick={onAction as React.MouseEventHandler<HTMLButtonElement>}
     >
       {action}
@@ -193,11 +199,13 @@ function OverlayHint({
   ...props
 }: OverlayHintProps) {
   const isMarquee = variant === "marquee"
+  const safeActionHref =
+    actionHref != null ? sanitizeHref(actionHref) : null
   const label = renderLabelContent({ parts, separator, children })
   const chipClickable =
     isMarquee &&
     clickTarget === "chip" &&
-    (actionHref != null || onAction != null || onClick != null)
+    (safeActionHref != null || onAction != null || onClick != null)
   const actionClickable =
     isMarquee && clickTarget === "action" && action != null
 
@@ -260,7 +268,7 @@ function OverlayHint({
         <MarqueeActionControl
           action={action}
           actionLabel={actionLabel}
-          actionHref={actionHref}
+          actionHref={safeActionHref ?? undefined}
           onAction={onAction}
           interactive={actionClickable}
           scheme={scheme}
@@ -294,11 +302,11 @@ function OverlayHint({
     "data-size": isMarquee ? size : undefined,
   }
 
-  if (chipClickable && actionHref != null) {
+  if (chipClickable && safeActionHref != null) {
     return (
       <a
         {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-        href={actionHref}
+        href={safeActionHref}
         aria-label={actionLabel}
         className={sharedClassName}
         style={hintStyle}

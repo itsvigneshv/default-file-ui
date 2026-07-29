@@ -269,7 +269,7 @@ function NavRailItem({
       type={type}
       data-df="nav-rail-item"
       data-state={state}
-      aria-pressed={active}
+      aria-current={active && !disabled ? "page" : undefined}
       disabled={disabled}
       className={sharedClassName}
       style={itemStyle}

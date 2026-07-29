@@ -28,14 +28,14 @@ export type ClassifyDayInput = {
   iso: string
   inMonth: boolean
   mode: "single" | "range"
-  value?: string | null
-  rangeValue?: DateRangeValue | null
-  draft?: RangeDraft
-  hover?: string | null
-  min?: string | null
-  max?: string | null
-  disabledDates?: ((dayIso: string) => boolean) | null
-  today?: string
+  value?: string | null | undefined
+  rangeValue?: DateRangeValue | null | undefined
+  draft?: RangeDraft | undefined
+  hover?: string | null | undefined
+  min?: string | null | undefined
+  max?: string | null | undefined
+  disabledDates?: ((dayIso: string) => boolean) | null | undefined
+  today?: string | undefined
 }
 
 /** Classify a calendar day for selected, today, range, and disabled chrome. */

@@ -2,7 +2,8 @@
 
 import * as React from "react"
 
-import { useControllableState } from "../hooks"
+import { useControllableState, useIsomorphicLayoutEffect } from "../hooks"
+import { useDfStrings } from "../lib/df-intl"
 import {
   clampRatio,
   normalizeRatioInput,
@@ -16,7 +17,10 @@ import { cn } from "../lib/utils"
 
 type SplitOrientation = "horizontal" | "vertical"
 
-export type SplitProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> & {
+export type SplitProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "aria-label"
+> & {
   orientation?: SplitOrientation
   ratio?: number
   defaultRatio?: number
@@ -25,6 +29,8 @@ export type SplitProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> 
   maxSize?: SplitSizeConstraint
   step?: number
   disabled?: boolean
+  /** Accessible name for the resize separator. */
+  "aria-label"?: string
   children: [React.ReactNode, React.ReactNode]
 }
 
@@ -40,8 +46,11 @@ function Split({
   className,
   children,
   style,
+  "aria-label": ariaLabel,
   ...props
 }: SplitProps) {
+  const strings = useDfStrings()
+  const separatorLabel = ariaLabel ?? strings.splitSeparator
   const [currentRatio, setRatio] = useControllableState({
     value: ratio === undefined ? undefined : normalizeRatioInput(ratio),
     defaultValue: normalizeRatioInput(defaultRatio),
@@ -72,7 +81,7 @@ function Split({
     return next
   }, [orientation])
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (root == null) return
 
@@ -181,6 +190,7 @@ function Split({
       <div
         data-df="split-divider"
         role="separator"
+        aria-label={separatorLabel}
         aria-orientation={orientation}
         aria-valuenow={percent}
         aria-valuemin={ratioToPercent(bounds.min)}

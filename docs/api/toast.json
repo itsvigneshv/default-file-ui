@@ -126,11 +126,6 @@
             "name": "style",
             "type": "CSSProperties",
             "description": "Inline styles. Merged after chrome props. Prefer chrome props or --df-toast-* variables."
-          },
-          {
-            "name": "…div attributes",
-            "type": "ComponentProps<'div'>",
-            "description": "Spread onto the toast root."
           }
         ]
       },

@@ -427,7 +427,7 @@ test("resolveTreeDrop rejects targets inside any multi-selected subtree", () => 
 
 test("auto-scroll session stop prevents further scheduled ticks", () => {
   let scheduled = 0
-  let pending: FrameRequestCallback | null = null
+  const frame: { callback: FrameRequestCallback | null } = { callback: null }
   let nextId = 1
   const live = new Set<number>()
   const originalRaf = globalThis.requestAnimationFrame
@@ -437,14 +437,14 @@ test("auto-scroll session stop prevents further scheduled ticks", () => {
     scheduled += 1
     const id = nextId
     nextId += 1
-    pending = callback
+    frame.callback = callback
     live.add(id)
     return id
   }) as typeof requestAnimationFrame
 
   globalThis.cancelAnimationFrame = ((id: number) => {
     live.delete(id)
-    pending = null
+    frame.callback = null
   }) as typeof cancelAnimationFrame
 
   try {
@@ -452,11 +452,12 @@ test("auto-scroll session stop prevents further scheduled ticks", () => {
       getContainer: () => null,
     })
     assert.equal(scheduled, 1)
-    const stale = pending
+    const stale = frame.callback
+    assert.ok(stale)
     session.stop()
     const afterStop = scheduled
-    stale?.(0)
-    pending?.(0)
+    stale(0)
+    frame.callback?.(0)
     assert.equal(scheduled, afterStop)
     session.updatePointer(0, 0)
     assert.equal(scheduled, afterStop)

@@ -2,6 +2,65 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.29.4
+
+- Enable `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` with real narrowing across kit types and components.
+- Add component Vitest contracts for Editor, Featured Icon, File Uploader, Kbd, List Item, Number Slider, Options Panel, Overlay Hint, Panel Section, Separator, Sidebar, Skeleton, Spinner, Status Dot, Text Mark, Timeline, Toast, and Widget Grid.
+- Add `verify:registry` for declared paths, `public/r` freshness, and component to registry to API consistency. Wire it into `verify` and `prepublishOnly`.
+- Add kit CI and document the compiled distribution, peers, CSS order, browser support, and Server Components contract in the README.
+
+## 0.29.3
+
+- Use `useIsomorphicLayoutEffect` for remaining Accordion, overlay, Input, Option List, Sidebar, Tabs, Text Mark, Tick Slider, and Toast layout effects.
+
+## 0.29.2
+
+- Publish only `dist`, `src/css`, `bin`, `scripts/cli`, `docs`, `public/r`, `registry.json`, and `skills`. Colocated component tests and maintainer generators stay out of the package.
+- Document Editor, Skeleton, Timeline, and Widget Grid prop tables in exported API JSON.
+- Declare `@tanstack/react-virtual` on the Timeline registry item.
+- Sync Combobox committed value to input text with `useIsomorphicLayoutEffect`.
+
+## 0.29.1
+
+- Keep Combobox `value` / `defaultValue` / `onValueChange` on the option value, with input text showing the matching label while typing stays a separate query.
+- Mark DatePicker and DateRangePicker Input triggers as `role="combobox"` with `aria-haspopup="grid"` so PopoverTrigger `aria-expanded` is valid.
+
+## 0.29.0
+
+### Breaking
+
+- Remove `--df-control-optical-shift`, `--df-kbd-mod-optical-shift`, and `--df-kbd-punct-optical-shift`, plus the component aliases `--df-input-optical-shift` and `--df-select-optical-shift`. Cap-height metric trimming replaces those nudges on kbd, input, and select chrome.
+- Grow the default Switch track from 32x18.4 to 40x24 and the small track from 24x14 to 32x20. Geometry is derived from `--df-switch-thumb-gap` with zero vertical slack. Focus uses `box-shadow` and a transparent `outline` for forced colors, not a layout-consuming border.
+- Grow status-dot md, lg, and xl to 10px, 12px, and 14px. Shrink `--df-affordance-size-2xs` from 10px to 8px.
+
+### Added
+
+- Geometry contract helpers in `scripts/lib/df-geometry.mjs` with `df:audit-geometry` wired as the first `verify` step.
+- Zero-slack equations for Switch and for input sizes sm to xl across hairline, thin, and thick borders, plus select-trigger sizes sm to lg.
+- Derive input and select-trigger `padding-block` from height, border width, and line height so the line box fills the content box.
+
+### Fixed
+
+- Compose overlay component rules in the geometry resolver so size and border variants resolve with the padding formula before zero-slack checks.
+
+## 0.28.0
+
+- Require `weekStartsOn` on `buildMonthGrid` and `moveCalendarFocus`. Callers must pass an explicit first weekday; the helpers do not default to Sunday.
+- Add `weekStartsOnForLocale`, `offsetFromWeekStart`, and `rotateWeekdayLabels` to the calendar grid module. Engines without week info fall back to Sunday as a degradation path for locale resolution only.
+- Pass week start through date picker Home and End focus movement.
+- Announce Toggle Group items with `aria-pressed` in single and multiple modes. Single mode stays clearable and mutually exclusive; arrow keys move focus only.
+- Remove Label `brackets`. Required and optional marks render catalogue strings as-is.
+- Name range slider thumbs with `sliderMinimumThumb` and `sliderMaximumThumb`.
+- Promote bare `src/lib` helpers to directory modules. Expose package subpaths for `utils`, `nearest-theme`, `df-ui-audio`, and `df-tick-sound`. Corner shape, hover border, padding chrome, and shadow intensity stay internal kit chrome.
+
+## 0.27.16
+
+- Set Stage Shot, Markdown Preview, Scan Note, and Runway home preview stage fills to `#fcf6f2`.
+
+## 0.27.15
+
+- Refresh Stage Shot, Markdown Preview, Scan Note, and Runway home preview stage fills to match the updated cream card artwork.
+
 ## 0.27.14
 
 - Align Stage Shot, Markdown Preview, and Scan Note home preview stage fills with the cream card artwork.

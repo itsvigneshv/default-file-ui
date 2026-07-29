@@ -2,7 +2,7 @@
   "name": "toggle-group",
   "slug": "toggle-group",
   "title": "Toggle Group",
-  "description": "Grouped single- or multi-select toggles. Prefer Content Switcher for exclusive view modes as segments.",
+  "description": "Grouped toggle buttons with a clearable string[] selection model. Prefer Content Switcher for exclusive view modes as segments.",
   "aliases": [
     "button group",
     "option group",
@@ -17,7 +17,7 @@
   "importPath": "@default-file/ui/components/df-toggle-group",
   "dependencies": [],
   "api": {
-    "description": "Grouped single- or multi-select toggles. Compose ToggleGroup and ToggleGroupItem. Prefer Content Switcher for exclusive view modes as segments, and Switch for a single binary setting.",
+    "description": "Grouped toggle buttons with a shared string[] value. Single-select is clearable: pressing the selected item clears the selection. Multi-select adds and removes values. Prefer Content Switcher for exclusive view modes as radio segments, and Switch for a single binary setting.",
     "groups": [
       {
         "id": "toggle-group",
@@ -55,18 +55,18 @@
             "name": "orientation",
             "type": "\"horizontal\" | \"vertical\"",
             "default": "\"horizontal\"",
-            "description": "Layout direction."
+            "description": "Layout direction. Also sets the roving tabindex arrow-key axis."
           },
           {
             "name": "multiple",
             "type": "boolean",
             "default": "false",
-            "description": "Allow more than one selected value."
+            "description": "When false, at most one value is selected and pressing the selected item clears to []. When true, values accumulate and each press toggles membership."
           },
           {
             "name": "value",
             "type": "string[]",
-            "description": "Controlled selected values."
+            "description": "Controlled selected values. Always an array, including single-select."
           },
           {
             "name": "defaultValue",
@@ -117,6 +117,12 @@
             "description": "Item label or icon."
           }
         ]
+      },
+      {
+        "id": "toggle-group-keyboard",
+        "title": "Keyboard and accessibility",
+        "description": "Selection (toggle button): Each item is a button with aria-pressed reflecting selection. Single and multi modes use the same pressed model, not radio or checkbox roles. Roving tabindex (Arrow keys): Arrow keys move focus along orientation. Home and End jump to the first and last enabled item. Space and Enter activate the focused item.",
+        "props": []
       },
       {
         "id": "toggle-group-tokens",

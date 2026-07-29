@@ -80,14 +80,14 @@
             "description": "Item emphasis."
           },
           {
-            "name": "label / children",
+            "name": "children",
             "type": "ReactNode",
             "description": "Item label content."
           },
           {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button props (onClick, aria-label, etc.)."
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the item button."
           }
         ]
       },
@@ -124,26 +124,84 @@
         ]
       },
       {
-        "id": "floating-controls-items-api",
-        "title": "items[] entry shapes",
-        "description": "When using the declarative items prop.",
+        "id": "floating-controls-item-entry",
+        "title": "FloatingControlsItemEntry",
+        "description": "Declarative item shape in the items array. Maps to FloatingControlsItem. Also accepts onClick, disabled, className, and aria-label.",
         "props": [
           {
-            "name": "Item entry",
-            "type": "{ leading?, trailing?, tone?, label?, … }",
-            "description": "Maps to FloatingControlsItem."
+            "name": "type",
+            "type": "\"item\"",
+            "description": "Optional. Omit or set item for a control entry."
           },
           {
-            "name": "Divider entry",
-            "type": "{ type: \"divider\", children? }",
-            "description": "Inserts a divider between items."
+            "name": "key",
+            "type": "string",
+            "description": "Optional React key."
           },
           {
-            "name": "Slot entry",
-            "type": "{ type: \"slot\", children }",
-            "description": "Inserts a custom slot."
+            "name": "label",
+            "type": "ReactNode",
+            "description": "Entry label. Used when children is omitted."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Entry label content. Wins over label when both are set."
+          },
+          {
+            "name": "leading",
+            "type": "ReactNode",
+            "description": "Leading icon or mark."
+          },
+          {
+            "name": "trailing",
+            "type": "ReactNode",
+            "description": "Trailing icon or mark."
+          },
+          {
+            "name": "tone",
+            "type": "\"ghost\" | \"solid\"",
+            "description": "Item emphasis."
           }
         ]
+      },
+      {
+        "id": "floating-controls-divider-entry",
+        "title": "FloatingControlsDividerEntry",
+        "props": [
+          {
+            "name": "type",
+            "type": "\"divider\"",
+            "description": "Marks a divider entry (required)."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Optional custom divider content."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-slot-entry",
+        "title": "FloatingControlsSlotEntry",
+        "props": [
+          {
+            "name": "type",
+            "type": "\"slot\"",
+            "description": "Marks a slot entry (required)."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Slot content (required)."
+          }
+        ]
+      },
+      {
+        "id": "floating-controls-keyboard",
+        "title": "Keyboard and accessibility",
+        "description": "Toolbar items share one tab stop. Arrow keys move focus between enabled FloatingControlsItem hosts. Home and End jump to the ends.",
+        "props": []
       },
       {
         "id": "floating-controls-tokens",

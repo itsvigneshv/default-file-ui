@@ -1,9 +1,13 @@
+"use client"
+
 import * as React from "react"
 
 import {
   CHART_HEIGHT_TOKENS,
   type ChartFrameSize,
 } from "../lib/df-chart"
+import { sanitizeCssColor } from "../lib/df-css-value"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 export type { ChartFrameSize }
@@ -20,6 +24,12 @@ export type ChartFrameProps = Omit<
   empty?: boolean
   emptyContent?: React.ReactNode
   children?: React.ReactNode
+  /**
+   * Accessible name for the plot when it is shown. Prefer a short summary of
+   * the data. When omitted, a string `title` is used; otherwise provide this
+   * or a string title so the graphic is not unnamed.
+   */
+  plotLabel?: string
 }
 
 function ChartFrame({
@@ -33,11 +43,23 @@ function ChartFrame({
   emptyContent,
   children,
   style,
+  plotLabel,
   ...props
 }: ChartFrameProps) {
+  const s = useDfStrings()
   const heightToken = CHART_HEIGHT_TOKENS[size]
   const showHeader =
     title != null || description != null || toolbar != null
+  const titleId = React.useId()
+  const descriptionId = React.useId()
+  const titleIsString = typeof title === "string" && title.trim() !== ""
+  const plotName =
+    plotLabel?.trim() ||
+    (titleIsString ? title.trim() : undefined) ||
+    undefined
+  const labelledByTitle =
+    plotName == null && title != null ? titleId : undefined
+  const plotHasName = plotName != null || labelledByTitle != null
 
   return (
     <div
@@ -51,10 +73,14 @@ function ChartFrame({
         <div data-df="chart-frame-header">
           <div data-df="chart-frame-copy">
             {title != null ? (
-              <div data-df="chart-frame-title">{title}</div>
+              <div data-df="chart-frame-title" id={titleId}>
+                {title}
+              </div>
             ) : null}
             {description != null ? (
-              <div data-df="chart-frame-description">{description}</div>
+              <div data-df="chart-frame-description" id={descriptionId}>
+                {description}
+              </div>
             ) : null}
           </div>
           {toolbar != null ? (
@@ -78,11 +104,17 @@ function ChartFrame({
           role="status"
           style={{ minHeight: `var(${heightToken})` }}
         >
-          {emptyContent ?? "No data"}
+          {emptyContent ?? s.chartEmpty}
         </div>
       ) : (
         <div
           data-df="chart-frame-plot"
+          role={plotHasName ? "img" : undefined}
+          aria-label={plotName}
+          aria-labelledby={labelledByTitle}
+          aria-describedby={
+            plotHasName && description != null ? descriptionId : undefined
+          }
           style={{ height: `var(${heightToken})`, width: "100%" }}
         >
           {children}
@@ -111,14 +143,6 @@ export type ChartTooltipProps = {
   ) => React.ReactNode
 }
 
-function defaultTooltipValue(
-  value: ChartTooltipPayloadItem["value"]
-): React.ReactNode {
-  if (value == null) return ""
-  if (Array.isArray(value)) return value.join(" to ")
-  return value
-}
-
 function ChartTooltip({
   active,
   label,
@@ -126,6 +150,7 @@ function ChartTooltip({
   className,
   formatValue,
 }: ChartTooltipProps) {
+  const s = useDfStrings()
   if (!active || payload == null || payload.length === 0) return null
 
   return (
@@ -139,15 +164,21 @@ function ChartTooltip({
           const displayValue =
             formatValue != null
               ? formatValue(item.value, item)
-              : defaultTooltipValue(item.value)
+              : item.value == null
+                ? ""
+                : Array.isArray(item.value)
+                  ? s.chartValuesJoin(item.value.map(String))
+                  : item.value
+          const swatchColor =
+            item.color != null ? sanitizeCssColor(item.color) : null
           return (
             <li key={key} data-df="chart-tooltip-row">
               <span
                 data-df="chart-tooltip-swatch"
                 aria-hidden
                 style={
-                  item.color != null
-                    ? { backgroundColor: item.color }
+                  swatchColor != null
+                    ? { backgroundColor: swatchColor }
                     : undefined
                 }
               />
@@ -179,16 +210,21 @@ function ChartLegend({ items, className, ...props }: ChartLegendProps) {
 
   return (
     <ul data-df="chart-legend" className={cn(className)} {...props}>
-      {items.map((item) => (
-        <li key={item.id} data-df="chart-legend-item">
-          <span
-            data-df="chart-legend-swatch"
-            aria-hidden
-            style={{ backgroundColor: item.color }}
-          />
-          <span data-df="chart-legend-label">{item.label}</span>
-        </li>
-      ))}
+      {items.map((item) => {
+        const color = sanitizeCssColor(item.color)
+        return (
+          <li key={item.id} data-df="chart-legend-item">
+            <span
+              data-df="chart-legend-swatch"
+              aria-hidden
+              style={
+                color != null ? { backgroundColor: color } : undefined
+              }
+            />
+            <span data-df="chart-legend-label">{item.label}</span>
+          </li>
+        )
+      })}
     </ul>
   )
 }

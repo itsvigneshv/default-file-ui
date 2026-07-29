@@ -80,77 +80,20 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles on the badge."
-          },
-          {
-            "name": "…HTML attributes",
-            "type": "HTMLAttributes<HTMLElement>",
-            "description": "Standard element attributes (id, title, aria-*, etc.)."
           }
         ]
       },
       {
         "id": "badge-composition",
         "title": "Composition",
-        "description": "Patterns built with leading, trailing, count, children, or render.",
-        "props": [
-          {
-            "name": "Leading icon",
-            "type": "leading",
-            "description": "Pass any node to leading for a mark before the label. Prefer StatusDot for a filled presence mark that follows the badge size. SVG children inherit the badge glyph size for the size step."
-          },
-          {
-            "name": "Close button",
-            "type": "trailing",
-            "description": "Pass a button with an X icon to trailing. The button inherits badge color and is keyboard focusable."
-          },
-          {
-            "name": "Counter",
-            "type": "count | children",
-            "description": "Prefer the count prop for numeric data. Or nest a second Badge. Host size must be md, lg, or xl so the chip stays readable. Width grows with 1 to 4+ digits."
-          },
-          {
-            "name": "Dropdown",
-            "type": "OptionListTrigger render={<Badge trailing={…} />}",
-            "description": "OptionListTrigger owns open/close. Pass Badge via render so the chip is the clickable host. Put the chevron in trailing. Pair with OptionListContent for the menu. Keep OptionList width hug for chip triggers; use width fill only when the host should span a sidebar or rail row."
-          }
-        ]
+        "description": "Patterns built with leading, trailing, count, children, or render. Leading icon (leading): Pass any node to leading for a mark before the label. Prefer StatusDot for a filled presence mark that follows the badge size. SVG children inherit the badge glyph size for the size step. Close button (trailing): Pass a button with an X icon to trailing. The button inherits badge color and is keyboard focusable. Counter (count | children): Prefer the count prop for numeric data. Or nest a second Badge. Host size must be md, lg, or xl so the chip stays readable. Width grows with 1 to 4+ digits.",
+        "props": []
       },
       {
         "id": "badge-dropdown-panel",
         "title": "Dropdown panel",
-        "description": "Pass these on OptionListContent when the badge opens an option list. Placement is relative to the badge trigger.",
-        "props": [
-          {
-            "name": "align",
-            "type": "\"start\" | \"center\" | \"end\" | \"auto\"",
-            "default": "\"start\"",
-            "description": "Horizontal menu alignment. start pins left, end pins right, center centers on the badge, auto picks the best fit from available space (content-aware)."
-          },
-          {
-            "name": "alignOffset",
-            "type": "number",
-            "default": "0",
-            "description": "Extra shift along the alignment axis in pixels."
-          },
-          {
-            "name": "side",
-            "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
-            "default": "\"bottom\"",
-            "description": "Preferred side of the badge for the menu."
-          },
-          {
-            "name": "sideOffset",
-            "type": "number",
-            "default": "4",
-            "description": "Gap between the badge and the menu."
-          },
-          {
-            "name": "alignItemWithTrigger",
-            "type": "boolean",
-            "default": "false",
-            "description": "When true, menu width matches the badge. When false, the menu sizes to its option content."
-          }
-        ]
+        "description": "Pass these on OptionListContent when the badge opens an option list. Placement is relative to the badge trigger. alignOffset (number): Extra shift along the alignment axis in pixels. sideOffset (number): Gap between the badge and the menu. alignItemWithTrigger (boolean): When true, menu width matches the badge. When false, the menu sizes to its option content.",
+        "props": []
       },
       {
         "id": "badge-tokens",

@@ -48,11 +48,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button props (onClick, type, aria-*, etc.)."
           }
         ]
       },

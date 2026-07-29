@@ -144,13 +144,8 @@
       {
         "id": "file-uploader-focus",
         "title": "Focus",
-        "props": [
-          {
-            "name": "Browse dialog",
-            "type": "behavior",
-            "description": "After the native file dialog closes (file chosen or cancelled), focus leaves the file input when it is still the active element. Host shortcuts such as Space are not kept on the uploader."
-          }
-        ]
+        "description": "Browse dialog (behavior): After the native file dialog closes (file chosen or cancelled), focus leaves the file input when it is still the active element. Host shortcuts such as Space are not kept on the uploader.",
+        "props": []
       },
       {
         "id": "file-uploader-tokens",

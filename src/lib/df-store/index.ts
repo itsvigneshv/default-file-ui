@@ -8,6 +8,17 @@ export type StoreApi<T> = {
   subscribe: (listener: Listener) => () => void
 }
 
+const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"])
+
+function stripPrototypeKeys<T extends object>(partial: Partial<T>): Partial<T> {
+  const clean: Partial<T> = {}
+  for (const key of Object.keys(partial) as Array<keyof T & string>) {
+    if (PROTOTYPE_KEYS.has(key)) continue
+    clean[key] = partial[key]
+  }
+  return clean
+}
+
 export function createStore<T extends object>(initial: T): StoreApi<T> {
   let state = initial
   const listeners = new Set<Listener>()
@@ -19,7 +30,7 @@ export function createStore<T extends object>(initial: T): StoreApi<T> {
     setState(partial) {
       const nextPartial =
         typeof partial === "function" ? partial(state) : partial
-      state = { ...state, ...nextPartial }
+      state = { ...state, ...stripPrototypeKeys(nextPartial) }
       for (const listener of listeners) listener()
     },
     subscribe(listener) {

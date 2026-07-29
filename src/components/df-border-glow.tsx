@@ -2,10 +2,15 @@
 
 import * as React from "react"
 
+import { useIsomorphicLayoutEffect } from "../hooks"
 import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
+import {
+  parseCssHslChannelTriplet,
+  sanitizeCssColor,
+} from "../lib/df-css-value"
 import { cn } from "../lib/utils"
 
 type BorderGlowVariant = "default" | "light"
@@ -86,60 +91,56 @@ function clamp01(n: number) {
   return Math.min(Math.max(n, 0), 1)
 }
 
-function isHslChannels(value: string): boolean {
-  return /^[\d.]+\s+[\d.]+\s+[\d.]+$/.test(value.trim())
-}
-
-function readHslChannels(value: string): { h: number; s: number; l: number } {
-  const match = value.trim().match(/^([\d.]+)\s+([\d.]+)\s+([\d.]+)$/)
-  if (!match) return { h: 0, s: 0, l: 90 }
-  return {
-    h: Number.parseFloat(match[1]!),
-    s: Number.parseFloat(match[2]!),
-    l: Number.parseFloat(match[3]!),
-  }
-}
-
 function inkLayersFromColor(
   glowColor: string,
   intensity: number
 ): Record<string, string> {
   const layers: Record<string, string> = {}
-  if (isHslChannels(glowColor)) {
-    const { h, s, l } = readHslChannels(glowColor)
-    const channels = `${h}deg ${s}% ${l}%`
+  const triplet = parseCssHslChannelTriplet(glowColor)
+  if (triplet != null) {
+    const channels = `${triplet.h}deg ${triplet.s}% ${triplet.l}%`
     for (const layer of BLOOM_LAYERS) {
       const pct = Math.min(layer.opacity * intensity, 100)
       layers[`--df-border-glow-ink${layer.suffix}`] = `hsl(${channels} / ${pct}%)`
     }
     return layers
   }
+  const safeColor = sanitizeCssColor(glowColor)
+  if (safeColor == null) return layers
   for (const layer of BLOOM_LAYERS) {
     const pct = Math.min(layer.opacity * intensity, 100)
     layers[`--df-border-glow-ink${layer.suffix}`] =
-      `color-mix(in oklch, ${glowColor} ${pct}%, transparent)`
+      `color-mix(in oklch, ${safeColor} ${pct}%, transparent)`
   }
   return layers
 }
 
 function meshLayersFromColors(colors: string[]): Record<string, string> {
-  const last = Math.max(colors.length - 1, 0)
+  const safeColors = colors
+    .map((color) => sanitizeCssColor(color))
+    .filter((color): color is string => color != null)
+  if (safeColors.length === 0) return {}
+  const last = Math.max(safeColors.length - 1, 0)
   const layers: Record<string, string> = {}
   for (const blob of MESH_BLOBS) {
-    const color = colors[Math.min(blob.stop, last)]!
+    const color = safeColors[Math.min(blob.stop, last)]!
     layers[blob.varName] =
       `radial-gradient(at ${blob.at}, ${color} 0%, transparent 50%)`
   }
-  layers["--df-border-glow-g-base"] = `linear-gradient(${colors[0]} 0 100%)`
+  layers["--df-border-glow-g-base"] = `linear-gradient(${safeColors[0]} 0 100%)`
   return layers
 }
 
 function traceInkVars(colors: string[]): Record<string, string> {
-  const last = Math.max(colors.length - 1, 0)
-  const ink1 = colors[0]!
-  const ink2 = colors[Math.min(1, last)]!
-  const ink3 = colors[Math.min(2, last)]!
-  const ink4 = colors[Math.min(3, last)]!
+  const safeColors = colors
+    .map((color) => sanitizeCssColor(color))
+    .filter((color): color is string => color != null)
+  if (safeColors.length === 0) return {}
+  const last = Math.max(safeColors.length - 1, 0)
+  const ink1 = safeColors[0]!
+  const ink2 = safeColors[Math.min(1, last)]!
+  const ink3 = safeColors[Math.min(2, last)]!
+  const ink4 = safeColors[Math.min(3, last)]!
   return {
     "--df-border-glow-trace-ink": ink1,
     "--df-border-glow-trace-ink-1": ink1,
@@ -296,6 +297,7 @@ function BorderGlow({
   const cardRef = React.useRef<HTMLDivElement>(null)
   const frameRef = React.useRef(0)
   const lastFrameRef = React.useRef(0)
+  const advancePoseRef = React.useRef<() => void>(() => {})
   const poseRef = React.useRef({
     angle: 45,
     edge: 0,
@@ -316,93 +318,105 @@ function BorderGlow({
   const resolvedReveal = revealDuration ?? (trace ? 0.7 : 0)
   const resolvedArcFade = clamp01(arcFade ?? (trace ? 0.75 : 0))
   const fullArcDeg = resolvedCone * 3.6
+  const defaultFace = isLight
+    ? "var(--df-border-glow-light-bg)"
+    : "var(--df-border-glow-bg)"
+  const defaultStroke = isLight
+    ? "var(--df-border-glow-light-stroke)"
+    : "var(--df-border-glow-stroke)"
+  const defaultInk = trace
+    ? "var(--df-neutral-1000)"
+    : isLight
+      ? "var(--df-border-glow-light-ink-base)"
+      : "var(--df-border-glow-ink-base)"
   const face =
-    backgroundColor ??
-    (isLight
-      ? "var(--df-border-glow-light-bg)"
-      : "var(--df-border-glow-bg)")
+    backgroundColor != null
+      ? (sanitizeCssColor(backgroundColor) ?? defaultFace)
+      : defaultFace
   const stroke =
-    strokeColor ??
-    (isLight
-      ? "var(--df-border-glow-light-stroke)"
-      : "var(--df-border-glow-stroke)")
+    strokeColor != null
+      ? (sanitizeCssColor(strokeColor) ?? defaultStroke)
+      : defaultStroke
+  const glowTriplet =
+    glowColor != null ? parseCssHslChannelTriplet(glowColor) : null
   const ink =
-    glowColor ??
-    (trace
-      ? "var(--df-neutral-1000)"
-      : isLight
-        ? "var(--df-border-glow-light-ink-base)"
-        : "var(--df-border-glow-ink-base)")
+    glowColor != null
+      ? glowTriplet != null
+        ? glowColor
+        : (sanitizeCssColor(glowColor) ?? defaultInk)
+      : defaultInk
+  const defaultMesh = [
+    ...(MESH_BY_VARIANT[isLight ? "light" : "default"] as readonly string[]),
+  ]
   const traceColors =
-    colors != null && colors.length > 0 ? colors : [ink]
+    colors != null && colors.length > 0
+      ? colors
+          .map((color) => sanitizeCssColor(color))
+          .filter((color): color is string => color != null)
+      : glowTriplet != null
+        ? [defaultInk]
+        : [ink]
+  const resolvedTraceColors =
+    traceColors.length > 0 ? traceColors : [defaultInk]
   const mesh =
-    colors ??
-    (trace
-      ? [ink]
-      : [...MESH_BY_VARIANT[isLight ? "light" : "default"]])
+    colors != null && colors.length > 0
+      ? (() => {
+          const safe = colors
+            .map((color) => sanitizeCssColor(color))
+            .filter((color): color is string => color != null)
+          return safe.length > 0 ? safe : defaultMesh
+        })()
+      : trace
+        ? glowTriplet != null
+          ? [defaultInk]
+          : [ink]
+        : defaultMesh
   const wash = fillOpacity ?? (bloomOn ? 0.5 : 0)
 
-  const advancePose = React.useCallback(() => {
-    const card = cardRef.current
-    if (!card) {
-      frameRef.current = 0
-      lastFrameRef.current = 0
-      return
-    }
-
-    const now = performance.now()
-    const dt = lastFrameRef.current
-      ? Math.min((now - lastFrameRef.current) / 1000, 0.05)
-      : 1 / 60
-    lastFrameRef.current = now
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches
-    const pose = poseRef.current
-    const followTau = Math.max(resolvedFollow, 0.001) / 3
-    const followK = reduceMotion
-      ? 1
-      : resolvedFollow <= 0
-        ? POINTER_SMOOTHING
-        : 1 - Math.exp(-dt / followTau)
-
-    const angleDelta = ((pose.targetAngle - pose.angle + 540) % 360) - 180
-    pose.angle = (pose.angle + angleDelta * followK + 360) % 360
-    pose.edge += (pose.targetEdge - pose.edge) * followK
-
-    if (trace && pose.revealActive) {
-      const duration = Math.max(resolvedReveal, 0.001)
-      const t = reduceMotion
-        ? 1
-        : clamp01((now - pose.revealStartedAt) / (duration * 1000))
-      const eased = easeOutQuint(t)
-      pose.reveal =
-        pose.revealFrom + (pose.revealTo - pose.revealFrom) * eased
-      if (t >= 1) {
-        pose.reveal = pose.revealTo
-        pose.revealActive = false
+  useIsomorphicLayoutEffect(() => {
+    advancePoseRef.current = () => {
+      const card = cardRef.current
+      if (!card) {
+        frameRef.current = 0
+        lastFrameRef.current = 0
+        return
       }
-    }
 
-    if (trace) {
-      writeTraceCss(
-        card,
-        pose.reveal,
-        pose.angle,
-        fullArcDeg * pose.reveal
-      )
-    } else {
-      writePointerCss(card, pose.edge, pose.angle)
-    }
+      const now = performance.now()
+      const dt = lastFrameRef.current
+        ? Math.min((now - lastFrameRef.current) / 1000, 0.05)
+        : 1 / 60
+      lastFrameRef.current = now
 
-    const settled =
-      Math.abs(angleDelta) < 0.05 &&
-      Math.abs(pose.targetEdge - pose.edge) < 0.0005 &&
-      (!trace || !pose.revealActive)
-    if (settled) {
-      pose.angle = pose.targetAngle
-      pose.edge = pose.targetEdge
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+      const pose = poseRef.current
+      const followTau = Math.max(resolvedFollow, 0.001) / 3
+      const followK = reduceMotion
+        ? 1
+        : resolvedFollow <= 0
+          ? POINTER_SMOOTHING
+          : 1 - Math.exp(-dt / followTau)
+
+      const angleDelta = ((pose.targetAngle - pose.angle + 540) % 360) - 180
+      pose.angle = (pose.angle + angleDelta * followK + 360) % 360
+      pose.edge += (pose.targetEdge - pose.edge) * followK
+
+      if (trace && pose.revealActive) {
+        const duration = Math.max(resolvedReveal, 0.001)
+        const t = reduceMotion
+          ? 1
+          : clamp01((now - pose.revealStartedAt) / (duration * 1000))
+        const eased = easeOutQuint(t)
+        pose.reveal =
+          pose.revealFrom + (pose.revealTo - pose.revealFrom) * eased
+        if (t >= 1) {
+          pose.reveal = pose.revealTo
+          pose.revealActive = false
+        }
+      }
+
       if (trace) {
         writeTraceCss(
           card,
@@ -413,16 +427,41 @@ function BorderGlow({
       } else {
         writePointerCss(card, pose.edge, pose.angle)
       }
-      frameRef.current = 0
-      lastFrameRef.current = 0
-      return
+
+      const settled =
+        Math.abs(angleDelta) < 0.05 &&
+        Math.abs(pose.targetEdge - pose.edge) < 0.0005 &&
+        (!trace || !pose.revealActive)
+      if (settled) {
+        pose.angle = pose.targetAngle
+        pose.edge = pose.targetEdge
+        if (trace) {
+          writeTraceCss(
+            card,
+            pose.reveal,
+            pose.angle,
+            fullArcDeg * pose.reveal
+          )
+        } else {
+          writePointerCss(card, pose.edge, pose.angle)
+        }
+        frameRef.current = 0
+        lastFrameRef.current = 0
+        return
+      }
+      frameRef.current = requestAnimationFrame(() => {
+        advancePoseRef.current()
+      })
     }
-    frameRef.current = requestAnimationFrame(advancePose)
   }, [fullArcDeg, resolvedFollow, resolvedReveal, trace])
 
   const requestPose = React.useCallback(() => {
-    if (!frameRef.current) frameRef.current = requestAnimationFrame(advancePose)
-  }, [advancePose])
+    if (!frameRef.current) {
+      frameRef.current = requestAnimationFrame(() => {
+        advancePoseRef.current()
+      })
+    }
+  }, [])
 
   const beginReveal = React.useCallback(
     (to: number) => {
@@ -498,7 +537,11 @@ function BorderGlow({
 
   React.useEffect(() => {
     return () => {
-      if (frameRef.current) cancelAnimationFrame(frameRef.current)
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+        frameRef.current = 0
+      }
+      lastFrameRef.current = 0
     }
   }, [])
 
@@ -540,7 +583,7 @@ function BorderGlow({
             : null),
           ...dfCornerShapeStyle(cornerShape),
           ...(bloomOn ? inkLayersFromColor(ink, glowIntensity) : null),
-          ...(trace ? traceInkVars(traceColors) : null),
+          ...(trace ? traceInkVars(resolvedTraceColors) : null),
           ...meshLayersFromColors(mesh),
         } as React.CSSProperties
       }

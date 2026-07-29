@@ -73,28 +73,8 @@
       {
         "id": "format-toolbar-types",
         "title": "Types and constants",
-        "props": [
-          {
-            "name": "FORMAT_TOOLBAR_CALLOUT_TYPES",
-            "type": "readonly FormatToolbarCalloutType[]",
-            "description": "Callout types: note, tip, important, warning, caution."
-          },
-          {
-            "name": "FormatToolbarCalloutType",
-            "type": "\"note\" | \"tip\" | \"important\" | \"warning\" | \"caution\"",
-            "description": "Callout type accepted by setCallout and isActive."
-          },
-          {
-            "name": "FormatToolbarQuery",
-            "type": "string union",
-            "description": "Queries for isActive: bold, italic, strike, inlineCode, link, heading, paragraph, bulletList, orderedList, taskList, blockquote, callout, codeBlock, table."
-          },
-          {
-            "name": "FormatToolbarAttrs",
-            "type": "{ level?: 1 | 2 | 3; type?: FormatToolbarCalloutType }",
-            "description": "Optional attrs for heading level and callout type queries."
-          }
-        ]
+        "description": "FORMAT_TOOLBAR_CALLOUT_TYPES is the callout list (note, tip, important, warning, caution). FormatToolbarCalloutType is that union. FormatToolbarQuery covers isActive queries (bold, italic, strike, inlineCode, link, heading, paragraph, bulletList, orderedList, taskList, blockquote, callout, codeBlock, table). FormatToolbarAttrs holds optional heading level and callout type for those queries.",
+        "props": []
       },
       {
         "id": "format-toolbar-controller",

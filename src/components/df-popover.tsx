@@ -9,6 +9,8 @@ import {
   useControllableState,
   useDismiss,
   useIsClient,
+  useIsomorphicLayoutEffect,
+  useNearestDarkClass,
   type Align,
   type Side,
 } from "../hooks"
@@ -16,12 +18,11 @@ import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
-import { nearestDarkClass } from "../lib/nearest-theme"
 import {
   dfPaddingChromeStyle,
   resolvePaddingSides,
 } from "../lib/padding-chrome"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type PopoverVariant = "default" | "muted" | "elevated" | "inverse"
 type PopoverSize = "sm" | "md" | "lg"
@@ -64,6 +65,7 @@ type PopoverContextValue = {
   open: boolean
   setOpen: (open: boolean) => void
   triggerRef: React.RefObject<HTMLElement | null>
+  contentId: string
   titleId: string
   descriptionId: string
   hasTitle: boolean
@@ -97,6 +99,7 @@ function Popover({
     onChange: onOpenChange,
   })
   const triggerRef = React.useRef<HTMLElement | null>(null)
+  const contentId = React.useId()
   const titleId = React.useId()
   const descriptionId = React.useId()
   const [hasTitle, setHasTitle] = React.useState(false)
@@ -108,6 +111,7 @@ function Popover({
         open: isOpen,
         setOpen,
         triggerRef,
+        contentId,
         titleId,
         descriptionId,
         hasTitle,
@@ -129,7 +133,7 @@ function PopoverTrigger({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   render?: React.ReactElement
 }) {
-  const { open, setOpen, triggerRef } = usePopoverContext()
+  const { open, setOpen, triggerRef, contentId } = usePopoverContext()
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (render) {
@@ -139,10 +143,11 @@ function PopoverTrigger({
         }
       ).onClick
       renderOnClick?.(event)
+      if (event.defaultPrevented) return
     }
-    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    setOpen(!open)
+    composeEventHandlers(props.onClick, () => {
+      setOpen(!open)
+    })(event as React.MouseEvent<HTMLButtonElement>)
   }
 
   if (render) {
@@ -151,7 +156,7 @@ function PopoverTrigger({
       ref: triggerRef as React.Ref<HTMLButtonElement>,
       "data-df-popover-trigger": "",
       "aria-expanded": open,
-      "aria-haspopup": "dialog",
+      "aria-controls": open ? contentId : undefined,
       onClick: handleClick,
       className: cn(
         className,
@@ -171,7 +176,7 @@ function PopoverTrigger({
       ref={triggerRef as React.Ref<HTMLButtonElement>}
       data-df-popover-trigger=""
       aria-expanded={open}
-      aria-haspopup="dialog"
+      aria-controls={open ? contentId : undefined}
       className={cn(className)}
       onClick={handleClick}
     >
@@ -249,12 +254,14 @@ function PopoverContent({
     open,
     setOpen,
     triggerRef,
+    contentId,
     titleId,
     descriptionId,
     hasTitle,
     hasDescription,
   } = usePopoverContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
+  const portalThemeClass = useNearestDarkClass(triggerRef, open && portal)
   const placement = useAnchoredPosition({
     open: open && portal,
     triggerRef,
@@ -275,7 +282,7 @@ function PopoverContent({
 
   const mounted = useIsClient()
 
-  // Return focus to the trigger when the panel closes by keyboard or dismissal.
+  // Return focus to the trigger when the panel closes and focus was inside it.
   const wasOpenRef = React.useRef(false)
   React.useEffect(() => {
     if (open) {
@@ -285,7 +292,13 @@ function PopoverContent({
     if (!wasOpenRef.current) return
     wasOpenRef.current = false
     const active = document.activeElement
-    if (active == null || active === document.body) triggerRef.current?.focus?.()
+    if (
+      active == null ||
+      active === document.body ||
+      contentRef.current?.contains(active)
+    ) {
+      triggerRef.current?.focus?.()
+    }
   }, [open, triggerRef])
 
   const chromeStyle = {
@@ -326,16 +339,22 @@ function PopoverContent({
   if (!mounted) return null
   if (!open) return null
 
-  // Portaled panels leave the trigger tree; carry .dark so token recipes
-  // (default, muted, inverse) resolve against the same theme as the trigger.
-  const portalThemeClass = portal
-    ? nearestDarkClass(triggerRef.current)
-    : undefined
+  const placementStyle: React.CSSProperties = { ...placement.style }
+  if (portal) {
+    delete placementStyle.visibility
+  }
+  // Hide only until the hook reports a position attempt. Failed measures still
+  // clear the gate so a zero-box host cannot leave an open panel inert.
+  const awaitingPosition = portal && !placement.positionAttempted
+  if (awaitingPosition) {
+    placementStyle.opacity = 0
+    placementStyle.pointerEvents = "none"
+  }
 
   const panel = (
     <div
       ref={contentRef}
-      role="dialog"
+      id={contentId}
       aria-labelledby={hasTitle ? titleId : undefined}
       aria-describedby={hasDescription ? descriptionId : undefined}
       data-df="popover-content"
@@ -349,7 +368,7 @@ function PopoverContent({
       className={cn(className)}
       style={
         portal
-          ? { ...placement.style, ...chromeStyle, ...styleProp }
+          ? { ...placementStyle, ...chromeStyle, ...styleProp }
           : { position: "relative", ...chromeStyle, ...styleProp }
       }
       {...props}
@@ -425,7 +444,7 @@ function PopoverTitle({
 }: PopoverTitleProps) {
   const { titleId, setHasTitle } = usePopoverContext()
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setHasTitle(true)
     return () => setHasTitle(false)
   }, [setHasTitle])
@@ -495,7 +514,7 @@ function PopoverDescription({
 }: PopoverDescriptionProps) {
   const { descriptionId, setHasDescription } = usePopoverContext()
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setHasDescription(true)
     return () => setHasDescription(false)
   }, [setHasDescription])
@@ -627,10 +646,11 @@ function PopoverClose({
         }
       ).onClick
       renderOnClick?.(event)
+      if (event.defaultPrevented) return
     }
-    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    setOpen(false)
+    composeEventHandlers(props.onClick, () => {
+      setOpen(false)
+    })(event as React.MouseEvent<HTMLButtonElement>)
   }
 
   if (render) {

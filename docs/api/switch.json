@@ -54,11 +54,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes (minus onChange)",
-            "description": "Native button props (aria-label recommended)."
           }
         ]
       },
@@ -68,28 +63,58 @@
         "description": "Theme defaults live on :root. Override these globally or on a local host.",
         "props": [
           {
+            "name": "--df-switch-thumb-gap",
+            "type": "CSS length",
+            "description": "Inset between track edge and thumb. Source of truth for enclosed vertical slack.",
+            "default": "calc(1 * var(--spacing-unit))"
+          },
+          {
+            "name": "--df-switch-thumb-size",
+            "type": "CSS length",
+            "description": "Default thumb diameter.",
+            "default": "var(--df-affordance-size-sm)"
+          },
+          {
+            "name": "--df-switch-thumb-travel",
+            "type": "CSS length",
+            "description": "Default checked translate distance. Matches the thumb diameter.",
+            "default": "var(--df-switch-thumb-size)"
+          },
+          {
             "name": "--df-switch-track-height",
             "type": "CSS length",
-            "description": "Default track height.",
-            "default": "18.4px"
+            "description": "Default track height. Derived as thumb size plus twice the thumb gap (40x24 with the default gap).",
+            "default": "calc(var(--df-switch-thumb-size) + 2 * var(--df-switch-thumb-gap))"
           },
           {
             "name": "--df-switch-track-width",
             "type": "CSS length",
-            "description": "Default track width.",
-            "default": "32px"
+            "description": "Default track width. Derived as track height plus thumb travel.",
+            "default": "calc(var(--df-switch-track-height) + var(--df-switch-thumb-travel))"
+          },
+          {
+            "name": "--df-switch-thumb-size-sm",
+            "type": "CSS length",
+            "description": "Small thumb diameter.",
+            "default": "var(--df-affordance-size-xs)"
+          },
+          {
+            "name": "--df-switch-thumb-travel-sm",
+            "type": "CSS length",
+            "description": "Small checked translate distance. Matches the small thumb diameter.",
+            "default": "var(--df-switch-thumb-size-sm)"
           },
           {
             "name": "--df-switch-track-height-sm",
             "type": "CSS length",
-            "description": "Small track height.",
-            "default": "14px"
+            "description": "Small track height. Derived as small thumb size plus twice the thumb gap (32x20 with the default gap).",
+            "default": "calc(var(--df-switch-thumb-size-sm) + 2 * var(--df-switch-thumb-gap))"
           },
           {
             "name": "--df-switch-track-width-sm",
             "type": "CSS length",
-            "description": "Small track width.",
-            "default": "24px"
+            "description": "Small track width. Derived as small track height plus small thumb travel.",
+            "default": "calc(var(--df-switch-track-height-sm) + var(--df-switch-thumb-travel-sm))"
           },
           {
             "name": "--primary",

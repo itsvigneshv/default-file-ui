@@ -1,4 +1,25 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
+import type * as React from "react"
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react"
+
+import {
+  createCssPxLayoutGainGate,
+  elementHasLayoutBox,
+  readCssPx,
+} from "../lib/df-css-token"
+import { resolveRovingActiveIndex } from "../lib/df-roving"
+import { tweenNumber, type TweenNumberOptions } from "../lib/df-tween"
+import { nearestDarkClass } from "../lib/nearest-theme"
+import { useReducedMotion } from "../lib/df-motion"
+
+export const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect
 
 function isSameControllableValue<T>(a: T, b: T): boolean {
   if (Object.is(a, b)) return true
@@ -17,13 +38,13 @@ export function useControllableState<T>({
   defaultValue,
   onChange,
 }: {
-  value?: T
+  value?: T | undefined
   defaultValue: T
-  onChange?: (value: T) => void
+  onChange?: ((value: T) => void) | undefined
 }) {
   const [uncontrolled, setUncontrolled] = useState(defaultValue)
   const isControlled = value !== undefined
-  const current = isControlled ? (value as T) : uncontrolled
+  const current = isControlled ? value : uncontrolled
 
   const setValue = useCallback(
     (next: T | ((prev: T) => T)) => {
@@ -80,27 +101,49 @@ export function useDismiss(
     dismissOnScroll?: boolean
   }
 ) {
+  const refsRef = useRef(refs)
+  const onCloseRef = useRef(onClose)
+  const excludeSelectorsRef = useRef(options?.excludeSelectors)
+
+  useIsomorphicLayoutEffect(() => {
+    refsRef.current = refs
+    onCloseRef.current = onClose
+    excludeSelectorsRef.current = options?.excludeSelectors
+  })
+
+  const dismissOnScroll = options?.dismissOnScroll ?? true
+
   useEffect(() => {
     if (!open) return
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose()
+      if (event.key === "Escape") onCloseRef.current()
     }
 
     const onPointer = (event: MouseEvent | PointerEvent) => {
-      if (isInsideDismissSurface(event.target, refs, options?.excludeSelectors)) {
+      if (
+        isInsideDismissSurface(
+          event.target,
+          refsRef.current,
+          excludeSelectorsRef.current
+        )
+      ) {
         return
       }
-      onClose()
+      onCloseRef.current()
     }
 
-    const dismissOnScroll = options?.dismissOnScroll ?? true
     const onScroll = (event: Event) => {
-      if (!dismissOnScroll) return
-      if (isInsideDismissSurface(event.target, refs, options?.excludeSelectors)) {
+      if (
+        isInsideDismissSurface(
+          event.target,
+          refsRef.current,
+          excludeSelectorsRef.current
+        )
+      ) {
         return
       }
-      onClose()
+      onCloseRef.current()
     }
 
     document.addEventListener("keydown", onKey)
@@ -113,7 +156,7 @@ export function useDismiss(
       document.removeEventListener("pointerdown", onPointer)
       document.removeEventListener("scroll", onScroll, true)
     }
-  }, [open, onClose, options?.dismissOnScroll, options?.excludeSelectors, refs])
+  }, [open, dismissOnScroll])
 }
 
 type Side = "top" | "bottom" | "left" | "right"
@@ -260,13 +303,32 @@ type AnchoredPlacement = {
   style: React.CSSProperties
   side: Side
   align: ResolvedAlign
+  /** True after at least one position update has run while open. */
+  positionAttempted: boolean
+}
+
+const HIDDEN_ANCHOR_STYLE: React.CSSProperties = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  visibility: "hidden",
+}
+
+function unmeasuredAnchorStyle(): React.CSSProperties {
+  return {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    zIndex: 50,
+    visibility: "visible",
+  }
 }
 
 export type AnchorRect = {
   x: number
   y: number
-  width?: number
-  height?: number
+  width?: number | undefined
+  height?: number | undefined
 }
 
 function initialAlign(align: Align): ResolvedAlign {
@@ -327,28 +389,37 @@ export function useAnchoredPosition({
   followScroll = true,
 }: {
   open: boolean
-  triggerRef?: React.RefObject<HTMLElement | null>
+  triggerRef?: React.RefObject<HTMLElement | null> | undefined
   contentRef: React.RefObject<HTMLElement | null>
   /** Virtual anchor in viewport coordinates when there is no trigger element. */
-  anchorRect?: AnchorRect | null
-  side?: Side
-  align?: Align
-  sideOffset?: number
-  alignOffset?: number
-  matchTriggerWidth?: boolean
-  collisionAvoidance?: boolean
-  followScroll?: boolean
+  anchorRect?: AnchorRect | null | undefined
+  side?: Side | undefined
+  align?: Align | undefined
+  sideOffset?: number | undefined
+  alignOffset?: number | undefined
+  matchTriggerWidth?: boolean | undefined
+  collisionAvoidance?: boolean | undefined
+  followScroll?: boolean | undefined
 }): AnchoredPlacement {
   const [placement, setPlacement] = useState<AnchoredPlacement>(() => ({
-    style: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      visibility: "hidden",
-    },
+    style: { ...HIDDEN_ANCHOR_STYLE },
     side,
     align: initialAlign(align),
+    positionAttempted: false,
   }))
+
+  const [trackedOpen, setTrackedOpen] = useState(open)
+  if (open !== trackedOpen) {
+    setTrackedOpen(open)
+    if (!open) {
+      setPlacement({
+        style: { ...HIDDEN_ANCHOR_STYLE },
+        side,
+        align: initialAlign(align),
+        positionAttempted: false,
+      })
+    }
+  }
 
   const anchorX = anchorRect?.x
   const anchorY = anchorRect?.y
@@ -360,6 +431,14 @@ export function useAnchoredPosition({
     const content = contentRef.current
     if (!content) return
 
+    const revealUnmeasured = () => {
+      setPlacement((prev) => ({
+        ...prev,
+        positionAttempted: true,
+        style: unmeasuredAnchorStyle(),
+      }))
+    }
+
     const t = hasAnchorRect
       ? rectFromAnchor({
           x: anchorX ?? 0,
@@ -368,10 +447,16 @@ export function useAnchoredPosition({
           height: anchorHeight,
         })
       : triggerRef?.current?.getBoundingClientRect()
-    if (!t) return
+    if (!t) {
+      revealUnmeasured()
+      return
+    }
 
     const c = contentLayoutSize(content)
-    if (c.width <= 0 || c.height <= 0) return
+    if (c.width <= 0 || c.height <= 0) {
+      revealUnmeasured()
+      return
+    }
 
     const pad = ANCHOR_VIEWPORT_PAD_PX
     const padTop = pad + readOverlayInset("--df-overlay-inset-top")
@@ -478,6 +563,7 @@ export function useAnchoredPosition({
         }),
         side: resolvedSide,
         align: resolvedAlign,
+        positionAttempted: true,
       })
       return
     }
@@ -497,6 +583,7 @@ export function useAnchoredPosition({
         }),
         side: resolvedSide,
         align: resolvedAlign,
+        positionAttempted: true,
       })
       return
     }
@@ -519,6 +606,7 @@ export function useAnchoredPosition({
       }),
       side: resolvedSide,
       align: resolvedAlign,
+      positionAttempted: true,
     })
   }, [
     align,
@@ -600,6 +688,508 @@ export function useIsMobile(breakpointPx = DF_BREAKPOINT_MD_PX) {
   }, [query])
   const getServerSnapshot = useCallback(() => false, [])
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+}
+
+/** Resolve a CSS length token against the element after mount. Returns fallback on SSR. */
+export function useCssPx(
+  ref: React.RefObject<HTMLElement | null>,
+  token: string,
+  fallback: number
+): number {
+  const [value, setValue] = useState(fallback)
+
+  useIsomorphicLayoutEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    const layoutGate = createCssPxLayoutGainGate()
+    let densityRoot: Element | null = null
+    let densityObserver: MutationObserver | null = null
+
+    const bindDensityObserver = () => {
+      const next =
+        element.closest("[data-df-density]") ?? document.documentElement
+      if (next === densityRoot) return
+      densityObserver?.disconnect()
+      densityRoot = next
+      densityObserver = new MutationObserver(() => {
+        resolve()
+      })
+      densityObserver.observe(densityRoot, {
+        attributes: true,
+        attributeFilter: ["data-df-density"],
+      })
+    }
+
+    const resolve = () => {
+      bindDensityObserver()
+      const hasLayout = elementHasLayoutBox(element)
+      if (!hasLayout) {
+        layoutGate.syncFromElement(false)
+        setValue(fallback)
+        return
+      }
+      // Sync before probing so a sync ResizeObserver cannot re-enter as a gain.
+      layoutGate.syncFromElement(true)
+      setValue(readCssPx(element, token, fallback))
+    }
+
+    resolve()
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            bindDensityObserver()
+            if (layoutGate.consumeResize(elementHasLayoutBox(element))) {
+              resolve()
+            }
+          })
+        : null
+    resizeObserver?.observe(element)
+
+    return () => {
+      densityObserver?.disconnect()
+      resizeObserver?.disconnect()
+    }
+  }, [ref, token, fallback])
+
+  return value
+}
+
+export type RovingOrientation = "horizontal" | "vertical" | "both"
+
+export type UseRovingTabIndexOptions = {
+  count: number
+  orientation?: RovingOrientation
+  loop?: boolean
+  isItemDisabled?: (index: number) => boolean
+  activeIndex?: number
+  defaultActiveIndex?: number
+  onActiveIndexChange?: (index: number) => void
+}
+
+export type RovingItemProps = {
+  tabIndex: 0 | -1
+  ref: (node: HTMLElement | null) => void
+  onFocus: (event: React.FocusEvent) => void
+  onKeyDown: (event: React.KeyboardEvent) => void
+}
+
+function findEnabledIndex(
+  from: number,
+  step: number,
+  count: number,
+  loop: boolean,
+  isItemDisabled?: (index: number) => boolean
+): number {
+  if (count <= 0) return 0
+  let index = from
+  for (let i = 0; i < count; i++) {
+    index += step
+    if (loop) {
+      index = (index + count) % count
+    } else if (index < 0 || index >= count) {
+      return from
+    }
+    if (!isItemDisabled?.(index)) return index
+  }
+  return from
+}
+
+function firstEnabledIndex(
+  count: number,
+  isItemDisabled?: (index: number) => boolean
+): number {
+  for (let i = 0; i < count; i++) {
+    if (!isItemDisabled?.(i)) return i
+  }
+  return 0
+}
+
+function lastEnabledIndex(
+  count: number,
+  isItemDisabled?: (index: number) => boolean
+): number {
+  for (let i = count - 1; i >= 0; i--) {
+    if (!isItemDisabled?.(i)) return i
+  }
+  return Math.max(0, count - 1)
+}
+
+/**
+ * One item is tabbable; arrow keys move focus among siblings.
+ * Home and End jump to the ends. Disabled items are skipped.
+ */
+export function useRovingTabIndex({
+  count,
+  orientation = "horizontal",
+  loop = true,
+  isItemDisabled,
+  activeIndex: activeIndexProp,
+  defaultActiveIndex = 0,
+  onActiveIndexChange,
+}: UseRovingTabIndexOptions) {
+  const itemRefs = useRef<Array<HTMLElement | null>>([])
+  const [uncontrolled, setUncontrolled] = useState(() =>
+    resolveRovingActiveIndex(defaultActiveIndex, count, isItemDisabled)
+  )
+  const isControlled = activeIndexProp !== undefined
+  const storedIndex = isControlled ? (activeIndexProp as number) : uncontrolled
+  const activeIndex = resolveRovingActiveIndex(
+    storedIndex,
+    count,
+    isItemDisabled
+  )
+
+  useIsomorphicLayoutEffect(() => {
+    if (itemRefs.current.length > count) {
+      itemRefs.current.length = count
+    }
+  }, [count])
+
+  const setActiveIndex = useCallback(
+    (next: number) => {
+      if (isItemDisabled?.(next)) return
+      const resolved = resolveRovingActiveIndex(next, count, isItemDisabled)
+      if (!isControlled) setUncontrolled(resolved)
+      onActiveIndexChange?.(resolved)
+    },
+    [count, isControlled, isItemDisabled, onActiveIndexChange]
+  )
+
+  const move = useCallback(
+    (key: string) => {
+      const horizontal =
+        orientation === "horizontal" || orientation === "both"
+      const vertical = orientation === "vertical" || orientation === "both"
+      const prevKeys = [
+        ...(horizontal ? ["ArrowLeft"] : []),
+        ...(vertical ? ["ArrowUp"] : []),
+      ]
+      const nextKeys = [
+        ...(horizontal ? ["ArrowRight"] : []),
+        ...(vertical ? ["ArrowDown"] : []),
+      ]
+
+      if (key === "Home") {
+        return firstEnabledIndex(count, isItemDisabled)
+      }
+      if (key === "End") {
+        return lastEnabledIndex(count, isItemDisabled)
+      }
+      if (prevKeys.includes(key)) {
+        return findEnabledIndex(activeIndex, -1, count, loop, isItemDisabled)
+      }
+      if (nextKeys.includes(key)) {
+        return findEnabledIndex(activeIndex, 1, count, loop, isItemDisabled)
+      }
+      return null
+    },
+    [activeIndex, count, isItemDisabled, loop, orientation]
+  )
+
+  const getItemProps = useCallback(
+    (index: number): RovingItemProps => ({
+      tabIndex: activeIndex === index ? 0 : -1,
+      ref: (node) => {
+        itemRefs.current[index] = node
+      },
+      onFocus: () => {
+        if (isItemDisabled?.(index)) return
+        setActiveIndex(index)
+      },
+      onKeyDown: (event) => {
+        const next = move(event.key)
+        if (next == null) return
+        event.preventDefault()
+        setActiveIndex(next)
+        itemRefs.current[next]?.focus()
+      },
+    }),
+    [activeIndex, isItemDisabled, move, setActiveIndex]
+  )
+
+  return {
+    activeIndex,
+    setActiveIndex,
+    getItemProps,
+  }
+}
+
+/** Track tween cancellers and clear them all when the host unmounts. */
+export function useTween() {
+  const cancellersRef = useRef(new Set<() => void>())
+
+  useEffect(() => {
+    const cancellers = cancellersRef.current
+    return () => {
+      for (const cancel of cancellers) cancel()
+      cancellers.clear()
+    }
+  }, [])
+
+  return useCallback((options: TweenNumberOptions) => {
+    const { onDone, ...rest } = options
+    const cancel = tweenNumber({
+      ...rest,
+      onDone: () => {
+        cancellersRef.current.delete(cancel)
+        onDone?.()
+      },
+    })
+    cancellersRef.current.add(cancel)
+    return () => {
+      cancel()
+      cancellersRef.current.delete(cancel)
+    }
+  }, [])
+}
+
+/** Keep a ref aligned with the latest committed value. */
+export function useLatestRef<T>(value: T): React.RefObject<T> {
+  const ref = useRef(value)
+  useIsomorphicLayoutEffect(() => {
+    ref.current = value
+  })
+  return ref
+}
+
+export type UsePresenceOptions = {
+  /** When false, unmount immediately on close instead of waiting for exit animation. */
+  animated?: boolean
+}
+
+export type UsePresenceResult = {
+  present: boolean
+  onExitAnimationEnd: (event: {
+    target: EventTarget
+    currentTarget: EventTarget
+  }) => void
+}
+
+function reportCallbackError(error: unknown) {
+  setTimeout(() => {
+    throw error
+  }, 0)
+}
+
+/**
+ * Keep the host mounted through close animation.
+ * Opening clears any exit hold during render so the enter frame is not skipped.
+ */
+export function usePresence(
+  open: boolean,
+  options?: UsePresenceOptions
+): UsePresenceResult {
+  const animated = options?.animated ?? true
+  const reducedMotion = useReducedMotion()
+  const holdOnClose = animated && !reducedMotion
+  const [exitHeld, setExitHeld] = useState(false)
+  const [seenOpen, setSeenOpen] = useState(open)
+
+  if (open !== seenOpen) {
+    setSeenOpen(open)
+    if (open) {
+      setExitHeld(false)
+    } else {
+      setExitHeld(holdOnClose)
+    }
+  }
+
+  const onExitAnimationEnd = useCallback(
+    (event: { target: EventTarget; currentTarget: EventTarget }) => {
+      if (event.target !== event.currentTarget) return
+      if (!open) setExitHeld(false)
+    },
+    [open]
+  )
+
+  return { present: open || exitHeld, onExitAnimationEnd }
+}
+
+/**
+ * Resolve whether a portal should carry the dark theme class from a trigger node.
+ * Pass enabled when the overlay is shown so a remounted trigger is re-read.
+ */
+export function useNearestDarkClass(
+  nodeRef: React.RefObject<Element | null>,
+  enabled = true
+): "dark" | undefined {
+  const [themeClass, setThemeClass] = useState<"dark" | undefined>(undefined)
+
+  useIsomorphicLayoutEffect(() => {
+    if (!enabled) {
+      setThemeClass(undefined)
+      return
+    }
+    setThemeClass(nearestDarkClass(nodeRef.current))
+  })
+
+  return themeClass
+}
+
+export type DragGestureReason = "up" | "cancel" | "unmount"
+
+export type DragGestureHandlers<T> = {
+  onMove: (event: PointerEvent, data: T) => void
+  onEnd?: (
+    event: PointerEvent | null,
+    data: T,
+    reason: DragGestureReason
+  ) => void
+}
+
+export type BeginDragGestureOptions = {
+  /** Capture the pointer on the target. Defaults to true. */
+  capture?: boolean
+  /** Capture target. Defaults to the event currentTarget when it is an Element. */
+  target?: Element | null
+}
+
+type ActiveDragGesture = {
+  pointerId: number
+  data: unknown
+  onMove: (event: PointerEvent, data: unknown) => void
+  onEnd:
+    | ((
+        event: PointerEvent | null,
+        data: unknown,
+        reason: DragGestureReason
+      ) => void)
+    | undefined
+  teardown: () => void
+}
+
+function safeReleasePointerCapture(target: Element, pointerId: number) {
+  try {
+    if (
+      "hasPointerCapture" in target &&
+      typeof target.hasPointerCapture === "function" &&
+      target.hasPointerCapture(pointerId)
+    ) {
+      target.releasePointerCapture(pointerId)
+    }
+  } catch {
+    // Pointer may already be released by the browser.
+  }
+}
+
+function safeSetPointerCapture(target: Element, pointerId: number) {
+  try {
+    target.setPointerCapture(pointerId)
+  } catch {
+    // Capture fails when the pointer is not active on this element.
+  }
+}
+
+/**
+ * Window-level pointer drag with capture, cancel, and unmount teardown.
+ * Pass per-gesture data to freeze values for the life of the gesture.
+ */
+export function useDragGesture() {
+  const gestureRef = useRef<ActiveDragGesture | null>(null)
+
+  const end = useCallback(
+    (
+      reason: DragGestureReason = "cancel",
+      event: PointerEvent | null = null
+    ) => {
+      const gesture = gestureRef.current
+      if (!gesture) return
+      gestureRef.current = null
+      gesture.teardown()
+      try {
+        gesture.onEnd?.(event, gesture.data, reason)
+      } catch (error) {
+        reportCallbackError(error)
+      }
+    },
+    []
+  )
+
+  useEffect(() => {
+    return () => {
+      end("unmount", null)
+    }
+  }, [end])
+
+  const begin = useCallback(
+    <T,>(
+      event: Pick<PointerEvent, "pointerId"> & {
+        currentTarget: EventTarget
+      },
+      data: T,
+      handlers: DragGestureHandlers<T>,
+      options?: BeginDragGestureOptions
+    ) => {
+      end("cancel", null)
+
+      const pointerId = event.pointerId
+      const capture = options?.capture ?? true
+      const target =
+        options?.target !== undefined
+          ? options.target
+          : event.currentTarget instanceof Element
+            ? event.currentTarget
+            : null
+
+      if (capture && target) {
+        safeSetPointerCapture(target, pointerId)
+      }
+
+      const onMove = (moveEvent: PointerEvent) => {
+        if (moveEvent.pointerId !== pointerId) return
+        const active = gestureRef.current
+        if (!active) return
+        active.onMove(moveEvent, active.data)
+      }
+
+      const onUp = (upEvent: PointerEvent) => {
+        if (upEvent.pointerId !== pointerId) return
+        end("up", upEvent)
+      }
+
+      const onCancel = (cancelEvent: PointerEvent) => {
+        if (cancelEvent.pointerId !== pointerId) return
+        end("cancel", cancelEvent)
+      }
+
+      const teardown = () => {
+        window.removeEventListener("pointermove", onMove)
+        window.removeEventListener("pointerup", onUp)
+        window.removeEventListener("pointercancel", onCancel)
+        if (capture && target) {
+          safeReleasePointerCapture(target, pointerId)
+        }
+      }
+
+      gestureRef.current = {
+        pointerId,
+        data,
+        onMove: handlers.onMove as (
+          event: PointerEvent,
+          data: unknown
+        ) => void,
+        onEnd: handlers.onEnd as
+          | ((
+              event: PointerEvent | null,
+              data: unknown,
+              reason: DragGestureReason
+            ) => void)
+          | undefined,
+        teardown,
+      }
+
+      window.addEventListener("pointermove", onMove)
+      window.addEventListener("pointerup", onUp)
+      window.addEventListener("pointercancel", onCancel)
+    },
+    [end]
+  )
+
+  const isActive = useCallback(() => gestureRef.current != null, [])
+
+  return { begin, end, isActive }
 }
 
 export type { Align, AnchoredPlacement, Side }

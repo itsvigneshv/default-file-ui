@@ -8,7 +8,12 @@ import {
   resolvePaddingSides,
   type PaddingChromeProps,
 } from "../lib/padding-chrome"
-import { cn, composeRefs } from "../lib/utils"
+import { cn } from "../lib/utils"
+
+function assignRef<T>(ref: React.Ref<T> | undefined | null, value: T | null) {
+  if (typeof ref === "function") ref(value)
+  else if (ref) (ref as React.MutableRefObject<T | null>).current = value
+}
 
 type ListItemSize = "xs" | "sm" | "md" | "lg"
 type ListItemVariant = "accent" | "muted"
@@ -50,22 +55,22 @@ function blockListItemKeyDown(
 }
 
 type ListItemChromeProps = PaddingChromeProps & {
-  gap?: string
-  fontSize?: string
-  fontFamily?: string
-  fontWeight?: string
-  background?: string
-  foreground?: string
-  hoverBackground?: string
-  hoverForeground?: string
-  selectedBackground?: string
-  selectedForeground?: string
-  selectedHoverBackground?: string
-  activeBackground?: string
-  radius?: string
-  borderWidth?: string
-  borderColor?: string
-  borderStyle?: string
+  gap?: string | undefined
+  fontSize?: string | undefined
+  fontFamily?: string | undefined
+  fontWeight?: string | undefined
+  background?: string | undefined
+  foreground?: string | undefined
+  hoverBackground?: string | undefined
+  hoverForeground?: string | undefined
+  selectedBackground?: string | undefined
+  selectedForeground?: string | undefined
+  selectedHoverBackground?: string | undefined
+  activeBackground?: string | undefined
+  radius?: string | undefined
+  borderWidth?: string | undefined
+  borderColor?: string | undefined
+  borderStyle?: string | undefined
 }
 
 type ListItemHostProps = React.HTMLAttributes<HTMLElement> & {
@@ -75,33 +80,33 @@ type ListItemHostProps = React.HTMLAttributes<HTMLElement> & {
 
 type ListItemProps = Omit<React.HTMLAttributes<HTMLElement>, "children"> &
   ListItemChromeProps & {
-    size?: ListItemSize
-    variant?: ListItemVariant
-    selected?: boolean
-    highlighted?: boolean
-    disabled?: boolean
+    size?: ListItemSize | undefined
+    variant?: ListItemVariant | undefined
+    selected?: boolean | undefined
+    highlighted?: boolean | undefined
+    disabled?: boolean | undefined
     /** Presentational row: no hover, press, focus, or activation. Keeps resting and selected chrome. */
-    readOnly?: boolean
-    open?: boolean
-    leading?: ListItemLeading
+    readOnly?: boolean | undefined
+    open?: boolean | undefined
+    leading?: ListItemLeading | undefined
     /**
      * Track size for custom leading nodes. icon is the default mark box.
      * Use content for Avatar, text marks, or other nodes wider than the icon track.
      */
-    leadingFit?: ListItemLeadingFit
-    secondary?: React.ReactNode
-    layout?: ListItemLayout
-    trailing?: React.ReactNode
-    indicator?: boolean
+    leadingFit?: ListItemLeadingFit | undefined
+    secondary?: React.ReactNode | undefined
+    layout?: ListItemLayout | undefined
+    trailing?: React.ReactNode | undefined
+    indicator?: boolean | undefined
     /** Native host when not using asChild. Ignored when asChild is true. */
-    as?: ListItemAs
+    as?: ListItemAs | undefined
     /**
      * When true, do not render a wrapper. Pass one child element (usually a link).
      * That element becomes the row and keeps its own href or routing.
      */
-    asChild?: boolean
-    children?: React.ReactNode
-    "data-highlighted"?: string
+    asChild?: boolean | undefined
+    children?: React.ReactNode | undefined
+    "data-highlighted"?: string | undefined
   }
 
 function resolveLeadingAttr(
@@ -379,19 +384,34 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
       onKeyDown?.(event)
     }
 
+    const asChildElement =
+      asChild && React.isValidElement<ListItemHostProps>(children)
+        ? children
+        : null
+    const childPropsRef = asChildElement?.props.ref
+    const childOwnRef = asChildElement
+      ? (asChildElement as { ref?: React.Ref<HTMLElement | null> }).ref
+      : undefined
+
+    const composedRef = React.useCallback(
+      (node: HTMLElement | null) => {
+        assignRef(ref, node)
+        assignRef(childPropsRef, node)
+        assignRef(childOwnRef, node)
+      },
+      [ref, childPropsRef, childOwnRef]
+    )
+
     if (asChild) {
       const child = React.Children.only(children)
       if (!React.isValidElement<ListItemHostProps>(child)) {
         throw new Error("ListItem asChild requires a single React element child.")
       }
 
-      const childPropsRef = child.props.ref
-      const childOwnRef = (child as { ref?: React.Ref<HTMLElement | null> }).ref
-
       return React.cloneElement(child, {
         ...props,
         ...sharedData,
-        ref: composeRefs(ref, childPropsRef, childOwnRef),
+        ref: composedRef,
         className: cn(sharedClassName, child.props.className),
         style: { ...chromeStyle, ...child.props.style, ...style },
         tabIndex: blockInteraction ? -1 : child.props.tabIndex,

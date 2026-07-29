@@ -22,9 +22,12 @@ import {
   useControllableState,
   useDismiss,
   useIsClient,
+  useIsomorphicLayoutEffect,
+  useNearestDarkClass,
+  usePresence,
 } from "../hooks"
-import { nearestDarkClass } from "../lib/nearest-theme"
-import { cn, composeRefs } from "../lib/utils"
+import { useDfStrings } from "../lib/df-intl"
+import { cn, composeEventHandlers, composeRefs } from "../lib/utils"
 
 type SelectionMode = "single" | "multiple"
 type OptionListItemLayout = ListItemLayout
@@ -65,7 +68,7 @@ type OptionListContextValue = {
   submenuOpenDuration: number
   submenuCloseDuration: number
   /** Default List Item chrome for every OptionListItem. Per item props win. */
-  itemChrome?: ListItemChromeProps
+  itemChrome?: ListItemChromeProps | undefined
 }
 
 const OptionListContext = React.createContext<OptionListContextValue | null>(
@@ -94,6 +97,7 @@ type OptionListSubmenuState = {
   open: boolean
   setOpen: (open: boolean) => void
   triggerRef: React.RefObject<HTMLElement | null>
+  setTriggerNode: (node: HTMLElement | null) => void
   cancelClose: () => void
   scheduleClose: () => void
   motion: OptionListSubmenuMotion
@@ -132,6 +136,10 @@ function OptionListSubmenu({
   })
   const triggerRef = React.useRef<HTMLElement | null>(null)
   const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const setTriggerNode = React.useCallback((node: HTMLElement | null) => {
+    triggerRef.current = node
+  }, [])
 
   const motion = React.useMemo<OptionListSubmenuMotion>(
     () => ({
@@ -176,11 +184,12 @@ function OptionListSubmenu({
       open: isOpen,
       setOpen: setIsOpen,
       triggerRef,
+      setTriggerNode,
       cancelClose,
       scheduleClose,
       motion,
     }),
-    [cancelClose, isOpen, motion, scheduleClose, setIsOpen]
+    [cancelClose, isOpen, motion, scheduleClose, setIsOpen, setTriggerNode]
   )
 
   return (
@@ -246,7 +255,10 @@ function OptionListSubContent({
   }
 
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const [present, setPresent] = React.useState(open)
+  const { present, onExitAnimationEnd } = usePresence(open, {
+    animated: motion.animated,
+  })
+  const portalThemeClass = useNearestDarkClass(triggerRef, present && portal)
   const placement = useAnchoredPosition({
     open: present && portal,
     triggerRef,
@@ -260,22 +272,6 @@ function OptionListSubContent({
   useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
     excludeSelectors: DISMISS_NESTED_LAYER_SELECTORS,
   })
-
-  React.useEffect(() => {
-    if (open) {
-      setPresent(true)
-      return
-    }
-    if (!present) return
-    if (!motion.animated) {
-      setPresent(false)
-      return
-    }
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) setPresent(false)
-  }, [motion.animated, open, present])
 
   const mounted = useIsClient()
   if (!mounted || !present) return null
@@ -319,19 +315,19 @@ function OptionListSubContent({
               }
         }
         onMouseEnter={(event) => {
-          onMouseEnter?.(event)
-          submenu.cancelClose()
-          if (root.openOnHover) root.cancelHoverClose()
+          composeEventHandlers(onMouseEnter, () => {
+            submenu.cancelClose()
+            if (root.openOnHover) root.cancelHoverClose()
+          })(event)
         }}
         onMouseLeave={(event) => {
-          onMouseLeave?.(event)
-          submenu.scheduleClose()
-          if (root.openOnHover) root.scheduleHoverClose()
+          composeEventHandlers(onMouseLeave, () => {
+            submenu.scheduleClose()
+            if (root.openOnHover) root.scheduleHoverClose()
+          })(event)
         }}
         onAnimationEnd={(event) => {
-          onAnimationEnd?.(event)
-          if (event.target !== event.currentTarget) return
-          if (!open) setPresent(false)
+          composeEventHandlers(onAnimationEnd, onExitAnimationEnd)(event)
         }}
       >
         {children}
@@ -344,7 +340,7 @@ function OptionListSubContent({
   return createPortal(
     <div
       data-df="option-list-portal"
-      className={nearestDarkClass(triggerRef.current)}
+      className={portalThemeClass}
     >
       {panel}
     </div>,
@@ -368,27 +364,27 @@ function resolveOptionListWidth(width: OptionListWidth | undefined): {
 }
 
 type OptionListProps = {
-  selectionMode?: SelectionMode
-  value?: string | null
-  defaultValue?: string | null
-  onValueChange?: (value: string | null) => void
-  values?: string[]
-  defaultValues?: string[]
-  onValuesChange?: (values: string[]) => void
-  open?: boolean
-  defaultOpen?: boolean
-  onOpenChange?: (open: boolean) => void
+  selectionMode?: SelectionMode | undefined
+  value?: string | null | undefined
+  defaultValue?: string | null | undefined
+  onValueChange?: ((value: string | null) => void) | undefined
+  values?: string[] | undefined
+  defaultValues?: string[] | undefined
+  onValuesChange?: ((values: string[]) => void) | undefined
+  open?: boolean | undefined
+  defaultOpen?: boolean | undefined
+  onOpenChange?: ((open: boolean) => void) | undefined
   /** Open on pointer enter. Click, Enter, and Space open when closed; Escape and leave close. */
-  openOnHover?: boolean
+  openOnHover?: boolean | undefined
   /** Delay in milliseconds before closing after pointer leave when openOnHover is true. */
-  hoverCloseDelay?: number
-  closeOnSelect?: boolean
-  width?: OptionListWidth
-  submenuAnimated?: boolean
-  submenuOpenDuration?: number
-  submenuCloseDuration?: number
+  hoverCloseDelay?: number | undefined
+  closeOnSelect?: boolean | undefined
+  width?: OptionListWidth | undefined
+  submenuAnimated?: boolean | undefined
+  submenuOpenDuration?: number | undefined
+  submenuCloseDuration?: number | undefined
   /** Default List Item chrome for every OptionListItem. Per item props win. */
-  itemChrome?: ListItemChromeProps
+  itemChrome?: ListItemChromeProps | undefined
   children: React.ReactNode
 }
 
@@ -614,45 +610,51 @@ function OptionListTrigger({
 
   const toggleOpen = () => setOpen(!open)
 
-  const onTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
-    onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    if (openOnHover) {
-      if (!open) setOpen(true)
-      return
-    }
-    toggleOpen()
-  }
-
-  const onTriggerKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    onKeyDown?.(event as React.KeyboardEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault()
+  const onTriggerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    composeEventHandlers(onClick, () => {
       if (openOnHover) {
         if (!open) setOpen(true)
         return
       }
       toggleOpen()
-    }
-    if (event.key === "ArrowDown") {
-      event.preventDefault()
-      if (!open) setOpen(true)
-    }
-    if (event.key === "Escape" && open) {
-      event.preventDefault()
-      setOpen(false)
-    }
+    })(event)
   }
 
-  const onTriggerMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
-    onMouseEnter?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (openOnHover) cancelHoverClose()
+  const onTriggerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    composeEventHandlers(onKeyDown, (nextEvent) => {
+      if (nextEvent.key === "Enter" || nextEvent.key === " ") {
+        nextEvent.preventDefault()
+        if (openOnHover) {
+          if (!open) setOpen(true)
+          return
+        }
+        toggleOpen()
+      }
+      if (nextEvent.key === "ArrowDown") {
+        nextEvent.preventDefault()
+        if (!open) setOpen(true)
+      }
+      if (nextEvent.key === "Escape" && open) {
+        nextEvent.preventDefault()
+        setOpen(false)
+      }
+    })(event)
   }
 
-  const onTriggerMouseLeave = (event: React.MouseEvent<HTMLElement>) => {
-    onMouseLeave?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (openOnHover) scheduleHoverClose()
+  const onTriggerMouseEnter = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    composeEventHandlers(onMouseEnter, () => {
+      if (openOnHover) cancelHoverClose()
+    })(event)
+  }
+
+  const onTriggerMouseLeave = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    composeEventHandlers(onMouseLeave, () => {
+      if (openOnHover) scheduleHoverClose()
+    })(event)
   }
 
   if (render) {
@@ -679,22 +681,22 @@ function OptionListTrigger({
       onClick: (event: React.MouseEvent<HTMLElement>) => {
         renderProps.onClick?.(event)
         if (event.defaultPrevented) return
-        onTriggerClick(event)
+        onTriggerClick(event as React.MouseEvent<HTMLButtonElement>)
       },
       onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
         renderProps.onKeyDown?.(event)
         if (event.defaultPrevented) return
-        onTriggerKeyDown(event)
+        onTriggerKeyDown(event as React.KeyboardEvent<HTMLButtonElement>)
       },
       onMouseEnter: (event: React.MouseEvent<HTMLElement>) => {
         renderProps.onMouseEnter?.(event)
         if (event.defaultPrevented) return
-        onTriggerMouseEnter(event)
+        onTriggerMouseEnter(event as React.MouseEvent<HTMLButtonElement>)
       },
       onMouseLeave: (event: React.MouseEvent<HTMLElement>) => {
         renderProps.onMouseLeave?.(event)
         if (event.defaultPrevented) return
-        onTriggerMouseLeave(event)
+        onTriggerMouseLeave(event as React.MouseEvent<HTMLButtonElement>)
       },
       children: children ?? renderProps.children,
     } as never)
@@ -730,14 +732,14 @@ type OptionListSearchProps = Omit<
   React.ComponentProps<typeof SearchInput>,
   "value" | "defaultValue" | "onChange"
 > & {
-  value?: string
-  defaultValue?: string
-  onValueChange?: (value: string) => void
+  value?: string | undefined
+  defaultValue?: string | undefined
+  onValueChange?: ((value: string) => void) | undefined
 }
 
 function OptionListSearch({
   className,
-  placeholder = "Search",
+  placeholder: placeholderProp,
   value,
   defaultValue,
   onValueChange,
@@ -745,6 +747,8 @@ function OptionListSearch({
   clearable = true,
   ...props
 }: OptionListSearchProps) {
+  const s = useDfStrings()
+  const placeholder = placeholderProp ?? s.optionListSearchPlaceholder
   const { searchQuery, setSearchQuery } = useOptionListContext()
   const isControlled = value !== undefined
   const current = isControlled ? value : searchQuery
@@ -762,23 +766,26 @@ function OptionListSearch({
   return (
     <div data-df="option-list-search" className={cn(className)}>
       <SearchInput
+        {...props}
         size={size}
         clearable={clearable}
         placeholder={placeholder}
         value={current}
         onChange={(event) => commit(event.target.value)}
-        onClear={() => commit("")}
-        {...props}
+        onClear={() => {
+          props.onClear?.()
+          commit("")
+        }}
       />
     </div>
   )
 }
 
 type OptionListBodyProps = React.ComponentProps<"div"> & {
-  scrollable?: boolean
-  maxHeight?: string | number
+  scrollable?: boolean | undefined
+  maxHeight?: string | number | undefined
   /** Space on each side of the scrollbar thumb, in pixels. */
-  scrollThumbGap?: number
+  scrollThumbGap?: number | undefined
 }
 
 function OptionListBody({
@@ -892,7 +899,7 @@ markOptionListPart(OptionListSubmenu, DF_OPTION_LIST_SUBMENU)
 function resolveOptionListHeader(
   header: React.ReactNode,
   labelId: string
-): { node: React.ReactNode; labelledBy?: string } {
+): { node: React.ReactNode; labelledBy?: string | undefined } {
   if (header == null) return { node: null }
   if (isOptionListPart(header, DF_OPTION_LIST_HEADER)) {
     const el = header as React.ReactElement<OptionListHeaderProps>
@@ -915,14 +922,14 @@ type OptionListChrome = "menu" | "plain" | "panel"
 
 /** Panel surface chrome. Values should be CSS lengths or `var(--…)` tokens. */
 type OptionListSurfaceChromeProps = {
-  background?: string
-  foreground?: string
-  borderColor?: string
-  borderWidth?: string
-  borderStyle?: string
+  background?: string | undefined
+  foreground?: string | undefined
+  borderColor?: string | undefined
+  borderWidth?: string | undefined
+  borderStyle?: string | undefined
   /** Hairline rules on header, search, and footer. Defaults to var(--border). */
-  dividerColor?: string
-  radius?: string
+  dividerColor?: string | undefined
+  radius?: string | undefined
 }
 
 function optionListSurfaceChromeStyle({
@@ -1061,7 +1068,7 @@ function OptionListContent({
   radius,
   dismissOnScroll = true,
   search = false,
-  searchPlaceholder = "Search",
+  searchPlaceholder: searchPlaceholderProp,
   searchBackground,
   searchValue,
   defaultSearchValue,
@@ -1076,6 +1083,9 @@ function OptionListContent({
   onMouseLeave,
   ...props
 }: OptionListContentProps) {
+  const s = useDfStrings()
+  const searchPlaceholder =
+    searchPlaceholderProp ?? s.optionListSearchPlaceholder
   const {
     open,
     setOpen,
@@ -1099,6 +1109,7 @@ function OptionListContent({
     query: "",
     timer: null,
   })
+  const portalThemeClass = useNearestDarkClass(triggerRef, open && portal)
   const placement = useAnchoredPosition({
     open: open && portal,
     triggerRef,
@@ -1126,7 +1137,7 @@ function OptionListContent({
       : "min(60vh, var(--df-menu-max-height))")
 
   // Keep list order; reveal the selected option in the list scrollport.
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!open || !mounted) return
     const root = contentRef.current
     if (!root) return
@@ -1201,8 +1212,6 @@ function OptionListContent({
   }, [])
 
   const handleListKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    props.onKeyDown?.(event)
-    if (event.defaultPrevented) return
     const root = contentRef.current
     if (!root) return
     const items = navigableOptions(root)
@@ -1247,6 +1256,7 @@ function OptionListContent({
     }
     if (event.key === "ArrowRight" && currentIndex !== -1) {
       const item = items[currentIndex]
+      if (item == null) return
       if (item.getAttribute("data-submenu-trigger") != null) {
         event.preventDefault()
         item.click()
@@ -1367,14 +1377,18 @@ function OptionListContent({
       data-scroll={wrapInScrollArea ? "kit" : undefined}
       className={cn(className)}
       style={{ ...surfaceStyle, ...layoutStyle, ...style }}
-      onKeyDown={handleListKeyDown}
+      onKeyDown={(event) => {
+        composeEventHandlers(props.onKeyDown, handleListKeyDown)(event)
+      }}
       onMouseEnter={(event) => {
-        onMouseEnter?.(event)
-        if (openOnHover) cancelHoverClose()
+        composeEventHandlers(onMouseEnter, () => {
+          if (openOnHover) cancelHoverClose()
+        })(event)
       }}
       onMouseLeave={(event) => {
-        onMouseLeave?.(event)
-        if (openOnHover) scheduleHoverClose()
+        composeEventHandlers(onMouseLeave, () => {
+          if (openOnHover) scheduleHoverClose()
+        })(event)
       }}
     >
       {resolvedHeader.node}
@@ -1397,7 +1411,7 @@ function OptionListContent({
   return createPortal(
     <div
       data-df="option-list-portal"
-      className={nearestDarkClass(triggerRef.current)}
+      className={portalThemeClass}
     >
       {panel}
     </div>,
@@ -1483,10 +1497,19 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
     const highlighted =
       (isSubmenuTrigger && submenu?.open) || dataHighlightedProp != null
 
-    React.useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       registerLabel(value, children)
       registerSecondary(value, secondary, copyLayout)
     }, [children, copyLayout, registerLabel, registerSecondary, secondary, value])
+
+    const setItemRef = React.useCallback(
+      (node: HTMLElement | null) => {
+        if (isSubmenuTrigger && submenu) {
+          submenu.setTriggerNode(node)
+        }
+      },
+      [isSubmenuTrigger, submenu]
+    )
 
     const query = searchQuery.trim().toLowerCase()
     if (query) {
@@ -1496,15 +1519,6 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
           .trim()
       if (!haystack.includes(query)) return null
     }
-
-    const setItemRef = React.useCallback(
-      (node: HTMLElement | null) => {
-        if (isSubmenuTrigger && submenu) {
-          submenu.triggerRef.current = node
-        }
-      },
-      [isSubmenuTrigger, submenu]
-    )
 
     return (
       <ListItem
@@ -1531,18 +1545,20 @@ const OptionListItem = React.forwardRef<HTMLElement, OptionListItemProps>(
         data-submenu-trigger={isSubmenuTrigger ? "" : undefined}
         className={cn(className)}
         onMouseEnter={(event) => {
-          onMouseEnter?.(event)
-          if (!blockInteraction && !isSubmenuTrigger) setActiveValue(value)
+          composeEventHandlers(onMouseEnter, () => {
+            if (!blockInteraction && !isSubmenuTrigger) setActiveValue(value)
+          })(event)
         }}
         onClick={(event) => {
-          onClick?.(event)
-          if (blockInteraction || event.defaultPrevented) return
-          if (isSubmenuTrigger) {
-            submenu?.cancelClose()
-            return
-          }
-          toggleValue(value)
-          if (closeOnSelect) setOpen(false)
+          composeEventHandlers(onClick, () => {
+            if (blockInteraction) return
+            if (isSubmenuTrigger) {
+              submenu?.cancelClose()
+              return
+            }
+            toggleValue(value)
+            if (closeOnSelect) setOpen(false)
+          })(event)
         }}
       >
         {children}

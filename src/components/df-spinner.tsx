@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 type SpinnerSize = "xs" | "sm" | "md" | "lg"
@@ -11,10 +14,11 @@ type SpinnerProps = React.HTMLAttributes<HTMLSpanElement> & {
 function Spinner({
   className,
   size = "md",
-  "aria-label": ariaLabel = "Loading",
+  "aria-label": ariaLabel,
   "aria-hidden": ariaHidden,
   ...props
 }: SpinnerProps) {
+  const s = useDfStrings()
   const isHidden = ariaHidden === true || ariaHidden === "true"
 
   return (
@@ -23,7 +27,7 @@ function Spinner({
       data-size={size}
       className={cn("df-spinner", className)}
       role={isHidden ? undefined : "status"}
-      aria-label={isHidden ? undefined : ariaLabel}
+      aria-label={isHidden ? undefined : (ariaLabel ?? s.spinnerLoading)}
       aria-hidden={isHidden ? true : undefined}
       {...props}
     >

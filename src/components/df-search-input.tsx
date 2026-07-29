@@ -5,6 +5,7 @@ import { Search, X } from "lucide-react"
 
 import { Input, type InputProps } from "./df-input"
 import { useControllableState } from "../hooks"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 type SearchInputSize = "sm" | "md" | "lg"
@@ -43,6 +44,7 @@ function SearchInput({
   disabled,
   ...props
 }: SearchInputProps) {
+  const s = useDfStrings()
   const [current, setCurrent] = useControllableState<string>({
     value: value === undefined ? undefined : String(value),
     defaultValue:
@@ -94,13 +96,13 @@ function SearchInput({
       {searchIcon}
 
       <Input
+        {...props}
         disabled={disabled}
         placeholder={placeholder}
         value={current}
         onChange={handleChange}
         size={size}
         className={cn(inputClassName)}
-        {...props}
       />
 
       {showTrailingActions ? (
@@ -109,7 +111,7 @@ function SearchInput({
             <button
               type="button"
               data-df="search-input-clear"
-              aria-label="Clear search"
+              aria-label={s.searchInputClear}
               onMouseDown={(event) => {
                 event.preventDefault()
               }}

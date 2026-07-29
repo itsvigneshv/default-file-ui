@@ -119,10 +119,10 @@
   --df-badge-gap-xl: 1.5;
   /* Filled status mark for online, live, and similar chips. */
   --df-status-dot-size-xs: calc(1.5 * var(--spacing-unit));
-  --df-status-dot-size-sm: calc(1.75 * var(--spacing-unit));
-  --df-status-dot-size-md: calc(2 * var(--spacing-unit));
-  --df-status-dot-size-lg: calc(2.25 * var(--spacing-unit));
-  --df-status-dot-size-xl: calc(2.5 * var(--spacing-unit));
+  --df-status-dot-size-sm: calc(2 * var(--spacing-unit));
+  --df-status-dot-size-md: calc(2.5 * var(--spacing-unit));
+  --df-status-dot-size-lg: calc(3 * var(--spacing-unit));
+  --df-status-dot-size-xl: calc(3.5 * var(--spacing-unit));
   /* Kbd */
   --df-kbd-bg: var(--df-neutral-100);
   --df-kbd-fg: var(--muted-foreground);
@@ -136,8 +136,6 @@
   --df-kbd-min-width-sm: calc(5 * var(--spacing-unit));
   --df-kbd-min-width-md: calc(5.5 * var(--spacing-unit));
   --df-kbd-glyph-gap: 0.12em;
-  --df-kbd-mod-optical-shift: 0em;
-  --df-kbd-punct-optical-shift: 0em;
   --df-button-badge-size: calc(4 * var(--spacing-unit));
   --df-button-badge-pad-inline: calc(1 * var(--spacing-unit));
   --df-button-badge-inset: calc(1 * var(--spacing-unit));
@@ -583,10 +581,10 @@
   --home-tool-preview-mesh-gradient: #fcf5f0;
   --home-tool-preview-color-lab: #fcf5f0;
   --home-tool-preview-design-extractor: #fef7f2;
-  --home-tool-preview-stage-shot: #fdf7f1;
-  --home-tool-preview-markdown-preview: #faf3ef;
-  --home-tool-preview-scan-note: #faf2ee;
-  --home-tool-preview-runway: #f9f2ed;
+  --home-tool-preview-stage-shot: #fcf6f2;
+  --home-tool-preview-markdown-preview: #fcf6f2;
+  --home-tool-preview-scan-note: #fcf6f2;
+  --home-tool-preview-runway: #fcf6f2;
   --home-showcase-radius: calc(var(--radius) * 3.4);
   --home-hero-collage-gap: calc(28 * var(--spacing-unit, 0.25rem));
   --home-hero-stage-perspective: 87.5rem;
@@ -1264,7 +1262,6 @@
 /* Control and affordance sizes for host data-df-density. */
 :root,
 [data-df-density="cozy"] {
-  --df-control-optical-shift: 1px;
   --df-control-height-2xs: calc(6 * var(--spacing-unit));
   --df-control-height-xs: calc(7 * var(--spacing-unit));
   --df-control-height-sm: calc(8 * var(--spacing-unit));
@@ -1278,7 +1275,7 @@
   --df-label-row-gap: calc(2 * var(--spacing-unit));
   --df-label-leading-size: calc(4 * var(--spacing-unit));
   --df-label-trailing-size: var(--df-label-leading-size);
-  --df-affordance-size-2xs: calc(2.5 * var(--spacing-unit));
+  --df-affordance-size-2xs: calc(2 * var(--spacing-unit));
   --df-affordance-size-xs: calc(3 * var(--spacing-unit));
   --df-affordance-size-sm: calc(4 * var(--spacing-unit));
   --df-affordance-size-md: calc(5 * var(--spacing-unit));
@@ -1324,10 +1321,23 @@
   --df-slider-step-gap: calc(2.5 * var(--spacing-unit));
   --df-tabs-segment-min-height-sm: calc(6.5 * var(--spacing-unit));
   --df-tabs-segment-min-height-md: calc(7.5 * var(--spacing-unit));
-  --df-switch-track-height: 18.4px;
-  --df-switch-track-width: 32px;
-  --df-switch-track-height-sm: 14px;
-  --df-switch-track-width-sm: 24px;
+  --df-switch-thumb-gap: calc(1 * var(--spacing-unit));
+  --df-switch-thumb-size: var(--df-affordance-size-sm);
+  --df-switch-thumb-travel: var(--df-switch-thumb-size);
+  --df-switch-track-height: calc(
+    var(--df-switch-thumb-size) + 2 * var(--df-switch-thumb-gap)
+  );
+  --df-switch-track-width: calc(
+    var(--df-switch-track-height) + var(--df-switch-thumb-travel)
+  );
+  --df-switch-thumb-size-sm: var(--df-affordance-size-xs);
+  --df-switch-thumb-travel-sm: var(--df-switch-thumb-size-sm);
+  --df-switch-track-height-sm: calc(
+    var(--df-switch-thumb-size-sm) + 2 * var(--df-switch-thumb-gap)
+  );
+  --df-switch-track-width-sm: calc(
+    var(--df-switch-track-height-sm) + var(--df-switch-thumb-travel-sm)
+  );
   --df-tick-slider-shell-height: calc(14 * var(--spacing-unit));
   --df-tick-slider-tick-height: calc(5 * var(--spacing-unit));
   --df-tick-slider-thumb-height: calc(6 * var(--spacing-unit));
@@ -1338,6 +1348,7 @@
   --df-data-grid-cell-padding-block: calc(1.5 * var(--spacing-unit));
   --df-data-grid-col-width: calc(40 * var(--spacing-unit));
   --df-data-grid-col-min-width: calc(16 * var(--spacing-unit));
+  --df-data-grid-col-max-width: calc(120 * var(--spacing-unit));
   --df-data-grid-select-col-width: var(--df-control-height-lg);
   --df-data-grid-resize-hit-width: calc(3 * var(--spacing-unit));
   --df-data-grid-skeleton-height: calc(2.5 * var(--spacing-unit));

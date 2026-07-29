@@ -41,11 +41,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the rail."
-          },
-          {
-            "name": "…div attributes",
-            "type": "HTMLAttributes",
-            "description": "Native div attributes on the rail root."
           }
         ]
       },
@@ -107,7 +102,7 @@
           {
             "name": "label",
             "type": "string",
-            "description": "Accessible name for collapse and expand controls when title or subtitle is not a string."
+            "description": "Accessible name for the aside landmark (aria-label) and for collapse or dismiss controls. Falls back to a string title or subtitle, then a catalogue default."
           },
           {
             "name": "dismissible",
@@ -201,11 +196,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the panel root."
-          },
-          {
-            "name": "…aside attributes",
-            "type": "HTMLAttributes",
-            "description": "Native aside attributes on the panel root."
           }
         ]
       },
@@ -223,11 +213,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the header."
-          },
-          {
-            "name": "…div attributes",
-            "type": "HTMLAttributes",
-            "description": "Native div attributes on the header."
           }
         ]
       },
@@ -245,11 +230,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the title."
-          },
-          {
-            "name": "…p attributes",
-            "type": "HTMLAttributes",
-            "description": "Native paragraph attributes."
           }
         ]
       },
@@ -267,11 +247,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the subtitle."
-          },
-          {
-            "name": "…p attributes",
-            "type": "HTMLAttributes",
-            "description": "Native paragraph attributes."
           }
         ]
       },
@@ -294,11 +269,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the trigger."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button attributes (onClick, aria-label, title, and others)."
           }
         ]
       },
@@ -331,11 +301,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the trigger."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button attributes (onClick, aria-label, title, and others)."
           }
         ]
       },
@@ -398,11 +363,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the body shell."
-          },
-          {
-            "name": "…div attributes",
-            "type": "HTMLAttributes",
-            "description": "Native div attributes on the body shell."
           }
         ]
       },
@@ -420,11 +380,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional classes on the footer."
-          },
-          {
-            "name": "…div attributes",
-            "type": "HTMLAttributes",
-            "description": "Native div attributes on the footer."
           }
         ]
       },

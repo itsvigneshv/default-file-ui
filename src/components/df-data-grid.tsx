@@ -3,7 +3,13 @@
 import * as React from "react"
 import { Check } from "lucide-react"
 
-import { useControllableState } from "../hooks"
+import {
+  useControllableState,
+  useCssPx,
+  useDragGesture,
+  useLatestRef,
+  useRovingTabIndex,
+} from "../hooks"
 import {
   buildInitialColumnState,
   moveGridFocus,
@@ -16,8 +22,9 @@ import {
   type DataGridSelectionMode,
   type GridFocusCell,
 } from "../lib/df-data-grid"
+import { useDfStrings } from "../lib/df-intl"
 import { useVirtualRows } from "../lib/df-virtual"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 const SELECT_COLUMN_ID = "__df_select"
 const LOADING_ROW_COUNT = 8
@@ -32,6 +39,8 @@ export type DataGridColumnDef<T> = {
   header: React.ReactNode
   width?: number
   minWidth?: number
+  /** Upper bound for resize. Defaults to `--df-data-grid-col-max-width`. */
+  maxWidth?: number
   resizable?: boolean
   hidden?: boolean
   cell: (row: DataGridRow<T>) => React.ReactNode
@@ -60,20 +69,31 @@ export type DataGridProps<T> = Omit<
   estimateRowSize?: number
 }
 
-type ResizeSession = {
+type ResizeDragData = {
   columnId: string
   startX: number
   startWidth: number
   minWidth: number
+  maxWidth: number
 }
 
-function readCssPx(token: string, fallback: number): number {
-  if (typeof document === "undefined") return fallback
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(token)
-    .trim()
-  const px = Number.parseFloat(raw)
-  return Number.isFinite(px) && px > 0 ? px : fallback
+type ResizableColumnBounds = {
+  id: string
+  width: number
+  minWidth: number
+  maxWidth: number
+}
+
+/** Single clamp for pointer and keyboard column resize. */
+function clampColumnWidth(
+  width: number,
+  minWidth: number,
+  maxWidth: number
+): number {
+  const low = Math.min(minWidth, maxWidth)
+  const high = Math.max(minWidth, maxWidth)
+  if (!Number.isFinite(width)) return low
+  return Math.min(high, Math.max(low, Math.round(width)))
 }
 
 function DataGrid<T>({
@@ -92,14 +112,15 @@ function DataGrid<T>({
   overscan = 6,
   estimateRowSize: estimateRowSizeProp,
   style,
-  "aria-label": ariaLabel = "Data grid",
+  "aria-label": ariaLabel,
   ...props
 }: DataGridProps<T>) {
+  const s = useDfStrings()
   const rootRef = React.useRef<HTMLDivElement>(null)
   const headerScrollRef = React.useRef<HTMLDivElement>(null)
   const bodyScrollRef = React.useRef<HTMLDivElement>(null)
   const selectionAnchorRef = React.useRef<number | null>(null)
-  const resizeSessionRef = React.useRef<ResizeSession | null>(null)
+  const resizeDrag = useDragGesture()
 
   const [columnState, setColumnState] = useControllableState<
     DataGridColumnState[]
@@ -124,25 +145,57 @@ function DataGrid<T>({
     columnId: string
   } | null>(null)
 
-  const defaultColWidth = readCssPx("--df-data-grid-col-width", 160)
-  const defaultMinWidth = readCssPx("--df-data-grid-col-min-width", 64)
-  const rowHeight =
-    estimateRowSizeProp ?? readCssPx("--df-data-grid-row-height", 36)
+  const defaultColWidth = useCssPx(rootRef, "--df-data-grid-col-width", 160)
+  const defaultMinWidth = useCssPx(rootRef, "--df-data-grid-col-min-width", 64)
+  const defaultMaxWidth = useCssPx(rootRef, "--df-data-grid-col-max-width", 480)
+  const tokenRowHeight = useCssPx(rootRef, "--df-data-grid-row-height", 36)
+  const selectColWidth = useCssPx(rootRef, "--df-data-grid-select-col-width", 40)
+  const resizeStepPx = useCssPx(rootRef, "--spacing-unit", 4)
+  const rowHeight = estimateRowSizeProp ?? tokenRowHeight
 
-  const visibleColumns = React.useMemo(
-    () =>
-      resolveVisibleColumns(columns, columnState, {
-        width: defaultColWidth,
-        minWidth: defaultMinWidth,
-      }),
-    [columnState, columns, defaultColWidth, defaultMinWidth]
+  const columnsRef = useLatestRef(columns)
+  const setColumnStateRef = useLatestRef(setColumnState)
+
+  const visibleColumns = React.useMemo(() => {
+    const resolved = resolveVisibleColumns(columns, columnState, {
+      width: defaultColWidth,
+      minWidth: defaultMinWidth,
+    })
+    return resolved.map((column) => {
+      const maxWidth = Math.max(
+        column.minWidth,
+        column.maxWidth ?? defaultMaxWidth
+      )
+      return {
+        ...column,
+        maxWidth,
+        width: clampColumnWidth(column.width, column.minWidth, maxWidth),
+      }
+    })
+  }, [
+    columnState,
+    columns,
+    defaultColWidth,
+    defaultMaxWidth,
+    defaultMinWidth,
+  ])
+
+  const resizableColumns = React.useMemo(
+    () => visibleColumns.filter((column) => column.resizable),
+    [visibleColumns]
   )
+  // Up/Down move between handles so Left/Right stay free for column resize.
+  const resizeRoving = useRovingTabIndex({
+    count: resizableColumns.length,
+    orientation: "vertical",
+    loop: true,
+  })
 
   const showSelectColumn = selectionMode === "multi"
   const focusColCount = visibleColumns.length + (showSelectColumn ? 1 : 0)
   const totalWidth =
     visibleColumns.reduce((sum, column) => sum + column.width, 0) +
-    (showSelectColumn ? readCssPx("--df-data-grid-select-col-width", 40) : 0)
+    (showSelectColumn ? selectColWidth : 0)
 
   const rowIds = React.useMemo(() => rows.map((row) => row.id), [rows])
 
@@ -271,28 +324,107 @@ function DataGrid<T>({
     ]
   )
 
-  React.useEffect(() => {
-    const onPointerMove = (event: PointerEvent) => {
-      const session = resizeSessionRef.current
-      if (!session) return
-      const delta = event.clientX - session.startX
-      const nextWidth = Math.max(session.minWidth, session.startWidth + delta)
+  const onResizePointerDown = React.useCallback(
+    (
+      event: React.PointerEvent<HTMLSpanElement>,
+      column: ResizableColumnBounds
+    ) => {
+      event.preventDefault()
+      const data: ResizeDragData = {
+        columnId: column.id,
+        startX: event.clientX,
+        startWidth: column.width,
+        minWidth: column.minWidth,
+        maxWidth: column.maxWidth,
+      }
+      resizeDrag.begin(event, data, {
+        onMove: (moveEvent, session) => {
+          const delta = moveEvent.clientX - session.startX
+          const nextWidth = clampColumnWidth(
+            session.startWidth + delta,
+            session.minWidth,
+            session.maxWidth
+          )
+          setColumnStateRef.current((prev) =>
+            patchColumnWidth(
+              prev,
+              columnsRef.current,
+              session.columnId,
+              nextWidth
+            )
+          )
+        },
+      })
+    },
+    [columnsRef, resizeDrag, setColumnStateRef]
+  )
+
+  const applyResizeWidth = React.useCallback(
+    (columnId: string, nextWidth: number, minWidth: number, maxWidth: number) => {
       setColumnState((prev) =>
-        patchColumnWidth(prev, columns, session.columnId, nextWidth)
+        patchColumnWidth(
+          prev,
+          columns,
+          columnId,
+          clampColumnWidth(nextWidth, minWidth, maxWidth)
+        )
       )
-    }
+    },
+    [columns, setColumnState]
+  )
 
-    const onPointerUp = () => {
-      resizeSessionRef.current = null
-    }
-
-    window.addEventListener("pointermove", onPointerMove)
-    window.addEventListener("pointerup", onPointerUp)
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove)
-      window.removeEventListener("pointerup", onPointerUp)
-    }
-  }, [columns, setColumnState])
+  const onResizeKeyDown = React.useCallback(
+    (
+      event: React.KeyboardEvent<HTMLSpanElement>,
+      column: ResizableColumnBounds,
+      rovingKeyDown: (event: React.KeyboardEvent) => void
+    ) => {
+      const step = event.shiftKey ? resizeStepPx * 8 : resizeStepPx
+      if (event.key === "ArrowLeft") {
+        event.preventDefault()
+        applyResizeWidth(
+          column.id,
+          column.width - step,
+          column.minWidth,
+          column.maxWidth
+        )
+        return
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault()
+        applyResizeWidth(
+          column.id,
+          column.width + step,
+          column.minWidth,
+          column.maxWidth
+        )
+        return
+      }
+      // Home/End set the column to its bounds before the roving handler sees them.
+      if (event.key === "Home") {
+        event.preventDefault()
+        applyResizeWidth(
+          column.id,
+          column.minWidth,
+          column.minWidth,
+          column.maxWidth
+        )
+        return
+      }
+      if (event.key === "End") {
+        event.preventDefault()
+        applyResizeWidth(
+          column.id,
+          column.maxWidth,
+          column.minWidth,
+          column.maxWidth
+        )
+        return
+      }
+      rovingKeyDown(event)
+    },
+    [applyResizeWidth, resizeStepPx]
+  )
 
   React.useEffect(() => {
     if (editing) return
@@ -320,11 +452,13 @@ function DataGrid<T>({
       className={cn("df-data-grid", className)}
       style={style}
       role="grid"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? s.dataGridAriaLabel}
       aria-rowcount={loading ? LOADING_ROW_COUNT + 1 : rows.length + 1}
       aria-busy={loading || undefined}
       tabIndex={-1}
-      onKeyDown={onGridKeyDown}
+      onKeyDown={(event) => {
+        composeEventHandlers(props.onKeyDown, onGridKeyDown)(event)
+      }}
     >
       <div
         ref={headerScrollRef}
@@ -361,7 +495,11 @@ function DataGrid<T>({
                       ? "indeterminate"
                       : "unchecked"
                 }
-                aria-label={allSelected ? "Deselect all rows" : "Select all rows"}
+                aria-label={
+                  allSelected
+                    ? s.dataGridDeselectAllRows
+                    : s.dataGridSelectAllRows
+                }
                 aria-checked={allSelected ? true : someSelected ? "mixed" : false}
                 onClick={() => setSelectedIds(toggleAllSelection(selectedIds, rowIds))}
               >
@@ -373,6 +511,15 @@ function DataGrid<T>({
           ) : null}
           {visibleColumns.map((column, index) => {
             const colIndex = index + (showSelectColumn ? 1 : 0)
+            const resizeIndex = column.resizable
+              ? resizableColumns.findIndex((entry) => entry.id === column.id)
+              : -1
+            const resizeRovingProps =
+              resizeIndex >= 0
+                ? resizeRoving.getItemProps(resizeIndex)
+                : null
+            const columnLabel =
+              typeof column.header === "string" ? column.header : column.id
             return (
               <div
                 key={column.id}
@@ -380,25 +527,34 @@ function DataGrid<T>({
                 data-df="data-grid-columnheader"
                 role="columnheader"
                 aria-colindex={colIndex + 1}
-                style={{ width: column.width, minWidth: column.minWidth }}
+                style={{
+                  width: column.width,
+                  minWidth: column.minWidth,
+                  maxWidth: column.maxWidth,
+                }}
               >
                 <span className="df-data-grid-header-label">{column.header}</span>
-                {column.resizable ? (
+                {column.resizable && resizeRovingProps ? (
                   <span
                     className="df-data-grid-resize"
                     data-df="data-grid-resize"
                     role="separator"
                     aria-orientation="vertical"
-                    aria-label={`Resize ${typeof column.header === "string" ? column.header : column.id}`}
-                    onPointerDown={(event) => {
-                      event.preventDefault()
-                      resizeSessionRef.current = {
-                        columnId: column.id,
-                        startX: event.clientX,
-                        startWidth: column.width,
-                        minWidth: column.minWidth,
-                      }
-                    }}
+                    aria-valuenow={Math.round(column.width)}
+                    aria-valuemin={column.minWidth}
+                    aria-valuemax={column.maxWidth}
+                    aria-label={s.dataGridResizeColumn(columnLabel)}
+                    tabIndex={resizeRovingProps.tabIndex}
+                    ref={resizeRovingProps.ref}
+                    onFocus={resizeRovingProps.onFocus}
+                    onPointerDown={(event) => onResizePointerDown(event, column)}
+                    onKeyDown={(event) =>
+                      onResizeKeyDown(
+                        event,
+                        column,
+                        resizeRovingProps.onKeyDown
+                      )
+                    }
                   />
                 ) : null}
               </div>
@@ -445,7 +601,11 @@ function DataGrid<T>({
                     key={column.id}
                     className="df-data-grid-cell"
                     role="gridcell"
-                    style={{ width: column.width, minWidth: column.minWidth }}
+                    style={{
+                      width: column.width,
+                      minWidth: column.minWidth,
+                      maxWidth: column.maxWidth,
+                    }}
                   >
                     <span className="df-data-grid-skeleton" />
                   </div>
@@ -454,8 +614,12 @@ function DataGrid<T>({
             ))}
           </div>
         ) : isEmpty ? (
-          <div className="df-data-grid-empty" data-df="data-grid-empty" role="status">
-            {emptyContent ?? "No rows"}
+          <div
+            className="df-data-grid-empty"
+            data-df="data-grid-empty"
+            aria-live="polite"
+          >
+            {emptyContent ?? s.dataGridEmpty}
           </div>
         ) : (
           <div
@@ -548,6 +712,7 @@ function DataGrid<T>({
                         style={{
                           width: column.width,
                           minWidth: column.minWidth,
+                          maxWidth: column.maxWidth,
                         }}
                         onClick={(event) => {
                           setFocusCell({

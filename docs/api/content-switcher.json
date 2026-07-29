@@ -88,11 +88,6 @@
             "name": "children",
             "type": "ReactNode",
             "description": "Item label."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button props."
           }
         ]
       },

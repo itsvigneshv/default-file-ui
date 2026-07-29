@@ -59,7 +59,7 @@ type FlatSeg = {
   italic: boolean
   code: boolean
   strikethrough: boolean
-  linkHref?: string
+  linkHref?: string | undefined
 }
 
 function flatten(nodes: readonly InlineNode[]): FlatSeg[] {

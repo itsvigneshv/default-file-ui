@@ -473,24 +473,8 @@
       {
         "id": "popover-keyboard",
         "title": "Keyboard and accessibility",
-        "description": "Behavior for portaled panels.",
-        "props": [
-          {
-            "name": "Dismiss",
-            "type": "Escape / outside click",
-            "description": "Closes the panel and returns focus to the trigger when focus was inside."
-          },
-          {
-            "name": "Role",
-            "type": "dialog",
-            "description": "Anchored dialog. Use PopoverTitle for an accessible name, or aria-label on PopoverContent."
-          },
-          {
-            "name": "High contrast",
-            "type": "forced-colors",
-            "description": "Under forced-colors, the panel keeps a visible border and the trigger keeps a focus outline."
-          }
-        ]
+        "description": "Behavior for portaled panels. Dismiss (Escape / outside click): Closes the panel and returns focus to the trigger when focus was inside. Role (disclosure): Non-modal anchored panel with no dialog role and no focus trap. The trigger exposes aria-expanded and aria-controls while open. Use PopoverTitle for an accessible name via aria-labelledby, or aria-label on PopoverContent. High contrast (forced-colors): Under forced-colors, the panel keeps a visible border and the trigger keeps a focus outline.",
+        "props": []
       },
       {
         "id": "popover-tokens",

@@ -4,7 +4,8 @@ import * as React from "react"
 import { PanelLeft, X } from "lucide-react"
 
 import { useControllableState } from "../hooks"
-import { cn } from "../lib/utils"
+import { useDfStrings } from "../lib/df-intl"
+import { cn, composeEventHandlers } from "../lib/utils"
 import { Button } from "./df-button"
 import {
   ScrollArea,
@@ -26,8 +27,8 @@ type DockPanelContextValue = {
   label: string
   collapseIcon: React.ReactNode
   expandIcon: React.ReactNode
-  collapseLabel?: string
-  expandLabel?: string
+  collapseLabel?: string | undefined
+  expandLabel?: string | undefined
   collapsedLabelVisible: boolean
   collapsedAlign: DockPanelCollapsedAlign
 }
@@ -72,29 +73,30 @@ type DockPanelProps = Omit<React.ComponentProps<"aside">, "title"> & {
   dismissible?: boolean
   collapseIcon?: React.ReactNode
   expandIcon?: React.ReactNode
-  collapseLabel?: string
-  expandLabel?: string
-  collapsedLabelVisible?: boolean
-  collapsedAlign?: DockPanelCollapsedAlign
-  viewportClassName?: string
-  variant?: ScrollAreaVariant
-  thumbShape?: ScrollAreaThumbShape
-  orientation?: ScrollAreaOrientation
-  side?: ScrollAreaSide
-  visibility?: ScrollAreaVisibility
-  space?: ScrollAreaSpace
-  width?: number
+  collapseLabel?: string | undefined
+  expandLabel?: string | undefined
+  collapsedLabelVisible?: boolean | undefined
+  collapsedAlign?: DockPanelCollapsedAlign | undefined
+  viewportClassName?: string | undefined
+  variant?: ScrollAreaVariant | undefined
+  thumbShape?: ScrollAreaThumbShape | undefined
+  orientation?: ScrollAreaOrientation | undefined
+  side?: ScrollAreaSide | undefined
+  visibility?: ScrollAreaVisibility | undefined
+  space?: ScrollAreaSpace | undefined
+  width?: number | undefined
 }
 
 function resolveLabel(
   label: string | undefined,
   title: React.ReactNode | undefined,
-  subtitle: React.ReactNode | undefined
+  subtitle: React.ReactNode | undefined,
+  fallback: string
 ): string {
   if (label) return label
   if (typeof title === "string") return title
   if (typeof subtitle === "string") return subtitle
-  return "Panel"
+  return fallback
 }
 
 function DockPanel({
@@ -127,17 +129,19 @@ function DockPanel({
   width,
   ...props
 }: DockPanelProps) {
+  const s = useDfStrings()
   const [isOpen, setOpen] = useControllableState({
     value: open,
     defaultValue: defaultOpen,
     onChange: onOpenChange,
   })
 
-  const resolvedLabel = resolveLabel(label, title, subtitle)
+  const resolvedLabel = resolveLabel(label, title, subtitle, s.dockPanelAriaLabel)
   const collapseNode = collapseIcon ?? (dismissible ? <X /> : <PanelLeft />)
   const expandNode = expandIcon ?? collapseNode
   const resolvedCollapseLabel =
-    collapseLabel ?? (dismissible ? `Close ${resolvedLabel}` : undefined)
+    collapseLabel ??
+    (dismissible ? s.dockPanelClose(resolvedLabel) : undefined)
   const showTitle = title != null && titleVisible
   const showSubtitle = subtitle != null && subtitleVisible
   const composeHeader = title != null || subtitle != null
@@ -206,6 +210,7 @@ function DockPanel({
         data-collapsed-label={collapsedLabelVisible ? "visible" : "hidden"}
         data-collapsed-align={collapsedAlign}
         className={cn("df-dock-panel", className)}
+        aria-label={resolvedLabel}
         {...props}
       >
         {isOpen ? content : <DockPanelExpandTrigger />}
@@ -263,10 +268,11 @@ function DockPanelCollapseTrigger({
   title,
   ...props
 }: DockPanelCollapseTriggerProps) {
+  const s = useDfStrings()
   const { setOpen, label, collapseIcon, collapseLabel } = useDockPanelContext(
     "DockPanelCollapseTrigger"
   )
-  const accessibleName = collapseLabel ?? `Collapse ${label}`
+  const accessibleName = collapseLabel ?? s.dockPanelCollapse(label)
 
   return (
     <Button
@@ -276,11 +282,10 @@ function DockPanelCollapseTrigger({
       className={cn("df-dock-panel-collapse-trigger", className)}
       aria-label={ariaLabel ?? accessibleName}
       title={title ?? accessibleName}
-      onClick={(event) => {
-        onClick?.(event)
-        if (!event.defaultPrevented) setOpen(false)
-      }}
       {...props}
+      onClick={composeEventHandlers(onClick, () => {
+        setOpen(false)
+      })}
     >
       {children ?? icon ?? collapseIcon}
     </Button>
@@ -304,6 +309,7 @@ function DockPanelExpandTrigger({
   title,
   ...props
 }: DockPanelExpandTriggerProps) {
+  const s = useDfStrings()
   const {
     setOpen,
     label,
@@ -312,7 +318,7 @@ function DockPanelExpandTrigger({
     collapsedLabelVisible,
     collapsedAlign,
   } = useDockPanelContext("DockPanelExpandTrigger")
-  const accessibleName = expandLabel ?? `Expand ${label}`
+  const accessibleName = expandLabel ?? s.dockPanelExpand(label)
   const visibleLabel = labelProp ?? label
   const labelVisible = showLabel ?? collapsedLabelVisible
 
@@ -325,11 +331,10 @@ function DockPanelExpandTrigger({
       className={cn("df-dock-panel-expand-trigger", className)}
       aria-label={ariaLabel ?? accessibleName}
       title={title ?? accessibleName}
-      onClick={(event) => {
-        onClick?.(event)
-        if (!event.defaultPrevented) setOpen(true)
-      }}
       {...props}
+      onClick={composeEventHandlers(onClick, () => {
+        setOpen(true)
+      })}
     >
       {children ?? (
         <>
@@ -354,15 +359,15 @@ function DockPanelExpandTrigger({
 }
 
 type DockPanelBodyProps = Omit<React.ComponentProps<"div">, "children"> & {
-  children?: React.ReactNode
-  viewportClassName?: string
-  variant?: ScrollAreaVariant
-  thumbShape?: ScrollAreaThumbShape
-  orientation?: ScrollAreaOrientation
-  side?: ScrollAreaSide
-  visibility?: ScrollAreaVisibility
-  space?: ScrollAreaSpace
-  width?: number
+  children?: React.ReactNode | undefined
+  viewportClassName?: string | undefined
+  variant?: ScrollAreaVariant | undefined
+  thumbShape?: ScrollAreaThumbShape | undefined
+  orientation?: ScrollAreaOrientation | undefined
+  side?: ScrollAreaSide | undefined
+  visibility?: ScrollAreaVisibility | undefined
+  space?: ScrollAreaSpace | undefined
+  width?: number | undefined
 }
 
 function DockPanelBody({

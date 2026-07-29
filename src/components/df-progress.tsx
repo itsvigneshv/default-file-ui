@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 type ProgressSize = "sm" | "md"
@@ -23,9 +26,10 @@ function Progress({
   className,
   value,
   size = "md",
-  "aria-label": ariaLabel = "Progress",
+  "aria-label": ariaLabel,
   ...props
 }: ProgressProps) {
+  const s = useDfStrings()
   const determinate = typeof value === "number"
   const pct = determinate ? clampProgress(value) : null
   const indicatorStyle: ProgressIndicatorStyle | undefined =
@@ -42,10 +46,12 @@ function Progress({
       data-state={determinate ? "determinate" : "indeterminate"}
       className={cn("df-progress", className)}
       role="progressbar"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? s.progressAriaLabel}
       aria-valuemin={determinate ? 0 : undefined}
       aria-valuemax={determinate ? 100 : undefined}
       aria-valuenow={pct == null ? undefined : Math.round(pct)}
+      aria-valuetext={determinate ? undefined : s.progressIndeterminate}
+      aria-busy={determinate ? undefined : true}
       {...props}
     >
       <div className="df-progress-indicator" style={indicatorStyle} />

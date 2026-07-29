@@ -16,8 +16,8 @@ export function edgeScrollVelocity(options: {
   pointer: number
   start: number
   end: number
-  zone?: number
-  maxVelocity?: number
+  zone?: number | undefined
+  maxVelocity?: number | undefined
 }): number {
   const zone = options.zone ?? DF_DND_AUTO_SCROLL_ZONE_PX
   const maxVelocity = options.maxVelocity ?? DF_DND_AUTO_SCROLL_MAX_VELOCITY_PX
@@ -57,9 +57,9 @@ export function autoScrollDelta(options: {
   top: number
   right: number
   bottom: number
-  axis?: AutoScrollAxis
-  zone?: number
-  maxVelocity?: number
+  axis?: AutoScrollAxis | undefined
+  zone?: number | undefined
+  maxVelocity?: number | undefined
 }): { dx: number; dy: number } {
   const axis = options.axis ?? "both"
   const dx =

@@ -111,35 +111,59 @@
         ]
       },
       {
-        "id": "options-panel-slots",
-        "title": "Header, body, and footer slots",
-        "description": "Pure layout regions. Put any controls in body; any actions or meta in footer.",
+        "id": "options-panel-header",
+        "title": "OptionsPanelHeader",
+        "description": "Header region with bottom border. Usually wraps the title.",
         "props": [
           {
-            "name": "OptionsPanelHeader",
-            "type": "div attrs",
-            "description": "Header region with bottom border. Usually wraps the title."
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the header."
           },
           {
-            "name": "OptionsPanelTitle",
-            "type": "h2 attrs",
-            "description": "Panel title text."
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Usually OptionsPanelTitle."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-title",
+        "title": "OptionsPanelTitle",
+        "description": "Panel title text.",
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Title copy."
           },
           {
-            "name": "OptionsPanelBody",
-            "type": "div attrs & { fit?: boolean }",
-            "description": "Body slot. Hugs content width. Portaled panels clamp height with --df-options-panel-max-height and scroll when content is taller. Set fit to size to content with no scroll clamp. Inline panels (portal false) also size to content with no scroll clamp."
-          },
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the title."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-body",
+        "title": "OptionsPanelBody",
+        "description": "Body slot. Hugs content width. Portaled panels clamp height with --df-options-panel-max-height and scroll when content is taller. Inline panels (portal false) size to content with no scroll clamp.",
+        "props": [
           {
             "name": "fit",
             "type": "boolean",
             "default": "false",
-            "description": "OptionsPanelBody prop. Size the body to its content with no max-height scroll clamp. Default keeps the portaled height cap and vertical scroll."
+            "description": "Size the body to its content with no max-height scroll clamp. Default keeps the portaled height cap and vertical scroll."
           },
           {
-            "name": "OptionsPanelFooter",
-            "type": "div attrs",
-            "description": "Footer slot with top border. Compose OptionsPanelFooterActions and OptionsPanelFooterMeta. Owns gapX and gapY."
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the body."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Panel controls and content."
           }
         ]
       },
@@ -178,19 +202,36 @@
         ]
       },
       {
-        "id": "options-panel-footer-parts",
-        "title": "Footer actions and meta",
-        "description": "Named footer parts that consume --df-options-panel-footer-gap-x. Keep custom single-action footers as direct Footer children.",
+        "id": "options-panel-footer-actions",
+        "title": "OptionsPanelFooterActions",
+        "description": "Two-column action row for paired controls such as Download and Copy. Gap comes from the parent footer gapX.",
         "props": [
           {
-            "name": "OptionsPanelFooterActions",
-            "type": "div attrs",
-            "description": "Two-column action row for paired controls such as Download and Copy. Gap comes from the parent footer gapX."
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the actions row."
           },
           {
-            "name": "OptionsPanelFooterMeta",
-            "type": "div attrs",
-            "description": "Centered meta row for export summary copy and kit Badge. Uses text-xs muted foreground by default. Gap comes from the parent footer gapX."
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Paired action controls."
+          }
+        ]
+      },
+      {
+        "id": "options-panel-footer-meta",
+        "title": "OptionsPanelFooterMeta",
+        "description": "Centered meta row for export summary copy and kit Badge. Uses text-xs muted foreground by default. Gap comes from the parent footer gapX.",
+        "props": [
+          {
+            "name": "className",
+            "type": "string",
+            "description": "Additional styles on the meta row."
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "description": "Meta copy and badges."
           }
         ]
       },

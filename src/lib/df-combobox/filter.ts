@@ -79,6 +79,19 @@ export type ComboboxCommitResult =
   | { kind: "custom"; value: string }
   | { kind: "none" }
 
+/** Map a committed option value to the input display string. */
+export function resolveComboboxDisplayText(
+  committed: string,
+  options: readonly ComboboxOption[],
+  allowCustomValue: boolean
+): string {
+  if (committed.length === 0) return ""
+  const match = options.find((option) => option.value === committed)
+  if (match != null) return match.label
+  if (allowCustomValue) return committed
+  return ""
+}
+
 /** Resolve Enter: active option, optional custom text, or no commit. */
 export function resolveComboboxCommit(options: {
   activeIndex: number | null

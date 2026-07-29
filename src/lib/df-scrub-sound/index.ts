@@ -2,7 +2,7 @@ import {
   getUiAudioContext,
   resumeUiAudio,
   uiAudioAllowed,
-} from "./df-ui-audio"
+} from "../df-ui-audio"
 
 const SCRUB_FREQ_MIN = 210
 const SCRUB_FREQ_SPAN = 260
@@ -18,7 +18,14 @@ const SCRUB_GAIN_SMOOTH = 0.04
 const SCRUB_STOP_FADE = 0.03
 const SCRUB_STOP_DISPOSE_MS = 140
 
-type ScrubSession = {
+type ScrubDisposableGraph = {
+  osc: { stop: () => void; disconnect: () => void }
+  filter: { disconnect: () => void }
+  gain: { disconnect: () => void }
+  stopped: boolean
+}
+
+type ScrubSession = ScrubDisposableGraph & {
   osc: OscillatorNode
   filter: BiquadFilterNode
   gain: GainNode
@@ -26,9 +33,42 @@ type ScrubSession = {
   lastTime: number
 }
 
+type ScrubDisposeResult = "stopped" | "already-stopped" | "failed"
+
 let session: ScrubSession | null = null
 let stopTimer: ReturnType<typeof setTimeout> | null = null
 let watchingVisibility = false
+let scrubSoundDisabled = false
+let scrubSoundFailure: unknown | null = null
+
+function isAlreadyStoppedOscillatorError(cause: unknown): boolean {
+  return cause instanceof DOMException && cause.name === "InvalidStateError"
+}
+
+function recordScrubSoundFailure(cause: unknown) {
+  scrubSoundFailure = cause
+  scrubSoundDisabled = true
+}
+
+/** Last unexpected dispose failure, or null when scrub audio has not failed. */
+export function getUiScrubSoundFailure(): unknown | null {
+  return scrubSoundFailure
+}
+
+/**
+ * False after an unexpected dispose failure, or when the environment blocks UI audio.
+ * Once disabled by a failure, scrub stays off until `clearUiScrubSoundFailure`.
+ */
+export function isUiScrubSoundAvailable(): boolean {
+  if (scrubSoundDisabled) return false
+  return uiAudioAllowed() && getUiAudioContext() != null
+}
+
+/** Clears a recorded dispose failure so scrub audio can be attempted again. */
+export function clearUiScrubSoundFailure(): void {
+  scrubSoundFailure = null
+  scrubSoundDisabled = false
+}
 
 function clamp01(value: number) {
   return Math.min(1, Math.max(0, value))
@@ -63,13 +103,51 @@ function setVisibilityWatch(enabled: boolean) {
   }
 }
 
-function disposeSession(next: ScrubSession) {
-  try {
-    next.osc.stop()
-  } catch {}
+function disconnectSession(next: ScrubDisposableGraph) {
   next.osc.disconnect()
   next.filter.disconnect()
   next.gain.disconnect()
+}
+
+/**
+ * Stops and disconnects a scrub graph. Never throws.
+ * Unexpected errors are recorded via `getUiScrubSoundFailure` and disable scrub audio.
+ */
+function disposeSession(next: ScrubDisposableGraph): ScrubDisposeResult {
+  let result: ScrubDisposeResult = "stopped"
+  try {
+    if (next.stopped) {
+      result = "already-stopped"
+    } else {
+      next.stopped = true
+      try {
+        next.osc.stop()
+      } catch (cause) {
+        if (isAlreadyStoppedOscillatorError(cause)) {
+          result = "already-stopped"
+        } else {
+          recordScrubSoundFailure(cause)
+          result = "failed"
+        }
+      }
+    }
+  } finally {
+    try {
+      disconnectSession(next)
+    } catch (cause) {
+      recordScrubSoundFailure(cause)
+      result = "failed"
+    }
+  }
+  return result
+}
+
+/** Clears module session state first, then disposes. Never throws. */
+function discardUiScrubSession(): ScrubDisposeResult | null {
+  if (session == null) return null
+  const active = session
+  session = null
+  return disposeSession(active)
 }
 
 export function resumeUiScrubAudio(): void {
@@ -78,11 +156,12 @@ export function resumeUiScrubAudio(): void {
 
 export function startUiScrub(ratio: number): void {
   clearStopTimer()
-  if (session) {
-    disposeSession(session)
-    session = null
+  const outcome = discardUiScrubSession()
+  if (outcome === "failed") {
+    setVisibilityWatch(false)
+    return
   }
-  if (!uiAudioAllowed()) {
+  if (scrubSoundDisabled || !uiAudioAllowed()) {
     setVisibilityWatch(false)
     return
   }
@@ -116,13 +195,14 @@ export function startUiScrub(ratio: number): void {
     gain,
     lastRatio: clamp01(ratio),
     lastTime: performance.now(),
+    stopped: false,
   }
   setVisibilityWatch(true)
 }
 
 export function updateUiScrub(ratio: number, now = performance.now()): void {
   if (!session) return
-  if (!uiAudioAllowed()) {
+  if (scrubSoundDisabled || !uiAudioAllowed()) {
     stopUiScrub()
     return
   }
@@ -163,9 +243,16 @@ export function stopUiScrub(): void {
   session = null
   clearStopTimer()
 
-  const t = active.osc.context.currentTime
-  active.gain.gain.cancelScheduledValues(t)
-  active.gain.gain.setTargetAtTime(SCRUB_GAIN_SILENCE, t, SCRUB_STOP_FADE)
+  try {
+    const t = active.osc.context.currentTime
+    active.gain.gain.cancelScheduledValues(t)
+    active.gain.gain.setTargetAtTime(SCRUB_GAIN_SILENCE, t, SCRUB_STOP_FADE)
+  } catch (cause) {
+    recordScrubSoundFailure(cause)
+    disposeSession(active)
+    setVisibilityWatch(false)
+    return
+  }
 
   stopTimer = setTimeout(() => {
     stopTimer = null

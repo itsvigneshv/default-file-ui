@@ -5,10 +5,10 @@ export type MarkType = "bold" | "italic" | "code" | "strikethrough"
 export type TextInline = {
   type: "text"
   text: string
-  bold?: boolean
-  italic?: boolean
-  code?: boolean
-  strikethrough?: boolean
+  bold?: boolean | undefined
+  italic?: boolean | undefined
+  code?: boolean | undefined
+  strikethrough?: boolean | undefined
 }
 
 export type LinkInline = {
@@ -170,9 +170,16 @@ export function createRawBlock(markdown: string): RawBlock {
   return { type: "raw", markdown }
 }
 
+export type TextMarks = {
+  bold?: boolean | undefined
+  italic?: boolean | undefined
+  code?: boolean | undefined
+  strikethrough?: boolean | undefined
+}
+
 export function createText(
   text: string,
-  marks: Partial<Record<MarkType, boolean>> = {}
+  marks: TextMarks = {}
 ): TextInline {
   const node: TextInline = { type: "text", text }
   if (marks.bold) node.bold = true

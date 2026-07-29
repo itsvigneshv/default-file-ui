@@ -25,6 +25,11 @@ import {
   Quote,
 } from "lucide-react"
 
+import {
+  dfFormatToolbarCalloutLabel,
+  useDfStrings,
+} from "../lib/df-intl"
+import { isSafeHref } from "../lib/df-url"
 import { cn } from "../lib/utils"
 import { Button } from "./df-button"
 import { Input } from "./df-input"
@@ -113,28 +118,52 @@ export type FormatToolbarProps = {
   calloutLabel?: (type: FormatToolbarCalloutType) => string
 }
 
-function defaultCalloutLabel(type: FormatToolbarCalloutType): string {
-  switch (type) {
-    case "note":
-      return "Note"
-    case "tip":
-      return "Tip"
-    case "important":
-      return "Important"
-    case "warning":
-      return "Warning"
-    case "caution":
-      return "Caution"
-  }
-}
+/**
+ * Host-like input without a scheme, including an optional path, query, or hash.
+ * Used to distinguish bare domains from ambiguous relative segments.
+ */
+const BARE_HOST =
+  /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?::\d{1,5})?(?:[/?#].*)?$/i
 
-function defaultIsValidHref(href: string): boolean {
-  try {
-    const url = new URL(href)
-    return url.protocol === "http:" || url.protocol === "https:" || url.protocol === "mailto:"
-  } catch {
-    return false
+/**
+ * Resolve a link field value to a storeable href.
+ * Safety always requires isSafeHref. Format policy accepts absolute http,
+ * https, and mailto URLs with a real target, rooted relatives that start with
+ * /, #, or ?, and bare hosts which are promoted to https://.
+ */
+function resolveToolbarHref(
+  raw: string,
+  isValidHref: (href: string) => boolean = isSafeHref
+): string | null {
+  const value = raw.trim()
+  if (!value) return null
+
+  let candidate = value
+  const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(value)
+
+  if (schemeMatch) {
+    const scheme = schemeMatch[1]!.toLowerCase()
+    if (scheme === "http" || scheme === "https") {
+      try {
+        const url = new URL(value)
+        if (!url.hostname) return null
+      } catch {
+        return null
+      }
+    } else if (scheme === "mailto") {
+      if (value.slice(schemeMatch[0].length).trim() === "") return null
+    }
+  } else if (/^[/#?]/.test(value)) {
+    candidate = value
+  } else if (BARE_HOST.test(value)) {
+    candidate = `https://${value}`
+  } else {
+    return null
   }
+
+  if (!isSafeHref(candidate)) return null
+  if (!isValidHref(candidate)) return null
+  return candidate
 }
 
 function ToolbarTooltip({
@@ -199,12 +228,18 @@ function FormatToolbar({
   locked,
   onLockedEditAttempt,
   className,
-  isValidHref = defaultIsValidHref,
-  calloutLabel = defaultCalloutLabel,
+  isValidHref = isSafeHref,
+  calloutLabel: calloutLabelProp,
 }: FormatToolbarProps) {
+  const s = useDfStrings()
+  const calloutLabel =
+    calloutLabelProp ??
+    ((type: FormatToolbarCalloutType) => dfFormatToolbarCalloutLabel(s, type))
   const [, setTick] = React.useState(0)
   const [linkOpen, setLinkOpen] = React.useState(false)
-  const [linkHref, setLinkHref] = React.useState("https://")
+  const [linkHref, setLinkHref] = React.useState(
+    () => s.formatToolbarLinkPlaceholder
+  )
   const [calloutOpen, setCalloutOpen] = React.useState(false)
 
   React.useEffect(() => {
@@ -231,8 +266,8 @@ function FormatToolbar({
 
   const applyLink = () => {
     if (editLocked) return
-    const href = linkHref.trim()
-    if (!href || !isValidHref(href)) return
+    const href = resolveToolbarHref(linkHref, isValidHref)
+    if (href == null) return
     controller.setLink(href)
     setLinkOpen(false)
   }
@@ -242,6 +277,8 @@ function FormatToolbar({
     controller.unsetLink()
     setLinkOpen(false)
   }
+
+  const canApplyLink = resolveToolbarHref(linkHref, isValidHref) != null
 
   return (
     <div
@@ -259,7 +296,7 @@ function FormatToolbar({
       }}
     >
       <ToolbarButton
-        label="Heading 1"
+        label={s.formatToolbarHeading1}
         active={controller.isActive("heading", { level: 1 })}
         disabled={blockDisabled}
         locked={editLocked}
@@ -268,7 +305,7 @@ function FormatToolbar({
         <Heading1 className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Heading 2"
+        label={s.formatToolbarHeading2}
         active={controller.isActive("heading", { level: 2 })}
         disabled={blockDisabled}
         locked={editLocked}
@@ -277,7 +314,7 @@ function FormatToolbar({
         <Heading2 className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Heading 3"
+        label={s.formatToolbarHeading3}
         active={controller.isActive("heading", { level: 3 })}
         disabled={blockDisabled}
         locked={editLocked}
@@ -289,7 +326,7 @@ function FormatToolbar({
       <ToolbarDivider />
 
       <ToolbarButton
-        label="Bold"
+        label={s.formatToolbarBold}
         active={controller.isActive("bold")}
         disabled={busy}
         locked={editLocked}
@@ -298,7 +335,7 @@ function FormatToolbar({
         <Bold className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Italic"
+        label={s.formatToolbarItalic}
         active={controller.isActive("italic")}
         disabled={busy}
         locked={editLocked}
@@ -307,7 +344,7 @@ function FormatToolbar({
         <Italic className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Strikethrough"
+        label={s.formatToolbarStrikethrough}
         active={controller.isActive("strike")}
         disabled={busy}
         locked={editLocked}
@@ -316,7 +353,7 @@ function FormatToolbar({
         <Strikethrough className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Inline code"
+        label={s.formatToolbarInlineCode}
         active={controller.isActive("inlineCode")}
         disabled={busy}
         locked={editLocked}
@@ -325,7 +362,7 @@ function FormatToolbar({
         <Code className="size-4" />
       </ToolbarButton>
 
-      <ToolbarTooltip label="Link">
+      <ToolbarTooltip label={s.formatToolbarLink}>
         <Popover
           open={editLocked ? false : linkOpen}
           onOpenChange={(open) => {
@@ -339,7 +376,7 @@ function FormatToolbar({
             setLinkHref(
               typeof previous === "string" && previous.length > 0
                 ? previous
-                : "https://"
+                : s.formatToolbarLinkPlaceholder
             )
           }}
         >
@@ -350,7 +387,7 @@ function FormatToolbar({
                 variant={controller.isActive("link") ? "secondary" : "ghost"}
                 size="icon-sm"
                 disabled={busy}
-                aria-label="Link"
+                aria-label={s.formatToolbarLink}
                 aria-pressed={controller.isActive("link")}
               >
                 <Link2 className="size-4" />
@@ -363,12 +400,14 @@ function FormatToolbar({
             className="rounded-xl border border-border bg-card p-3 shadow-[var(--df-shadow-panel)]"
             style={{ width: "var(--df-popover-width-safe)" }}
           >
-            <p className="mb-2 text-xs font-medium text-foreground">Link URL</p>
+            <p className="mb-2 text-xs font-medium text-foreground">
+              {s.formatToolbarLinkUrl}
+            </p>
             <Input
               size="sm"
               value={linkHref}
               onChange={(event) => setLinkHref(event.target.value)}
-              placeholder="https://"
+              placeholder={s.formatToolbarLinkPlaceholder}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault()
@@ -385,16 +424,16 @@ function FormatToolbar({
                 disabled={!controller.isActive("link")}
                 onClick={removeLink}
               >
-                Remove
+                {s.formatToolbarLinkRemove}
               </Button>
               <Button
                 type="button"
                 size="sm"
                 className="min-w-0 flex-1"
-                disabled={!isValidHref(linkHref.trim())}
+                disabled={!canApplyLink}
                 onClick={applyLink}
               >
-                Apply
+                {s.formatToolbarLinkApply}
               </Button>
             </div>
           </PopoverContent>
@@ -404,7 +443,7 @@ function FormatToolbar({
       <ToolbarDivider />
 
       <ToolbarButton
-        label="Bullet list"
+        label={s.formatToolbarBulletList}
         active={controller.isActive("bulletList")}
         disabled={blockDisabled}
         locked={editLocked}
@@ -413,7 +452,7 @@ function FormatToolbar({
         <List className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Ordered list"
+        label={s.formatToolbarOrderedList}
         active={controller.isActive("orderedList")}
         disabled={blockDisabled}
         locked={editLocked}
@@ -422,7 +461,7 @@ function FormatToolbar({
         <ListOrdered className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Task list"
+        label={s.formatToolbarTaskList}
         active={controller.isActive("taskList")}
         disabled={blockDisabled}
         locked={editLocked}
@@ -434,7 +473,7 @@ function FormatToolbar({
       <ToolbarDivider />
 
       <ToolbarButton
-        label="Blockquote"
+        label={s.formatToolbarBlockquote}
         active={controller.isActive("blockquote")}
         disabled={blockDisabled}
         locked={editLocked}
@@ -443,7 +482,7 @@ function FormatToolbar({
         <Quote className="size-4" />
       </ToolbarButton>
 
-      <ToolbarTooltip label="Callout">
+      <ToolbarTooltip label={s.formatToolbarCallout}>
         <Popover
           open={editLocked || inTable ? false : calloutOpen}
           onOpenChange={(open) => {
@@ -461,7 +500,7 @@ function FormatToolbar({
                 variant={controller.isActive("callout") ? "secondary" : "ghost"}
                 size="icon-sm"
                 disabled={blockDisabled}
-                aria-label="Callout"
+                aria-label={s.formatToolbarCallout}
                 aria-pressed={controller.isActive("callout")}
               >
                 <MessageSquareWarning className="size-4" />
@@ -484,7 +523,7 @@ function FormatToolbar({
                 setCalloutOpen(false)
               }}
             >
-              None
+              {s.formatToolbarCalloutNone}
             </Button>
             {FORMAT_TOOLBAR_CALLOUT_TYPES.map((type) => (
               <Button
@@ -511,7 +550,7 @@ function FormatToolbar({
       </ToolbarTooltip>
 
       <ToolbarButton
-        label="Code block"
+        label={s.formatToolbarCodeBlock}
         active={controller.isActive("codeBlock")}
         disabled={blockDisabled}
         locked={editLocked}
@@ -520,7 +559,7 @@ function FormatToolbar({
         <SquareCode className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Horizontal rule"
+        label={s.formatToolbarHorizontalRule}
         disabled={busy}
         locked={editLocked}
         onClick={() => controller.insertHorizontalRule()}
@@ -531,7 +570,7 @@ function FormatToolbar({
       <ToolbarDivider />
 
       <ToolbarButton
-        label="Insert table"
+        label={s.formatToolbarInsertTable}
         disabled={busy}
         locked={editLocked}
         onClick={() => controller.insertTable()}
@@ -539,7 +578,7 @@ function FormatToolbar({
         <Table className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Add row"
+        label={s.formatToolbarAddRow}
         disabled={busy || !inTable}
         locked={editLocked}
         onClick={() => controller.addTableRow()}
@@ -547,7 +586,7 @@ function FormatToolbar({
         <BetweenHorizontalEnd className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Add column"
+        label={s.formatToolbarAddColumn}
         disabled={busy || !inTable}
         locked={editLocked}
         onClick={() => controller.addTableColumn()}
@@ -555,7 +594,7 @@ function FormatToolbar({
         <BetweenVerticalEnd className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Delete row"
+        label={s.formatToolbarDeleteRow}
         disabled={busy || !inTable}
         locked={editLocked}
         onClick={() => controller.deleteTableRow()}
@@ -563,7 +602,7 @@ function FormatToolbar({
         <TableRowsSplit className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Delete column"
+        label={s.formatToolbarDeleteColumn}
         disabled={busy || !inTable}
         locked={editLocked}
         onClick={() => controller.deleteTableColumn()}
@@ -571,7 +610,7 @@ function FormatToolbar({
         <TableColumnsSplit className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Delete table"
+        label={s.formatToolbarDeleteTable}
         disabled={busy || !inTable}
         locked={editLocked}
         onClick={() => controller.deleteTable()}
@@ -582,4 +621,4 @@ function FormatToolbar({
   )
 }
 
-export { FormatToolbar }
+export { FormatToolbar, resolveToolbarHref }

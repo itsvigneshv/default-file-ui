@@ -93,11 +93,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles on the host."
-          },
-          {
-            "name": "…HTML attributes",
-            "type": "HTMLAttributes<HTMLDivElement>",
-            "description": "Standard element attributes. Set aria-label when the mark is meaningful to assistive tech."
           }
         ]
       },

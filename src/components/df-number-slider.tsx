@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { Label } from "./df-label"
 import { Slider, type SliderThickness, type SliderVariant } from "./df-slider"
 
@@ -26,12 +28,15 @@ function NumberSlider({
   thickness = "md",
   variant = "bar",
 }: NumberSliderProps) {
+  const labelId = React.useId()
   const digits = step >= 1 ? 0 : step >= 0.1 ? 1 : 2
   const bounded = Math.min(max, Math.max(min, value))
 
   return (
     <div className="flex flex-col gap-2">
       <Label
+        id={labelId}
+        as="div"
         className="text-xs text-muted-foreground"
         trailing={
           <span className="font-mono text-11">{bounded.toFixed(digits)}</span>
@@ -46,6 +51,7 @@ function NumberSlider({
         thickness={thickness}
         variant={variant}
         value={[bounded]}
+        aria-labelledby={labelId}
         onValueChange={(next) => {
           const v = Array.isArray(next) ? next[0] : next
           if (typeof v === "number") onChange(v)

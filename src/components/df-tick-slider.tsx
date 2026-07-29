@@ -2,7 +2,12 @@
 
 import * as React from "react"
 
-import { useControllableState } from "../hooks"
+import {
+  useControllableState,
+  useDragGesture,
+  useIsomorphicLayoutEffect,
+  useLatestRef,
+} from "../hooks"
 import { playUiTick, resumeUiTickAudio } from "../lib/df-tick-sound"
 import { cn } from "../lib/utils"
 
@@ -211,14 +216,18 @@ function TickSlider({
   const trackRef = React.useRef<HTMLDivElement>(null)
   const bubbleRef = React.useRef<HTMLSpanElement>(null)
   const shellLabelTextRef = React.useRef<HTMLSpanElement>(null)
-  const currentRef = React.useRef(current)
-  const [bubbleShift, setBubbleShift] = React.useState(0)
-  const [shellLabelTickRange, setShellLabelTickRange] = React.useState<{
-    start: number
-    end: number
-  } | null>(null)
-
-  currentRef.current = current
+  const currentRef = useLatestRef(current)
+  const { begin: beginDrag } = useDragGesture()
+  const [measuredBubbleShift, setMeasuredBubbleShift] = React.useState(0)
+  const [measuredShellLabelTickRange, setMeasuredShellLabelTickRange] =
+    React.useState<{
+      start: number
+      end: number
+    } | null>(null)
+  const bubbleShift = showValueBubble ? measuredBubbleShift : 0
+  const shellLabelTickRange = showShellLabel
+    ? measuredShellLabelTickRange
+    : null
 
   const commitValue = React.useCallback(
     (next: number) => {
@@ -228,7 +237,7 @@ function TickSlider({
       }
       setValue(snapped)
     },
-    [max, min, setValue, step, tickSound]
+    [currentRef, max, min, setValue, step, tickSound]
   )
 
   const commit = React.useCallback(
@@ -241,18 +250,15 @@ function TickSlider({
     [commitValue, max, min]
   )
 
-  React.useLayoutEffect(() => {
-    if (!showValueBubble) {
-      setBubbleShift(0)
-      return
-    }
+  useIsomorphicLayoutEffect(() => {
+    if (!showValueBubble) return
 
     const updateShift = () => {
       const shell = shellRef.current
       const track = trackRef.current
       const bubble = bubbleRef.current
       if (!shell || !track || !bubble) {
-        setBubbleShift(0)
+        setMeasuredBubbleShift(0)
         return
       }
 
@@ -260,7 +266,7 @@ function TickSlider({
       const trackRect = track.getBoundingClientRect()
       const bubbleWidth = bubble.offsetWidth
       if (bubbleWidth <= 0 || trackRect.width <= 0) {
-        setBubbleShift(0)
+        setMeasuredBubbleShift(0)
         return
       }
 
@@ -272,7 +278,7 @@ function TickSlider({
       } else if (naturalLeft + bubbleWidth > shellRect.right) {
         shift = shellRect.right - (naturalLeft + bubbleWidth)
       }
-      setBubbleShift(shift)
+      setMeasuredBubbleShift(shift)
     }
 
     updateShift()
@@ -284,28 +290,25 @@ function TickSlider({
     return () => observer.disconnect()
   }, [displayValue, pct, showValueBubble, bubbleLeading, resolvedBubbleSide])
 
-  React.useLayoutEffect(() => {
-    if (!showShellLabel) {
-      setShellLabelTickRange(null)
-      return
-    }
+  useIsomorphicLayoutEffect(() => {
+    if (!showShellLabel) return
 
     const updateTickRange = () => {
       const track = trackRef.current
       const labelText = shellLabelTextRef.current
       if (!track || !labelText) {
-        setShellLabelTickRange(null)
+        setMeasuredShellLabelTickRange(null)
         return
       }
 
       const trackRect = track.getBoundingClientRect()
       const labelRect = labelText.getBoundingClientRect()
       if (trackRect.width <= 0 || labelRect.width <= 0) {
-        setShellLabelTickRange(null)
+        setMeasuredShellLabelTickRange(null)
         return
       }
 
-      setShellLabelTickRange({
+      setMeasuredShellLabelTickRange({
         start: clamp((labelRect.left - trackRect.left) / trackRect.width, 0, 1),
         end: clamp((labelRect.right - trackRect.left) / trackRect.width, 0, 1),
       })
@@ -326,15 +329,12 @@ function TickSlider({
     if (disabled) return
     if (tickSound) resumeUiTickAudio()
     const track = event.currentTarget
-    track.setPointerCapture(event.pointerId)
     commit(event.clientX, track)
-    const move = (e: PointerEvent) => commit(e.clientX, track)
-    const up = () => {
-      window.removeEventListener("pointermove", move)
-      window.removeEventListener("pointerup", up)
-    }
-    window.addEventListener("pointermove", move)
-    window.addEventListener("pointerup", up)
+    beginDrag(event, { track }, {
+      onMove: (moveEvent, data) => {
+        commit(moveEvent.clientX, data.track)
+      },
+    })
   }
 
   const onThumbKeyDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {

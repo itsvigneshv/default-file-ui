@@ -4,12 +4,14 @@ export function initialsFromName(name: string): string {
     .trim()
     .split(/\s+/u)
     .filter((part) => part.length > 0)
-  if (parts.length === 0) return "?"
+  const firstPart = parts[0]
+  if (firstPart === undefined) return "?"
   if (parts.length === 1) {
-    const word = parts[0]
-    return Array.from(word).slice(0, 2).join("").toUpperCase()
+    return Array.from(firstPart).slice(0, 2).join("").toUpperCase()
   }
-  const first = Array.from(parts[0])[0] ?? ""
-  const last = Array.from(parts[parts.length - 1])[0] ?? ""
+  const lastPart = parts[parts.length - 1]
+  if (lastPart === undefined) return "?"
+  const first = Array.from(firstPart)[0] ?? ""
+  const last = Array.from(lastPart)[0] ?? ""
   return `${first}${last}`.toUpperCase()
 }

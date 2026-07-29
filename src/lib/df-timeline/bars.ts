@@ -2,9 +2,9 @@ import type { TimelineScale } from "./scale"
 
 export type TimelineBarInput = {
   id: string
-  start?: string
-  due?: string
-  progress?: number
+  start?: string | undefined
+  due?: string | undefined
+  progress?: number | undefined
 }
 
 export type TimelineBarRect = {

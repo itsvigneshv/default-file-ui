@@ -178,7 +178,7 @@
       {
         "id": "contents-nav-item",
         "title": "ContentsNavItem",
-        "description": "Row over List Item. Reads defaults from ContentsNav. Supports asChild and href. Forwards List Item interaction props including disabled and readOnly.",
+        "description": "List Item row for a nav entry. Also accepts List Item chrome props such as padding, gap, fontSize, fills, stroke, and radius. Per-item chrome wins over ContentsNav itemChrome. See List Item.",
         "props": [
           {
             "name": "active",
@@ -222,11 +222,6 @@
             "name": "variant",
             "type": "\"accent\" | \"muted\"",
             "description": "Overrides the ContentsNav itemVariant default."
-          },
-          {
-            "name": "padding / gap / fontSize / radius / fills",
-            "type": "ListItemChromeProps",
-            "description": "All List Item chrome props forward through. Merge over ContentsNav itemChrome. See List Item for the full list including type (fontSize, fontFamily, fontWeight, foreground), fills, stroke (borderWidth, borderColor, borderStyle), and radius."
           }
         ]
       },

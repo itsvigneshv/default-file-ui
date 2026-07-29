@@ -107,18 +107,13 @@
             "name": "style",
             "type": "CSSProperties",
             "description": "Inline styles. Override --df-nav-rail-width, --df-nav-rail-bg, --df-nav-rail-border, --df-nav-rail-fg, --df-nav-rail-item-active-bg, --df-nav-rail-item-active-fg, --df-nav-rail-shadow, --df-nav-rail-shadow-intensity, --df-nav-rail-radius, or --df-nav-rail-item-radius directly."
-          },
-          {
-            "name": "…nav attributes",
-            "type": "HTMLAttributes",
-            "description": "Native nav attributes on the rail root."
           }
         ]
       },
       {
         "id": "nav-rail-item",
         "title": "NavRailItem",
-        "description": "Centered icon with a short label underneath. Pass any icon node. Set active for the current item. Use disabled or hidden for availability. Buttons expose aria-pressed; link hosts via asChild expose aria-current when active.",
+        "description": "Centered icon with a short label underneath. Pass any icon node. Set active for the current item. Use disabled or hidden for availability. When active, button and asChild hosts expose aria-current=\"page\". Disabled items omit the current-page marker.",
         "props": [
           {
             "name": "icon",
@@ -178,11 +173,6 @@
             "name": "style",
             "type": "CSSProperties",
             "description": "Inline styles. Override --df-nav-rail-item-fg, --df-nav-rail-item-active-bg, or --df-nav-rail-item-active-fg directly."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button attributes when asChild is false. With asChild, compatible props merge onto the child."
           }
         ]
       },
@@ -211,11 +201,6 @@
             "name": "style",
             "type": "CSSProperties",
             "description": "Inline styles. Override --df-nav-rail-separator directly."
-          },
-          {
-            "name": "…div attributes",
-            "type": "HTMLAttributes",
-            "description": "Native div attributes on the separator."
           }
         ]
       },

@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { useControllableState } from "../hooks"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type SwitchProps = Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -40,8 +40,11 @@ function Switch({
       data-state={isChecked ? "checked" : "unchecked"}
       disabled={disabled}
       className={cn(className)}
-      onClick={() => setChecked(!isChecked)}
       {...props}
+      onClick={composeEventHandlers(props.onClick, () => {
+        if (disabled) return
+        setChecked(!isChecked)
+      })}
     >
       <span data-df="switch-thumb" />
     </button>

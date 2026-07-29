@@ -113,7 +113,9 @@ export function object<S extends ShapeSchemas>(shape: S): Schema<InferShape<S>> 
     const data: Record<string, unknown> = {}
     const issues: ParseIssue[] = []
     for (const key of Object.keys(shape) as Array<keyof S & string>) {
-      const result = shape[key].safeParse(record[key])
+      const field = shape[key]
+      if (field === undefined) continue
+      const result = field.safeParse(record[key])
       if (!result.ok) {
         for (const issue of result.issues) {
           issues.push({ ...issue, path: [key, ...issue.path] })

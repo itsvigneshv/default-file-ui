@@ -10,6 +10,7 @@ import {
   type RankedCommand,
 } from "../lib/df-command"
 import { useControllableState } from "../hooks"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 import { Dialog, DialogContent } from "./df-dialog"
 import { hasKbdShortcut, Kbd } from "./df-kbd"
@@ -72,14 +73,15 @@ function highlightLabel(label: string, ranges: MatchRange[]): React.ReactNode {
 }
 
 function groupRanked(
-  ranked: RankedCommand<CommandItem>[]
+  ranked: RankedCommand<CommandItem>[],
+  defaultSection: string
 ): Array<{ section: string; items: RankedCommand<CommandItem>[] }> {
   const groups: Array<{ section: string; items: RankedCommand<CommandItem>[] }> =
     []
   const indexBySection = new Map<string, number>()
 
   for (const entry of ranked) {
-    const section = entry.command.section?.trim() || "Commands"
+    const section = entry.command.section?.trim() || defaultSection
     const existing = indexBySection.get(section)
     if (existing == null) {
       indexBySection.set(section, groups.length)
@@ -100,12 +102,14 @@ function CommandPalette({
   source,
   recentIds = [],
   onRun,
-  placeholder = "Type a command...",
+  placeholder: placeholderProp,
   background,
   emptyContent,
   footer,
   className,
 }: CommandPaletteProps) {
+  const s = useDfStrings()
+  const placeholder = placeholderProp ?? s.commandPalettePlaceholder
   const [isOpen, setOpen] = useControllableState({
     value: open,
     defaultValue: defaultOpen,
@@ -146,7 +150,10 @@ function CommandPalette({
     return rankByQuery(merged, trimmed)
   }, [merged, query, recentIds])
 
-  const groups = React.useMemo(() => groupRanked(ranked), [ranked])
+  const groups = React.useMemo(
+    () => groupRanked(ranked, s.commandPaletteCommands),
+    [ranked, s.commandPaletteCommands]
+  )
   const flatIds = React.useMemo(
     () =>
       ranked
@@ -250,7 +257,10 @@ function CommandPalette({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className={cn(className)} aria-label="Command palette">
+      <DialogContent
+        className={cn(className)}
+        aria-label={s.commandPaletteAriaLabel}
+      >
         <div data-df="command-palette">
           <div data-df="command-palette-search">
             <SearchInput
@@ -276,13 +286,13 @@ function CommandPalette({
             {loading ? (
               <div data-df="command-palette-loading" role="status">
                 <Spinner size="sm" aria-hidden />
-                <span>Searching</span>
+                <span>{s.commandPaletteSearching}</span>
               </div>
             ) : null}
 
             {!loading && ranked.length === 0 ? (
               <div data-df="command-palette-empty" role="status">
-                {emptyContent ?? "No commands found"}
+                {emptyContent ?? s.commandPaletteEmpty}
               </div>
             ) : null}
 
@@ -291,7 +301,7 @@ function CommandPalette({
                 id={listId}
                 role="listbox"
                 data-df="command-palette-list"
-                aria-label="Commands"
+                aria-label={s.commandPaletteCommands}
               >
                 {groups.map((group) => (
                   <div
@@ -357,9 +367,16 @@ function CommandPalette({
           <div data-df="command-palette-footer">
             {footer ?? (
               <>
-                <span>Up Down navigate</span>
-                <span>Enter run</span>
-                <span>Esc close</span>
+                <span>
+                  <Kbd size="sm">↑</Kbd>
+                  <Kbd size="sm">↓</Kbd> {s.commandPaletteNavigate}
+                </span>
+                <span>
+                  <Kbd size="sm">↵</Kbd> {s.commandPaletteRun}
+                </span>
+                <span>
+                  <Kbd size="sm">Esc</Kbd> {s.commandPaletteClose}
+                </span>
               </>
             )}
           </div>

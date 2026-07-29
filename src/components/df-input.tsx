@@ -3,7 +3,7 @@
 import * as React from "react"
 import { ChevronDown, ChevronUp, X } from "lucide-react"
 
-import { useControllableState } from "../hooks"
+import { useControllableState, useIsomorphicLayoutEffect } from "../hooks"
 import {
   dfCornerShapeStyle,
   type DfCornerShape,
@@ -17,7 +17,8 @@ import {
   hasResolvedPadding,
   resolvePaddingSides,
 } from "../lib/padding-chrome"
-import { cn } from "../lib/utils"
+import { useDfStrings } from "../lib/df-intl"
+import { cn, composeEventHandlers } from "../lib/utils"
 import { Label, type LabelInsetAlign } from "./df-label"
 
 type InputVariant = "primary" | "secondary"
@@ -58,27 +59,27 @@ type InputProps = Omit<
   labelTrailing?: React.ReactNode
   labelInsetAlign?: LabelInsetAlign
   labelInsetSize?: string
-  labelColor?: string
-  background?: string
-  borderColor?: string
-  borderWidth?: InputBorderWidth
-  hoverBorder?: boolean
-  hoverBorderColor?: string
-  foreground?: string
-  placeholderColor?: string
-  hint?: React.ReactNode
-  hintColor?: string
-  focusVariant?: InputFocusVariant
-  focusBorderColor?: string
-  invalid?: boolean
-  invalidLabel?: boolean
-  errorBorderColor?: string
-  errorLabelColor?: string
-  radius?: InputRadius
-  cornerShape?: DfCornerShape
-  leadingIcon?: React.ReactNode
-  trailingIcon?: React.ReactNode
-  clearable?: boolean
+  labelColor?: string | undefined
+  background?: string | undefined
+  borderColor?: string | undefined
+  borderWidth?: InputBorderWidth | undefined
+  hoverBorder?: boolean | undefined
+  hoverBorderColor?: string | undefined
+  foreground?: string | undefined
+  placeholderColor?: string | undefined
+  hint?: React.ReactNode | undefined
+  hintColor?: string | undefined
+  focusVariant?: InputFocusVariant | undefined
+  focusBorderColor?: string | undefined
+  invalid?: boolean | undefined
+  invalidLabel?: boolean | undefined
+  errorBorderColor?: string | undefined
+  errorLabelColor?: string | undefined
+  radius?: InputRadius | undefined
+  cornerShape?: DfCornerShape | undefined
+  leadingIcon?: React.ReactNode | undefined
+  trailingIcon?: React.ReactNode | undefined
+  clearable?: boolean | undefined
   onClear?: () => void
   prefix?: React.ReactNode
   suffix?: React.ReactNode
@@ -226,6 +227,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) {
+    const s = useDfStrings()
     const reactId = React.useId()
     const inputId = idProp ?? `df-input-${reactId}`
     const hintId = hint != null ? `df-input-hint-${reactId}` : undefined
@@ -291,7 +293,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       setDraft(next)
     }
 
-    React.useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       if (!commitOnBlur) return
       const pending = pendingCommitRef.current
       if (pending == null) return
@@ -449,9 +451,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       inputRef.current?.focus()
     }
 
-    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-      onKeyDown?.(event)
-      if (event.defaultPrevented) return
+    function handleKeyDownOurs(event: React.KeyboardEvent<HTMLInputElement>) {
       if (commitOnBlur && event.key === "Enter") {
         event.preventDefault()
         event.currentTarget.blur()
@@ -489,10 +489,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         aria-describedby={describedBy}
         placeholder={hasInsideLabel ? undefined : placeholder}
         value={displayValue}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
         disabled={disabled}
         readOnly={readOnly}
         min={min}
@@ -501,6 +497,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         className={cn("df-input", !needsRoot && !needsField && className)}
         style={shellOwnsChrome ? undefined : surfaceStyle}
         {...props}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onKeyDown={(event) => {
+          composeEventHandlers(onKeyDown, handleKeyDownOurs)(event)
+        }}
       />
     )
 
@@ -570,7 +572,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <button
             type="button"
             data-df="input-clear"
-            aria-label="Clear"
+            aria-label={s.inputClear}
             onMouseDown={(event) => {
               event.preventDefault()
             }}
@@ -586,7 +588,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               type="button"
               data-df="input-stepper-button"
               data-direction="up"
-              aria-label="Increment"
+              aria-label={s.inputIncrement}
               disabled={!canIncrement}
               onMouseDown={(event) => {
                 event.preventDefault()
@@ -599,7 +601,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               type="button"
               data-df="input-stepper-button"
               data-direction="down"
-              aria-label="Decrement"
+              aria-label={s.inputDecrement}
               disabled={!canDecrement}
               onMouseDown={(event) => {
                 event.preventDefault()

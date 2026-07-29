@@ -126,34 +126,34 @@ test("classifyDay marks today, selected, outside, and range preview", () => {
 })
 
 test("moveCalendarFocus handles arrows, week bounds, and month pages", () => {
-  const left = moveCalendarFocus("2026-07-15", "ArrowLeft", "2026-07-01")
+  const left = moveCalendarFocus("2026-07-15", "ArrowLeft", "2026-07-01", 0)
   assert.equal(left?.focusIso, "2026-07-14")
   assert.equal(left?.monthChanged, false)
 
-  const weekStart = moveCalendarFocus("2026-07-15", "Home", "2026-07-01")
+  const weekStart = moveCalendarFocus("2026-07-15", "Home", "2026-07-01", 0)
   assert.equal(weekStart?.focusIso, "2026-07-12")
 
-  const weekEnd = moveCalendarFocus("2026-07-15", "End", "2026-07-01")
+  const weekEnd = moveCalendarFocus("2026-07-15", "End", "2026-07-01", 0)
   assert.equal(weekEnd?.focusIso, "2026-07-18")
 
-  const page = moveCalendarFocus("2026-07-15", "PageUp", "2026-07-01")
+  const page = moveCalendarFocus("2026-07-15", "PageUp", "2026-07-01", 0)
   assert.equal(page?.focusIso, "2026-06-15")
   assert.equal(page?.monthChanged, true)
   assert.equal(page?.monthIso, "2026-06-01")
 
   assert.equal(compareIsoDays("2026-07-01", "2026-07-02"), -1)
-  assert.equal(moveCalendarFocus("2026-07-15", "Enter", "2026-07-01"), null)
+  assert.equal(moveCalendarFocus("2026-07-15", "Enter", "2026-07-01", 0), null)
 })
 
 test("moveCalendarFocus stays put when arrows hit min or max", () => {
-  const atMin = moveCalendarFocus("2026-07-10", "ArrowLeft", "2026-07-01", {
+  const atMin = moveCalendarFocus("2026-07-10", "ArrowLeft", "2026-07-01", 0, {
     min: "2026-07-10",
     max: "2026-07-20",
   })
   assert.equal(atMin?.focusIso, "2026-07-10")
   assert.equal(atMin?.monthChanged, false)
 
-  const atMax = moveCalendarFocus("2026-07-20", "ArrowRight", "2026-07-01", {
+  const atMax = moveCalendarFocus("2026-07-20", "ArrowRight", "2026-07-01", 0, {
     min: "2026-07-10",
     max: "2026-07-20",
   })
@@ -162,26 +162,26 @@ test("moveCalendarFocus stays put when arrows hit min or max", () => {
 })
 
 test("moveCalendarFocus skips a disabled day to the next enabled one", () => {
-  const left = moveCalendarFocus("2026-07-15", "ArrowLeft", "2026-07-01", {
+  const left = moveCalendarFocus("2026-07-15", "ArrowLeft", "2026-07-01", 0, {
     disabledDates: (day) => day === "2026-07-14",
   })
   assert.equal(left?.focusIso, "2026-07-13")
 
-  const right = moveCalendarFocus("2026-07-15", "ArrowRight", "2026-07-01", {
+  const right = moveCalendarFocus("2026-07-15", "ArrowRight", "2026-07-01", 0, {
     disabledDates: (day) => day === "2026-07-16",
   })
   assert.equal(right?.focusIso, "2026-07-17")
 })
 
 test("moveCalendarFocus PageUp/PageDown resolve disabled landing days", () => {
-  const pageUp = moveCalendarFocus("2026-07-15", "PageUp", "2026-07-01", {
+  const pageUp = moveCalendarFocus("2026-07-15", "PageUp", "2026-07-01", 0, {
     disabledDates: (day) => day === "2026-06-15",
   })
   assert.equal(pageUp?.focusIso, "2026-06-14")
   assert.equal(pageUp?.monthChanged, true)
   assert.equal(pageUp?.monthIso, "2026-06-01")
 
-  const pageDown = moveCalendarFocus("2026-07-15", "PageDown", "2026-07-01", {
+  const pageDown = moveCalendarFocus("2026-07-15", "PageDown", "2026-07-01", 0, {
     disabledDates: (day) => day === "2026-08-15",
   })
   assert.equal(pageDown?.focusIso, "2026-08-16")
@@ -191,15 +191,24 @@ test("moveCalendarFocus PageUp/PageDown resolve disabled landing days", () => {
 
 test("moveCalendarFocus Home/End clamp within the week for bounds", () => {
   // Week of 2026-07-15 is Sun 12 through Sat 18.
-  const home = moveCalendarFocus("2026-07-15", "Home", "2026-07-01", {
+  const home = moveCalendarFocus("2026-07-15", "Home", "2026-07-01", 0, {
     min: "2026-07-14",
   })
   assert.equal(home?.focusIso, "2026-07-14")
 
-  const end = moveCalendarFocus("2026-07-15", "End", "2026-07-01", {
+  const end = moveCalendarFocus("2026-07-15", "End", "2026-07-01", 0, {
     max: "2026-07-16",
   })
   assert.equal(end?.focusIso, "2026-07-16")
+})
+
+test("moveCalendarFocus Home/End respect weekStartsOn", () => {
+  // 2026-07-15 is Wednesday. Monday-start week is Mon 13 through Sun 19.
+  const home = moveCalendarFocus("2026-07-15", "Home", "2026-07-01", 1)
+  assert.equal(home?.focusIso, "2026-07-13")
+
+  const end = moveCalendarFocus("2026-07-15", "End", "2026-07-01", 1)
+  assert.equal(end?.focusIso, "2026-07-19")
 })
 
 test("applyBoundedRangeClick rejects disabled and out-of-range days", () => {

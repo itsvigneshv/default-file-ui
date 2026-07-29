@@ -1,4 +1,5 @@
 import { addUtcDays, formatUtcDate, startOfUtcDay } from "../df-date/index"
+import { offsetFromWeekStart } from "../df-calendar-grid/index"
 
 import {
   compareIsoDays,
@@ -61,8 +62,9 @@ function toMove(
 }
 
 /**
- * Move roving focus across a Sunday start month grid.
- * Arrow keys step by day or week; Home/End bound the week;
+ * Move roving focus across a month grid.
+ * Arrow keys step by day or week; Home/End bound the week for `weekStartsOn`
+ * (0=Sunday through 6=Saturday; required, not guessed);
  * PageUp/PageDown shift the UTC month while preserving day of month.
  * Disabled and out of range days are skipped in the travel direction.
  */
@@ -70,6 +72,7 @@ export function moveCalendarFocus(
   focusIso: string,
   key: string,
   visibleMonthIso: string,
+  weekStartsOn: number,
   bounds: DayBounds = {}
 ): CalendarFocusMove | null {
   const direction = directionForKey(key)
@@ -94,15 +97,15 @@ export function moveCalendarFocus(
       candidate = formatUtcDate(addUtcDays(focus, 7))
       break
     case "Home": {
-      const weekday = focus.getUTCDay()
-      candidate = formatUtcDate(addUtcDays(focus, -weekday))
-      limitIso = formatUtcDate(addUtcDays(focus, 6 - weekday))
+      const fromStart = offsetFromWeekStart(focus.getUTCDay(), weekStartsOn)
+      candidate = formatUtcDate(addUtcDays(focus, -fromStart))
+      limitIso = formatUtcDate(addUtcDays(focus, 6 - fromStart))
       break
     }
     case "End": {
-      const weekday = focus.getUTCDay()
-      candidate = formatUtcDate(addUtcDays(focus, 6 - weekday))
-      limitIso = formatUtcDate(addUtcDays(focus, -weekday))
+      const fromStart = offsetFromWeekStart(focus.getUTCDay(), weekStartsOn)
+      candidate = formatUtcDate(addUtcDays(focus, 6 - fromStart))
+      limitIso = formatUtcDate(addUtcDays(focus, -fromStart))
       break
     }
     case "PageUp":

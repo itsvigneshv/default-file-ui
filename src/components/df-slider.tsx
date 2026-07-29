@@ -3,13 +3,14 @@
 import { Minus, Plus } from "lucide-react"
 import * as React from "react"
 
-import { useControllableState } from "../hooks"
+import { useControllableState, useDragGesture } from "../hooks"
 import {
   resumeUiScrubAudio,
   startUiScrub,
   stopUiScrub,
   updateUiScrub,
 } from "../lib/df-scrub-sound"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 import { Button } from "./df-button"
 
@@ -126,7 +127,7 @@ function resolveMarks(
     .sort((a, b) => a.value - b.value)
 }
 
-function snapToMarks(value: number, marks: SliderMark[]): number {
+function snapToMarks(value: number, marks: readonly SliderMark[]): number {
   if (!marks.length) return value
   let best = marks[0]!
   let bestDist = Math.abs(best.value - value)
@@ -141,7 +142,7 @@ function snapToMarks(value: number, marks: SliderMark[]): number {
   return best.value
 }
 
-function markIndex(value: number, marks: SliderMark[]): number {
+function markIndex(value: number, marks: readonly SliderMark[]): number {
   const snapped = snapToMarks(value, marks)
   return Math.max(
     0,
@@ -150,20 +151,24 @@ function markIndex(value: number, marks: SliderMark[]): number {
 }
 
 function normalizePair(
-  values: number[],
+  values: readonly number[],
   min: number,
   max: number,
   step: number,
-  marks: SliderMark[],
+  marks: readonly SliderMark[],
   minStepsBetween: number
-): [number, number] {
+): readonly [number, number] {
   const snap = (v: number) =>
     marks.length
       ? snapToMarks(v, marks)
       : snapToStep(v, min, max, step)
   let a = snap(values[0] ?? min)
   let b = snap(values[1] ?? a)
-  if (a > b) [a, b] = [b, a]
+  if (a > b) {
+    const prevA = a
+    a = b
+    b = prevA
+  }
   if (marks.length && minStepsBetween > 0) {
     const iA = markIndex(a, marks)
     const iB = markIndex(b, marks)
@@ -174,7 +179,7 @@ function normalizePair(
       b = marks[nextB]!.value
     }
   }
-  return [a, b]
+  return [a, b] as const
 }
 
 function rangeFloorFor(
@@ -184,7 +189,7 @@ function rangeFloorFor(
   min: number,
   max: number,
   step: number,
-  marks: SliderMark[],
+  marks: readonly SliderMark[],
   minStepsBetween: number
 ) {
   if (thumbIndex === 0) return min
@@ -207,7 +212,7 @@ function rangeCeilingFor(
   min: number,
   max: number,
   step: number,
-  marks: SliderMark[],
+  marks: readonly SliderMark[],
   minStepsBetween: number
 ) {
   if (thumbIndex === 1) return max
@@ -253,6 +258,7 @@ function Slider({
   ref,
   ...props
 }: SliderProps) {
+  const s = useDfStrings()
   const labelId = React.useId()
   const safeStep = step > 0 ? step : 1
 
@@ -277,6 +283,7 @@ function Slider({
   const [dragPct, setDragPct] = React.useState<number | null>(null)
   const valuesRef = React.useRef(values)
   const activeThumbRef = React.useRef(activeThumb)
+  const { begin: beginDrag } = useDragGesture()
 
   React.useEffect(() => {
     valuesRef.current = values
@@ -307,17 +314,30 @@ function Slider({
     [max, min, resolvedMarks, safeStep, useMarks]
   )
 
-  const single = snapValue(values[0] ?? min)
-  const pair = normalizePair(
-    values,
-    min,
+  const [low, high, single] = React.useMemo(() => {
+    const nextSingle = snapValue(values[0] ?? min)
+    if (!isRange) {
+      return [nextSingle, nextSingle, nextSingle] as const
+    }
+    const pair = normalizePair(
+      values,
+      min,
+      max,
+      safeStep,
+      resolvedMarks,
+      minStepsBetween
+    )
+    return [pair[0], pair[1], nextSingle] as const
+  }, [
+    isRange,
     max,
-    safeStep,
+    min,
+    minStepsBetween,
     resolvedMarks,
-    minStepsBetween
-  )
-  const low = isRange ? pair[0] : single
-  const high = isRange ? pair[1] : single
+    safeStep,
+    snapValue,
+    values,
+  ])
 
   const pctOf = React.useCallback(
     (v: number) => ((v - min) / span) * 100,
@@ -415,9 +435,14 @@ function Slider({
         ariaLabelledBy: resolvedAriaLabelledBy,
       }
     }
-    const role = index === 0 ? "Minimum" : "Maximum"
     return {
-      ariaLabel: baseName ? `${baseName} ${role}` : role,
+      ariaLabel: baseName
+        ? index === 0
+          ? s.sliderMinimumThumb(baseName)
+          : s.sliderMaximumThumb(baseName)
+        : index === 0
+          ? s.sliderMinimum
+          : s.sliderMaximum,
       ariaLabelledBy:
         ariaLabelledBy ??
         (!baseName && label != null ? labelId : undefined),
@@ -544,50 +569,49 @@ function Slider({
     const fromThumb =
       thumbAttr === "0" || thumbAttr === "1" ? Number(thumbAttr) : undefined
     const ratio = ratioFromPointer(event.clientX, event.clientY, track)
-    let dragIndex = pickThumbIndex(ratio, fromThumb)
-    setActiveThumb(dragIndex)
-    track.setPointerCapture(event.pointerId)
+    const data = { dragIndex: pickThumbIndex(ratio, fromThumb) }
+    setActiveThumb(data.dragIndex)
     setDragging(true)
     if (!isRange && !useMarks) setDragPct(ratio * 100)
     if (scrubSound) {
       resumeUiScrubAudio()
       startUiScrub(ratio)
     }
-    commitAtRatio(dragIndex, ratio)
+    commitAtRatio(data.dragIndex, ratio)
 
-    const move = (e: PointerEvent) => {
-      const nextRatio = ratioFromPointer(e.clientX, e.clientY, track)
-      if (isRange) {
-        const [currentLow, currentHigh] = normalizePair(
-          valuesRef.current,
-          min,
-          max,
-          safeStep,
-          resolvedMarks,
-          minStepsBetween
+    beginDrag(event, data, {
+      onMove: (moveEvent, gesture) => {
+        const nextRatio = ratioFromPointer(
+          moveEvent.clientX,
+          moveEvent.clientY,
+          track
         )
-        if (currentLow === currentHigh) {
-          const pointer = min + nextRatio * (max - min)
-          if (pointer < currentLow) dragIndex = 0
-          else if (pointer > currentLow) dragIndex = 1
-          setActiveThumb(dragIndex)
+        if (isRange) {
+          const [currentLow, currentHigh] = normalizePair(
+            valuesRef.current,
+            min,
+            max,
+            safeStep,
+            resolvedMarks,
+            minStepsBetween
+          )
+          if (currentLow === currentHigh) {
+            const pointer = min + nextRatio * (max - min)
+            if (pointer < currentLow) gesture.dragIndex = 0
+            else if (pointer > currentLow) gesture.dragIndex = 1
+            setActiveThumb(gesture.dragIndex)
+          }
         }
-      }
-      if (!isRange && !useMarks) setDragPct(nextRatio * 100)
-      if (scrubSound) updateUiScrub(nextRatio)
-      commitAtRatio(dragIndex, nextRatio)
-    }
-    const end = () => {
-      stopUiScrub()
-      setDragging(false)
-      setDragPct(null)
-      window.removeEventListener("pointermove", move)
-      window.removeEventListener("pointerup", end)
-      window.removeEventListener("pointercancel", end)
-    }
-    window.addEventListener("pointermove", move)
-    window.addEventListener("pointerup", end)
-    window.addEventListener("pointercancel", end)
+        if (!isRange && !useMarks) setDragPct(nextRatio * 100)
+        if (scrubSound) updateUiScrub(nextRatio)
+        commitAtRatio(gesture.dragIndex, nextRatio)
+      },
+      onEnd: () => {
+        stopUiScrub()
+        setDragging(false)
+        setDragPct(null)
+      },
+    })
   }
 
   const moveThumbByMarks = React.useCallback(
@@ -877,7 +901,7 @@ function Slider({
   const stepControlName =
     (typeof label === "string" && label) ||
     (typeof ariaLabel === "string" && ariaLabel) ||
-    "Value"
+    s.sliderValue
 
   const bubbleFor = (text: string) =>
     showBubbleValue ? (
@@ -1091,7 +1115,7 @@ function Slider({
           variant="outline"
           size="icon-sm"
           disabled={!canStepDown}
-          aria-label={`Decrease ${stepControlName}`}
+          aria-label={s.sliderDecrease(stepControlName)}
           onClick={() => nudgeByStep(-1)}
         >
           <Minus aria-hidden="true" />
@@ -1116,7 +1140,7 @@ function Slider({
           variant="outline"
           size="icon-sm"
           disabled={!canStepUp}
-          aria-label={`Increase ${stepControlName}`}
+          aria-label={s.sliderIncrease(stepControlName)}
           onClick={() => nudgeByStep(1)}
         >
           <Plus aria-hidden="true" />

@@ -7,6 +7,7 @@ import type {
   RoughAnnotationGroup,
 } from "rough-notation/lib/model"
 
+import { useIsomorphicLayoutEffect, useLatestRef } from "../hooks"
 import { cn } from "../lib/utils"
 
 /** Supported annotation shapes drawn around or behind the text. */
@@ -25,23 +26,23 @@ type TextMarkLayer = {
   /** Annotation shape for this layer. */
   kind: TextMarkKind
   /** CSS color; tokens and color-mix resolve at draw time. */
-  color?: string
+  color?: string | undefined
   /** Stroke thickness in CSS pixels. */
-  strokeWidth?: number
+  strokeWidth?: number | undefined
   /** Draw duration in milliseconds. */
-  duration?: number
+  duration?: number | undefined
   /**
    * Extra sketch passes. Higher values look less uniform.
    * Underlines and circles benefit from 2 to 4.
    */
-  iterations?: number
+  iterations?: number | undefined
   /**
    * Inset or grow space around the glyphs in CSS pixels.
    * Raise this to scale circles and boxes outward.
    */
-  padding?: number
+  padding?: number | undefined
   /** Bracket sides when kind is bracket. */
-  brackets?: TextMarkBracketSide | TextMarkBracketSide[]
+  brackets?: TextMarkBracketSide | TextMarkBracketSide[] | undefined
 }
 
 type TextMarkProps = {
@@ -157,8 +158,7 @@ function TextMark({
   const targetRef = React.useRef<HTMLSpanElement>(null)
   const groupRef = React.useRef<RoughAnnotationGroup | null>(null)
   const annotationsRef = React.useRef<RoughAnnotation[]>([])
-  const activeRef = React.useRef(active)
-  activeRef.current = active
+  const activeRef = useLatestRef(active)
 
   const resolvedLayers = React.useMemo<TextMarkLayer[]>(() => {
     if (layers && layers.length > 0) return layers
@@ -186,7 +186,7 @@ function TextMark({
 
   const layersKey = JSON.stringify(resolvedLayers)
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const host = hostRef.current
     const target = targetRef.current
     if (!host || !target) return
@@ -280,7 +280,7 @@ function TextMark({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- layersKey is the stable fingerprint
   }, [layersKey, multiline])
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const group = groupRef.current
     const host = hostRef.current
     const target = targetRef.current

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T16:59:31.908Z",
+  "generatedAt": "2026-07-29T18:55:55.234Z",
   "colorSystem": {
     "registryName": "color-system",
     "title": "Color System",
@@ -74,6 +74,25 @@
       "propCount": 45
     },
     {
+      "slug": "avatar",
+      "name": "avatar",
+      "title": "Avatar",
+      "description": "Person mark with photo or initials, optional presence, and a stacked overflow group.",
+      "aliases": [
+        "user avatar",
+        "profile photo",
+        "avatar stack",
+        "Avatar"
+      ],
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-avatar",
+      "dependencies": [],
+      "propCount": 12
+    },
+    {
       "slug": "badge",
       "name": "badge",
       "title": "Badge",
@@ -91,7 +110,7 @@
       ],
       "importPath": "@default-file/ui/components/df-badge",
       "dependencies": [],
-      "propCount": 38
+      "propCount": 28
     },
     {
       "slug": "border-glow",
@@ -135,7 +154,47 @@
       ],
       "importPath": "@default-file/ui/components/df-button",
       "dependencies": [],
-      "propCount": 43
+      "propCount": 42
+    },
+    {
+      "slug": "chart",
+      "name": "chart",
+      "title": "Chart",
+      "description": "Chart frame with optional title, description, toolbar, loading and empty states, plus legend and tooltip helpers.",
+      "aliases": [
+        "chart frame",
+        "plot",
+        "data chart",
+        "legend",
+        "Chart"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-chart",
+      "dependencies": [],
+      "propCount": 17
+    },
+    {
+      "slug": "checkbox",
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "Native checkbox with optional label and description, including indeterminate.",
+      "aliases": [
+        "tick box",
+        "indeterminate checkbox",
+        "Checkbox"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-checkbox",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 13
     },
     {
       "slug": "choice-chip",
@@ -155,7 +214,7 @@
       ],
       "importPath": "@default-file/ui/components/df-choice-chip",
       "dependencies": [],
-      "propCount": 12
+      "propCount": 11
     },
     {
       "slug": "color-picker",
@@ -178,7 +237,52 @@
       ],
       "importPath": "@default-file/ui/components/df-color-picker",
       "dependencies": [],
-      "propCount": 22
+      "propCount": 18
+    },
+    {
+      "slug": "combobox",
+      "name": "combobox",
+      "title": "Combobox",
+      "description": "Filterable text field with an option list, optional async loading, and custom values.",
+      "aliases": [
+        "autocomplete",
+        "typeahead",
+        "filter select",
+        "Combobox"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "option-list"
+      ],
+      "importPath": "@default-file/ui/components/df-combobox",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 20
+    },
+    {
+      "slug": "command-palette",
+      "name": "command-palette",
+      "title": "Command Palette",
+      "description": "Searchable command dialog with ranking, optional async source, and recent ids.",
+      "aliases": [
+        "command menu",
+        "spotlight",
+        "quick actions",
+        "Command Palette"
+      ],
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation",
+        "dialog",
+        "search-input",
+        "spinner",
+        "kbd"
+      ],
+      "importPath": "@default-file/ui/components/df-command-palette",
+      "dependencies": [],
+      "propCount": 21
     },
     {
       "slug": "content-switcher",
@@ -199,7 +303,7 @@
       ],
       "importPath": "@default-file/ui/components/df-content-switcher",
       "dependencies": [],
-      "propCount": 18
+      "propCount": 17
     },
     {
       "slug": "contents-nav",
@@ -223,7 +327,73 @@
       ],
       "importPath": "@default-file/ui/components/df-contents-nav",
       "dependencies": [],
-      "propCount": 43
+      "propCount": 42
+    },
+    {
+      "slug": "context-menu",
+      "name": "context-menu",
+      "title": "Context Menu",
+      "description": "Pointer and keyboard menu with nested submenus and an imperative open helper.",
+      "aliases": [
+        "right click menu",
+        "contextual menu",
+        "Context Menu"
+      ],
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation",
+        "kbd"
+      ],
+      "importPath": "@default-file/ui/components/df-context-menu",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 17
+    },
+    {
+      "slug": "data-grid",
+      "name": "data-grid",
+      "title": "Data Grid",
+      "description": "Virtualized table with resizable columns, selection, and optional cell editing.",
+      "aliases": [
+        "table",
+        "grid",
+        "spreadsheet",
+        "virtual table",
+        "Data Grid"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-data-grid",
+      "dependencies": [
+        "@tanstack/react-virtual"
+      ],
+      "propCount": 23
+    },
+    {
+      "slug": "date-picker",
+      "name": "date-picker",
+      "title": "Date Picker",
+      "description": "Single day and range calendars in a popover, with locale-aware month titles and week start.",
+      "aliases": [
+        "calendar",
+        "date range",
+        "range picker",
+        "Date Picker"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "popover",
+        "input"
+      ],
+      "importPath": "@default-file/ui/components/df-date-picker",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 18
     },
     {
       "slug": "dialog",
@@ -274,7 +444,30 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 73
+      "propCount": 64
+    },
+    {
+      "slug": "drawer",
+      "name": "drawer",
+      "title": "Drawer",
+      "description": "Edge modal sheet with scrim, focus trap, and Escape to close.",
+      "aliases": [
+        "sheet",
+        "side sheet",
+        "bottom sheet",
+        "Drawer"
+      ],
+      "chapter": "overlays",
+      "registryDependencies": [
+        "foundation",
+        "button",
+        "scroll-area"
+      ],
+      "importPath": "@default-file/ui/components/df-drawer",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 19
     },
     {
       "slug": "dropdown-menu",
@@ -300,7 +493,48 @@
       ],
       "importPath": "@default-file/ui/components/df-dropdown-menu",
       "dependencies": [],
-      "propCount": 113
+      "propCount": 151
+    },
+    {
+      "slug": "editor",
+      "name": "editor",
+      "title": "Editor",
+      "description": "Markdown-backed rich text surface with optional static and floating format toolbars.",
+      "aliases": [
+        "markdown editor",
+        "rich text",
+        "contenteditable",
+        "Editor"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "button"
+      ],
+      "importPath": "@default-file/ui/components/df-editor",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 9
+    },
+    {
+      "slug": "empty-state",
+      "name": "empty-state",
+      "title": "Empty State",
+      "description": "Placeholder for missing or filtered results with glyph, title, description, and optional action.",
+      "aliases": [
+        "no results",
+        "blank state",
+        "zero state",
+        "Empty State"
+      ],
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-empty-state",
+      "dependencies": [],
+      "propCount": 6
     },
     {
       "slug": "featured-icon",
@@ -321,7 +555,7 @@
       ],
       "importPath": "@default-file/ui/components/df-featured-icon",
       "dependencies": [],
-      "propCount": 26
+      "propCount": 25
     },
     {
       "slug": "file-uploader",
@@ -348,7 +582,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 38
+      "propCount": 37
     },
     {
       "slug": "floating-controls",
@@ -369,7 +603,7 @@
       ],
       "importPath": "@default-file/ui/components/df-floating-controls",
       "dependencies": [],
-      "propCount": 39
+      "propCount": 47
     },
     {
       "slug": "format-toolbar",
@@ -397,7 +631,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 35
+      "propCount": 31
     },
     {
       "slug": "input",
@@ -423,7 +657,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 108
+      "propCount": 92
     },
     {
       "slug": "kbd",
@@ -443,7 +677,7 @@
       ],
       "importPath": "@default-file/ui/components/df-kbd",
       "dependencies": [],
-      "propCount": 26
+      "propCount": 23
     },
     {
       "slug": "label",
@@ -463,7 +697,7 @@
       ],
       "importPath": "@default-file/ui/components/df-label",
       "dependencies": [],
-      "propCount": 47
+      "propCount": 36
     },
     {
       "slug": "list-item",
@@ -532,7 +766,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 160
+      "propCount": 156
     },
     {
       "slug": "options-panel",
@@ -558,7 +792,7 @@
       ],
       "importPath": "@default-file/ui/components/df-options-panel",
       "dependencies": [],
-      "propCount": 30
+      "propCount": 34
     },
     {
       "slug": "overlay-hint",
@@ -578,7 +812,7 @@
       ],
       "importPath": "@default-file/ui/components/df-overlay-hint",
       "dependencies": [],
-      "propCount": 58
+      "propCount": 53
     },
     {
       "slug": "panel-section",
@@ -619,7 +853,7 @@
       ],
       "importPath": "@default-file/ui/components/df-popover",
       "dependencies": [],
-      "propCount": 121
+      "propCount": 118
     },
     {
       "slug": "progress",
@@ -642,6 +876,24 @@
       "propCount": 10
     },
     {
+      "slug": "radio-group",
+      "name": "radio-group",
+      "title": "Radio Group",
+      "description": "Exclusive native radio group with optional heading and per-item labels.",
+      "aliases": [
+        "radio buttons",
+        "option radios",
+        "Radio Group"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-radio-group",
+      "dependencies": [],
+      "propCount": 19
+    },
+    {
       "slug": "scroll-area",
       "name": "scroll-area",
       "title": "Scroll Area",
@@ -659,7 +911,7 @@
       ],
       "importPath": "@default-file/ui/components/df-scroll-area",
       "dependencies": [],
-      "propCount": 23
+      "propCount": 22
     },
     {
       "slug": "search-input",
@@ -682,7 +934,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 23
+      "propCount": 22
     },
     {
       "slug": "select",
@@ -707,7 +959,7 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 178
+      "propCount": 181
     },
     {
       "slug": "separator",
@@ -760,6 +1012,25 @@
         "lucide-react"
       ],
       "propCount": 184
+    },
+    {
+      "slug": "skeleton",
+      "name": "skeleton",
+      "title": "Skeleton",
+      "description": "Decorative loading placeholder shapes. Always aria-hidden; announce busy state on the host.",
+      "aliases": [
+        "loading placeholder",
+        "shimmer",
+        "pulse placeholder",
+        "Skeleton"
+      ],
+      "chapter": "feedback",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-skeleton",
+      "dependencies": [],
+      "propCount": 4
     },
     {
       "slug": "slider",
@@ -822,6 +1093,25 @@
       "propCount": 11
     },
     {
+      "slug": "split",
+      "name": "split",
+      "title": "Split",
+      "description": "Two-pane layout with a keyboard and pointer resizable separator.",
+      "aliases": [
+        "split pane",
+        "resizable panes",
+        "splitter",
+        "Split"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-split",
+      "dependencies": [],
+      "propCount": 10
+    },
+    {
       "slug": "status-dot",
       "name": "status-dot",
       "title": "Status Dot",
@@ -839,7 +1129,7 @@
       ],
       "importPath": "@default-file/ui/components/df-status-dot",
       "dependencies": [],
-      "propCount": 8
+      "propCount": 7
     },
     {
       "slug": "switch",
@@ -859,7 +1149,7 @@
       ],
       "importPath": "@default-file/ui/components/df-switch",
       "dependencies": [],
-      "propCount": 14
+      "propCount": 18
     },
     {
       "slug": "tabs",
@@ -879,7 +1169,29 @@
       ],
       "importPath": "@default-file/ui/components/df-tabs",
       "dependencies": [],
-      "propCount": 40
+      "propCount": 35
+    },
+    {
+      "slug": "tag-input",
+      "name": "tag-input",
+      "title": "Tag Input",
+      "description": "Chip field for a string[] value with suggestions, paste batching, and max tags.",
+      "aliases": [
+        "chips input",
+        "token input",
+        "multi value input",
+        "Tag Input"
+      ],
+      "chapter": "inputs",
+      "registryDependencies": [
+        "foundation",
+        "option-list"
+      ],
+      "importPath": "@default-file/ui/components/df-tag-input",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "propCount": 14
     },
     {
       "slug": "text-mark",
@@ -926,6 +1238,27 @@
       "propCount": 97
     },
     {
+      "slug": "timeline",
+      "name": "timeline",
+      "title": "Timeline",
+      "description": "Virtualized timeline with time-scale bars, dependency paths, and snapped drag edits.",
+      "aliases": [
+        "gantt",
+        "schedule",
+        "bar timeline",
+        "Timeline"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-timeline",
+      "dependencies": [
+        "@tanstack/react-virtual"
+      ],
+      "propCount": 19
+    },
+    {
       "slug": "toast",
       "name": "toast",
       "title": "Toast",
@@ -945,13 +1278,13 @@
       "dependencies": [
         "lucide-react"
       ],
-      "propCount": 75
+      "propCount": 74
     },
     {
       "slug": "toggle-group",
       "name": "toggle-group",
       "title": "Toggle Group",
-      "description": "Grouped single- or multi-select toggles. Prefer Content Switcher for exclusive view modes as segments.",
+      "description": "Grouped toggle buttons with a clearable string[] selection model. Prefer Content Switcher for exclusive view modes as segments.",
       "aliases": [
         "button group",
         "option group",
@@ -985,7 +1318,7 @@
       ],
       "importPath": "@default-file/ui/components/df-nav-rail",
       "dependencies": [],
-      "propCount": 65
+      "propCount": 62
     },
     {
       "slug": "tooltip",
@@ -1005,7 +1338,26 @@
       ],
       "importPath": "@default-file/ui/components/df-tooltip",
       "dependencies": [],
-      "propCount": 29
+      "propCount": 28
+    },
+    {
+      "slug": "widget-grid",
+      "name": "widget-grid",
+      "title": "Widget Grid",
+      "description": "Draggable and resizable widget layout on a CSS grid with keyboard edit affordances.",
+      "aliases": [
+        "dashboard grid",
+        "tile grid",
+        "resizable widgets",
+        "Widget Grid"
+      ],
+      "chapter": "structure",
+      "registryDependencies": [
+        "foundation"
+      ],
+      "importPath": "@default-file/ui/components/df-widget-grid",
+      "dependencies": [],
+      "propCount": 18
     }
   ]
 }

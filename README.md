@@ -187,6 +187,76 @@ Responsive tokens and utilities:
 - Density: host `data-df-density` (`cozy`, `comfortable`, or `compact`) sets `--df-control-height-*`. Related sizes use `--df-affordance-size-*`, `--df-slider-track-height`, `--df-tabs-segment-min-height-*`, and `--df-switch-track-*`. Authors use semantic `size` props (`default` or `md` for mid-size by family). Color-scale `compact` is palette-only.
 - Safe-area: `--df-safe-area-inset-*`. Hosts compose `--df-overlay-inset-top` and `--df-overlay-inset-bottom` with sticky chrome.
 
+## Package imports and local development
+
+Published consumers import compiled modules from `dist/` through the package
+`exports` map (for example `@default-file/ui/components/df-button`). CSS still
+ships from `src/css/` via the same map.
+
+In the UX Tools monorepo, edit the kit under `./default-file-ui` only. From the
+app root, run `npm run df:sync` so `node_modules/@default-file/ui` picks up
+local sources and the kit version. Do not edit the copy under `node_modules`.
+
+## Peer dependencies
+
+Required for component usage: `react` and `react-dom` (`>=18`).
+
+Optional peers (install when you use the matching surface):
+
+| Peer | Used by |
+|---|---|
+| `lucide-react` | Icon props across many components |
+| `rough-notation` | `TextMark` |
+| `@tanstack/react-virtual` | Virtualized lists and grids |
+
+Color-system CSS alone does not require component peers.
+
+## CSS import order
+
+Prefer the kit entry when you want the full stack:
+
+```css
+@import "@default-file/ui/css/df-index.css";
+```
+
+`df-index.css` loads, in order: color system, reset, animations, component
+styles, then utilities.
+
+Color system only:
+
+```css
+@import "@default-file/ui/css/df-color-system.css";
+```
+
+If you compose layers yourself, keep that same order so utilities can override
+component chrome.
+
+## Browser support
+
+Target current evergreen browsers (latest Chrome, Firefox, Safari, and Edge).
+The kit uses modern CSS (including `oklch` color tokens) and ES modules. Node
+for the CLI is `>=18` (`engines`); maintainers use Node `>=22.6` (`devEngines`).
+
+## Server Components and `"use client"`
+
+Most interactive kit components declare `"use client"` at the top of the source
+file. These candidates were scanned and do **not** declare `"use client"`, so
+they can render as Server Components when their imports stay server-safe:
+
+- `badge`
+- `button`
+- `choice-chip`
+- `empty-state`
+- `featured-icon`
+- `overlay-hint`
+- `panel-section`
+- `skeleton`
+- `spectrum-text`
+- `status-dot`
+
+Among the same candidate set, these **do** declare `"use client"` and are not
+server-safe entry points: `chart`, `kbd`, `progress`, `spinner`.
+
 ## License
 
 Licensed under the MIT license.

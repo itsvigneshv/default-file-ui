@@ -141,17 +141,13 @@
             "name": "children",
             "type": "ReactNode",
             "description": "Trigger label."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button props."
           }
         ]
       },
       {
         "id": "tabs-content",
         "title": "TabsContent",
+        "description": "Selected panels are focusable (tabIndex 0). Inactive panels omit the tab stop unless forceMount keeps them mounted with tabIndex unset.",
         "props": [
           {
             "name": "value",
@@ -179,31 +175,8 @@
       {
         "id": "tabs-segment",
         "title": "Segment variant",
-        "description": "Equal width segmented control for compact mode switching. The active chip slides between options with transform animation.",
-        "props": [
-          {
-            "name": "variant",
-            "type": "\"segment\"",
-            "description": "Use on Tabs. List fills available width; triggers share space evenly."
-          },
-          {
-            "name": "size",
-            "type": "\"sm\" | \"default\" | \"lg\"",
-            "default": "\"default\"",
-            "description": "Compact type and padding. Color Picker uses size=\"sm\"."
-          },
-          {
-            "name": "radius",
-            "type": "\"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"full\"",
-            "default": "\"lg\"",
-            "description": "Corner radius for the track and sliding chip. Segment defaults to lg."
-          },
-          {
-            "name": "Animated indicator",
-            "type": "built-in",
-            "description": "TabsList renders a sliding background chip behind the active trigger. Honors prefers-reduced-motion."
-          }
-        ]
+        "description": "Equal width segmented control for compact mode switching. The active chip slides between options with transform animation. Animated indicator (built-in): TabsList renders a sliding background chip behind the active trigger. Honors prefers-reduced-motion.",
+        "props": []
       },
       {
         "id": "tabs-tokens",

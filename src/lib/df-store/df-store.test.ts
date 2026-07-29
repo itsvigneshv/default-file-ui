@@ -15,3 +15,24 @@ test("df-store updates subscribers", () => {
   assert.equal(store.getState().count, 4)
   unsubscribe()
 })
+
+test("df-store strips prototype keys from setState partials", () => {
+  const store = createStore({ count: 1, label: "ok" })
+  const polluted = JSON.parse('{"count": 9, "__proto__": {"polluted": true}}') as {
+    count: number
+    __proto__: { polluted: boolean }
+  }
+  store.setState(polluted)
+  const state = store.getState() as Record<string, unknown>
+  assert.equal(state.count, 9)
+  assert.equal(Object.hasOwn(state, "__proto__"), false)
+  assert.equal(Object.prototype.hasOwnProperty.call(state, "polluted"), false)
+
+  store.setState({
+    constructor: "nope",
+    prototype: "nope",
+  } as Partial<{ count: number; label: string }>)
+  assert.equal(Object.hasOwn(store.getState() as object, "constructor"), false)
+  assert.equal(Object.hasOwn(store.getState() as object, "prototype"), false)
+  assert.equal(store.getState().label, "ok")
+})

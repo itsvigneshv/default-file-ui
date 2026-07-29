@@ -7,6 +7,8 @@ import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
+import { sanitizeSrc } from "../lib/df-url"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 export type FileUploaderBorderStyle = "dashed" | "solid"
@@ -99,6 +101,7 @@ function FileUploader({
   validateFile,
   onReject,
 }: FileUploaderProps) {
+  const s = useDfStrings()
   const inputRef = React.useRef<HTMLInputElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const releaseDialogFocusRef = React.useRef<(() => void) | null>(null)
@@ -109,24 +112,30 @@ function FileUploader({
     titleProp !== undefined
       ? titleProp
       : isTile
-        ? "Add"
-        : "Drop an image here"
+        ? s.fileUploaderAdd
+        : s.fileUploaderDropTitle
   const description =
     descriptionProp !== undefined
       ? descriptionProp
       : isTile
         ? null
-        : "or click to browse. Paste also works."
-  const showContent = !previewSrc
+        : s.fileUploaderDropDescription
+  const safePreviewSrc =
+    previewSrc != null && previewSrc !== "" ? sanitizeSrc(previewSrc) : null
+  const showContent = !safePreviewSrc
 
   const acceptCandidate = React.useCallback(
     (file: File | undefined): file is File => {
       if (!file) {
-        onReject?.(usesDefaultImagePick ? "No image found." : "No file found.")
+        onReject?.(
+          usesDefaultImagePick
+            ? s.fileUploaderNoImage
+            : s.fileUploaderNoFile
+        )
         return false
       }
       if (usesDefaultImagePick && !file.type.startsWith("image/")) {
-        onReject?.("That file type is not supported. Use an image.")
+        onReject?.(s.fileUploaderUnsupportedImage)
         return false
       }
       const message = validateFile?.(file) ?? null
@@ -136,7 +145,7 @@ function FileUploader({
       }
       return true
     },
-    [onReject, usesDefaultImagePick, validateFile]
+    [onReject, s, usesDefaultImagePick, validateFile]
   )
 
   const releaseFileInputFocus = React.useCallback(() => {
@@ -220,7 +229,7 @@ function FileUploader({
       data-shape={isTile ? shape : undefined}
       data-size={isTile ? size : undefined}
       data-corner-shape={cornerShape}
-      data-preview={previewSrc ? "true" : undefined}
+      data-preview={safePreviewSrc ? "true" : undefined}
       data-disabled={disabled ? "true" : undefined}
       className={cn(
         "df-file-uploader relative flex flex-col items-center justify-center text-center text-muted-foreground transition-colors",
@@ -258,8 +267,8 @@ function FileUploader({
           typeof title === "string"
             ? title
             : usesDefaultImagePick
-              ? "Upload image"
-              : "Upload file"
+              ? s.fileUploaderUploadImage
+              : s.fileUploaderUploadFile
         }
         className="absolute inset-0 z-10 cursor-pointer opacity-0"
         onClick={armDialogFocusRelease}
@@ -277,9 +286,9 @@ function FileUploader({
           onFile(file)
         }}
       />
-      {previewSrc ? (
+      {safePreviewSrc ? (
         <img
-          src={previewSrc}
+          src={safePreviewSrc}
           alt=""
           className="df-file-uploader-preview pointer-events-none absolute inset-0 size-full object-cover"
         />

@@ -6,9 +6,9 @@ import {
 } from "../df-date/index"
 
 export type DayBounds = {
-  min?: string | null
-  max?: string | null
-  disabledDates?: ((dayIso: string) => boolean) | null
+  min?: string | null | undefined
+  max?: string | null | undefined
+  disabledDates?: ((dayIso: string) => boolean) | null | undefined
 }
 
 /** Shift a UTC calendar month, clamping the day into the target month. */
@@ -94,7 +94,10 @@ export function resolveNearestEnabledDay(
   candidateIso: string,
   direction: 1 | -1,
   bounds: DayBounds = {},
-  options: { limitIso?: string; fallbackIso?: string } = {}
+  options: {
+    limitIso?: string | undefined
+    fallbackIso?: string | undefined
+  } = {}
 ): string {
   const fallback =
     options.fallbackIso ?? formatUtcDate(startOfUtcDay(candidateIso))

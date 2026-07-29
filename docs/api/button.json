@@ -116,11 +116,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles."
-          },
-          {
-            "name": "…button attributes",
-            "type": "ButtonHTMLAttributes",
-            "description": "Native button props (type, onClick, aria-label, etc.)."
           }
         ]
       },
@@ -235,7 +230,7 @@
             "name": "--df-affordance-size-2xs",
             "type": "CSS length",
             "description": "Glyph size for icon-2xs and plain icon-2xs.",
-            "default": "calc(2.5 * var(--spacing-unit))"
+            "default": "calc(2 * var(--spacing-unit))"
           },
           {
             "name": "--df-press-offset",

@@ -3,8 +3,8 @@
 import * as React from "react"
 import { ChevronDown } from "lucide-react"
 
-import { useControllableState } from "../hooks"
-import { cn } from "../lib/utils"
+import { useControllableState, useIsomorphicLayoutEffect } from "../hooks"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type AccordionType = "single" | "multiple"
 type AccordionVariant = "default" | "ghost" | "separated"
@@ -288,8 +288,6 @@ function Accordion(props: AccordionProps) {
   )
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    onKeyDown?.(event)
-    if (event.defaultPrevented) return
     if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return
     const root = rootRef.current
     if (!root) return
@@ -342,9 +340,11 @@ function Accordion(props: AccordionProps) {
         data-show-dividers={resolvedShowDividers ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         className={cn("flex flex-col", className)}
-        onKeyDown={handleKeyDown}
         {...rootProps}
         style={rootStyle}
+        onKeyDown={(event) => {
+          composeEventHandlers(onKeyDown, handleKeyDown)(event)
+        }}
       >
         {children}
       </div>
@@ -459,7 +459,7 @@ function AccordionTrigger({
     indicator
   )
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setHasLeading(leading != null)
     return () => setHasLeading(false)
   }, [leading, setHasLeading])
@@ -488,13 +488,12 @@ function AccordionTrigger({
         accordionTriggerSizeClass(size),
         className
       )}
-      onClick={(event) => {
-        onClick?.(event)
-        if (event.defaultPrevented || disabled) return
-        toggleItem(value)
-      }}
       {...props}
       style={triggerStyle}
+      onClick={composeEventHandlers(onClick, () => {
+        if (disabled) return
+        toggleItem(value)
+      })}
     >
       <span className={accordionLeadingClusterClass(size)}>
         {leading != null ? (

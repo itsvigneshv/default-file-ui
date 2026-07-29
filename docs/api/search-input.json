@@ -89,11 +89,6 @@
             "name": "className",
             "type": "string",
             "description": "Classes on the outer search shell."
-          },
-          {
-            "name": "…input attributes",
-            "type": "Input attrs (minus size, className)",
-            "description": "value, placeholder, onChange, disabled, aria-label, etc."
           }
         ]
       },

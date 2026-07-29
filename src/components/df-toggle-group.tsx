@@ -2,12 +2,13 @@
 
 import * as React from "react"
 
-import { useControllableState } from "../hooks"
+import { useControllableState, useRovingTabIndex } from "../hooks"
+import type { RovingItemProps } from "../hooks"
 import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type ToggleVariant = "default" | "outline"
 type ToggleSize = "default" | "sm" | "lg"
@@ -28,10 +29,11 @@ type ToggleGroupContextValue = {
   size: ToggleSize
   spacing: number
   orientation: "horizontal" | "vertical"
-  multiple: boolean
   disabled: boolean
   value: string[]
   onItemToggle: (itemValue: string) => void
+  getRovingProps: (itemValue: string) => RovingItemProps | null
+  setActiveForValue: (itemValue: string) => void
 }
 
 const ToggleGroupContext = React.createContext<ToggleGroupContextValue | null>(
@@ -72,6 +74,12 @@ type ToggleGroupProps = Omit<
   defaultValue?: string[]
   onValueChange?: (value: string[]) => void
   disabled?: boolean
+}
+
+function isToggleGroupItemElement(
+  node: React.ReactNode
+): node is React.ReactElement<ToggleGroupItemProps> {
+  return React.isValidElement(node) && node.type === ToggleGroupItem
 }
 
 function ToggleGroup({
@@ -116,6 +124,47 @@ function ToggleGroup({
     setCurrent([itemValue])
   }
 
+  const childArray = React.Children.toArray(children)
+  const itemNodes: React.ReactElement<ToggleGroupItemProps>[] = []
+  for (const child of childArray) {
+    if (isToggleGroupItemElement(child)) itemNodes.push(child)
+  }
+  const itemValues = itemNodes.map((child) => child.props.value)
+
+  const selectedIndex = itemNodes.findIndex((child) =>
+    current.includes(child.props.value)
+  )
+  const defaultRovingIndex =
+    selectedIndex >= 0
+      ? selectedIndex
+      : itemNodes.findIndex((child) => !child.props.disabled)
+
+  const { getItemProps, setActiveIndex } = useRovingTabIndex({
+    count: itemNodes.length,
+    orientation,
+    defaultActiveIndex: defaultRovingIndex >= 0 ? defaultRovingIndex : 0,
+    isItemDisabled: (index) =>
+      Boolean(disabled || itemNodes[index]?.props.disabled),
+  })
+
+  const getRovingProps = React.useCallback(
+    (itemValue: string) => {
+      const index = itemValues.indexOf(itemValue)
+      if (index < 0) return null
+      return getItemProps(index)
+    },
+    [getItemProps, itemValues]
+  )
+
+  const setActiveForValue = React.useCallback(
+    (itemValue: string) => {
+      const index = itemValues.indexOf(itemValue)
+      if (index < 0) return
+      setActiveIndex(index)
+    },
+    [itemValues, setActiveIndex]
+  )
+
   return (
     <ToggleGroupContext.Provider
       value={{
@@ -123,14 +172,15 @@ function ToggleGroup({
         size,
         spacing,
         orientation,
-        multiple,
         disabled,
         value: current,
         onItemToggle,
+        getRovingProps,
+        setActiveForValue,
       }}
     >
       <div
-        role={multiple ? "group" : "radiogroup"}
+        role="group"
         data-df="toggle-group"
         data-variant={variant}
         data-size={size}
@@ -171,6 +221,8 @@ function ToggleGroupItem({
   disabled,
   type = "button",
   onClick,
+  onFocus,
+  onKeyDown,
   ...props
 }: ToggleGroupItemProps) {
   const context = React.useContext(ToggleGroupContext)
@@ -182,12 +234,13 @@ function ToggleGroupItem({
   const itemSize = context.size || size || "default"
   const pressed = context.value.includes(value)
   const isDisabled = Boolean(disabled || context.disabled)
+  const roving = context.getRovingProps(value)
 
   return (
     <button
       type={type}
-      role={context.multiple ? "checkbox" : "radio"}
-      aria-checked={pressed}
+      ref={roving?.ref}
+      tabIndex={context.disabled ? -1 : (roving?.tabIndex ?? -1)}
       aria-pressed={pressed}
       disabled={isDisabled}
       data-df="toggle-group-item"
@@ -202,12 +255,24 @@ function ToggleGroupItem({
         className
       )}
       {...props}
-      onClick={(event) => {
-        onClick?.(event)
-        if (!event.defaultPrevented && !isDisabled) {
+      onFocus={composeEventHandlers(onFocus, (event) => {
+        roving?.onFocus(event)
+      })}
+      onKeyDown={composeEventHandlers(onKeyDown, (event) => {
+        roving?.onKeyDown(event)
+        if (event.defaultPrevented) return
+        if (event.key !== " " && event.key !== "Enter") return
+        if (isDisabled) return
+        event.preventDefault()
+        context.setActiveForValue(value)
+        context.onItemToggle(value)
+      })}
+      onClick={composeEventHandlers(onClick, () => {
+        if (!isDisabled) {
+          context.setActiveForValue(value)
           context.onItemToggle(value)
         }
-      }}
+      })}
     >
       {children}
     </button>

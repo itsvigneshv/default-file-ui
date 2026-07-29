@@ -2,12 +2,14 @@
 
 import * as React from "react"
 
+import { useCssPx, useDragGesture, useLatestRef } from "../hooks"
 import {
   disposeAutoScrollSession,
   prefersReducedMotion,
   startAutoScrollSession,
   type AutoScrollSession,
 } from "../lib/df-dnd"
+import { useDfStrings } from "../lib/df-intl"
 import {
   anchorsFromBars,
   buildTimelineScale,
@@ -91,15 +93,6 @@ type KeyboardDraft = {
   draftDue: string
 }
 
-function readCssPx(token: string, fallback: number): number {
-  if (typeof document === "undefined") return fallback
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(token)
-    .trim()
-  const px = Number.parseFloat(raw)
-  return Number.isFinite(px) && px > 0 ? px : fallback
-}
-
 function resolveBarDates(row: TimelineRow): TimelineBarChange | null {
   if (!row.start && !row.due) return null
   if (row.start && row.due) return { start: row.start, due: row.due }
@@ -107,10 +100,13 @@ function resolveBarDates(row: TimelineRow): TimelineBarChange | null {
   return { start: row.due!, due: row.due! }
 }
 
-function rowAriaName(row: TimelineRow): string {
+function rowAriaName(
+  row: TimelineRow,
+  fallback: string
+): string {
   return typeof row.label === "string" && row.label.trim()
     ? row.label
-    : "Item"
+    : fallback
 }
 
 function Timeline({
@@ -127,32 +123,39 @@ function Timeline({
   onRowClick,
   renderRowMeta,
   style,
-  "aria-label": ariaLabel = "Timeline",
+  "aria-label": ariaLabel,
   ...props
 }: TimelineProps) {
+  const s = useDfStrings()
+  const rootRef = React.useRef<HTMLDivElement>(null)
   const labelScrollRef = React.useRef<HTMLDivElement>(null)
   const gridScrollRef = React.useRef<HTMLDivElement>(null)
   const headerScrollRef = React.useRef<HTMLDivElement>(null)
   const syncingScrollRef = React.useRef(false)
-  const dragSessionRef = React.useRef<PointerDragSession | null>(null)
   const dragPreviewRef = React.useRef<DragPreview | null>(null)
-  const dragCaptureTargetRef = React.useRef<HTMLElement | null>(null)
   const autoScrollSession = React.useRef<AutoScrollSession | null>(null)
+  const barDrag = useDragGesture()
 
   const [liveMessage, setLiveMessage] = React.useState("")
-  const [activePointerDrag, setActivePointerDrag] = React.useState(false)
   const [dragPreview, setDragPreview] = React.useState<DragPreview | null>(null)
   const [keyboardDraft, setKeyboardDraft] = React.useState<KeyboardDraft | null>(
     null
   )
 
-  const unitPx = readCssPx("--df-timeline-unit-px", DEFAULT_UNIT_PX)
-  const rowHeight =
-    estimateRowSizeProp ??
-    readCssPx("--df-timeline-row-height", DEFAULT_ROW_HEIGHT)
-  const labelWidth = readCssPx("--df-timeline-label-width", DEFAULT_LABEL_WIDTH)
-  const stubPx = readCssPx("--df-timeline-dependency-stub", 8)
-  const radiusPx = readCssPx("--df-timeline-dependency-radius", 4)
+  const unitPx = useCssPx(rootRef, "--df-timeline-unit-px", DEFAULT_UNIT_PX)
+  const tokenRowHeight = useCssPx(
+    rootRef,
+    "--df-timeline-row-height",
+    DEFAULT_ROW_HEIGHT
+  )
+  const rowHeight = estimateRowSizeProp ?? tokenRowHeight
+  const labelWidth = useCssPx(
+    rootRef,
+    "--df-timeline-label-width",
+    DEFAULT_LABEL_WIDTH
+  )
+  const stubPx = useCssPx(rootRef, "--df-timeline-dependency-stub", 8)
+  const radiusPx = useCssPx(rootRef, "--df-timeline-dependency-radius", 4)
 
   const scale = React.useMemo(
     () =>
@@ -287,32 +290,18 @@ function Timeline({
     setDragPreview(next)
   }, [])
 
-  const endPointerDrag = React.useCallback(() => {
-    const session = dragSessionRef.current
-    if (!session) return null
-    const preview = dragPreviewRef.current
-    const target = dragCaptureTargetRef.current
-    if (target?.hasPointerCapture?.(session.pointerId)) {
-      target.releasePointerCapture(session.pointerId)
-    }
-    dragCaptureTargetRef.current = null
-    dragSessionRef.current = null
-    updateDragPreview(null)
-    setActivePointerDrag(false)
-    stopAutoScroll()
-    return { session, preview }
-  }, [stopAutoScroll, updateDragPreview])
-
   const commitBarChange = React.useCallback(
     (rowId: string, next: TimelineBarChange, origin: TimelineBarChange) => {
       if (next.start === origin.start && next.due === origin.due) {
-        announce("Bar unchanged")
+        announce(s.timelineBarUnchanged)
         return
       }
       onBarChange?.(rowId, next)
-      announce(`Updated ${formatTimelineDateRange(next.start, next.due)}`)
+      announce(
+        s.timelineUpdated(formatTimelineDateRange(next.start, next.due))
+      )
     },
-    [announce, onBarChange]
+    [announce, onBarChange, s]
   )
 
   const applyPointerDelta = React.useCallback(
@@ -361,68 +350,14 @@ function Timeline({
     [scale, updateDragPreview]
   )
 
-  React.useEffect(() => {
-    if (!activePointerDrag) return
-    const session = dragSessionRef.current
-    if (!session) return
-
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerId !== session.pointerId) return
-      autoScrollSession.current?.updatePointer(event.clientX, event.clientY)
-      applyPointerDelta(session, event.clientX)
-    }
-
-    const finish = (event: PointerEvent, cancelled: boolean) => {
-      if (event.pointerId !== session.pointerId) return
-      const ended = endPointerDrag()
-      if (!ended) return
-      if (
-        cancelled ||
-        !ended.preview ||
-        ended.preview.rowId !== ended.session.rowId
-      ) {
-        announce("Bar drag cancelled")
-        return
-      }
-      commitBarChange(
-        ended.session.rowId,
-        { start: ended.preview.start, due: ended.preview.due },
-        {
-          start: ended.session.originStart,
-          due: ended.session.originDue,
-        }
-      )
-    }
-
-    const onUp = (event: PointerEvent) => finish(event, false)
-    const onCancel = (event: PointerEvent) => finish(event, true)
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return
-      event.preventDefault()
-      const ended = endPointerDrag()
-      if (!ended) return
-      announce("Bar drag cancelled")
-    }
-
-    window.addEventListener("pointermove", onMove)
-    window.addEventListener("pointerup", onUp)
-    window.addEventListener("pointercancel", onCancel)
-    window.addEventListener("keydown", onKeyDown)
-    return () => {
-      window.removeEventListener("pointermove", onMove)
-      window.removeEventListener("pointerup", onUp)
-      window.removeEventListener("pointercancel", onCancel)
-      window.removeEventListener("keydown", onKeyDown)
-      stopAutoScroll()
-    }
-  }, [
-    activePointerDrag,
+  const liveRef = useLatestRef({
     announce,
     applyPointerDelta,
     commitBarChange,
-    endPointerDrag,
     stopAutoScroll,
-  ])
+    updateDragPreview,
+    s,
+  })
 
   const beginPointerDrag = React.useCallback(
     (
@@ -439,7 +374,7 @@ function Timeline({
 
       const originStart = scale.snapDate(dates.start)
       const originDue = scale.snapDate(dates.due)
-      dragSessionRef.current = {
+      const session: PointerDragSession = {
         pointerId: event.pointerId,
         kind,
         rowId: row.id,
@@ -459,21 +394,73 @@ function Timeline({
         translateX: 0,
         widthScale: 1,
       })
-      setActivePointerDrag(true)
       announce(
         kind === "move"
-          ? `Moving bar ${formatTimelineDateRange(originStart, originDue)}`
-          : `Resizing bar ${formatTimelineDateRange(originStart, originDue)}`
+          ? s.timelineMovingBar(
+              formatTimelineDateRange(originStart, originDue)
+            )
+          : s.timelineResizingBar(
+              formatTimelineDateRange(originStart, originDue)
+            )
       )
       stopAutoScroll()
       autoScrollSession.current = startAutoScrollSession({
         axis: "both",
         getContainer: () => gridScrollRef.current,
       })
-      dragCaptureTargetRef.current = event.currentTarget
-      event.currentTarget.setPointerCapture?.(event.pointerId)
+
+      const onKeyDown = (keyEvent: KeyboardEvent) => {
+        if (keyEvent.key !== "Escape") return
+        keyEvent.preventDefault()
+        barDrag.end("cancel")
+      }
+      window.addEventListener("keydown", onKeyDown)
+
+      barDrag.begin(event, session, {
+        onMove: (moveEvent, activeSession) => {
+          autoScrollSession.current?.updatePointer(
+            moveEvent.clientX,
+            moveEvent.clientY
+          )
+          liveRef.current.applyPointerDelta(activeSession, moveEvent.clientX)
+        },
+        onEnd: (_event, activeSession, reason) => {
+          window.removeEventListener("keydown", onKeyDown)
+          const preview = dragPreviewRef.current
+          dragPreviewRef.current = null
+          setDragPreview(null)
+          const live = liveRef.current
+          live.stopAutoScroll()
+          if (
+            reason !== "up" ||
+            !preview ||
+            preview.rowId !== activeSession.rowId
+          ) {
+            if (reason !== "unmount") {
+              live.announce(live.s.timelineBarDragCancelled)
+            }
+            return
+          }
+          live.commitBarChange(
+            activeSession.rowId,
+            { start: preview.start, due: preview.due },
+            {
+              start: activeSession.originStart,
+              due: activeSession.originDue,
+            }
+          )
+        },
+      })
     },
-    [announce, scale, stopAutoScroll, updateDragPreview]
+    [
+      announce,
+      barDrag,
+      liveRef,
+      s,
+      scale,
+      stopAutoScroll,
+      updateDragPreview,
+    ]
   )
 
   const onBarKeyDown = React.useCallback(
@@ -493,7 +480,7 @@ function Timeline({
         if (!keyboardDraft || keyboardDraft.rowId !== row.id) return
         event.preventDefault()
         setKeyboardDraft(null)
-        announce("Bar edit cancelled")
+        announce(s.timelineBarEditCancelled)
         return
       }
 
@@ -541,11 +528,14 @@ function Timeline({
         draftStart: next.start,
         draftDue: next.due,
       })
+      const range = formatTimelineDateRange(next.start, next.due)
       announce(
-        `${kind === "move" ? "Moved" : "Resized"} to ${formatTimelineDateRange(next.start, next.due)}. Press Enter to commit.`
+        kind === "move"
+          ? s.timelineMovedCommit(range)
+          : s.timelineResizedCommit(range)
       )
     },
-    [announce, commitBarChange, keyboardDraft, scale]
+    [announce, commitBarChange, keyboardDraft, s, scale]
   )
 
   const isEmpty = !loading && rows.length === 0
@@ -558,6 +548,7 @@ function Timeline({
   return (
     <div
       {...props}
+      ref={rootRef}
       data-df="timeline"
       data-zoom={zoom}
       data-loading={loading ? "true" : undefined}
@@ -565,7 +556,7 @@ function Timeline({
       className={cn("df-timeline", className)}
       style={style}
       role="treegrid"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? s.timelineAriaLabel}
       aria-rowcount={loading ? LOADING_ROW_COUNT + 1 : rows.length + 1}
       aria-busy={loading || undefined}
     >
@@ -575,7 +566,7 @@ function Timeline({
           data-df="timeline-corner"
           style={{ width: labelWidth, minWidth: labelWidth }}
         >
-          <span className="df-timeline-corner-label">Name</span>
+          <span className="df-timeline-corner-label">{s.timelineNameColumn}</span>
         </div>
         <div
           ref={headerScrollRef}
@@ -704,9 +695,9 @@ function Timeline({
             <div
               className="df-timeline-empty"
               data-df="timeline-empty"
-              role="status"
+              aria-live="polite"
             >
-              {emptyContent ?? "No rows"}
+              {emptyContent ?? s.timelineEmpty}
             </div>
           ) : (
             <div
@@ -798,7 +789,7 @@ function Timeline({
                         data-dragging={preview ? "true" : undefined}
                         role="gridcell"
                         tabIndex={0}
-                        aria-label={`${rowAriaName(row)} ${labelDates}`}
+                        aria-label={`${rowAriaName(row, s.timelineItemFallback)} ${labelDates}`}
                         style={{
                           left: rect.x,
                           width: rect.width,

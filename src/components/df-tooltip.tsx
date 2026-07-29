@@ -8,8 +8,9 @@ import {
   useAnchoredPosition,
   useControllableState,
   useIsClient,
+  usePresence,
 } from "../hooks"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type TooltipVariant = "compact" | "detailed"
 type TooltipAppearance = "light" | "dark" | "inverse"
@@ -261,7 +262,7 @@ function TooltipContent({
   const { open, triggerRef, contentId, variant, appearance, anchorPoint } =
     useTooltipContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const [present, setPresent] = React.useState(open)
+  const { present, onExitAnimationEnd } = usePresence(open)
   const pointMode = anchorPoint != null
   const placement = useAnchoredPosition({
     open,
@@ -277,18 +278,6 @@ function TooltipContent({
     matchTriggerWidth: false,
     followScroll: false,
   })
-
-  React.useEffect(() => {
-    if (open) {
-      setPresent(true)
-      return
-    }
-    if (!present) return
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) setPresent(false)
-  }, [open, present])
 
   const mounted = useIsClient()
   const wrapMode = variant === "detailed" && wrap
@@ -311,12 +300,10 @@ function TooltipContent({
       className={cn(className)}
       style={placement.style}
       aria-live={pointMode ? "polite" : undefined}
-      onAnimationEnd={(event) => {
-        onAnimationEnd?.(event)
-        if (event.target !== event.currentTarget) return
-        if (!open) setPresent(false)
-      }}
       {...props}
+      onAnimationEnd={(event) => {
+        composeEventHandlers(onAnimationEnd, onExitAnimationEnd)(event)
+      }}
     >
       <div data-df="tooltip-label">{children}</div>
       {arrow ? <span data-df="tooltip-arrow" aria-hidden="true" /> : null}

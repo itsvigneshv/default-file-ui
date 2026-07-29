@@ -64,11 +64,6 @@
             "name": "style",
             "type": "CSSProperties",
             "description": "Inline styles on the root. Can set --label-required and --df-label-* chrome vars."
-          },
-          {
-            "name": "…native attributes",
-            "type": "ComponentProps<\"label\"> | ComponentProps<\"div\">",
-            "description": "Native attributes for the root element. Match the as value."
           }
         ]
       },
@@ -105,7 +100,7 @@
             "name": "requiredVariant",
             "type": "\"asterisk\" | \"text\"",
             "default": "\"asterisk\"",
-            "description": "Required mark style. \"asterisk\" shows *. \"text\" shows required or (required). Color uses --label-required."
+            "description": "Required mark style. \"asterisk\" renders the catalogue asterisk string as-is. \"text\" renders the catalogue required string as-is. Color uses --label-required."
           },
           {
             "name": "requiredColor",
@@ -122,13 +117,7 @@
             "name": "optionalVariant",
             "type": "\"asterisk\" | \"text\"",
             "default": "\"text\"",
-            "description": "Optional mark style. \"text\" shows optional or (optional). \"asterisk\" shows *."
-          },
-          {
-            "name": "brackets",
-            "type": "boolean",
-            "default": "true",
-            "description": "Wraps text marks in parentheses: (required) and (optional). Set false for bare text. No effect on asterisk marks."
+            "description": "Optional mark style. \"text\" renders the catalogue optional string as-is. \"asterisk\" renders the catalogue asterisk string as-is."
           }
         ]
       },
@@ -162,53 +151,8 @@
       {
         "id": "label-parts",
         "title": "Parts",
-        "props": [
-          {
-            "name": "data-df=\"label\"",
-            "type": "part",
-            "description": "Root element. data-inset is left, content, or custom."
-          },
-          {
-            "name": "data-df=\"label-row\"",
-            "type": "part",
-            "description": "Title row with the title group and trailing slot."
-          },
-          {
-            "name": "data-df=\"label-title\"",
-            "type": "part",
-            "description": "Title group: leading slot, title text, and required or optional mark."
-          },
-          {
-            "name": "data-df=\"label-leading\"",
-            "type": "part",
-            "description": "Leading slot before the title text."
-          },
-          {
-            "name": "data-df=\"label-text\"",
-            "type": "part",
-            "description": "Primary title text."
-          },
-          {
-            "name": "data-df=\"label-required\"",
-            "type": "part",
-            "description": "Required mark. Uses --label-required. data-variant is asterisk or text."
-          },
-          {
-            "name": "data-df=\"label-optional\"",
-            "type": "part",
-            "description": "Optional mark. data-variant is asterisk or text."
-          },
-          {
-            "name": "data-df=\"label-trailing\"",
-            "type": "part",
-            "description": "Trailing slot on the title row for meta, icons, or controls. Uses --df-label-row-gap between multiple trailing children."
-          },
-          {
-            "name": "data-df=\"label-subtext\"",
-            "type": "part",
-            "description": "Supporting line under the title row."
-          }
-        ]
+        "description": "DOM structure markers for styling and tests. These are not component props. data-df=\"label\": Root element. data-inset is left, content, or custom. data-df=\"label-row\": Title row with the title group and trailing slot. data-df=\"label-title\": Title group: leading slot, title text, and required or optional mark. data-df=\"label-leading\": Leading slot before the title text. data-df=\"label-text\": Primary title text. data-df=\"label-required\": Required mark. Uses --label-required. data-variant is asterisk or text. data-df=\"label-optional\": Optional mark. data-variant is asterisk or text. data-df=\"label-trailing\": Trailing slot on the title row for meta, icons, or controls. Uses --df-label-row-gap between multiple trailing children. data-df=\"label-subtext\": Supporting line under the title row.",
+        "props": []
       },
       {
         "id": "label-tokens",

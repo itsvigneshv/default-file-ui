@@ -2,7 +2,9 @@
 
 import * as React from "react"
 
+import { useCssPx, useDragGesture, useLatestRef } from "../hooks"
 import { prefersReducedMotion } from "../lib/df-dnd"
+import { useDfStrings, type DfStrings } from "../lib/df-intl"
 import {
   DEFAULT_COLUMNS,
   cellDeltaFromPointer,
@@ -68,53 +70,34 @@ type KeyboardDraft = {
   draftLayout: WidgetLayoutItem[]
 }
 
-function readCssPx(token: string, fallback: number): number {
-  if (typeof document === "undefined") return fallback
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(token)
-    .trim()
-  const px = Number.parseFloat(raw)
-  return Number.isFinite(px) && px > 0 ? px : fallback
-}
-
-function readElementPx(
-  element: HTMLElement,
-  token: string,
-  fallback: number
-): number {
-  const raw = getComputedStyle(element).getPropertyValue(token).trim()
-  const px = Number.parseFloat(raw)
-  return Number.isFinite(px) && px > 0 ? px : fallback
-}
-
 function captureGridMetrics(
   root: HTMLElement,
-  columns: number
+  columns: number,
+  rowHeight: number,
+  gapFallback: number
 ): WidgetGridCellMetrics {
   const rect = root.getBoundingClientRect()
   const styles = getComputedStyle(root)
   const gapX =
-    Number.parseFloat(styles.columnGap || styles.gap) ||
-    readElementPx(root, "--df-widget-grid-gap", DEFAULT_GAP_PX)
+    Number.parseFloat(styles.columnGap || styles.gap) || gapFallback
   const gapY =
-    Number.parseFloat(styles.rowGap || styles.gap) ||
-    readElementPx(root, "--df-widget-grid-gap", DEFAULT_GAP_PX)
-  const rowHeight = readElementPx(
-    root,
-    "--df-widget-grid-row-height",
-    readCssPx("--df-widget-grid-row-height", DEFAULT_ROW_HEIGHT_PX)
-  )
+    Number.parseFloat(styles.rowGap || styles.gap) || gapFallback
   return cellMetricsFromGridRect({
     width: rect.width,
     columns,
     rowHeight,
-    gapX: Number.isFinite(gapX) ? gapX : DEFAULT_GAP_PX,
-    gapY: Number.isFinite(gapY) ? gapY : DEFAULT_GAP_PX,
+    gapX: Number.isFinite(gapX) ? gapX : gapFallback,
+    gapY: Number.isFinite(gapY) ? gapY : gapFallback,
   })
 }
 
-function formatWidgetCell(item: WidgetLayoutItem): string {
-  return `column ${item.x + 1}, row ${item.y + 1}, ${item.w} by ${item.h}`
+function formatWidgetCell(s: DfStrings, item: WidgetLayoutItem): string {
+  return s.widgetGridCell({
+    column: item.x + 1,
+    row: item.y + 1,
+    width: item.w,
+    height: item.h,
+  })
 }
 
 function applyGestureDelta(
@@ -204,14 +187,14 @@ function WidgetGrid({
   minRowHeight,
   emptyContent,
   style,
-  "aria-label": ariaLabel = "Widget grid",
+  "aria-label": ariaLabel,
   ...props
 }: WidgetGridProps) {
+  const s = useDfStrings()
   const rootRef = React.useRef<HTMLDivElement | null>(null)
-  const sessionRef = React.useRef<PointerSession | null>(null)
   const previewRef = React.useRef<GesturePreview | null>(null)
-  const captureTargetRef = React.useRef<HTMLElement | null>(null)
   const originLayoutRef = React.useRef<WidgetLayoutItem[]>(layout)
+  const pointerDrag = useDragGesture()
 
   const [liveMessage, setLiveMessage] = React.useState("")
   const [activePointer, setActivePointer] = React.useState(false)
@@ -222,6 +205,13 @@ function WidgetGrid({
   const announce = React.useCallback((message: string) => {
     setLiveMessage(message)
   }, [])
+
+  const tokenRowHeight = useCssPx(
+    rootRef,
+    "--df-widget-grid-row-height",
+    DEFAULT_ROW_HEIGHT_PX
+  )
+  const tokenGap = useCssPx(rootRef, "--df-widget-grid-gap", DEFAULT_GAP_PX)
 
   const resolvedColumns = Math.max(1, Math.trunc(columns) || DEFAULT_COLUMNS)
 
@@ -241,111 +231,26 @@ function WidgetGrid({
     setPreview(next)
   }, [])
 
-  const endPointerSession = React.useCallback(() => {
-    const session = sessionRef.current
-    if (!session) return null
-    const currentPreview = previewRef.current
-    const target = captureTargetRef.current
-    if (target?.hasPointerCapture?.(session.pointerId)) {
-      target.releasePointerCapture(session.pointerId)
-    }
-    captureTargetRef.current = null
-    sessionRef.current = null
-    updatePreview(null)
-    setActivePointer(false)
-    return { session, preview: currentPreview }
-  }, [updatePreview])
-
   const commitLayout = React.useCallback(
     (next: WidgetLayoutItem[], origin: WidgetLayoutItem[]) => {
       const resolved = normalizeLayout(next, resolvedColumns)
       if (layoutEquals(resolved, normalizeLayout(origin, resolvedColumns))) {
-        announce("Layout unchanged")
+        announce(s.widgetGridLayoutUnchanged)
         return
       }
       onLayoutChange?.(resolved)
-      announce("Layout updated")
+      announce(s.widgetGridLayoutUpdated)
     },
-    [announce, onLayoutChange, resolvedColumns]
+    [announce, onLayoutChange, resolvedColumns, s]
   )
 
-  React.useEffect(() => {
-    if (!activePointer) return
-    const session = sessionRef.current
-    if (!session) return
-
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerId !== session.pointerId) return
-      updatePreview(
-        previewFromDelta(
-          session,
-          event.clientX,
-          event.clientY,
-          originLayoutRef.current,
-          resolvedColumns
-        )
-      )
-    }
-
-    const finish = (event: PointerEvent, cancelled: boolean) => {
-      if (event.pointerId !== session.pointerId) return
-      const ended = endPointerSession()
-      if (!ended) return
-      if (
-        cancelled ||
-        !ended.preview ||
-        ended.preview.id !== ended.session.id
-      ) {
-        announce("Widget gesture cancelled")
-        return
-      }
-      const committed =
-        ended.session.kind === "move"
-          ? moveWidget(
-              originLayoutRef.current,
-              ended.session.id,
-              ended.preview.draft.x,
-              ended.preview.draft.y,
-              resolvedColumns
-            )
-          : resizeWidget(
-              originLayoutRef.current,
-              ended.session.id,
-              ended.preview.draft.w,
-              ended.preview.draft.h,
-              resolvedColumns
-            )
-      commitLayout(committed, originLayoutRef.current)
-    }
-
-    const onUp = (event: PointerEvent) => finish(event, false)
-    const onCancel = (event: PointerEvent) => finish(event, true)
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return
-      event.preventDefault()
-      const ended = endPointerSession()
-      if (!ended) return
-      announce("Widget gesture cancelled")
-    }
-
-    window.addEventListener("pointermove", onMove)
-    window.addEventListener("pointerup", onUp)
-    window.addEventListener("pointercancel", onCancel)
-    window.addEventListener("keydown", onKeyDown)
-    return () => {
-      window.removeEventListener("pointermove", onMove)
-      window.removeEventListener("pointerup", onUp)
-      window.removeEventListener("pointercancel", onCancel)
-      window.removeEventListener("keydown", onKeyDown)
-    }
-  }, [
-    activePointer,
+  const liveRef = useLatestRef({
     announce,
     commitLayout,
-    endPointerSession,
     resolvedColumns,
     updatePreview,
-  ])
+    s,
+  })
 
   const beginPointerGesture = React.useCallback(
     (
@@ -361,8 +266,13 @@ function WidgetGrid({
 
       originLayoutRef.current = baseLayout
       setKeyboardDraft(null)
-      const metrics = captureGridMetrics(root, resolvedColumns)
-      sessionRef.current = {
+      const metrics = captureGridMetrics(
+        root,
+        resolvedColumns,
+        tokenRowHeight,
+        tokenGap
+      )
+      const session: PointerSession = {
         pointerId: event.pointerId,
         kind,
         id: item.id,
@@ -381,15 +291,82 @@ function WidgetGrid({
         scaleY: 1,
       })
       setActivePointer(true)
+      const cell = formatWidgetCell(s, item)
       announce(
         kind === "move"
-          ? `Moving widget at ${formatWidgetCell(item)}`
-          : `Resizing widget at ${formatWidgetCell(item)}`
+          ? s.widgetGridMoving(cell)
+          : s.widgetGridResizing(cell)
       )
-      captureTargetRef.current = event.currentTarget
-      event.currentTarget.setPointerCapture?.(event.pointerId)
+
+      const onKeyDown = (keyEvent: KeyboardEvent) => {
+        if (keyEvent.key !== "Escape") return
+        keyEvent.preventDefault()
+        pointerDrag.end("cancel")
+      }
+      window.addEventListener("keydown", onKeyDown)
+
+      pointerDrag.begin(event, session, {
+        onMove: (moveEvent, activeSession) => {
+          const live = liveRef.current
+          live.updatePreview(
+            previewFromDelta(
+              activeSession,
+              moveEvent.clientX,
+              moveEvent.clientY,
+              originLayoutRef.current,
+              live.resolvedColumns
+            )
+          )
+        },
+        onEnd: (_event, activeSession, reason) => {
+          window.removeEventListener("keydown", onKeyDown)
+          const currentPreview = previewRef.current
+          previewRef.current = null
+          setPreview(null)
+          setActivePointer(false)
+          const live = liveRef.current
+          if (
+            reason !== "up" ||
+            !currentPreview ||
+            currentPreview.id !== activeSession.id
+          ) {
+            if (reason !== "unmount") {
+              live.announce(live.s.widgetGridGestureCancelled)
+            }
+            return
+          }
+          const committed =
+            activeSession.kind === "move"
+              ? moveWidget(
+                  originLayoutRef.current,
+                  activeSession.id,
+                  currentPreview.draft.x,
+                  currentPreview.draft.y,
+                  live.resolvedColumns
+                )
+              : resizeWidget(
+                  originLayoutRef.current,
+                  activeSession.id,
+                  currentPreview.draft.w,
+                  currentPreview.draft.h,
+                  live.resolvedColumns
+                )
+          live.commitLayout(committed, originLayoutRef.current)
+        },
+      })
     },
-    [announce, baseLayout, editable, resolvedColumns, updatePreview]
+    [
+      announce,
+      baseLayout,
+      editable,
+      liveRef,
+      pointerDrag,
+      resolvedColumns,
+      s,
+      tokenGap,
+      tokenRowHeight,
+      updatePreview,
+    ]
   )
 
   const onItemPointerDown = React.useCallback(
@@ -412,7 +389,7 @@ function WidgetGrid({
         if (!keyboardDraft || keyboardDraft.id !== item.id) return
         event.preventDefault()
         setKeyboardDraft(null)
-        announce("Widget edit cancelled")
+        announce(s.widgetGridEditCancelled)
         return
       }
 
@@ -470,8 +447,11 @@ function WidgetGrid({
         draftLayout: nextLayout,
       })
       const nextItem = layoutById(nextLayout).get(item.id) ?? live
+      const cell = formatWidgetCell(s, nextItem)
       announce(
-        `${event.shiftKey ? "Resized" : "Moved"} to ${formatWidgetCell(nextItem)}. Press Enter to commit.`
+        event.shiftKey
+          ? s.widgetGridResizedCommit(cell)
+          : s.widgetGridMovedCommit(cell)
       )
     },
     [
@@ -481,6 +461,7 @@ function WidgetGrid({
       editable,
       keyboardDraft,
       resolvedColumns,
+      s,
     ]
   )
 
@@ -506,7 +487,7 @@ function WidgetGrid({
       className={cn("df-widget-grid", className)}
       style={rootStyle}
       role="grid"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? s.widgetGridAriaLabel}
       aria-rowcount={
         displayLayout.reduce((max, item) => Math.max(max, item.y + item.h), 0) ||
         1
@@ -519,7 +500,7 @@ function WidgetGrid({
           data-df="widget-grid-empty"
           role="status"
         >
-          {emptyContent ?? "No widgets"}
+          {emptyContent ?? s.widgetGridEmpty}
         </div>
       ) : (
         displayLayout.map((item) => {
@@ -581,7 +562,9 @@ function WidgetGrid({
                       type="button"
                       className="df-widget-grid-keyboard-handle"
                       data-df="widget-grid-keyboard-handle"
-                      aria-label={`Move or resize widget at ${formatWidgetCell(draftItem)}`}
+                      aria-label={s.widgetGridMoveOrResize(
+                        formatWidgetCell(s, draftItem)
+                      )}
                     />
                     <span
                       className="df-widget-grid-resize df-widget-grid-resize-e"

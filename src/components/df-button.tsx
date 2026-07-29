@@ -137,9 +137,9 @@ function dfButtonClass({
   size = "default",
   className,
 }: {
-  variant?: ButtonVariant
-  size?: ButtonSize
-  className?: string
+  variant?: ButtonVariant | undefined
+  size?: ButtonSize | undefined
+  className?: string | undefined
 } = {}) {
   return cn(
     "df-btn",

@@ -10,6 +10,7 @@ import {
   filterTagSuggestions,
   type TagCommitRejectReason,
 } from "../lib/df-tag-input"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 import type { ListItemChromeProps } from "./df-list-item"
 import {
@@ -61,6 +62,7 @@ function TagInputField({
   inputRef,
   filtered,
   shake,
+  ariaLabel,
   onCommitDraft,
   onCommitSuggestion,
   onRemoveAt,
@@ -70,19 +72,21 @@ function TagInputField({
   tags: string[]
   draft: string
   setDraft: (value: string) => void
-  disabled?: boolean
-  invalid?: boolean
-  placeholder?: string
-  id?: string
+  disabled?: boolean | undefined
+  invalid?: boolean | undefined
+  placeholder?: string | undefined
+  id?: string | undefined
   inputRef: React.RefObject<HTMLInputElement | null>
   filtered: string[]
   shake: boolean
+  ariaLabel?: string | undefined
   onCommitDraft: () => boolean
   onCommitSuggestion: (value: string) => void
   onRemoveAt: (index: number) => void
   onRemoveLast: () => void
   onPasteText: (text: string) => void
 }) {
+  const s = useDfStrings()
   const {
     triggerRef,
     open,
@@ -114,7 +118,7 @@ function TagInputField({
           <button
             type="button"
             data-df="tag-input-chip-remove"
-            aria-label={`Remove ${tag}`}
+            aria-label={s.tagInputRemove(tag)}
             disabled={disabled}
             onMouseDown={(event) => {
               event.preventDefault()
@@ -135,6 +139,7 @@ function TagInputField({
         value={draft}
         disabled={disabled}
         placeholder={tags.length === 0 ? placeholder : undefined}
+        aria-label={ariaLabel}
         aria-invalid={invalid || undefined}
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
@@ -221,13 +226,15 @@ function TagInput({
   invalid = false,
   validation,
   disabled = false,
-  placeholder = "Add tag",
+  placeholder,
   id,
   className,
   "aria-label": ariaLabel,
   itemChrome,
   onReject,
 }: TagInputProps) {
+  const s = useDfStrings()
+  const resolvedPlaceholder = placeholder ?? s.tagInputPlaceholder
   const [tags, setTags] = useControllableState<string[]>({
     value,
     defaultValue,
@@ -312,7 +319,6 @@ function TagInput({
       data-disabled={disabled ? "" : undefined}
       data-invalid={invalid ? "" : undefined}
       className={cn(className)}
-      aria-label={ariaLabel}
     >
       <OptionList
         value={null}
@@ -338,11 +344,12 @@ function TagInput({
           setDraft={setDraft}
           disabled={disabled}
           invalid={invalid}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           id={id}
           inputRef={inputRef}
           filtered={filtered}
           shake={shake}
+          ariaLabel={ariaLabel}
           onCommitDraft={commitDraft}
           onCommitSuggestion={commitSuggestion}
           onRemoveAt={(index) => setTags(tags.filter((_, i) => i !== index))}

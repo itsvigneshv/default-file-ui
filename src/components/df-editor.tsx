@@ -19,6 +19,8 @@ import {
   Check,
 } from "lucide-react"
 
+import { useLatestRef } from "../hooks"
+import { useDfStrings } from "../lib/df-intl"
 import {
   activeBlockType,
   applyInputRule,
@@ -244,6 +246,7 @@ function EditorToolbarButtons({
   disabled: boolean
   onAction: (run: (prev: EditorState) => EditorState) => void
 }) {
+  const s = useDfStrings()
   const mark = (type: MarkType) => isMarkActive(state, type)
   const block = activeBlockType(state)
 
@@ -270,80 +273,98 @@ function EditorToolbarButtons({
 
   return (
     <>
-      {btn("Bold", mark("bold"), () => onAction((s) => toggleMark(s, "bold")), <Bold />)}
-      {btn("Italic", mark("italic"), () => onAction((s) => toggleMark(s, "italic")), <Italic />)}
       {btn(
-        "Strikethrough",
+        s.formatToolbarBold,
+        mark("bold"),
+        () => onAction((prev) => toggleMark(prev, "bold")),
+        <Bold />
+      )}
+      {btn(
+        s.formatToolbarItalic,
+        mark("italic"),
+        () => onAction((prev) => toggleMark(prev, "italic")),
+        <Italic />
+      )}
+      {btn(
+        s.formatToolbarStrikethrough,
         mark("strikethrough"),
-        () => onAction((s) => toggleMark(s, "strikethrough")),
+        () => onAction((prev) => toggleMark(prev, "strikethrough")),
         <Strikethrough />
       )}
-      {btn("Inline code", mark("code"), () => onAction((s) => toggleMark(s, "code")), <Code />)}
       {btn(
-        "Link",
+        s.formatToolbarInlineCode,
+        mark("code"),
+        () => onAction((prev) => toggleMark(prev, "code")),
+        <Code />
+      )}
+      {btn(
+        s.formatToolbarLink,
         false,
         () => {
           const href =
             typeof window !== "undefined"
-              ? window.prompt("Link URL", "https://")
+              ? window.prompt(
+                  s.formatToolbarLinkUrl,
+                  s.formatToolbarLinkPlaceholder
+                )
               : null
-          if (href) onAction((s) => setLink(s, href))
+          if (href) onAction((prev) => setLink(prev, href))
         },
         <Link2 />
       )}
       <span data-df="editor-toolbar-sep" aria-hidden />
       {btn(
-        "Heading 1",
+        s.formatToolbarHeading1,
         block?.type === "heading" && block.level === 1,
-        () => onAction((s) => setBlockType(s, "heading", { level: 1 })),
+        () => onAction((prev) => setBlockType(prev, "heading", { level: 1 })),
         <Heading1 />
       )}
       {btn(
-        "Heading 2",
+        s.formatToolbarHeading2,
         block?.type === "heading" && block.level === 2,
-        () => onAction((s) => setBlockType(s, "heading", { level: 2 })),
+        () => onAction((prev) => setBlockType(prev, "heading", { level: 2 })),
         <Heading2 />
       )}
       {btn(
-        "Heading 3",
+        s.formatToolbarHeading3,
         block?.type === "heading" && block.level === 3,
-        () => onAction((s) => setBlockType(s, "heading", { level: 3 })),
+        () => onAction((prev) => setBlockType(prev, "heading", { level: 3 })),
         <Heading3 />
       )}
       {btn(
-        "Bullet list",
+        s.formatToolbarBulletList,
         block?.type === "bullet_list",
-        () => onAction((s) => setBlockType(s, "bullet_list")),
+        () => onAction((prev) => setBlockType(prev, "bullet_list")),
         <List />
       )}
       {btn(
-        "Ordered list",
+        s.formatToolbarOrderedList,
         block?.type === "ordered_list",
-        () => onAction((s) => setBlockType(s, "ordered_list")),
+        () => onAction((prev) => setBlockType(prev, "ordered_list")),
         <ListOrdered />
       )}
       {btn(
-        "Task list",
+        s.formatToolbarTaskList,
         block?.type === "task_list",
-        () => onAction((s) => setBlockType(s, "task_list")),
+        () => onAction((prev) => setBlockType(prev, "task_list")),
         <ListChecks />
       )}
       {btn(
-        "Quote",
+        s.editorQuote,
         block?.type === "blockquote",
-        () => onAction((s) => setBlockType(s, "blockquote")),
+        () => onAction((prev) => setBlockType(prev, "blockquote")),
         <Quote />
       )}
       {btn(
-        "Code block",
+        s.formatToolbarCodeBlock,
         block?.type === "code_block",
-        () => onAction((s) => setBlockType(s, "code_block")),
+        () => onAction((prev) => setBlockType(prev, "code_block")),
         <SquareCode />
       )}
       {btn(
-        "Divider",
+        s.editorDivider,
         false,
-        () => onAction((s) => setBlockType(s, "divider")),
+        () => onAction((prev) => setBlockType(prev, "divider")),
         <Minus />
       )}
     </>
@@ -462,37 +483,11 @@ function renderBlock(
             data-df-path={pathKey(path)}
             data-checked={item.checked ? "true" : "false"}
           >
-            <span
-              data-df="checkbox"
-              data-size="sm"
-              data-state={item.checked ? "checked" : "unchecked"}
-              data-disabled={readOnly ? "" : undefined}
-              contentEditable={false}
-              className="df-editor-task-check"
-            >
-              <button
-                type="button"
-                data-df="checkbox-input"
-                role="checkbox"
-                aria-checked={item.checked}
-                aria-label={item.checked ? "Mark task incomplete" : "Mark task complete"}
-                disabled={readOnly}
-                tabIndex={readOnly ? -1 : 0}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => onToggleTask(path)}
-                onKeyDown={(event) => {
-                  if (readOnly) return
-                  if (event.key === " " || event.key === "Enter") {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    onToggleTask(path)
-                  }
-                }}
-              />
-              <span data-df="checkbox-box" aria-hidden>
-                {item.checked ? <Check data-df="checkbox-icon" /> : null}
-              </span>
-            </span>
+            <EditorTaskCheck
+              checked={item.checked}
+              readOnly={readOnly}
+              onToggle={() => onToggleTask(path)}
+            />
             <span data-df="editor-task-text">
               {renderInlines(item.children, `task-${blockIndex}-${itemIndex}`)}
             </span>
@@ -503,34 +498,97 @@ function renderBlock(
   )
 }
 
+function EditorBlocks({
+  blocks,
+  readOnly,
+  onToggleTask,
+}: {
+  blocks: BlockNode[]
+  readOnly: boolean
+  onToggleTask: (path: EditorPath) => void
+}) {
+  return blocks.map((block, index) =>
+    renderBlock(block, index, readOnly, onToggleTask)
+  )
+}
+
+function EditorTaskCheck({
+  checked,
+  readOnly,
+  onToggle,
+}: {
+  checked: boolean
+  readOnly: boolean
+  onToggle: () => void
+}) {
+  const s = useDfStrings()
+  return (
+    <span
+      data-df="checkbox"
+      data-size="sm"
+      data-state={checked ? "checked" : "unchecked"}
+      data-disabled={readOnly ? "" : undefined}
+      contentEditable={false}
+      className="df-editor-task-check"
+    >
+      <button
+        type="button"
+        data-df="checkbox-input"
+        role="checkbox"
+        aria-checked={checked}
+        aria-label={
+          checked ? s.editorMarkTaskIncomplete : s.editorMarkTaskComplete
+        }
+        disabled={readOnly}
+        tabIndex={readOnly ? -1 : 0}
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={onToggle}
+        onKeyDown={(event) => {
+          if (readOnly) return
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault()
+            event.stopPropagation()
+            onToggle()
+          }
+        }}
+      />
+      <span data-df="checkbox-box" aria-hidden>
+        {checked ? <Check data-df="checkbox-icon" /> : null}
+      </span>
+    </span>
+  )
+}
+
 function Editor({
   value,
   onChange,
-  placeholder = "Write…",
+  placeholder,
   readOnly = false,
   minHeight,
   toolbar = "both",
   autoFocus = false,
   className,
-  "aria-label": ariaLabel = "Editor",
+  "aria-label": ariaLabel,
 }: EditorProps) {
+  const s = useDfStrings()
+  const resolvedPlaceholder = placeholder ?? s.editorPlaceholder
+  const resolvedAriaLabel = ariaLabel ?? s.editorAriaLabel
   const surfaceRef = React.useRef<HTMLDivElement>(null)
   const settleTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingDocRef = React.useRef<EditorDoc | null>(null)
-  const onChangeRef = React.useRef(onChange)
+  const onChangeRef = useLatestRef(onChange)
   const skipSelectionSync = React.useRef(false)
   const floatingOffsetRef = React.useRef(0)
   const rootRef = React.useRef<HTMLDivElement>(null)
-  const stateRef = React.useRef<EditorState>({
+  // React state drives render. stateRef mirrors the latest commit for sync
+  // command and event paths that must not wait for a re-render.
+  const [state, setState] = React.useState<EditorState>(() => ({
     doc: parseMarkdown(value),
     selection: collapsedSelection([0], 0),
-  })
-
-  const [state, setState] = React.useState<EditorState>(stateRef.current)
+  }))
+  const stateRef = React.useRef(state)
   const [floating, setFloating] = React.useState<FloatingPos | null>(null)
   const [showFloating, setShowFloating] = React.useState(false)
-
-  onChangeRef.current = onChange
 
   const emitChange = React.useCallback((doc: EditorDoc) => {
     if (!onChangeRef.current) return
@@ -542,7 +600,7 @@ function Editor({
       pendingDocRef.current = null
       if (pending) onChangeRef.current?.(serializeMarkdown(pending))
     }, SETTLE_MS)
-  }, [])
+  }, [onChangeRef])
 
   const flushChange = React.useCallback((doc: EditorDoc) => {
     if (settleTimer.current) {
@@ -551,9 +609,10 @@ function Editor({
     }
     pendingDocRef.current = null
     onChangeRef.current?.(serializeMarkdown(doc))
-  }, [])
+  }, [onChangeRef])
 
   React.useEffect(() => {
+    const onChangeLatest = onChangeRef
     return () => {
       if (settleTimer.current) {
         clearTimeout(settleTimer.current)
@@ -561,9 +620,9 @@ function Editor({
       }
       const pending = pendingDocRef.current
       pendingDocRef.current = null
-      if (pending) onChangeRef.current?.(serializeMarkdown(pending))
+      if (pending) onChangeLatest.current?.(serializeMarkdown(pending))
     }
-  }, [])
+  }, [onChangeRef])
 
   React.useEffect(() => {
     const el = rootRef.current
@@ -662,6 +721,13 @@ function Editor({
       commit(recipe(stateRef.current), opts)
     },
     [commit, readOnly]
+  )
+
+  const onToggleTask = React.useCallback(
+    (path: EditorPath) => {
+      run((prev) => toggleTaskChecked(prev, path))
+    },
+    [run]
   )
 
   const onBeforeInput = (event: React.FormEvent<HTMLDivElement>) => {
@@ -782,7 +848,7 @@ function Editor({
           className="df-editor-toolbar"
           data-df="editor-toolbar"
           role="toolbar"
-          aria-label="Formatting"
+          aria-label={s.editorFormatting}
         >
           <EditorToolbarButtons
             state={state}
@@ -795,7 +861,7 @@ function Editor({
       <div className="df-editor-surface-wrap" data-df="editor-surface-wrap">
         {empty ? (
           <p className="df-editor-placeholder" aria-hidden="true">
-            {placeholder}
+            {resolvedPlaceholder}
           </p>
         ) : null}
         <div
@@ -804,7 +870,7 @@ function Editor({
           data-df="editor-surface"
           role="textbox"
           aria-multiline="true"
-          aria-label={ariaLabel}
+          aria-label={resolvedAriaLabel}
           aria-readonly={readOnly || undefined}
           contentEditable={!readOnly}
           suppressContentEditableWarning
@@ -814,11 +880,11 @@ function Editor({
           onPaste={onPaste}
           onBlur={onBlur}
         >
-          {state.doc.blocks.map((block, index) =>
-            renderBlock(block, index, readOnly, (path) =>
-              run((prev) => toggleTaskChecked(prev, path))
-            )
-          )}
+          <EditorBlocks
+            blocks={state.doc.blocks}
+            readOnly={readOnly}
+            onToggleTask={onToggleTask}
+          />
         </div>
       </div>
 
@@ -827,7 +893,7 @@ function Editor({
           className="df-editor-floating-toolbar"
           data-df="editor-floating-toolbar"
           role="toolbar"
-          aria-label="Selection formatting"
+          aria-label={s.editorSelectionFormatting}
           style={{
             top: floating.top,
             left: floating.left,

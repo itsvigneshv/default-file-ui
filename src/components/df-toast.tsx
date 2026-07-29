@@ -10,11 +10,12 @@ import {
   X,
 } from "lucide-react"
 
-import { useIsClient } from "../hooks"
+import { useIsClient, useIsomorphicLayoutEffect } from "../hooks"
 import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 const TOAST_DISMISS_MS = 3200
@@ -45,28 +46,28 @@ type ToastShowOptions = {
 }
 
 type ToastChromeProps = {
-  background?: string
-  foreground?: string
-  borderColor?: string
-  borderWidth?: string
-  radius?: string
-  shadow?: string
-  paddingBlock?: string
-  paddingInline?: string
-  gap?: string
-  width?: string
-  height?: string
-  minHeight?: string
-  showClose?: boolean
-  cornerShape?: DfCornerShape
+  background?: string | undefined
+  foreground?: string | undefined
+  borderColor?: string | undefined
+  borderWidth?: string | undefined
+  radius?: string | undefined
+  shadow?: string | undefined
+  paddingBlock?: string | undefined
+  paddingInline?: string | undefined
+  gap?: string | undefined
+  width?: string | undefined
+  height?: string | undefined
+  minHeight?: string | undefined
+  showClose?: boolean | undefined
+  cornerShape?: DfCornerShape | undefined
 }
 
 type ToastItem = {
   id: string
   tone: ToastTone
   message: string
-  leading?: React.ReactNode
-  action?: ToastAction
+  leading?: React.ReactNode | undefined
+  action?: ToastAction | undefined
 }
 
 type ToastListener = () => void
@@ -250,12 +251,12 @@ type ToastProps = React.ComponentProps<"div"> &
     tone: ToastTone
     message: string
     /** Defaults to the tone icon. Pass null to hide the slot. */
-    leading?: React.ReactNode
+    leading?: React.ReactNode | undefined
     /** Compact action control shown before dismiss. */
-    action?: ToastAction
-    onDismiss?: () => void
+    action?: ToastAction | undefined
+    onDismiss?: (() => void) | undefined
     /** Pause the live auto dismiss timer while the action is hovered or focused. */
-    onActionPauseChange?: (paused: boolean) => void
+    onActionPauseChange?: ((paused: boolean) => void) | undefined
   }
 
 function Toast({
@@ -283,6 +284,7 @@ function Toast({
   style,
   ...props
 }: ToastProps) {
+  const s = useDfStrings()
   const leadingContent = leading === undefined ? ICONS[tone] : leading
   const toastStyle = {
     ...toastChromeStyle({
@@ -345,7 +347,7 @@ function Toast({
           <button
             type="button"
             className="df-toast-close"
-            aria-label="Dismiss"
+            aria-label={s.toastDismiss}
             onClick={onDismiss}
           >
             <X className="size-3.5" />
@@ -405,7 +407,7 @@ export function Toaster({
     getPositionServerSnapshot
   )
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (positionProp) setToastPosition(positionProp)
   }, [positionProp])
 

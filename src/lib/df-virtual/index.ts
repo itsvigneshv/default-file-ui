@@ -15,7 +15,7 @@ export type UseVirtualRowsOptions = {
   count: number
   estimateSize: number | ((index: number) => number)
   getScrollElement: () => Element | null
-  overscan?: number
+  overscan?: number | undefined
 }
 
 export type UseVirtualRowsResult = {
@@ -47,11 +47,14 @@ export function useVirtualRows(
     [options.estimateSize]
   )
 
+  // Consumers pass measureElement as a ref callback and do not feed windowing
+  // callbacks into memoized props, so the unsafe-memoization caveat does not apply.
+  // eslint-disable-next-line react-hooks/incompatible-library -- see above
   const virtualizer = useVirtualizer({
     count: options.count,
     estimateSize,
     getScrollElement: options.getScrollElement,
-    overscan: options.overscan,
+    ...(options.overscan !== undefined ? { overscan: options.overscan } : {}),
   })
 
   return {

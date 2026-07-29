@@ -132,7 +132,7 @@
           {
             "name": "hoverBorder",
             "type": "boolean",
-            "description": "Instance hover border. Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on."
+            "description": "Instance hover border. Omit to inherit the theme. Set false to keep the resting border. Set true to force the hover border on. When set, the control writes data-hover-border; omit to inherit data-df-hover-border from the host."
           },
           {
             "name": "hoverBorderColor",
@@ -273,9 +273,14 @@
             "description": "Native input type (text, email, password, and others)."
           },
           {
-            "name": "value / defaultValue",
+            "name": "value",
             "type": "string",
-            "description": "Controlled or uncontrolled field value."
+            "description": "Controlled field value."
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "description": "Uncontrolled initial field value."
           },
           {
             "name": "placeholder",
@@ -291,94 +296,14 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles on the outermost wrapper when the field is shelled, otherwise on the native input."
-          },
-          {
-            "name": "…input attributes",
-            "type": "ComponentProps<\"input\">",
-            "description": "All native input props (name, required, onChange, and others)."
           }
         ]
       },
       {
         "id": "input-parts",
         "title": "Parts",
-        "props": [
-          {
-            "name": "data-df=\"input-root\"",
-            "type": "part",
-            "description": "Column wrapper when label, hint, or field chrome is present."
-          },
-          {
-            "name": "data-df=\"input-field\"",
-            "type": "part",
-            "description": "Relative shell for icons, addons, action, and inside labels. data-empty marks an empty inside-label field."
-          },
-          {
-            "name": "data-df=\"input-label\"",
-            "type": "part",
-            "description": "Inside-label title."
-          },
-          {
-            "name": "data-df=\"input-prefix\"",
-            "type": "part",
-            "description": "Static start addon."
-          },
-          {
-            "name": "data-df=\"input-suffix\"",
-            "type": "part",
-            "description": "Static end addon."
-          },
-          {
-            "name": "data-df=\"input-icon\"",
-            "type": "part",
-            "description": "Icon slot. data-side is start or end."
-          },
-          {
-            "name": "data-df=\"input-clear\"",
-            "type": "part",
-            "description": "Clear control on the trailing edge when clearable is active and the field has a value."
-          },
-          {
-            "name": "data-df=\"input-stepper\"",
-            "type": "part",
-            "description": "Stacked increment and decrement controls when stepper is true."
-          },
-          {
-            "name": "data-df=\"input-stepper-button\"",
-            "type": "part",
-            "description": "Stepper button. data-direction is up or down."
-          },
-          {
-            "name": "data-df=\"input-action\"",
-            "type": "part",
-            "description": "Attached action for the input group."
-          },
-          {
-            "name": "data-df=\"input-hint\"",
-            "type": "part",
-            "description": "Helper line under the field."
-          },
-          {
-            "name": "data-df=\"input\"",
-            "type": "part",
-            "description": "Native input element. Also uses class df-input."
-          },
-          {
-            "name": "data-commit-mode",
-            "type": "part attribute",
-            "description": "Present with value blur when commitMode is blur. Omitted for change."
-          },
-          {
-            "name": "data-border-width",
-            "type": "part attribute",
-            "description": "Border width step on the field shell and native input: hairline, thin, or thick."
-          },
-          {
-            "name": "data-hover-border",
-            "type": "part attribute",
-            "description": "true or false when hoverBorder is set. Omit to inherit data-df-hover-border from the host."
-          }
-        ]
+        "description": "DOM structure markers for styling and tests. These are not component props. data-df=\"input-root\": Column wrapper when label, hint, or field chrome is present. data-df=\"input-field\": Relative shell for icons, addons, action, and inside labels. data-empty marks an empty inside-label field. data-df=\"input-label\": Inside-label title. data-df=\"input-prefix\": Static start addon. data-df=\"input-suffix\": Static end addon. data-df=\"input-icon\": Icon slot. data-side is start or end. data-df=\"input-clear\": Clear control on the trailing edge when clearable is active and the field has a value. data-df=\"input-stepper\": Stacked increment and decrement controls when stepper is true. data-df=\"input-stepper-button\": Stepper button. data-direction is up or down. data-df=\"input-action\": Attached action for the input group. data-df=\"input-hint\": Helper line under the field. data-df=\"input\": Native input element. Also uses class df-input. data-commit-mode: Present with value blur when commitMode is blur. Omitted for change. data-border-width: Border width step on the field shell and native input: hairline, thin, or thick. data-hover-border: true or false when hoverBorder is set; omit to inherit the host theme.",
+        "props": []
       },
       {
         "id": "input-tokens",
@@ -486,12 +411,6 @@
             "type": "CSS length",
             "description": "Value and placeholder leading. Paired with the size step as an even pixel value so single-line text centers without sub-pixel drift.",
             "default": "var(--df-leading-5)"
-          },
-          {
-            "name": "--df-input-optical-shift",
-            "type": "CSS length",
-            "description": "Upward correction for field text with icons. Applied as twice this value of bottom inset so value ink shares the field midline with prefix, suffix, and icons. Defaults to --df-control-optical-shift.",
-            "default": "var(--df-control-optical-shift)"
           },
           {
             "name": "--df-input-floating-min-height",

@@ -50,17 +50,74 @@ export function dayOffsetFrom(
 }
 
 /**
- * Build a Sunday start month grid covering every day shown on the calendar
- * surface for `month` (`yyyy-mm` or any date in that month).
+ * JS weekday for the first column of a week (0=Sunday through 6=Saturday)
+ * from a BCP 47 locale.
+ *
+ * When the engine exposes no week info, this returns Sunday (0). That is a
+ * degradation path for missing Intl data, not a claim that Sunday is the
+ * intended default for every locale.
+ */
+export function weekStartsOnForLocale(locale: string): number {
+  try {
+    const loc = new Intl.Locale(locale)
+    const withInfo = loc as Intl.Locale & {
+      weekInfo?: { firstDay: number }
+      getWeekInfo?: () => { firstDay: number }
+    }
+    const info =
+      withInfo.weekInfo ??
+      (typeof withInfo.getWeekInfo === "function"
+        ? withInfo.getWeekInfo()
+        : undefined)
+    if (info?.firstDay == null) return 0
+    return info.firstDay === 7 ? 0 : info.firstDay
+  } catch {
+    return 0
+  }
+}
+
+/**
+ * Offset of `weekday` (0=Sunday) from the first column of a week that starts
+ * on `weekStartsOn`.
+ */
+export function offsetFromWeekStart(
+  weekday: number,
+  weekStartsOn: number
+): number {
+  return (weekday - weekStartsOn + 7) % 7
+}
+
+/**
+ * Rotate Sunday-first weekday labels so index 0 matches `weekStartsOn`.
+ */
+export function rotateWeekdayLabels(
+  sundayFirst: readonly [string, string, string, string, string, string, string],
+  weekStartsOn: number
+): readonly string[] {
+  if (weekStartsOn === 0) return sundayFirst
+  return [
+    ...sundayFirst.slice(weekStartsOn),
+    ...sundayFirst.slice(0, weekStartsOn),
+  ]
+}
+
+/**
+ * Build a month grid covering every day shown on the calendar surface for
+ * `month` (`yyyy-mm` or any date in that month).
+ *
+ * `weekStartsOn` is required: the first column weekday (0=Sunday through
+ * 6=Saturday). Callers must decide it from locale or an explicit policy;
+ * this helper does not guess.
  */
 export function buildMonthGrid(
-  month: Date | string | number
+  month: Date | string | number,
+  weekStartsOn: number
 ): CalendarCell[] {
   const seed = startOfUtcDay(month)
   const year = seed.getUTCFullYear()
   const monthIndex = seed.getUTCMonth()
   const firstOfMonth = new Date(Date.UTC(year, monthIndex, 1))
-  const startPad = firstOfMonth.getUTCDay()
+  const startPad = offsetFromWeekStart(firstOfMonth.getUTCDay(), weekStartsOn)
   const gridStart = addUtcDays(firstOfMonth, -startPad)
   const cells: CalendarCell[] = []
   for (let i = 0; i < 42; i += 1) {

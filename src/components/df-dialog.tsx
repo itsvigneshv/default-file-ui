@@ -4,9 +4,14 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { X } from "lucide-react"
 
-import { useControllableState, useIsClient } from "../hooks"
+import {
+  useControllableState,
+  useIsClient,
+  useIsomorphicLayoutEffect,
+} from "../hooks"
 import { useFocusTrap } from "../lib/df-focus-trap"
-import { cn } from "../lib/utils"
+import { useDfStrings } from "../lib/df-intl"
+import { cn, composeEventHandlers } from "../lib/utils"
 import { Button } from "./df-button"
 
 type DialogContextValue = {
@@ -83,10 +88,11 @@ function DialogTrigger({
         }
       ).onClick
       renderOnClick?.(event)
+      if (event.defaultPrevented) return
     }
-    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    setOpen(true)
+    composeEventHandlers(props.onClick, () => {
+      setOpen(true)
+    })(event as React.MouseEvent<HTMLButtonElement>)
   }
 
   if (render) {
@@ -189,6 +195,7 @@ function DialogHeader({
 }: React.ComponentProps<"div"> & {
   showClose?: boolean
 }) {
+  const s = useDfStrings()
   return (
     <div data-df="dialog-header" className={cn(className)} {...props}>
       <div data-df="dialog-header-copy">{children}</div>
@@ -199,7 +206,7 @@ function DialogHeader({
               type="button"
               variant="ghost"
               size="icon-sm"
-              aria-label="Close"
+              aria-label={s.dialogClose}
             >
               <X className="size-4" />
             </Button>
@@ -228,7 +235,7 @@ function DialogDescription({
 }: React.ComponentProps<"p">) {
   const { descriptionId, setHasDescription } = useDialogContext()
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setHasDescription(true)
     return () => setHasDescription(false)
   }, [setHasDescription])
@@ -273,10 +280,11 @@ function DialogClose({
         }
       ).onClick
       renderOnClick?.(event)
+      if (event.defaultPrevented) return
     }
-    props.onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    setOpen(false)
+    composeEventHandlers(props.onClick, () => {
+      setOpen(false)
+    })(event as React.MouseEvent<HTMLButtonElement>)
   }
 
   if (render) {

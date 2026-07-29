@@ -6,15 +6,15 @@ import { cn } from "../lib/utils"
 
 type ListItemNestChromeProps = {
   /** Outer inset before the nest group. Sets --df-list-item-nest-indent. */
-  indent?: string
+  indent?: string | undefined
   /** Inner pad after the guide line. Sets --df-list-item-nest-pad. */
-  pad?: string
+  pad?: string | undefined
   /** Gap between nested rows. Sets --df-list-item-nest-gap. */
-  gap?: string
+  gap?: string | undefined
   /** Guide line thickness. Sets --df-list-item-nest-line-width. */
-  lineWidth?: string
+  lineWidth?: string | undefined
   /** Guide line color. Prefer var(--border). Sets --df-list-item-nest-line-color. */
-  lineColor?: string
+  lineColor?: string | undefined
 }
 
 type ListItemNestProps = React.ComponentProps<"div"> &

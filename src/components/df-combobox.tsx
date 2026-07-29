@@ -3,7 +3,7 @@
 import * as React from "react"
 import { X } from "lucide-react"
 
-import { useControllableState } from "../hooks"
+import { useControllableState, useIsomorphicLayoutEffect } from "../hooks"
 import {
   enabledComboboxIndexes,
   filterComboboxOptions,
@@ -11,8 +11,10 @@ import {
   mergeComboboxOptions,
   moveComboboxActiveIndex,
   resolveComboboxCommit,
+  resolveComboboxDisplayText,
   type ComboboxOption,
 } from "../lib/df-combobox"
+import { useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 import type { ListItemChromeProps } from "./df-list-item"
 import {
@@ -47,6 +49,7 @@ export type ComboboxProps = {
   /** Default List Item chrome for every option row. Forwarded to OptionList. */
   itemChrome?: ListItemChromeProps
   "aria-label"?: string
+  "aria-labelledby"?: string
 }
 
 function ComboboxField({
@@ -61,19 +64,26 @@ function ComboboxField({
   filtered,
   allowCustomValue,
   onClear,
+  onCommitCustom,
+  ariaLabel,
+  ariaLabelledBy,
 }: {
   text: string
   setText: (value: string) => void
-  disabled?: boolean
-  invalid?: boolean
-  placeholder?: string
-  id?: string
-  clearable?: boolean
+  disabled?: boolean | undefined
+  invalid?: boolean | undefined
+  placeholder?: string | undefined
+  id?: string | undefined
+  clearable?: boolean | undefined
   inputRef: React.RefObject<HTMLInputElement | null>
   filtered: ComboboxOption[]
   allowCustomValue: boolean
   onClear: () => void
+  onCommitCustom: (value: string) => void
+  ariaLabel?: string | undefined
+  ariaLabelledBy?: string | undefined
 }) {
+  const s = useDfStrings()
   const {
     triggerRef,
     open,
@@ -100,12 +110,11 @@ function ComboboxField({
     })
     if (result.kind === "option") {
       setValue(result.option.value)
-      setText(result.option.label)
       setOpen(false)
       return
     }
     if (result.kind === "custom") {
-      setText(result.value)
+      onCommitCustom(result.value)
       setOpen(false)
     }
   }
@@ -129,6 +138,8 @@ function ComboboxField({
         disabled={disabled}
         placeholder={placeholder}
         value={text}
+        aria-label={ariaLabelledBy == null ? ariaLabel : undefined}
+        aria-labelledby={ariaLabelledBy}
         aria-invalid={invalid || undefined}
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
@@ -179,7 +190,7 @@ function ComboboxField({
         <button
           type="button"
           data-df="combobox-clear"
-          aria-label="Clear"
+          aria-label={s.comboboxClear}
           onMouseDown={(event) => {
             event.preventDefault()
           }}
@@ -220,7 +231,7 @@ function Combobox({
   loadOptions,
   allowCustomValue = false,
   clearable = true,
-  placeholder = "Type to search",
+  placeholder,
   disabled = false,
   invalid = false,
   open,
@@ -232,8 +243,11 @@ function Combobox({
   emptyContent,
   itemChrome,
   "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
 }: ComboboxProps) {
-  const [text, setText] = useControllableState<string>({
+  const s = useDfStrings()
+  const resolvedPlaceholder = placeholder ?? s.comboboxPlaceholder
+  const [committed, setCommitted] = useControllableState<string>({
     value,
     defaultValue,
     onChange: onValueChange,
@@ -251,16 +265,40 @@ function Combobox({
     () => mergeComboboxOptions(options, asyncOptions),
     [asyncOptions, options]
   )
+  const [text, setText] = React.useState(() =>
+    resolveComboboxDisplayText(
+      value ?? defaultValue,
+      options,
+      allowCustomValue
+    )
+  )
   const filtered = React.useMemo(
     () => filterComboboxOptions(merged, text),
     [merged, text]
   )
-  const selectedValue =
-    filtered.find(
-      (option) => option.label === text || option.value === text
-    )?.value ?? null
+  const selectedValue = committed.length > 0 ? committed : null
 
   const requestIdRef = React.useRef(0)
+  const lastSyncedCommittedRef = React.useRef(committed)
+
+  useIsomorphicLayoutEffect(() => {
+    if (lastSyncedCommittedRef.current !== committed) {
+      lastSyncedCommittedRef.current = committed
+      setText(resolveComboboxDisplayText(committed, merged, allowCustomValue))
+      return
+    }
+    if (isOpen) return
+    const resolved = resolveComboboxDisplayText(
+      committed,
+      merged,
+      allowCustomValue
+    )
+    setText((current) => {
+      if (current === resolved) return current
+      if (current === committed || current.length === 0) return resolved
+      return current
+    })
+  }, [allowCustomValue, committed, isOpen, merged])
 
   React.useEffect(() => {
     if (!isOpen || !loadOptions) return
@@ -284,8 +322,22 @@ function Combobox({
     }
   }, [debounceMs, isOpen, loadOptions, text])
 
+  function commitOption(option: ComboboxOption) {
+    setCommitted(option.value)
+    setText(option.label)
+    lastSyncedCommittedRef.current = option.value
+  }
+
+  function commitCustom(next: string) {
+    setCommitted(next)
+    setText(next)
+    lastSyncedCommittedRef.current = next
+  }
+
   function handleClear() {
+    setCommitted("")
     setText("")
+    lastSyncedCommittedRef.current = ""
     setOpen(false)
     inputRef.current?.focus()
   }
@@ -297,7 +349,6 @@ function Combobox({
       data-invalid={invalid ? "" : undefined}
       data-loading={loading ? "" : undefined}
       className={cn(className)}
-      aria-label={ariaLabel}
     >
       <OptionList
         value={selectedValue}
@@ -305,7 +356,7 @@ function Combobox({
           if (next == null) return
           const option = filtered.find((entry) => entry.value === next)
           if (option == null || !isComboboxOptionInteractive(option)) return
-          setText(option.label)
+          commitOption(option)
           setOpen(false)
           inputRef.current?.focus()
         }}
@@ -327,13 +378,16 @@ function Combobox({
           setText={setText}
           disabled={disabled}
           invalid={invalid}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           id={id}
           clearable={clearable}
           inputRef={inputRef}
           filtered={filtered}
           allowCustomValue={allowCustomValue}
           onClear={handleClear}
+          onCommitCustom={commitCustom}
+          ariaLabel={ariaLabel}
+          ariaLabelledBy={ariaLabelledBy}
         />
         <OptionListContent
           side="bottom"
@@ -344,7 +398,9 @@ function Combobox({
         >
           {filtered.length === 0 ? (
             <div data-df="combobox-empty">
-              {loading ? "Loading..." : (emptyContent ?? "No matches")}
+              {loading
+                ? s.comboboxLoading
+                : (emptyContent ?? s.comboboxEmpty)}
             </div>
           ) : (
             filtered.map((option) => (

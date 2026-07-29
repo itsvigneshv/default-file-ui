@@ -1,14 +1,28 @@
 "use client"
 
 import {
-  useEffect,
+  useCallback,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
 } from "react"
 import { X } from "lucide-react"
 
+import { useDragGesture } from "../hooks"
+import { sanitizeCssColor } from "../lib/df-css-value"
+import {
+  dfColorPickerModeLabel,
+  useDfStrings,
+  type DfColorPickerMode,
+} from "../lib/df-intl"
+import {
+  dfHoverBorderAttr,
+  dfHoverBorderColorStyle,
+} from "../lib/hover-border"
+import { cn } from "../lib/utils"
 import { Input } from "./df-input"
 import {
   Popover,
@@ -16,23 +30,48 @@ import {
   PopoverTrigger,
 } from "./df-popover"
 import { Tabs, TabsList, TabsTrigger } from "./df-tabs"
-import {
-  dfHoverBorderAttr,
-  dfHoverBorderColorStyle,
-} from "../lib/hover-border"
-import { cn } from "../lib/utils"
 
-type ColorMode = "hex" | "rgb" | "hsl" | "hsb"
+type ColorMode = DfColorPickerMode
 type RGB = { r: number; g: number; b: number }
 type HSV = { h: number; s: number; v: number }
 type HSL = { h: number; s: number; l: number }
 
-const MODES: { id: ColorMode; label: string }[] = [
-  { id: "hex", label: "Hex" },
-  { id: "rgb", label: "RGB" },
-  { id: "hsl", label: "HSL" },
-  { id: "hsb", label: "HSB" },
-]
+const COLOR_MODES: readonly ColorMode[] = ["hex", "rgb", "hsl", "hsb"]
+
+function isColorMode(value: string): value is ColorMode {
+  return (COLOR_MODES as readonly string[]).includes(value)
+}
+
+/**
+ * Hue strip axis: hue rises with positive Y (top = 0). Pointer and keyboard
+ * both read this sign so Up decreases hue and moves the thumb up.
+ */
+const HUE_STRIP = {
+  min: 0,
+  /** Full circle in degrees; also the announced maximum. */
+  span: 360,
+  /**
+   * Internal ceiling just below the wrap so the thumb stays at the bottom edge
+   * instead of jumping to the top when the colour is red.
+   */
+  internalMax: 359.99,
+  step: 1,
+} as const
+
+const HUE_LARGE_STEP = HUE_STRIP.span / 10
+
+/**
+ * SV surface axes from pointer math: saturation rises with X; brightness rises
+ * as Y falls (top of the area is full brightness).
+ */
+const SV_AREA = {
+  min: 0,
+  max: 1,
+  step: 0.01,
+  largeStep: 0.1,
+  saturationPerRight: 1,
+  brightnessPerDown: -1,
+} as const
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n))
@@ -41,6 +80,74 @@ function clamp(n: number, min: number, max: number) {
 function round(n: number, digits = 0) {
   const f = 10 ** digits
   return Math.round(n * f) / f
+}
+
+/** Map a 0-to-1 position down the hue strip to an internal hue. */
+function hueFromStripY(normalizedY: number): number {
+  return clamp(
+    normalizedY * HUE_STRIP.span,
+    HUE_STRIP.min,
+    HUE_STRIP.internalMax
+  )
+}
+
+/** Wrap a hue onto the strip domain for circular keyboard stepping. */
+function wrapHue(h: number): number {
+  const span = HUE_STRIP.span
+  const next = ((h % span) + span) % span
+  if (next === 0) return HUE_STRIP.min
+  if (next > HUE_STRIP.internalMax) return HUE_STRIP.internalMax
+  return next
+}
+
+/**
+ * Step hue by visual travel on the strip. Positive units move down (hue up);
+ * negative units move up (hue down). Wraps around the circle. End is treated as
+ * span so one step past the bottom lands at 0 + remainder.
+ */
+function stepHueVisual(current: number, visualDownUnits: number, stepSize: number) {
+  const span = HUE_STRIP.span
+  const pos = current >= HUE_STRIP.internalMax ? span : current
+  return wrapHue(pos + visualDownUnits * stepSize)
+}
+
+/** Whole degrees for assistive technology; internalMax announces as span. */
+function announcedHue(h: number): number {
+  if (h >= HUE_STRIP.internalMax) return HUE_STRIP.span
+  return Math.round(h)
+}
+
+/** Map pointer position on the SV area to saturation and brightness. */
+function svFromPointer(normalizedX: number, normalizedY: number) {
+  return {
+    s: clamp(normalizedX, SV_AREA.min, SV_AREA.max),
+    v: clamp(1 - normalizedY, SV_AREA.min, SV_AREA.max),
+  }
+}
+
+/**
+ * Step an SV channel by visual travel. Right is positive X; down is positive Y.
+ * Brightness uses brightnessPerDown so Up raises brightness as drawn.
+ */
+function stepSvVisual(
+  current: HSV,
+  visualRightUnits: number,
+  visualDownUnits: number,
+  stepSize: number
+): HSV {
+  return {
+    ...current,
+    s: clamp(
+      current.s + visualRightUnits * stepSize * SV_AREA.saturationPerRight,
+      SV_AREA.min,
+      SV_AREA.max
+    ),
+    v: clamp(
+      current.v + visualDownUnits * stepSize * SV_AREA.brightnessPerDown,
+      SV_AREA.min,
+      SV_AREA.max
+    ),
+  }
 }
 
 function hexToRgb(hex: string): RGB | null {
@@ -223,6 +330,7 @@ function SwatchDot({
   value: string
   className?: string
 }) {
+  const safeColor = sanitizeCssColor(value)
   return (
     <span
       className={cn(
@@ -233,7 +341,7 @@ function SwatchDot({
     >
       <span
         className="absolute inset-0 rounded-full"
-        style={{ backgroundColor: value }}
+        style={safeColor != null ? { backgroundColor: safeColor } : undefined}
       />
     </span>
   )
@@ -242,20 +350,36 @@ function SwatchDot({
 export function ColorPicker({
   value,
   onChange,
-  label = "Pick color",
+  label,
   className,
   trailing,
   onClear,
-  clearLabel = "Remove color",
+  clearLabel,
   hoverBorder,
   hoverBorderColor,
 }: ColorPickerProps) {
+  const strings = useDfStrings()
+  const triggerLabel = label ?? strings.colorPickerLabel
+  const resolvedClearLabel = clearLabel ?? strings.colorPickerClear
+
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<ColorMode>("hex")
   const [hsv, setHsv] = useState(() => hexToHsv(value))
-  const [hexDraft, setHexDraft] = useState(value.toUpperCase())
+  const [hexDraft, setHexDraft] = useState(() => value.toUpperCase())
+  // Tracks the last seen `value` and `open`. While closed, a change to either
+  // restores draft state from the controlled value.
+  const [closedSync, setClosedSync] = useState({ value, open })
   const svRef = useRef<HTMLDivElement>(null)
   const hueRef = useRef<HTMLDivElement>(null)
+  const { begin: beginDrag } = useDragGesture()
+
+  if (value !== closedSync.value || open !== closedSync.open) {
+    setClosedSync({ value, open })
+    if (!open) {
+      setHsv(hexToHsv(value))
+      setHexDraft(value.toUpperCase())
+    }
+  }
 
   const hoverBorderAttr = dfHoverBorderAttr(hoverBorder)
   const pillChromeStyle = {
@@ -265,12 +389,6 @@ export function ColorPicker({
       hoverBorderColor
     ),
   } as CSSProperties
-
-  useEffect(() => {
-    if (open) return
-    setHsv(hexToHsv(value))
-    setHexDraft(value.toUpperCase())
-  }, [value, open])
 
   const rgb = useMemo(
     () => hsvToRgb(hsv.h, hsv.s, hsv.v),
@@ -282,17 +400,24 @@ export function ColorPicker({
   )
   const hex = useMemo(() => hsvToHex(hsv), [hsv])
 
-  const commitHsv = (next: HSV) => {
-    const safe = {
-      h: clamp(next.h, 0, 359.99),
-      s: clamp(next.s, 0, 1),
-      v: clamp(next.v, 0, 1),
-    }
-    setHsv(safe)
-    const nextHex = hsvToHex(safe)
-    setHexDraft(nextHex)
-    onChange(nextHex)
-  }
+  const satPercent = round(hsv.s * 100)
+  const brightnessPercent = round(hsv.v * 100)
+  const hueAnnounced = announcedHue(hsv.h)
+
+  const commitHsv = useCallback(
+    (next: HSV) => {
+      const safe = {
+        h: clamp(next.h, HUE_STRIP.min, HUE_STRIP.internalMax),
+        s: clamp(next.s, SV_AREA.min, SV_AREA.max),
+        v: clamp(next.v, SV_AREA.min, SV_AREA.max),
+      }
+      setHsv(safe)
+      const nextHex = hsvToHex(safe)
+      setHexDraft(nextHex)
+      onChange(nextHex)
+    },
+    [onChange]
+  )
 
   const commitRgb = (next: RGB) => {
     commitHsv(rgbToHsv(next.r, next.g, next.b))
@@ -302,41 +427,138 @@ export function ColorPicker({
     commitRgb(hslToRgb(next.h, next.s, next.l))
   }
 
-  const updateSvFromPointer = (clientX: number, clientY: number) => {
-    const el = svRef.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const s = clamp((clientX - rect.left) / rect.width, 0, 1)
-    const v = 1 - clamp((clientY - rect.top) / rect.height, 0, 1)
-    commitHsv({ ...hsv, s, v })
-  }
-
-  const updateHueFromPointer = (_clientX: number, clientY: number) => {
-    const el = hueRef.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const h = clamp(((clientY - rect.top) / rect.height) * 360, 0, 359.99)
-    commitHsv({ ...hsv, h })
-  }
-
-  const bindDrag = (
-    onMove: (clientX: number, clientY: number) => void
-  ) => {
-    return (event: React.PointerEvent<HTMLDivElement>) => {
+  const handleSvPointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
       event.preventDefault()
-      event.currentTarget.setPointerCapture(event.pointerId)
-      onMove(event.clientX, event.clientY)
-      const move = (e: PointerEvent) => onMove(e.clientX, e.clientY)
-      const up = () => {
-        window.removeEventListener("pointermove", move)
-        window.removeEventListener("pointerup", up)
+      const data = { hue: hsv.h }
+      const apply = (clientX: number, clientY: number, hue: number) => {
+        const el = svRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const { s, v } = svFromPointer(
+          (clientX - rect.left) / rect.width,
+          (clientY - rect.top) / rect.height
+        )
+        commitHsv({ h: hue, s, v })
       }
-      window.addEventListener("pointermove", move)
-      window.addEventListener("pointerup", up)
-    }
-  }
+      apply(event.clientX, event.clientY, data.hue)
+      beginDrag(event, data, {
+        onMove: (moveEvent, gesture) => {
+          apply(moveEvent.clientX, moveEvent.clientY, gesture.hue)
+        },
+      })
+    },
+    [beginDrag, commitHsv, hsv.h]
+  )
+
+  const handleHuePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      event.preventDefault()
+      const data = { sat: hsv.s, val: hsv.v }
+      const apply = (_clientX: number, clientY: number, sat: number, val: number) => {
+        const el = hueRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const h = hueFromStripY((clientY - rect.top) / rect.height)
+        commitHsv({ h, s: sat, v: val })
+      }
+      apply(event.clientX, event.clientY, data.sat, data.val)
+      beginDrag(event, data, {
+        onMove: (moveEvent, gesture) => {
+          apply(moveEvent.clientX, moveEvent.clientY, gesture.sat, gesture.val)
+        },
+      })
+    },
+    [beginDrag, commitHsv, hsv.s, hsv.v]
+  )
+
+  const handleSvKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLDivElement>) => {
+      let next: HSV | null = null
+      switch (event.key) {
+        case "ArrowRight":
+          next = stepSvVisual(hsv, 1, 0, SV_AREA.step)
+          break
+        case "ArrowLeft":
+          next = stepSvVisual(hsv, -1, 0, SV_AREA.step)
+          break
+        case "ArrowUp":
+          next = stepSvVisual(hsv, 0, -1, SV_AREA.step)
+          break
+        case "ArrowDown":
+          next = stepSvVisual(hsv, 0, 1, SV_AREA.step)
+          break
+        case "PageUp":
+          next = stepSvVisual(hsv, 0, -1, SV_AREA.largeStep)
+          break
+        case "PageDown":
+          next = stepSvVisual(hsv, 0, 1, SV_AREA.largeStep)
+          break
+        case "Home":
+          next = { ...hsv, s: SV_AREA.min }
+          break
+        case "End":
+          next = { ...hsv, s: SV_AREA.max }
+          break
+        default:
+          return
+      }
+      event.preventDefault()
+      commitHsv(next)
+    },
+    [commitHsv, hsv]
+  )
+
+  const handleHueKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLDivElement>) => {
+      let next: HSV | null = null
+      switch (event.key) {
+        case "ArrowUp":
+        case "ArrowLeft":
+          // Up decreases hue: top of the strip is 0 degrees.
+          next = {
+            ...hsv,
+            h: stepHueVisual(hsv.h, -1, HUE_STRIP.step),
+          }
+          break
+        case "ArrowDown":
+        case "ArrowRight":
+          next = {
+            ...hsv,
+            h: stepHueVisual(hsv.h, 1, HUE_STRIP.step),
+          }
+          break
+        case "PageUp":
+          next = {
+            ...hsv,
+            h: stepHueVisual(hsv.h, -1, HUE_LARGE_STEP),
+          }
+          break
+        case "PageDown":
+          next = {
+            ...hsv,
+            h: stepHueVisual(hsv.h, 1, HUE_LARGE_STEP),
+          }
+          break
+        case "Home":
+          next = { ...hsv, h: HUE_STRIP.min }
+          break
+        case "End":
+          next = { ...hsv, h: HUE_STRIP.internalMax }
+          break
+        default:
+          return
+      }
+      event.preventDefault()
+      commitHsv(next)
+    },
+    [commitHsv, hsv]
+  )
 
   const pureHue = hsvToHex({ h: hsv.h, s: 1, v: 1 })
+  const safePureHue = sanitizeCssColor(pureHue)
+  const safeHex = sanitizeCssColor(hex)
+  const safeValue = sanitizeCssColor(value)
 
   const popover = (
     <PopoverContent
@@ -350,25 +572,41 @@ export function ColorPicker({
         className="flex shrink-0 gap-2.5"
         style={{ height: "var(--df-color-picker-height)" }}
       >
+        {/*
+          Slider role exposes saturation as the numeric value; brightness is
+          announced only through aria-valuetext.
+        */}
         <div
           ref={svRef}
-          className="relative min-w-0 flex-1 cursor-crosshair touch-none overflow-hidden rounded-lg ring-1 ring-border"
+          role="slider"
+          tabIndex={0}
+          aria-label={strings.colorPickerArea}
+          aria-orientation="horizontal"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={satPercent}
+          aria-valuetext={strings.colorPickerAreaValue({
+            saturation: satPercent,
+            brightness: brightnessPercent,
+          })}
+          className="relative min-w-0 flex-1 cursor-crosshair touch-none overflow-hidden rounded-lg ring-1 ring-border focus-within:shadow-[var(--focus-ring)]"
           style={{
             height: "var(--df-color-picker-height)",
-            backgroundColor: pureHue,
+            backgroundColor: safePureHue ?? undefined,
             backgroundImage: `
                 linear-gradient(to top, #000, transparent),
                 linear-gradient(to right, #fff, transparent)
               `,
           }}
-          onPointerDown={bindDrag(updateSvFromPointer)}
+          onPointerDown={handleSvPointerDown}
+          onKeyDown={handleSvKeyDown}
         >
           <span
             className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
             style={{
               left: `${hsv.s * 100}%`,
               top: `${(1 - hsv.v) * 100}%`,
-              backgroundColor: hex,
+              backgroundColor: safeHex ?? undefined,
               boxShadow: "var(--df-shadow-picker-thumb)",
             }}
           />
@@ -376,20 +614,29 @@ export function ColorPicker({
 
         <div
           ref={hueRef}
-          className="relative shrink-0 cursor-ns-resize touch-none overflow-hidden rounded-lg ring-1 ring-border"
+          role="slider"
+          tabIndex={0}
+          aria-label={strings.colorPickerHue}
+          aria-orientation="vertical"
+          aria-valuemin={HUE_STRIP.min}
+          aria-valuemax={HUE_STRIP.span}
+          aria-valuenow={hueAnnounced}
+          aria-valuetext={strings.colorPickerHueValue(hueAnnounced)}
+          className="relative shrink-0 cursor-ns-resize touch-none overflow-hidden rounded-lg ring-1 ring-border focus-within:shadow-[var(--focus-ring)]"
           style={{
             width: "calc(5 * var(--spacing-unit, 0.25rem))",
             height: "var(--df-color-picker-height)",
             backgroundImage:
               "linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)",
           }}
-          onPointerDown={bindDrag(updateHueFromPointer)}
+          onPointerDown={handleHuePointerDown}
+          onKeyDown={handleHueKeyDown}
         >
           <span
             className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
             style={{
-              top: `${(hsv.h / 360) * 100}%`,
-              backgroundColor: pureHue,
+              top: `${(hsv.h / HUE_STRIP.span) * 100}%`,
+              backgroundColor: safePureHue ?? undefined,
               boxShadow: "var(--df-shadow-picker-thumb)",
             }}
           />
@@ -399,20 +646,22 @@ export function ColorPicker({
       <div className="flex items-center gap-2">
         <span
           className="size-9 shrink-0 rounded-lg ring-1 ring-black/10"
-          style={{ backgroundColor: hex }}
+          style={{ backgroundColor: safeHex ?? undefined }}
           aria-hidden
         />
         <Tabs
           value={mode}
-          onValueChange={(next) => setMode(next as ColorMode)}
+          onValueChange={(next) => {
+            if (isColorMode(next)) setMode(next)
+          }}
           variant="segment"
           size="sm"
           className="min-w-0 flex-1"
         >
-          <TabsList aria-label="Color input mode">
-            {MODES.map((item) => (
-              <TabsTrigger key={item.id} value={item.id}>
-                {item.label}
+          <TabsList aria-label={strings.colorPickerInputMode}>
+            {COLOR_MODES.map((id) => (
+              <TabsTrigger key={id} value={id}>
+                {dfColorPickerModeLabel(strings, id)}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -422,12 +671,12 @@ export function ColorPicker({
       {mode === "hex" ? (
         <label className="flex flex-col gap-1">
           <span className="text-2xs font-medium tracking-label text-muted-foreground uppercase">
-            Hex
+            {strings.colorPickerModeHex}
           </span>
           <Input
             value={hexDraft}
             spellCheck={false}
-            aria-label="Hex color"
+            aria-label={strings.colorPickerHex}
             className="h-8 font-mono text-xs uppercase"
             onChange={(event) => {
               const next = event.target.value.toUpperCase()
@@ -452,21 +701,21 @@ export function ColorPicker({
       {mode === "rgb" ? (
         <div className="flex gap-1.5">
           <ChannelField
-            label="R"
+            label={strings.colorPickerChannelR}
             value={round(rgb.r)}
             min={0}
             max={255}
             onChange={(r) => commitRgb({ ...rgb, r })}
           />
           <ChannelField
-            label="G"
+            label={strings.colorPickerChannelG}
             value={round(rgb.g)}
             min={0}
             max={255}
             onChange={(g) => commitRgb({ ...rgb, g })}
           />
           <ChannelField
-            label="B"
+            label={strings.colorPickerChannelB}
             value={round(rgb.b)}
             min={0}
             max={255}
@@ -478,21 +727,21 @@ export function ColorPicker({
       {mode === "hsl" ? (
         <div className="flex gap-1.5">
           <ChannelField
-            label="H"
+            label={strings.colorPickerChannelH}
             value={round(hsl.h)}
             min={0}
             max={360}
             onChange={(h) => commitHsl({ ...hsl, h })}
           />
           <ChannelField
-            label="S"
+            label={strings.colorPickerChannelS}
             value={round(hsl.s * 100)}
             min={0}
             max={100}
             onChange={(s) => commitHsl({ ...hsl, s: s / 100 })}
           />
           <ChannelField
-            label="L"
+            label={strings.colorPickerChannelL}
             value={round(hsl.l * 100)}
             min={0}
             max={100}
@@ -504,21 +753,21 @@ export function ColorPicker({
       {mode === "hsb" ? (
         <div className="flex gap-1.5">
           <ChannelField
-            label="H"
+            label={strings.colorPickerChannelH}
             value={round(hsv.h)}
             min={0}
             max={360}
             onChange={(h) => commitHsv({ ...hsv, h })}
           />
           <ChannelField
-            label="S"
+            label={strings.colorPickerChannelS}
             value={round(hsv.s * 100)}
             min={0}
             max={100}
             onChange={(s) => commitHsv({ ...hsv, s: s / 100 })}
           />
           <ChannelField
-            label="B"
+            label={strings.colorPickerChannelV}
             value={round(hsv.v * 100)}
             min={0}
             max={100}
@@ -536,7 +785,7 @@ export function ColorPicker({
           render={
             <button
               type="button"
-              aria-label={label}
+              aria-label={triggerLabel}
               data-df="color-picker-trigger"
               data-trailing="hex"
               data-hover-border={hoverBorderAttr}
@@ -578,7 +827,7 @@ export function ColorPicker({
             render={
               <button
                 type="button"
-                aria-label={label}
+                aria-label={triggerLabel}
                 className="inline-flex min-h-0 min-w-0 flex-1 cursor-pointer items-center rounded-full py-1 pr-0.5 text-left leading-none"
               />
             }
@@ -588,7 +837,7 @@ export function ColorPicker({
           <button
             type="button"
             className="flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700"
-            aria-label={clearLabel}
+            aria-label={resolvedClearLabel}
             onClick={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -609,7 +858,7 @@ export function ColorPicker({
         render={
           <button
             type="button"
-            aria-label={label}
+            aria-label={triggerLabel}
             className={cn(
               "relative size-4 shrink-0 cursor-pointer overflow-hidden rounded-full ring-1 ring-black/10 transition-transform hover:scale-105",
               className
@@ -619,7 +868,9 @@ export function ColorPicker({
       >
         <span
           className="absolute inset-0 rounded-full"
-          style={{ backgroundColor: value }}
+          style={
+            safeValue != null ? { backgroundColor: safeValue } : undefined
+          }
           aria-hidden
         />
       </PopoverTrigger>

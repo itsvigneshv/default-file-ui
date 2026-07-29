@@ -26,7 +26,8 @@ import {
   dfPaddingChromeStyle,
   resolvePaddingSides,
 } from "../lib/padding-chrome"
-import { cn } from "../lib/utils"
+import { useDfStrings } from "../lib/df-intl"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type SelectSize = "sm" | "md" | "lg"
 type SelectVariant = "primary" | "secondary"
@@ -96,8 +97,8 @@ type SelectInsetLabelContextValue = {
   label: React.ReactNode | null
   required: boolean
   help: React.ReactNode | null
-  labelClassName?: string
-  htmlFor?: string
+  labelClassName?: string | undefined
+  htmlFor?: string | undefined
 }
 
 const SelectExtrasContext = React.createContext<SelectExtrasContextValue>({
@@ -377,11 +378,10 @@ function SelectFieldLabel({
         htmlFor={htmlFor}
         required={required}
         className={cn(className)}
-        onClick={(event) => {
-          onClick?.(event)
-          focusSelectTriggerFromLabel(event, htmlFor)
-        }}
         {...props}
+        onClick={composeEventHandlers(onClick, (event) => {
+          focusSelectTriggerFromLabel(event, htmlFor)
+        })}
       >
         {children}
       </Label>
@@ -394,18 +394,20 @@ function SelectFieldLabel({
 
 function SelectFieldHelp({
   className,
-  label = "More information",
+  label,
   onClick,
   onPointerDown,
   ...props
 }: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   label?: string
 }) {
+  const s = useDfStrings()
+  const resolvedLabel = label ?? s.selectMoreInformation
   return (
     <button
       type="button"
       data-df="select-field-help-button"
-      aria-label={label}
+      aria-label={resolvedLabel}
       className={cn(className)}
       {...props}
       onClick={(event) => {
@@ -530,13 +532,16 @@ function SelectValueSummary({
   count: number
   supportingText?: React.ReactNode
 }) {
+  const s = useDfStrings()
   return (
     <span
       data-df="select-value-summary"
       className={cn(className)}
       {...props}
     >
-      <span data-df="select-value-summary-count">{count} selected</span>
+      <span data-df="select-value-summary-count">
+        {s.selectCountSelected(count)}
+      </span>
       {supportingText != null && supportingText !== "" ? (
         <span data-df="select-value-summary-support">{supportingText}</span>
       ) : null}
@@ -555,6 +560,7 @@ function SelectValueBadge({
   children?: React.ReactNode
   onRemove?: (value: string) => void
 }) {
+  const s = useDfStrings()
   const { labelFor, toggleValue } = useOptionListContext()
   const { disabled } = useSelectExtras()
 
@@ -581,7 +587,7 @@ function SelectValueBadge({
       <button
         type="button"
         data-df="select-value-badge-remove"
-        aria-label="Remove"
+        aria-label={s.selectRemove}
         disabled={disabled}
         onClick={handleRemove}
         onPointerDown={(event) => {
@@ -732,14 +738,12 @@ function SelectTrigger({
       aria-controls={open ? listboxId : undefined}
       aria-disabled={disabled || undefined}
       aria-invalid={invalid || undefined}
-      onClick={(event) => {
-        onClick?.(event)
-        if (event.defaultPrevented || disabled) return
+      onClick={composeEventHandlers(onClick, () => {
+        if (disabled) return
         toggleOpen()
-      }}
-      onKeyDown={(event) => {
-        onKeyDown?.(event)
-        if (event.defaultPrevented || disabled) return
+      })}
+      onKeyDown={composeEventHandlers(onKeyDown, (event) => {
+        if (disabled) return
         if (event.target !== event.currentTarget) return
 
         switch (event.key) {
@@ -761,7 +765,7 @@ function SelectTrigger({
           default:
             break
         }
-      }}
+      })}
     >
       {leadingIcon != null ? (
         <span data-df="select-trigger-icon" aria-hidden>

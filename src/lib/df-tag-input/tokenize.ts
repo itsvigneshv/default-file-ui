@@ -76,8 +76,8 @@ export function commitTagBatch(
   text: string,
   existing: readonly string[],
   options?: {
-    maxTags?: number
-    separators?: RegExp
+    maxTags?: number | undefined
+    separators?: RegExp | undefined
   }
 ): CommitTagBatchResult {
   const candidates = tokenizeTagText(

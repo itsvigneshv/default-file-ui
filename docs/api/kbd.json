@@ -43,11 +43,6 @@
             "name": "className",
             "type": "string",
             "description": "Additional styles on the chip."
-          },
-          {
-            "name": "…HTML attributes",
-            "type": "ComponentProps<\"kbd\">",
-            "description": "Standard kbd element attributes."
           }
         ]
       },
@@ -181,18 +176,6 @@
             "type": "CSS length",
             "description": "Space between chord parts.",
             "default": "0.12em"
-          },
-          {
-            "name": "--df-kbd-mod-optical-shift",
-            "type": "CSS length",
-            "description": "Optional vertical nudge for modifier abbrs. Defaults to 0.",
-            "default": "0em"
-          },
-          {
-            "name": "--df-kbd-punct-optical-shift",
-            "type": "CSS length",
-            "description": "Optional vertical nudge for punctuation content. Defaults to 0.",
-            "default": "0em"
           }
         ]
       }

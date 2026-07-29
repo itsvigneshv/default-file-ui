@@ -65,10 +65,17 @@ function RadioGroup({
   const labelId = label != null ? `df-radio-label-${reactId}` : undefined
   const descriptionId =
     description != null ? `df-radio-desc-${reactId}` : undefined
+  const handleValueChange = React.useCallback(
+    (next: string | null) => {
+      if (next == null) return
+      onValueChange?.(next)
+    },
+    [onValueChange]
+  )
   const [value, setValue] = useControllableState<string | null>({
     value: valueProp,
     defaultValue,
-    onChange: onValueChange,
+    onChange: handleValueChange,
   })
 
   return (

@@ -208,9 +208,39 @@
             "description": "Header and separator hairline color. Prefer var(--border). Sets --df-dropdown-menu-divider-color."
           },
           {
-            "name": "padding / paddingX / paddingY / sides",
+            "name": "padding",
             "type": "string",
-            "description": "Shell inset around header, body, and footer. Sets --df-dropdown-menu-padding-*. Prefer spacing tokens."
+            "description": "Inset on all sides. Prefer spacing tokens. Overridden by axis and side props."
+          },
+          {
+            "name": "paddingX",
+            "type": "string",
+            "description": "Horizontal inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingY",
+            "type": "string",
+            "description": "Vertical inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingTop",
+            "type": "string",
+            "description": "Top inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingRight",
+            "type": "string",
+            "description": "Right inset. Prefer spacing tokens. Wins over paddingX and padding."
+          },
+          {
+            "name": "paddingBottom",
+            "type": "string",
+            "description": "Bottom inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingLeft",
+            "type": "string",
+            "description": "Left inset. Prefer spacing tokens. Wins over paddingX and padding."
           },
           {
             "name": "gap",
@@ -295,9 +325,39 @@
             "description": "Header bottom rule color. Sets --df-dropdown-menu-divider-color for this header."
           },
           {
-            "name": "padding / paddingX / paddingY / sides",
+            "name": "padding",
             "type": "string",
-            "description": "Header inset. Sets --df-dropdown-menu-header-padding-*. Prefer spacing tokens."
+            "description": "Inset on all sides. Prefer spacing tokens. Overridden by axis and side props."
+          },
+          {
+            "name": "paddingX",
+            "type": "string",
+            "description": "Horizontal inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingY",
+            "type": "string",
+            "description": "Vertical inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingTop",
+            "type": "string",
+            "description": "Top inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingRight",
+            "type": "string",
+            "description": "Right inset. Prefer spacing tokens. Wins over paddingX and padding."
+          },
+          {
+            "name": "paddingBottom",
+            "type": "string",
+            "description": "Bottom inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingLeft",
+            "type": "string",
+            "description": "Left inset. Prefer spacing tokens. Wins over paddingX and padding."
           },
           {
             "name": "children",
@@ -334,9 +394,39 @@
             "description": "Space on each side of the scrollbar thumb, in pixels. Sets --df-dropdown-menu-scroll-thumb-gap."
           },
           {
-            "name": "padding / paddingX / paddingY / sides",
+            "name": "padding",
             "type": "string",
-            "description": "Body inset inside the shell. Sets --df-dropdown-menu-body-padding-*. Prefer spacing tokens."
+            "description": "Inset on all sides. Prefer spacing tokens. Overridden by axis and side props."
+          },
+          {
+            "name": "paddingX",
+            "type": "string",
+            "description": "Horizontal inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingY",
+            "type": "string",
+            "description": "Vertical inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingTop",
+            "type": "string",
+            "description": "Top inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingRight",
+            "type": "string",
+            "description": "Right inset. Prefer spacing tokens. Wins over paddingX and padding."
+          },
+          {
+            "name": "paddingBottom",
+            "type": "string",
+            "description": "Bottom inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingLeft",
+            "type": "string",
+            "description": "Left inset. Prefer spacing tokens. Wins over paddingX and padding."
           },
           {
             "name": "children",
@@ -440,11 +530,6 @@
             "description": "List Item density for this row. Defaults to Content itemSize when set, otherwise md."
           },
           {
-            "name": "padding / gap / fontSize / background / foreground / radius / …",
-            "type": "string",
-            "description": "List Item chrome. Prefer tokens. See List Item."
-          },
-          {
             "name": "children",
             "type": "ReactNode",
             "description": "Item label."
@@ -507,9 +592,39 @@
             "description": "Label type size. Prefer tokens. Sets --df-dropdown-menu-label-size."
           },
           {
-            "name": "padding / paddingX / paddingY / sides",
+            "name": "padding",
             "type": "string",
-            "description": "Label inset. Sets --df-dropdown-menu-label-padding-*. Prefer spacing tokens."
+            "description": "Inset on all sides. Prefer spacing tokens. Overridden by axis and side props."
+          },
+          {
+            "name": "paddingX",
+            "type": "string",
+            "description": "Horizontal inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingY",
+            "type": "string",
+            "description": "Vertical inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingTop",
+            "type": "string",
+            "description": "Top inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingRight",
+            "type": "string",
+            "description": "Right inset. Prefer spacing tokens. Wins over paddingX and padding."
+          },
+          {
+            "name": "paddingBottom",
+            "type": "string",
+            "description": "Bottom inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingLeft",
+            "type": "string",
+            "description": "Left inset. Prefer spacing tokens. Wins over paddingX and padding."
           },
           {
             "name": "children",
@@ -628,9 +743,39 @@
             "description": "Nested panel box-shadow. Same contract as DropdownMenuContent shadow."
           },
           {
-            "name": "background / foreground / borderColor / borderWidth / borderStyle / radius / dividerColor",
+            "name": "background",
             "type": "string",
-            "description": "Surface chrome. Same contract as DropdownMenuContent. Prefer tokens."
+            "description": "Surface fill. Prefer tokens."
+          },
+          {
+            "name": "foreground",
+            "type": "string",
+            "description": "Surface text color. Prefer tokens."
+          },
+          {
+            "name": "borderColor",
+            "type": "string",
+            "description": "Surface border color. Prefer tokens."
+          },
+          {
+            "name": "borderWidth",
+            "type": "string",
+            "description": "Surface border width. Prefer border-width tokens."
+          },
+          {
+            "name": "borderStyle",
+            "type": "string",
+            "description": "Surface border style."
+          },
+          {
+            "name": "radius",
+            "type": "string",
+            "description": "Corner radius. Prefer radius tokens."
+          },
+          {
+            "name": "dividerColor",
+            "type": "string",
+            "description": "Internal divider color. Prefer tokens."
           },
           {
             "name": "children",
@@ -669,14 +814,59 @@
             "description": "Render the child element as the row host, usually a link."
           },
           {
-            "name": "padding / paddingX / paddingY / sides",
+            "name": "padding",
             "type": "string",
-            "description": "List Item chrome padding. Prefer spacing tokens. See List Item."
+            "description": "Inset on all sides. Prefer spacing tokens. Overridden by axis and side props."
           },
           {
-            "name": "background / foreground / fontSize / radius",
+            "name": "paddingX",
             "type": "string",
-            "description": "List Item chrome for fill, text, type size, and radius. See List Item."
+            "description": "Horizontal inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingY",
+            "type": "string",
+            "description": "Vertical inset. Prefer spacing tokens."
+          },
+          {
+            "name": "paddingTop",
+            "type": "string",
+            "description": "Top inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingRight",
+            "type": "string",
+            "description": "Right inset. Prefer spacing tokens. Wins over paddingX and padding."
+          },
+          {
+            "name": "paddingBottom",
+            "type": "string",
+            "description": "Bottom inset. Prefer spacing tokens. Wins over paddingY and padding."
+          },
+          {
+            "name": "paddingLeft",
+            "type": "string",
+            "description": "Left inset. Prefer spacing tokens. Wins over paddingX and padding."
+          },
+          {
+            "name": "background",
+            "type": "string",
+            "description": "Row fill. Prefer tokens. See List Item chrome."
+          },
+          {
+            "name": "foreground",
+            "type": "string",
+            "description": "Row text color. Prefer tokens. See List Item chrome."
+          },
+          {
+            "name": "fontSize",
+            "type": "string",
+            "description": "Row type size. Prefer type tokens. See List Item chrome."
+          },
+          {
+            "name": "radius",
+            "type": "string",
+            "description": "Row corner radius. Prefer radius tokens. See List Item chrome."
           },
           {
             "name": "children",

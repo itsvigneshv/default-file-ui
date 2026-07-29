@@ -26,6 +26,17 @@ export function cn(...inputs: ClassValue[]) {
   return inputs.map(toClass).filter(Boolean).join(" ").replace(/\s+/g, " ").trim()
 }
 
+/** Run the consumer handler first; skip ours when they call preventDefault(). */
+export function composeEventHandlers<E extends { defaultPrevented: boolean }>(
+  theirs: ((event: E) => void) | undefined,
+  ours: (event: E) => void
+) {
+  return (event: E) => {
+    theirs?.(event)
+    if (!event.defaultPrevented) ours(event)
+  }
+}
+
 /** Assign a node to multiple refs (callback and object refs). */
 export function composeRefs<T>(
   ...refs: Array<React.Ref<T> | undefined | null>

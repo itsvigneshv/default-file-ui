@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { type DfStrings, useDfStrings } from "../lib/df-intl"
 import { cn } from "../lib/utils"
 
 type KbdSize = "sm" | "md"
@@ -18,9 +21,30 @@ type KbdContentProps = React.ComponentProps<"span"> & {
 
 type KbdGlyphKind = "mod" | "special" | "punct" | "key"
 
+type KbdTitleKey =
+  | "kbdCommand"
+  | "kbdShift"
+  | "kbdOption"
+  | "kbdControl"
+  | "kbdEscape"
+  | "kbdDelete"
+  | "kbdForwardDelete"
+  | "kbdReturn"
+  | "kbdTab"
+  | "kbdCapsLock"
+  | "kbdSpace"
+  | "kbdUpArrow"
+  | "kbdDownArrow"
+  | "kbdLeftArrow"
+  | "kbdRightArrow"
+  | "kbdPageUp"
+  | "kbdPageDown"
+  | "kbdHome"
+  | "kbdEnd"
+
 type KbdGlyphMeta = {
   kind: KbdGlyphKind
-  title?: string
+  titleKey?: KbdTitleKey
 }
 
 function hasKbdShortcut(value: unknown): value is string {
@@ -28,25 +52,25 @@ function hasKbdShortcut(value: unknown): value is string {
 }
 
 const KBD_GLYPH_META: Record<string, KbdGlyphMeta> = {
-  "⌘": { kind: "mod", title: "Command" },
-  "⇧": { kind: "mod", title: "Shift" },
-  "⌥": { kind: "mod", title: "Option" },
-  "⌃": { kind: "mod", title: "Control" },
-  "⎋": { kind: "special", title: "Escape" },
-  "⌫": { kind: "special", title: "Delete" },
-  "⌦": { kind: "special", title: "Forward Delete" },
-  "↵": { kind: "special", title: "Return" },
-  "⇥": { kind: "special", title: "Tab" },
-  "⇪": { kind: "special", title: "Caps Lock" },
-  "␣": { kind: "special", title: "Space" },
-  "↑": { kind: "special", title: "Up Arrow" },
-  "↓": { kind: "special", title: "Down Arrow" },
-  "←": { kind: "special", title: "Left Arrow" },
-  "→": { kind: "special", title: "Right Arrow" },
-  "⇞": { kind: "special", title: "Page Up" },
-  "⇟": { kind: "special", title: "Page Down" },
-  "↖": { kind: "special", title: "Home" },
-  "↘": { kind: "special", title: "End" },
+  "⌘": { kind: "mod", titleKey: "kbdCommand" },
+  "⇧": { kind: "mod", titleKey: "kbdShift" },
+  "⌥": { kind: "mod", titleKey: "kbdOption" },
+  "⌃": { kind: "mod", titleKey: "kbdControl" },
+  "⎋": { kind: "special", titleKey: "kbdEscape" },
+  "⌫": { kind: "special", titleKey: "kbdDelete" },
+  "⌦": { kind: "special", titleKey: "kbdForwardDelete" },
+  "↵": { kind: "special", titleKey: "kbdReturn" },
+  "⇥": { kind: "special", titleKey: "kbdTab" },
+  "⇪": { kind: "special", titleKey: "kbdCapsLock" },
+  "␣": { kind: "special", titleKey: "kbdSpace" },
+  "↑": { kind: "special", titleKey: "kbdUpArrow" },
+  "↓": { kind: "special", titleKey: "kbdDownArrow" },
+  "←": { kind: "special", titleKey: "kbdLeftArrow" },
+  "→": { kind: "special", titleKey: "kbdRightArrow" },
+  "⇞": { kind: "special", titleKey: "kbdPageUp" },
+  "⇟": { kind: "special", titleKey: "kbdPageDown" },
+  "↖": { kind: "special", titleKey: "kbdHome" },
+  "↘": { kind: "special", titleKey: "kbdEnd" },
   ",": { kind: "punct" },
   ".": { kind: "punct" },
   ";": { kind: "punct" },
@@ -71,14 +95,16 @@ function glyphMeta(glyph: string): KbdGlyphMeta {
   return KBD_GLYPH_META[glyph] ?? { kind: "key" }
 }
 
-function chordAccessibleName(glyphs: string[]): string {
+function glyphTitle(glyph: string, strings: DfStrings): string | undefined {
+  const meta = glyphMeta(glyph)
+  if (meta.titleKey != null) return strings[meta.titleKey]
+  if (glyph === " ") return strings.kbdSpace
+  return undefined
+}
+
+function chordAccessibleName(glyphs: string[], strings: DfStrings): string {
   return glyphs
-    .map((glyph) => {
-      const meta = glyphMeta(glyph)
-      if (meta.title) return meta.title
-      if (glyph === " ") return "Space"
-      return glyph
-    })
+    .map((glyph) => glyphTitle(glyph, strings) ?? glyph)
     .join(" ")
 }
 
@@ -118,16 +144,18 @@ const KbdContent = React.forwardRef<HTMLSpanElement, KbdContentProps>(
 function renderKbdGlyph(
   glyph: string,
   index: number,
-  presentational: boolean
+  presentational: boolean,
+  strings: DfStrings
 ): React.ReactNode {
   const meta = glyphMeta(glyph)
   const atProps = presentational ? ({ "aria-hidden": true } as const) : undefined
+  const title = glyphTitle(glyph, strings)
 
   if (meta.kind === "mod" || meta.kind === "special") {
     return (
       <KbdAbbr
         key={`${index}-${glyph}`}
-        title={meta.title ?? glyph}
+        title={title ?? glyph}
         data-kind={meta.kind}
         {...atProps}
       >
@@ -155,11 +183,14 @@ function renderKbdChord(parts: React.ReactNode[]): React.ReactNode {
 
 function renderKbdString(
   label: string,
-  presentational: boolean
+  presentational: boolean,
+  strings: DfStrings
 ): React.ReactNode {
   const glyphs = splitKbdGlyphs(label)
   return renderKbdChord(
-    glyphs.map((glyph, index) => renderKbdGlyph(glyph, index, presentational))
+    glyphs.map((glyph, index) =>
+      renderKbdGlyph(glyph, index, presentational, strings)
+    )
   )
 }
 
@@ -171,11 +202,14 @@ const Kbd = React.forwardRef<HTMLElement, KbdProps>(function Kbd(
   { className, size = "sm", children, ...props },
   ref
 ) {
+  const s = useDfStrings()
   const { "aria-label": ariaLabelProp, ...rest } = props
   const stringLabel = typeof children === "string" ? children : null
   const glyphs = stringLabel != null ? splitKbdGlyphs(stringLabel) : null
   const derivedLabel =
-    glyphs != null && glyphs.length > 0 ? chordAccessibleName(glyphs) : undefined
+    glyphs != null && glyphs.length > 0
+      ? chordAccessibleName(glyphs, s)
+      : undefined
   const ariaLabel =
     ariaLabelProp !== undefined ? ariaLabelProp : derivedLabel
   const presentational =
@@ -193,7 +227,7 @@ const Kbd = React.forwardRef<HTMLElement, KbdProps>(function Kbd(
       {...rest}
     >
       {stringLabel != null
-        ? renderKbdString(stringLabel, presentational)
+        ? renderKbdString(stringLabel, presentational, s)
         : renderKbdChildren(children)}
     </kbd>
   )

@@ -50,11 +50,11 @@ export function resolveSizeRatio(
 
 /** Build min/max primary ratios from host constraints and track size. */
 export function resolveRatioBounds(options: {
-  minSize?: SplitSizeConstraint
-  maxSize?: SplitSizeConstraint
+  minSize?: SplitSizeConstraint | undefined
+  maxSize?: SplitSizeConstraint | undefined
   trackSize: number
-  fallbackMin?: number
-  fallbackMax?: number
+  fallbackMin?: number | undefined
+  fallbackMax?: number | undefined
 }): SplitRatioBounds {
   const fallbackMin = options.fallbackMin ?? DEFAULT_BOUNDS.min
   const fallbackMax = options.fallbackMax ?? DEFAULT_BOUNDS.max

@@ -4,7 +4,11 @@ import * as React from "react"
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
 
 import { useControllableState } from "../hooks"
-import { buildMonthGrid } from "../lib/df-calendar-grid"
+import {
+  buildMonthGrid,
+  rotateWeekdayLabels,
+  weekStartsOnForLocale,
+} from "../lib/df-calendar-grid"
 import {
   applyBoundedRangeClick,
   classifyDay,
@@ -20,6 +24,11 @@ import {
   type DayBounds,
   type RangeDraft,
 } from "../lib/df-date-picker"
+import {
+  dfDatePickerWeekdays,
+  useDfStrings,
+  type DfStrings,
+} from "../lib/df-intl"
 import { cn } from "../lib/utils"
 import { Input } from "./df-input"
 import {
@@ -28,13 +37,13 @@ import {
   PopoverTrigger,
 } from "./df-popover"
 
-const WEEKDAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] as const
-
 type SharedPickerProps = {
   min?: string | null
   max?: string | null
   disabledDates?: (dayIso: string) => boolean
   placeholder?: string
+  /** BCP 47 locale for month title and first day of week. */
+  locale?: string
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
@@ -62,22 +71,30 @@ type CalendarPanelProps = {
   onVisibleMonthChange: (monthIso: string) => void
   focusIso: string
   onFocusIsoChange: (iso: string) => void
-  value?: string | null
-  draft?: RangeDraft
+  value?: string | null | undefined
+  draft?: RangeDraft | undefined
   hoverIso: string | null
   onHoverIsoChange: (iso: string | null) => void
   onSelectDay: (iso: string) => void
-  min?: string | null
-  max?: string | null
-  disabledDates?: (dayIso: string) => boolean
+  min?: string | null | undefined
+  max?: string | null | undefined
+  disabledDates?: ((dayIso: string) => boolean) | undefined
   onRequestClose: () => void
-  labelledBy?: string
+  labelledBy?: string | undefined
+  locale: string
+  weekStartsOn: number
+  weekdayLabels: readonly string[]
+  strings: DfStrings
 }
 
-function formatRangeDisplay(value: DateRangeValue | null | undefined): string {
+/** Format a closed range trigger value with catalogue word order. */
+function formatRangeDisplay(
+  value: DateRangeValue | null | undefined,
+  strings: DfStrings
+): string {
   if (value == null) return ""
   if (value.start === value.end) return value.start
-  return `${value.start} to ${value.end}`
+  return strings.dateRangeDisplay({ start: value.start, end: value.end })
 }
 
 function CalendarPanel({
@@ -96,6 +113,10 @@ function CalendarPanel({
   disabledDates,
   onRequestClose,
   labelledBy,
+  locale,
+  weekStartsOn,
+  weekdayLabels,
+  strings,
 }: CalendarPanelProps) {
   const gridId = React.useId()
   const today = todayIsoDay()
@@ -104,10 +125,10 @@ function CalendarPanel({
     [disabledDates, max, min]
   )
   const cells = React.useMemo(
-    () => buildMonthGrid(visibleMonth),
-    [visibleMonth]
+    () => buildMonthGrid(visibleMonth, weekStartsOn),
+    [visibleMonth, weekStartsOn]
   )
-  const monthLabel = formatUtcMonthLabel(visibleMonth)
+  const monthLabel = formatUtcMonthLabel(visibleMonth, locale)
 
   React.useEffect(() => {
     const active = document.getElementById(`${gridId}-${focusIso}`)
@@ -123,6 +144,7 @@ function CalendarPanel({
       focusIso,
       delta < 0 ? "PageUp" : "PageDown",
       visibleMonth,
+      weekStartsOn,
       bounds
     )
     if (move != null) onFocusIsoChange(move.focusIso)
@@ -158,7 +180,13 @@ function CalendarPanel({
       }
       return
     }
-    const move = moveCalendarFocus(focusIso, event.key, visibleMonth, bounds)
+    const move = moveCalendarFocus(
+      focusIso,
+      event.key,
+      visibleMonth,
+      weekStartsOn,
+      bounds
+    )
     if (move == null) return
     event.preventDefault()
     if (move.monthChanged) {
@@ -173,7 +201,7 @@ function CalendarPanel({
         <button
           type="button"
           data-df="date-picker-nav"
-          aria-label="Previous month"
+          aria-label={strings.datePickerPreviousMonth}
           onClick={() => goMonth(-1)}
         >
           <ChevronLeft aria-hidden />
@@ -184,7 +212,7 @@ function CalendarPanel({
         <button
           type="button"
           data-df="date-picker-nav"
-          aria-label="Next month"
+          aria-label={strings.datePickerNextMonth}
           onClick={() => goMonth(1)}
         >
           <ChevronRight aria-hidden />
@@ -194,7 +222,7 @@ function CalendarPanel({
           data-df="date-picker-today"
           onClick={handleToday}
         >
-          Today
+          {strings.datePickerToday}
         </button>
       </div>
 
@@ -205,9 +233,9 @@ function CalendarPanel({
         onKeyDown={handleGridKeyDown}
       >
         <div role="row" data-df="date-picker-weekdays">
-          {WEEKDAY_LABELS.map((label) => (
+          {weekdayLabels.map((label, index) => (
             <div
-              key={label}
+              key={`${label}-${index}`}
               role="columnheader"
               data-df="date-picker-weekday"
             >
@@ -280,15 +308,22 @@ function DatePicker({
   min,
   max,
   disabledDates,
-  placeholder = "Select date",
+  placeholder,
+  locale = "en-US",
   open,
   defaultOpen = false,
   onOpenChange,
   disabled,
   id,
   className,
-  "aria-label": ariaLabel = "Date",
+  "aria-label": ariaLabel,
 }: DatePickerProps) {
+  const s = useDfStrings()
+  const weekStartsOn = weekStartsOnForLocale(locale)
+  const weekdayLabels = rotateWeekdayLabels(
+    dfDatePickerWeekdays(s),
+    weekStartsOn
+  )
   const titleId = React.useId()
   const [isOpen, setOpen] = useControllableState({
     value: open,
@@ -343,9 +378,11 @@ function DatePicker({
             readOnly
             disabled={disabled}
             value={value ?? ""}
-            placeholder={placeholder}
+            placeholder={placeholder ?? s.datePickerPlaceholder}
             trailingIcon={<CalendarIcon aria-hidden />}
-            aria-label={ariaLabel}
+            role="combobox"
+            aria-haspopup="grid"
+            aria-label={ariaLabel ?? s.datePickerAriaLabel}
             className={cn(className)}
           />
         }
@@ -371,6 +408,10 @@ function DatePicker({
           disabledDates={disabledDates}
           onRequestClose={() => setOpen(false)}
           labelledBy={titleId}
+          locale={locale}
+          weekStartsOn={weekStartsOn}
+          weekdayLabels={weekdayLabels}
+          strings={s}
         />
       </PopoverContent>
     </Popover>
@@ -384,15 +425,22 @@ function DateRangePicker({
   min,
   max,
   disabledDates,
-  placeholder = "Select date range",
+  placeholder,
+  locale = "en-US",
   open,
   defaultOpen = false,
   onOpenChange,
   disabled,
   id,
   className,
-  "aria-label": ariaLabel = "Date range",
+  "aria-label": ariaLabel,
 }: DateRangePickerProps) {
+  const s = useDfStrings()
+  const weekStartsOn = weekStartsOnForLocale(locale)
+  const weekdayLabels = rotateWeekdayLabels(
+    dfDatePickerWeekdays(s),
+    weekStartsOn
+  )
   const titleId = React.useId()
   const [isOpen, setOpen] = useControllableState({
     value: open,
@@ -454,10 +502,12 @@ function DateRangePicker({
             id={id}
             readOnly
             disabled={disabled}
-            value={formatRangeDisplay(value)}
-            placeholder={placeholder}
+            value={formatRangeDisplay(value, s)}
+            placeholder={placeholder ?? s.dateRangePickerPlaceholder}
             trailingIcon={<CalendarIcon aria-hidden />}
-            aria-label={ariaLabel}
+            role="combobox"
+            aria-haspopup="grid"
+            aria-label={ariaLabel ?? s.dateRangePickerAriaLabel}
             className={cn(className)}
           />
         }
@@ -483,6 +533,10 @@ function DateRangePicker({
           disabledDates={disabledDates}
           onRequestClose={() => setOpen(false)}
           labelledBy={titleId}
+          locale={locale}
+          weekStartsOn={weekStartsOn}
+          weekdayLabels={weekdayLabels}
+          strings={s}
         />
       </PopoverContent>
     </Popover>

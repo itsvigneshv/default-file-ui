@@ -98,11 +98,6 @@
             "name": "children",
             "type": "ReactNode",
             "description": "Scrollable content inside the viewport."
-          },
-          {
-            "name": "…div attributes",
-            "type": "ComponentProps<\"div\">",
-            "description": "Native div props on the root (for example id, aria-label, onScroll)."
           }
         ]
       },

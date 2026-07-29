@@ -2,12 +2,12 @@
 
 import * as React from "react"
 
-import { useControllableState } from "../hooks"
+import { useControllableState, useIsomorphicLayoutEffect } from "../hooks"
 import {
   dfCornerShapeStyle,
   type DfCornerShape,
 } from "../lib/corner-shape"
-import { cn } from "../lib/utils"
+import { cn, composeEventHandlers } from "../lib/utils"
 
 type TabsVariant = "pill" | "line" | "segment"
 type TabsSize = "sm" | "default" | "lg"
@@ -180,7 +180,7 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
   const listRef = React.useRef<HTMLDivElement>(null)
   const [indicator, setIndicator] = React.useState<IndicatorRect | null>(null)
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const list = listRef.current
     if (!list) return
 
@@ -210,8 +210,6 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
   }, [variant, size, orientation, lineAlign, radius, value])
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    onKeyDown?.(event)
-    if (event.defaultPrevented) return
     const prevKey = vertical ? "ArrowUp" : "ArrowLeft"
     const nextKey = vertical ? "ArrowDown" : "ArrowRight"
     if (![prevKey, nextKey, "Home", "End"].includes(event.key)) return
@@ -236,6 +234,7 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
       nextIndex = (base + step + triggers.length) % triggers.length
     }
     const next = triggers[nextIndex]
+    if (next === undefined) return
     next.focus()
     next.click()
   }
@@ -253,8 +252,10 @@ function TabsList({ className, children, onKeyDown, ...props }: TabsListProps) {
       data-line-align={lineAlign}
       data-radius={radius}
       className={cn("df-tabs-list", className)}
-      onKeyDown={handleKeyDown}
       {...props}
+      onKeyDown={(event) => {
+        composeEventHandlers(onKeyDown, handleKeyDown)(event)
+      }}
     >
       {indicator ? (
         <span
@@ -339,11 +340,10 @@ function TabsTrigger({
       data-leading={leading != null ? "true" : undefined}
       data-trailing={trailing != null ? "true" : undefined}
       className={cn("df-tabs-trigger", className)}
-      onClick={(event) => {
-        props.onClick?.(event)
-        if (!event.defaultPrevented && !disabled) setValue(value)
-      }}
       {...props}
+      onClick={composeEventHandlers(props.onClick, () => {
+        if (!disabled) setValue(value)
+      })}
     >
       {leading != null ? (
         <span data-df="tabs-trigger-leading" className="df-tabs-trigger-leading">
@@ -386,6 +386,7 @@ function TabsContent({
       id={`${baseId}-panel-${value}`}
       aria-labelledby={`${baseId}-tab-${value}`}
       hidden={!selected}
+      tabIndex={selected ? 0 : undefined}
       data-df="tabs-content"
       data-state={selected ? "active" : "inactive"}
       className={cn("df-tabs-content", className)}

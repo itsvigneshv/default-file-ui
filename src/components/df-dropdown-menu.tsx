@@ -9,6 +9,9 @@ import {
   useControllableState,
   useDismiss,
   useIsClient,
+  useIsomorphicLayoutEffect,
+  useNearestDarkClass,
+  usePresence,
   type Align,
   type Side,
 } from "../hooks"
@@ -17,8 +20,7 @@ import {
   resolvePaddingSides,
   type PaddingChromeProps,
 } from "../lib/padding-chrome"
-import { nearestDarkClass } from "../lib/nearest-theme"
-import { cn, composeRefs } from "../lib/utils"
+import { cn, composeEventHandlers, composeRefs } from "../lib/utils"
 import { hasKbdShortcut, Kbd } from "./df-kbd"
 import {
   ListItem,
@@ -37,15 +39,15 @@ function hasHeaderLeading(leading: React.ReactNode | undefined): boolean {
 }
 
 type DropdownMenuSurfaceChromeProps = {
-  background?: string
-  foreground?: string
-  borderColor?: string
-  borderWidth?: string
-  borderStyle?: string
-  radius?: string
+  background?: string | undefined
+  foreground?: string | undefined
+  borderColor?: string | undefined
+  borderWidth?: string | undefined
+  borderStyle?: string | undefined
+  radius?: string | undefined
   /** Panel shadow. Off by default. Pass a kit elevation token, or none or false. */
-  shadow?: string | false
-  dividerColor?: string
+  shadow?: string | false | undefined
+  dividerColor?: string | undefined
 }
 
 function resolveDropdownMenuShadow(
@@ -120,14 +122,15 @@ const DropdownMenuItemSizeContext = React.createContext<ListItemSize | null>(
 
 type DropdownMenuSubmenuMotion = {
   animated: boolean
-  openDuration?: number
-  closeDuration?: number
+  openDuration?: number | undefined
+  closeDuration?: number | undefined
 }
 
 type DropdownMenuSubmenuState = {
   open: boolean
   setOpen: (open: boolean) => void
   triggerRef: React.RefObject<HTMLElement | null>
+  setTriggerNode: (node: HTMLElement | null) => void
   cancelClose: () => void
   scheduleClose: () => void
   motion: DropdownMenuSubmenuMotion
@@ -195,33 +198,33 @@ function DropdownMenuTrigger({
   const { open, setOpen, triggerRef, menuId, restoreFocusRef } =
     useDropdownMenuContext()
 
-  const onTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
-    onClick?.(event as React.MouseEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    restoreFocusRef.current = true
-    setOpen(!open)
-  }
-
-  const onTriggerKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    onKeyDown?.(event as React.KeyboardEvent<HTMLButtonElement>)
-    if (event.defaultPrevented) return
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault()
+  const onTriggerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    composeEventHandlers(onClick, () => {
       restoreFocusRef.current = true
       setOpen(!open)
-      return
-    }
-    if (event.key === "ArrowDown") {
-      event.preventDefault()
-      restoreFocusRef.current = true
-      if (!open) setOpen(true)
-      return
-    }
-    if (event.key === "Escape" && open) {
-      event.preventDefault()
-      restoreFocusRef.current = true
-      setOpen(false)
-    }
+    })(event)
+  }
+
+  const onTriggerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    composeEventHandlers(onKeyDown, (nextEvent) => {
+      if (nextEvent.key === "Enter" || nextEvent.key === " ") {
+        nextEvent.preventDefault()
+        restoreFocusRef.current = true
+        setOpen(!open)
+        return
+      }
+      if (nextEvent.key === "ArrowDown") {
+        nextEvent.preventDefault()
+        restoreFocusRef.current = true
+        if (!open) setOpen(true)
+        return
+      }
+      if (nextEvent.key === "Escape" && open) {
+        nextEvent.preventDefault()
+        restoreFocusRef.current = true
+        setOpen(false)
+      }
+    })(event)
   }
 
   const shared = {
@@ -247,12 +250,12 @@ function DropdownMenuTrigger({
       onClick: (event: React.MouseEvent<HTMLElement>) => {
         renderProps.onClick?.(event)
         if (event.defaultPrevented) return
-        onTriggerClick(event)
+        onTriggerClick(event as React.MouseEvent<HTMLButtonElement>)
       },
       onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
         renderProps.onKeyDown?.(event)
         if (event.defaultPrevented) return
-        onTriggerKeyDown(event)
+        onTriggerKeyDown(event as React.KeyboardEvent<HTMLButtonElement>)
       },
     } as never)
   }
@@ -362,7 +365,8 @@ function DropdownMenuContent({
 }: DropdownMenuContentProps) {
   const { open, setOpen, triggerRef, restoreFocusRef } = useDropdownMenuContext()
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const [present, setPresent] = React.useState(open)
+  const { present, onExitAnimationEnd } = usePresence(open, { animated })
+  const portalThemeClass = useNearestDarkClass(triggerRef, present && portal)
   const mounted = useIsClient()
   const didInitialFocusRef = React.useRef(false)
   const wasOpenRef = React.useRef(false)
@@ -396,22 +400,6 @@ function DropdownMenuContent({
   })
 
   React.useEffect(() => {
-    if (open) {
-      setPresent(true)
-      return
-    }
-    if (!present) return
-    if (!animated) {
-      setPresent(false)
-      return
-    }
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) setPresent(false)
-  }, [animated, open, present])
-
-  React.useEffect(() => {
     if (open && present) {
       wasOpenRef.current = true
       if (!didInitialFocusRef.current) {
@@ -438,8 +426,8 @@ function DropdownMenuContent({
   }, [open, present, restoreFocusRef, triggerRef])
 
   React.useEffect(() => {
+    const typeahead = typeaheadRef.current
     return () => {
-      const typeahead = typeaheadRef.current
       if (typeahead.timer != null) window.clearTimeout(typeahead.timer)
     }
   }, [])
@@ -478,10 +466,6 @@ function DropdownMenuContent({
       : null),
     ...resolvedWidth.style,
   } as React.CSSProperties
-
-  const portalThemeClass = portal
-    ? nearestDarkClass(triggerRef.current)
-    : undefined
 
   const viewportMaxWidth =
     "min(calc(100vw - 4 * var(--spacing-unit, 0.25rem)), var(--df-dropdown-menu-max-width))"
@@ -525,9 +509,6 @@ function DropdownMenuContent({
       }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    onKeyDown?.(event)
-    if (event.defaultPrevented) return
-
     const items = getMenuItems(contentRef.current)
     if (items.length === 0) return
 
@@ -613,11 +594,11 @@ function DropdownMenuContent({
         data-item-size={itemSize}
         className={cn(className)}
         style={{ ...layoutStyle, ...chromeStyle, ...styleProp }}
-        onKeyDown={handleKeyDown}
+        onKeyDown={(event) => {
+          composeEventHandlers(onKeyDown, handleKeyDown)(event)
+        }}
         onAnimationEnd={(event) => {
-          onAnimationEnd?.(event)
-          if (event.target !== event.currentTarget) return
-          if (!open) setPresent(false)
+          composeEventHandlers(onAnimationEnd, onExitAnimationEnd)(event)
         }}
       >
         {children}
@@ -680,7 +661,7 @@ function DropdownMenuHeader({
 }: DropdownMenuHeaderProps) {
   const { labelId, setHasLabel } = useDropdownMenuContext()
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const labelled = title != null
     setHasLabel(labelled)
     return () => setHasLabel(false)
@@ -915,7 +896,7 @@ const DropdownMenuItem = React.forwardRef<HTMLElement, DropdownMenuItemProps>(
     const setItemRef = React.useCallback(
       (node: HTMLElement | null) => {
         if (isSubmenuTrigger && submenu) {
-          submenu.triggerRef.current = node
+          submenu.setTriggerNode(node)
         }
       },
       [isSubmenuTrigger, submenu]
@@ -968,27 +949,28 @@ const DropdownMenuItem = React.forwardRef<HTMLElement, DropdownMenuItemProps>(
         tabIndex={-1}
         className={cn(className)}
         onMouseEnter={(event) => {
-          onMouseEnter?.(event)
-          if (isSubmenuTrigger) submenu?.cancelClose()
+          composeEventHandlers(onMouseEnter, () => {
+            if (isSubmenuTrigger) submenu?.cancelClose()
+          })(event)
         }}
         onClick={(event) => {
-          onClick?.(event)
-          if (event.defaultPrevented) return
-          activate(event)
+          composeEventHandlers(onClick, (nextEvent) => {
+            activate(nextEvent)
+          })(event)
         }}
         onKeyDown={(event) => {
-          onKeyDown?.(event)
-          if (event.defaultPrevented) return
-          if (isSubmenuTrigger && event.key === "ArrowRight") {
-            event.preventDefault()
-            submenu?.cancelClose()
-            submenu?.setOpen(true)
-            return
-          }
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault()
-            activate(event)
-          }
+          composeEventHandlers(onKeyDown, (nextEvent) => {
+            if (isSubmenuTrigger && nextEvent.key === "ArrowRight") {
+              nextEvent.preventDefault()
+              submenu?.cancelClose()
+              submenu?.setOpen(true)
+              return
+            }
+            if (nextEvent.key === "Enter" || nextEvent.key === " ") {
+              nextEvent.preventDefault()
+              activate(nextEvent)
+            }
+          })(event)
         }}
       >
         {children}
@@ -1173,6 +1155,10 @@ function DropdownMenuSubmenu({
   const triggerRef = React.useRef<HTMLElement | null>(null)
   const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const setTriggerNode = React.useCallback((node: HTMLElement | null) => {
+    triggerRef.current = node
+  }, [])
+
   const motion = React.useMemo<DropdownMenuSubmenuMotion>(
     () => ({
       animated,
@@ -1209,11 +1195,12 @@ function DropdownMenuSubmenu({
       open: isOpen,
       setOpen: setIsOpen,
       triggerRef,
+      setTriggerNode,
       cancelClose,
       scheduleClose,
       motion,
     }),
-    [cancelClose, isOpen, motion, scheduleClose, setIsOpen]
+    [cancelClose, isOpen, motion, scheduleClose, setIsOpen, setTriggerNode]
   )
 
   return (
@@ -1286,7 +1273,10 @@ function DropdownMenuSubContent({
   }
 
   const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const [present, setPresent] = React.useState(open)
+  const { present, onExitAnimationEnd } = usePresence(open, {
+    animated: motion.animated,
+  })
+  const portalThemeClass = useNearestDarkClass(triggerRef, present && portal)
   const placement = useAnchoredPosition({
     open: present && portal,
     triggerRef,
@@ -1300,22 +1290,6 @@ function DropdownMenuSubContent({
   useDismiss(open && portal, () => setOpen(false), [triggerRef, contentRef], {
     excludeSelectors: DISMISS_NESTED_LAYER_SELECTORS,
   })
-
-  React.useEffect(() => {
-    if (open) {
-      setPresent(true)
-      return
-    }
-    if (!present) return
-    if (!motion.animated) {
-      setPresent(false)
-      return
-    }
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) setPresent(false)
-  }, [motion.animated, open, present])
 
   const mounted = useIsClient()
   if (!mounted || !present) return null
@@ -1384,49 +1358,48 @@ function DropdownMenuSubContent({
               }
         }
         onMouseEnter={(event) => {
-          onMouseEnter?.(event)
-          submenu.cancelClose()
+          composeEventHandlers(onMouseEnter, () => {
+            submenu.cancelClose()
+          })(event)
         }}
         onMouseLeave={(event) => {
-          onMouseLeave?.(event)
-          submenu.scheduleClose()
+          composeEventHandlers(onMouseLeave, () => {
+            submenu.scheduleClose()
+          })(event)
         }}
         onKeyDown={(event) => {
-          onKeyDown?.(event)
-          if (event.defaultPrevented) return
+          composeEventHandlers(onKeyDown, (nextEvent) => {
+            if (nextEvent.key === "ArrowLeft" || nextEvent.key === "Escape") {
+              nextEvent.preventDefault()
+              nextEvent.stopPropagation()
+              setOpen(false)
+              triggerRef.current?.focus?.()
+              return
+            }
 
-          if (event.key === "ArrowLeft" || event.key === "Escape") {
-            event.preventDefault()
-            event.stopPropagation()
-            setOpen(false)
-            triggerRef.current?.focus?.()
-            return
-          }
+            const items = getMenuItems(contentRef.current)
+            if (items.length === 0) return
+            const active = document.activeElement
+            const index = items.findIndex((item) => item === active)
 
-          const items = getMenuItems(contentRef.current)
-          if (items.length === 0) return
-          const active = document.activeElement
-          const index = items.findIndex((item) => item === active)
-
-          if (event.key === "ArrowDown") {
-            event.preventDefault()
-            const next = index < 0 ? 0 : (index + 1) % items.length
-            items[next]?.focus()
-            return
-          }
-          if (event.key === "ArrowUp") {
-            event.preventDefault()
-            const next =
-              index < 0
-                ? items.length - 1
-                : (index - 1 + items.length) % items.length
-            items[next]?.focus()
-          }
+            if (nextEvent.key === "ArrowDown") {
+              nextEvent.preventDefault()
+              const next = index < 0 ? 0 : (index + 1) % items.length
+              items[next]?.focus()
+              return
+            }
+            if (nextEvent.key === "ArrowUp") {
+              nextEvent.preventDefault()
+              const next =
+                index < 0
+                  ? items.length - 1
+                  : (index - 1 + items.length) % items.length
+              items[next]?.focus()
+            }
+          })(event)
         }}
         onAnimationEnd={(event) => {
-          onAnimationEnd?.(event)
-          if (event.target !== event.currentTarget) return
-          if (!open) setPresent(false)
+          composeEventHandlers(onAnimationEnd, onExitAnimationEnd)(event)
         }}
       >
         <ScrollArea visibility="always">
@@ -1441,7 +1414,7 @@ function DropdownMenuSubContent({
   return createPortal(
     <div
       data-df="dropdown-menu-portal"
-      className={nearestDarkClass(triggerRef.current)}
+      className={portalThemeClass}
     >
       {panel}
     </div>,

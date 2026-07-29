@@ -2,7 +2,7 @@ import {
   getUiAudioContext,
   resumeUiAudio,
   uiAudioAllowed,
-} from "./df-ui-audio"
+} from "../df-ui-audio"
 
 type TickSoundOptions = {
   volume?: number
