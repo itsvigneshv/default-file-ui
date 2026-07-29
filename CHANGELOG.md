@@ -2,6 +2,10 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.29.5
+
+- Assign Floating Controls toolbar item indices in the parent so roving `tabIndex` matches between server and client HTML.
+
 ## 0.29.4
 
 - Enable `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` with real narrowing across kit types and components.

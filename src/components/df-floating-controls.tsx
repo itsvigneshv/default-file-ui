@@ -64,8 +64,12 @@ type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   tone?: "ghost" | "solid" | undefined
 }
 
+type FloatingControlsItemInternalProps = FloatingControlsItemProps & {
+  /** Assigned by FloatingControls. Not a public prop. */
+  rovingIndex?: number | undefined
+}
+
 type FloatingControlsRovingContextValue = {
-  claimIndex: () => number
   getItemProps: (index: number) => RovingItemProps
 }
 
@@ -74,7 +78,7 @@ const FloatingControlsRovingContext =
 
 const FloatingControlsItem = React.forwardRef<
   HTMLButtonElement,
-  FloatingControlsItemProps
+  FloatingControlsItemInternalProps
 >(function FloatingControlsItem(
   {
     className,
@@ -85,14 +89,16 @@ const FloatingControlsItem = React.forwardRef<
     children,
     onFocus,
     onKeyDown,
+    rovingIndex,
     ...props
   },
   ref
 ) {
   const roving = React.useContext(FloatingControlsRovingContext)
-  const index = roving != null ? roving.claimIndex() : -1
   const itemProps =
-    roving != null && index >= 0 ? roving.getItemProps(index) : null
+    roving != null && rovingIndex != null && rovingIndex >= 0
+      ? roving.getItemProps(rovingIndex)
+      : null
 
   return (
     <button
@@ -145,7 +151,7 @@ const FloatingControlsItem = React.forwardRef<
 
 function isFloatingControlsItemElement(
   node: React.ReactNode
-): node is React.ReactElement<FloatingControlsItemProps> {
+): node is React.ReactElement<FloatingControlsItemInternalProps> {
   return React.isValidElement(node) && node.type === FloatingControlsItem
 }
 
@@ -223,8 +229,13 @@ function FloatingControls({
   })
 
   let nextItemIndex = 0
+  const indexedContent = React.Children.map(content, (child) => {
+    if (!isFloatingControlsItemElement(child)) return child
+    const rovingIndex = nextItemIndex++
+    return React.cloneElement(child, { rovingIndex })
+  })
+
   const rovingValue: FloatingControlsRovingContextValue = {
-    claimIndex: () => nextItemIndex++,
     getItemProps,
   }
 
@@ -240,7 +251,7 @@ function FloatingControls({
         className={cn("df-floating-controls", className)}
         {...props}
       >
-        {content}
+        {indexedContent}
       </div>
     </FloatingControlsRovingContext.Provider>
   )
