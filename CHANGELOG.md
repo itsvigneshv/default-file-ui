@@ -2,6 +2,11 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.27.14
+
+- Align Stage Shot, Markdown Preview, and Scan Note home preview stage fills with the cream card artwork.
+- Add `--home-tool-preview-runway` for the Runway studio and home card media fill.
+
 ## 0.27.13
 
 - Clean kit comments and docs copy: remove em dashes, drop unnecessary English hyphens, and keep only contract-level notes.
