@@ -2,9 +2,13 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.29.6
+
+- Build `dist` on install from git so App Hosting and other github consumers receive compiled components.
+
 ## 0.29.5
 
-- Assign Floating Controls toolbar item indices in the parent so roving `tabIndex` matches between server and client HTML.
+- Provide Floating Controls toolbar item order from the parent so roving `tabIndex` is stable under server render and Strict Mode.
 
 ## 0.29.4
 

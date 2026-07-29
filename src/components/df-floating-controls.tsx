@@ -64,11 +64,6 @@ type FloatingControlsItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   tone?: "ghost" | "solid" | undefined
 }
 
-type FloatingControlsItemInternalProps = FloatingControlsItemProps & {
-  /** Assigned by FloatingControls. Not a public prop. */
-  rovingIndex?: number | undefined
-}
-
 type FloatingControlsRovingContextValue = {
   getItemProps: (index: number) => RovingItemProps
 }
@@ -76,9 +71,13 @@ type FloatingControlsRovingContextValue = {
 const FloatingControlsRovingContext =
   React.createContext<FloatingControlsRovingContextValue | null>(null)
 
+const FloatingControlsItemIndexContext = React.createContext<number | null>(
+  null
+)
+
 const FloatingControlsItem = React.forwardRef<
   HTMLButtonElement,
-  FloatingControlsItemInternalProps
+  FloatingControlsItemProps
 >(function FloatingControlsItem(
   {
     className,
@@ -89,14 +88,14 @@ const FloatingControlsItem = React.forwardRef<
     children,
     onFocus,
     onKeyDown,
-    rovingIndex,
     ...props
   },
   ref
 ) {
   const roving = React.useContext(FloatingControlsRovingContext)
+  const rovingIndex = React.useContext(FloatingControlsItemIndexContext)
   const itemProps =
-    roving != null && rovingIndex != null && rovingIndex >= 0
+    roving != null && rovingIndex != null
       ? roving.getItemProps(rovingIndex)
       : null
 
@@ -151,7 +150,7 @@ const FloatingControlsItem = React.forwardRef<
 
 function isFloatingControlsItemElement(
   node: React.ReactNode
-): node is React.ReactElement<FloatingControlsItemInternalProps> {
+): node is React.ReactElement<FloatingControlsItemProps> {
   return React.isValidElement(node) && node.type === FloatingControlsItem
 }
 
@@ -229,10 +228,17 @@ function FloatingControls({
   })
 
   let nextItemIndex = 0
-  const indexedContent = React.Children.map(content, (child) => {
+  const indexedContent = childArray.map((child) => {
     if (!isFloatingControlsItemElement(child)) return child
-    const rovingIndex = nextItemIndex++
-    return React.cloneElement(child, { rovingIndex })
+    const index = nextItemIndex++
+    return (
+      <FloatingControlsItemIndexContext.Provider
+        key={child.key ?? `item-${index}`}
+        value={index}
+      >
+        {child}
+      </FloatingControlsItemIndexContext.Provider>
+    )
   })
 
   const rovingValue: FloatingControlsRovingContextValue = {

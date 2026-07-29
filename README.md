@@ -191,7 +191,8 @@ Responsive tokens and utilities:
 
 Published consumers import compiled modules from `dist/` through the package
 `exports` map (for example `@default-file/ui/components/df-button`). CSS still
-ships from `src/css/` via the same map.
+ships from `src/css/` via the same map. A git install runs `prepare` to build
+`dist/` before the package is linked into the consumer.
 
 In the UX Tools monorepo, edit the kit under `./default-file-ui` only. From the
 app root, run `npm run df:sync` so `node_modules/@default-file/ui` picks up
