@@ -2,6 +2,11 @@
 
 Semver for `@default-file/ui` lives in `package.json`. `df-ui init` records the same version in `df.json`.
 
+## 0.29.8
+
+- Prefer system monospace for `--df-editor-mono` so editor and fence text keep aligned columns for full Unicode glyphs.
+- Disable ligatures on kit Editor mono surfaces so dash and arrow sequences keep full character width.
+
 ## 0.29.7
 
 - Include `lucide-react` as a kit `devDependency` so git-install `prepare` can compile component types.

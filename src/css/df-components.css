@@ -10345,6 +10345,8 @@
   padding: 0 calc(1 * var(--spacing-unit));
   font-family: var(--df-editor-mono);
   font-size: var(--df-text-13);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
 }
 
 .df-editor-surface :where(pre[data-df="editor-code-block"]) {
@@ -10355,6 +10357,8 @@
   font-family: var(--df-editor-mono);
   white-space: pre-wrap;
   tab-size: 2;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
 }
 
 .df-editor-surface :where(pre[data-df="editor-code-block"] code) {
@@ -10370,6 +10374,8 @@
   background: var(--df-editor-raw-bg);
   font-family: var(--df-editor-mono);
   white-space: pre-wrap;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
 }
 
 .df-editor-surface :where(hr[data-df="editor-divider"]) {

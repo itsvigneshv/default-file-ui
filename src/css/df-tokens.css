@@ -1547,7 +1547,8 @@
   --df-editor-focus-ring: var(--focus-ring);
   --df-editor-font-size: var(--df-text-sm);
   --df-editor-line-height: var(--df-leading-normal);
-  --df-editor-mono: var(--df-font-mono);
+  /* System mono first so Latin and box-drawing share one face (aligned fences). */
+  --df-editor-mono: ui-monospace, Menlo, Consolas, monospace;
   --df-editor-task-gap: calc(2 * var(--spacing-unit));
   --df-editor-raw-bg: color-mix(in oklch, var(--muted) 50%, transparent);
 
